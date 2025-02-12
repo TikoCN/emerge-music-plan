@@ -1,0 +1,212 @@
+﻿#ifndef SETTING_H
+#define SETTING_H
+
+#include <QObject>
+#include <QColor>
+#include <QFont>
+#include <QRectF>
+#include <QJsonObject>
+
+class Setting :public QObject
+{
+    Q_OBJECT
+private:
+    static Setting* instance;
+    Setting();
+
+    Q_PROPERTY(int maxThreadNumber READ getMaxThreadNumber WRITE setMaxThreadNumber NOTIFY maxThreadNumberChanged FINAL)
+
+    Q_PROPERTY(QStringList sourceList READ getSourceList WRITE setSourceList NOTIFY sourceListChanged FINAL)
+
+    Q_PROPERTY(QColor themeColor READ getThemeColor WRITE setThemeColor NOTIFY themeColorChanged FINAL)
+
+    Q_PROPERTY(QColor transparentColor READ getTransparentColor WRITE setTransparentColor NOTIFY transparentColorChanged FINAL)
+
+    Q_PROPERTY(QColor backdropColor READ getBackdropColor WRITE setBackdropColor NOTIFY backdropColorChanged FINAL)
+
+    Q_PROPERTY(QFont mainFont READ getMainFont WRITE setMainFont NOTIFY mainFontChanged FINAL)
+
+    Q_PROPERTY(QFont deskFont READ getDeskFont WRITE setDeskFont NOTIFY deskFontChanged FINAL)
+
+    Q_PROPERTY(QColor playingLrcColor READ getPlayingLrcColor WRITE setPlayingLrcColor NOTIFY playingLrcColorChanged FINAL)
+
+    Q_PROPERTY(QColor playedLrcColor READ getPlayedLrcColor WRITE setPlayedLrcColor NOTIFY playedLrcColorChanged FINAL)
+
+    Q_PROPERTY(QRectF windowRect READ getWindowRect WRITE setWindowRect NOTIFY windowRectChanged FINAL)
+
+    Q_PROPERTY(QFont mainLrcFont READ getMainLrcFont WRITE setMainLrcFont NOTIFY mainLrcFontChanged FINAL)
+
+    Q_PROPERTY(QPoint lrcTopPoint READ getLrcTopPoint WRITE setLrcTopPoint NOTIFY lrcTopPointChanged FINAL)
+
+    Q_PROPERTY(double timeWidth READ getTimeWidth WRITE setTimeWidth NOTIFY timeWidthChanged FINAL)
+
+    Q_PROPERTY(double editTimeWidth READ getEditTimeWidth WRITE setEditTimeWidth NOTIFY editTimeWidthChanged FINAL)
+
+    Q_PROPERTY(double playNumberWidth READ getPlayNumberWidth WRITE setPlayNumberWidth NOTIFY playNumberWidthChanged FINAL)
+    Q_PROPERTY(bool isOnLine READ getIsOnLine WRITE setIsOnLine NOTIFY isOnLineChanged FINAL)
+
+    Q_PROPERTY(bool isGetCoverFromNetEase READ getIsGetCoverFromNetEase WRITE setIsGetCoverFromNetEase NOTIFY isGetCoverFromNetEaseChanged FINAL)
+
+    Q_PROPERTY(bool isGetCoverFromBing READ getIsGetCoverFromBing WRITE setIsGetCoverFromBing NOTIFY isGetCoverFromBingChanged FINAL)
+
+    Q_PROPERTY(bool isGetCoverFromBaidu READ getIsGetCoverFromBaidu WRITE setIsGetCoverFromBaidu NOTIFY isGetCoverFromBaiduChanged FINAL)
+
+    Q_PROPERTY(bool isGetLrcFromNetEase READ getIsGetLrcFromNetEase WRITE setIsGetLrcFromNetEase NOTIFY isGetLrcFromNetEaseChanged FINAL)
+
+    Q_PROPERTY(bool isGetCoverFromQQMusic READ getIsGetCoverFromQQMusic WRITE setIsGetCoverFromQQMusic NOTIFY isGetCoverFromQQMusicChanged FINAL)
+
+    Q_PROPERTY(bool isGetLrcFromQQMusic READ getIsGetLrcFromQQMusic WRITE setIsGetLrcFromQQMusic NOTIFY isGetLrcFromQQMusicChanged FINAL)
+
+public:
+    static Setting* getInstance(){
+        return instance;
+    }
+
+    static void buildInstance(){
+        if(instance == nullptr){
+            instance = new Setting;
+        }
+    }
+
+    bool isOnLine;
+    bool isGetCoverFromNetEase;
+    bool isGetCoverFromQQMusic;
+    bool isGetCoverFromBing;
+    bool isGetCoverFromBaidu;
+    bool isGetLrcFromNetEase;
+    bool isGetLrcFromQQMusic;
+
+    int maxThreadNumber;//最大线程数量
+
+    QStringList sourceList;//资源地址列表
+    QStringList musicKeyList;//音乐文件id对照表 no qml
+
+    QColor themeColor;//主题颜色
+    QColor transparentColor;//透明层颜色
+    QColor backdropColor;//背景颜色
+    QColor playingLrcColor;//正在播放字体颜色
+    QColor playedLrcColor;//完成播放歌词颜色
+
+    QPoint lrcTopPoint;//桌面歌词位置
+    QRectF windowRect;//主界面
+
+    QFont deskFont;//桌面字体
+    QFont mainLrcFont;//主页歌词颜色
+    QFont mainFont;//主界面字体
+
+    QJsonObject *data;//数据
+    QJsonObject *coreJson;//核心数据
+
+    double timeWidth;//时间字长
+    double editTimeWidth;//编辑时间字长
+    double playNumberWidth;//播放次数字长
+
+    //设置参数
+    template <typename T>
+    void setParameter(QString key, T value);
+
+    //读取参数
+    bool getParameterList();
+
+    //初始设置
+    void readData();
+
+    Q_INVOKABLE void writeData();
+
+    //加载音乐资源
+    Q_INVOKABLE void loadMusicCores();
+
+    QStringList getSourceList() const;
+    void setSourceList(const QStringList &newSourceList);
+
+    int getMaxThreadNumber() const;
+    void setMaxThreadNumber(int newMaxThreadNumber);
+
+    QColor getThemeColor() const;
+    void setThemeColor(const QColor &newthemeColor);
+
+    QColor getTransparentColor() const;
+    void setTransparentColor(const QColor &newtransparentColor);
+
+    QColor getBackdropColor() const;
+    void setBackdropColor(const QColor &newbackdropColor);
+
+    QFont getMainFont() const;
+    void setMainFont(const QFont &newmainFont);
+
+    QFont getDeskFont() const;
+    void setDeskFont(const QFont &newdeskFont);
+
+    QColor getPlayingLrcColor() const;
+    void setPlayingLrcColor(const QColor &newPlayingLrcColor);
+
+    QColor getPlayedLrcColor() const;
+    void setPlayedLrcColor(const QColor &newPlayedLrcColor);
+
+    QRectF getWindowRect() const;
+    void setWindowRect(const QRectF &newWindowRect);
+
+    QFont getMainLrcFont() const;
+    void setMainLrcFont(const QFont &newMainLrcFont);
+
+    QPoint getLrcTopPoint() const;
+    void setLrcTopPoint(QPoint newLrcTopPoint);
+
+    double getTimeWidth() const;
+    void setTimeWidth(double newTimeWidth);
+
+    double getEditTimeWidth() const;
+    void setEditTimeWidth(double newEditTimeWidth);
+
+    double getPlayNumberWidth() const;
+    void setPlayNumberWidth(double newPlayNumberWidth);
+
+    bool getIsOnLine() const;
+    void setIsOnLine(bool newIsOnLine);
+
+    bool getIsGetCoverFromNetEase() const;
+    void setIsGetCoverFromNetEase(bool newIsGetCoverFromNetEase);
+
+    bool getIsGetCoverFromBing() const;
+    void setIsGetCoverFromBing(bool newIsGetCoverFromBing);
+
+    bool getIsGetCoverFromBaidu() const;
+    void setIsGetCoverFromBaidu(bool newIsGetCoverFromBaidu);
+
+    bool getIsGetLrcFromNetEase() const;
+    void setIsGetLrcFromNetEase(bool newIsGetLrcFromNetEase);
+
+    bool getIsGetCoverFromQQMusic() const;
+    void setIsGetCoverFromQQMusic(bool newIsGetCoverFromQQMusic);
+
+    bool getIsGetLrcFromQQMusic() const;
+    void setIsGetLrcFromQQMusic(bool newIsGetLrcFromQQMusic);
+
+signals:
+    //加载资源
+    void musicCoresChange(QStringList);
+
+    void maxThreadNumberChanged();
+    void sourceListChanged();
+    void themeColorChanged();
+    void transparentColorChanged();
+    void backdropColorChanged();
+    void mainFontChanged();
+    void deskFontChanged();
+    void playingLrcColorChanged();
+    void playedLrcColorChanged();
+    void windowRectChanged();
+    void mainLrcFontChanged();
+    void lrcTopPointChanged();
+    void timeWidthChanged();
+    void editTimeWidthChanged();
+    void playNumberWidthChanged();
+    void isOnLineChanged();
+    void isGetCoverFromNetEaseChanged();
+    void isGetCoverFromBingChanged();
+    void isGetCoverFromBaiduChanged();
+    void isGetLrcFromNetEaseChanged();
+    void isGetCoverFromQQMusicChanged();
+    void isGetLrcFromQQMusicChanged();
+};
+#endif // SETTING_H

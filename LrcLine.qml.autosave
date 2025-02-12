@@ -1,0 +1,14 @@
+import QtQuick
+
+Item {
+    MouseArea{
+        anchors.fill:parent
+    }
+    
+    Text{
+        anchors.fill:parent
+        Gradient{
+            
+        }
+    }
+}
