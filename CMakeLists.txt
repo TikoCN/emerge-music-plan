@@ -1,8 +1,5 @@
-﻿cmake_minimum_required(VERSION 3.16)
-
+cmake_minimum_required(VERSION 3.16)
 project(musicPlay VERSION 0.1 LANGUAGES CXX)
-# 设置 vcpkg 工具链路径
-# set(CMAKE_TOOLCHAIN_FILE "C:/vcpkg/scripts/buildsystems/vcpkg.cmake")
 set(CMAKE_AUTORCC ON)
 
 find_package(Qt6 REQUIRED COMPONENTS Quick)
@@ -20,47 +17,50 @@ qt_add_qml_module(appmusicPlay
     VERSION 1.0
     QML_FILES
     Main.qml
-    QML_FILES CoreMusicLine.qml
-    QML_FILES PlayerTable.qml
-    QML_FILES PageSeit.qml
-    QML_FILES ViewLeftBar.qml
-    QML_FILES ViewRightConter.qml
-    QML_FILES ViewBottomBar.qml
-    QML_FILES MyBarButton.qml
-    QML_FILES MyAutoText.qml
-    QML_FILES MyBar.qml
-    QML_FILES PageMain.qml
-    QML_FILES CoreLrcLine.qml
-    QML_FILES PlayerLrcTable.qml
-    QML_FILES ViewPlayingTable.qml
-    QML_FILES MyBorderButton.qml
-    QML_FILES PopupMessage.qml
-    QML_FILES ToolEditMusic.qml
-    QML_FILES MyFrameless.qml
-    QML_FILES MyUiButton.qml
-    QML_FILES MyInputText.qml
-    QML_FILES PlayerSpectrum.qml
-    QML_FILES MyRightVessel.qml
-    QML_FILES SelectColor.qml
-    QML_FILES SelectFont.qml
-    QML_FILES MyPopup.qml
-    QML_FILES MySlider.qml
-    QML_FILES MyMenu.qml
-    QML_FILES MyMenuItem.qml
-    QML_FILES MyCheckButton.qml
-    QML_FILES PopupInput.qml
-    QML_FILES ToolDeskLrc.qml
-    SOURCES mediaplayer.h mediaplayer.cpp
-    SOURCES setting.h setting.cpp
-    SOURCES hosttime.h hosttime.cpp
-    SOURCES table.h table.cpp
-    SOURCES extralibrary.h extralibrary.cpp
-    SOURCES imageprovider.h imageprovider.cpp
-    SOURCES toolhelper.h toolhelper.cpp
-    SOURCES popupdata.h popupdata.cpp
-    SOURCES lrcdata.h lrcdata.cpp
-    SOURCES music.h music.cpp
-    RESOURCES ui.qrc
+    CoreMusicLine.qml
+    PlayerTable.qml
+    PageSeit.qml
+    ViewLeftBar.qml
+    ViewRightConter.qml
+    ViewBottomBar.qml
+    MyBarButton.qml
+    MyAutoText.qml
+    MyBar.qml
+    PageMain.qml
+    CoreLrcLine.qml
+    PlayerLrcTable.qml
+    ViewPlayingTable.qml
+    MyBorderButton.qml
+    PopupMessage.qml
+    ToolEditMusic.qml
+    MyFrameless.qml
+    MyUiButton.qml
+    MyInputText.qml
+    PlayerSpectrum.qml
+    MyRightVessel.qml
+    SelectColor.qml
+    SelectFont.qml
+    MyPopup.qml
+    MySlider.qml
+    MyMenu.qml
+    MyMenuItem.qml
+    MyCheckButton.qml
+    PopupInput.qml
+    ToolDeskLrc.qml
+    SOURCES
+    mediaplayer.h mediaplayer.cpp
+    setting.h setting.cpp
+    hosttime.h hosttime.cpp
+    table.h table.cpp
+    extralibrary.h extralibrary.cpp
+    imageprovider.h imageprovider.cpp
+    toolhelper.h toolhelper.cpp
+    popupdata.h popupdata.cpp
+    lrcdata.h lrcdata.cpp
+    music.h music.cpp
+    RESOURCES
+    ui.qrc
+    SOURCES online.h online.cpp
 )
 
 # link fftw3
@@ -71,8 +71,25 @@ target_link_libraries(appmusicPlay PRIVATE FFTW3::fftw3)
 find_package(TagLib REQUIRED)
 target_link_libraries(appmusicPlay PRIVATE TagLib::TagLib)
 
-# link FFMPEG
-find_package(FFMPEG REQUIRED)
+# link FFmpeg
+# 设置FFmpeg根目录（注意路径斜杠）
+set(FFMPEG_ROOT "C:/Users/18215/Documents/ExLib/ffmpeg")
+# 定义包含目录
+set(FFMPEG_INCLUDE_DIRS "${FFMPEG_ROOT}/include")
+# 定义库目录
+set(FFMPEG_LIBRARY_DIRS "${FFMPEG_ROOT}/lib")
+
+# 列出需要链接的FFmpeg核心库（根据实际使用的模块调整）
+set(FFMPEG_LIBRARIES
+    avcodec
+    avformat
+    avutil
+    avfilter
+    swresample
+    swscale
+)
+
+# 将FFmpeg链接到目标可执行文件
 target_include_directories(appmusicPlay PRIVATE ${FFMPEG_INCLUDE_DIRS})
 target_link_directories(appmusicPlay PRIVATE ${FFMPEG_LIBRARY_DIRS})
 target_link_libraries(appmusicPlay PRIVATE ${FFMPEG_LIBRARIES})

@@ -1,4 +1,4 @@
-﻿#include "lrcdata.h"
+#include "lrcdata.h"
 
 int LrcData::getId() const
 {
@@ -32,6 +32,7 @@ LrcData::LrcData(){
     endTime = 0;
     isPlay = false;
     line = 0;
+    pos = 0.0;
 }
 
 double LrcData::getPos() const

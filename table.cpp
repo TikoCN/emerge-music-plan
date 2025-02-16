@@ -1,4 +1,4 @@
-﻿#include "table.h"
+#include "table.h"
 #include "popupdata.h"
 #include <QUrl>
 #include <QDesktopServices>
@@ -27,7 +27,6 @@ void Table::copy(Table* a)
 
 void Table::sortMusic()
 {
-
     if(showMusics.size() == 0){
         return;
     }
@@ -52,20 +51,30 @@ void Table::sortMusic()
         });
         break;
     case 3:
-        std::sort(showMusics.begin(), showMusics.end(), [this](Music *a, Music *b){
+        std::sort(showMusics.begin(), showMusics.end(), [this](Music *a, Music *b){        
             bool isRight = a->endTime > b->endTime;
             return forward ? isRight : !isRight;
         });
         break;
     case 4:
         std::sort(showMusics.begin(), showMusics.end(), [this](Music *a, Music *b){
-            bool isRight = a->getNumberEdit() > b->getNumberEdit();
+            bool isRight = a->lastEditTime > b->lastEditTime;
             return forward ? isRight : !isRight;
         });
         break;
     default:
         break;
     }
+}
+
+void Table::setSort(int key, bool forward)
+{
+    this->key = key;
+    this->forward = forward;
+    emit keyChanged();
+    emit forwardChanged();
+    sortMusic();//排序
+    emit showMusicsChanged();
 }
 
 int Table::getLastCoreId()
@@ -93,7 +102,7 @@ void Table::insertMusic(QList<Music *> core)
     int success = 0;
     for(int i=0; i<core.size(); i++){
         if(core[i]->isSearch(search)){
-            showMusics.append(core);//符合条件插入显示
+            showMusics.append(core[i]);//符合条件插入显示
             success++;
         }
     }
@@ -208,10 +217,8 @@ void Table::setForward(bool newForward)
     if (forward == newForward)
         return;
     forward = newForward;
-    emit forwardChanged();
 
-    //清空并重建
-    buildShowMusics();
+    setSort(key, forward);
 }
 
 int Table::getKey() const
@@ -224,8 +231,6 @@ void Table::setKey(int newKey)
     if (key == newKey)
         return;
     key = newKey;
-    emit keyChanged();
 
-    //清空并重建
-    buildShowMusics();
+    setSort(key, forward);
 }

@@ -1,13 +1,17 @@
-﻿#include "imageprovider.h"
+#include "imageprovider.h"
 #include <QPixmapCache>
 #include "mediaplayer.h"
+#include "online.h"
 #include <QPainter>
 #include <QPainterPath>
+#include <QThread>
 
 ImageProvider::ImageProvider()
 : QQuickImageProvider(QQuickImageProvider::Pixmap)
 {
-
+    QThread *thread = new QThread;
+    this->moveToThread(thread);
+    thread->start();
 }
 
 /*
@@ -20,20 +24,21 @@ QPixmap ImageProvider::requestPixmap(const QString &id, QSize *size, const QSize
     QString type = id.split(":").first();
     int coreId = id.split(":").last().toInt();
 
-    if(type == "onLine"){
-        pix = player->coreList[coreId]->loadCoverOnline();
+    if(type == "onLine"){//在线加载
+        OnLine *onLine = OnLine::getInstance();
+        //onLine->downCover(player->coreList[coreId]->getBaseName(), player->coreList[coreId]->getCoverUrl());
     }
-    else if(type == "file"){
-        if(player->coreList[coreId]->cover != NULL){
+    else if(type == "file"){//本地加载
+        if(player->coreList[coreId]->cover != NULL){//读取已经加载好的封面
             return *player->coreList[coreId]->cover;
         }
-        pix = player->coreList[coreId]->loadCover();
     }
 
+    pix = player->coreList[coreId]->loadCover();
     pix = pix.scaled(requestedSize);
     buildRoundImage(&pix, requestedSize.width() * 0.2);
 
-    if(type == "file"){
+    if(type == "file"){//读取已经加载好的封面
         player->coreList[coreId]->cover = new QPixmap;
         *player->coreList[coreId]->cover = pix;
     }

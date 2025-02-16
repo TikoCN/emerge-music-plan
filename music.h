@@ -1,4 +1,4 @@
-﻿#ifndef MUSIC_H
+#ifndef MUSIC_H
 #define MUSIC_H
 
 #include <QObject>
@@ -16,6 +16,7 @@ public:
     QString genre;
     QString year;
     qint64 endTime;
+    qint64 lastEditTime;
     double maxHeight;
     double minHeight;
     int coreId;
@@ -42,11 +43,11 @@ public:
     //获得父文件夹
     QString getParentDir();
 
+    //获得文件基础名字
+    QString getBaseName();
+
     //获得时长
     Q_INVOKABLE QString getStringTime();
-
-    //获得最后编辑时间
-    qint64 getNumberEdit();
 
     //获得识别文本
     QString getKey();
@@ -56,9 +57,6 @@ public:
 
     //加载封面
     QImage loadAloneCover();
-
-    //加载封面网络
-    QPixmap loadCoverOnline();
 
     //判断是否符合搜索条件
     bool isSearch(QString aim);

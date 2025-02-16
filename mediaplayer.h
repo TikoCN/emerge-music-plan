@@ -1,4 +1,4 @@
-﻿#ifndef MEDIAPLAYER_H
+#ifndef MEDIAPLAYER_H
 #define MEDIAPLAYER_H
 
 #include "table.h"
@@ -67,7 +67,7 @@ public:
 
 public:
     //获得音乐核心
-    void getMusicCoreAndCover(QList<Music *>musicList, QStringList musicKeyList);
+    void getMusicCore(QList<Music *>musicList, QStringList musicKeyList);
 
     //新建播放列表
     Q_INVOKABLE void addTable(QString tableName, bool isDir = false);
@@ -91,7 +91,7 @@ public:
     Q_INVOKABLE void playingInsertMusic(int coreId);
 
     //加载歌词
-    void loadLrcList(QString lrcUrl, qint64 endTime);
+    void loadLrcList();
 
     //选择当前播放歌词
     void selectPlayLrc(qint64 time);
@@ -142,6 +142,10 @@ public:
     void setPlayingLrc(LrcData *newPlayingLrc);
 
 signals:
+
+    //下载歌词
+    void downLrc(QString key, QString url);
+
     //新建本地列表
     void cppAddDirTable(int tableId);
 

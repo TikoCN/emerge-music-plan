@@ -1,4 +1,4 @@
-﻿import QtQuick
+import QtQuick
 import QtQuick.Window
 import QtQuick.Controls.Basic
 import QtQml
@@ -60,32 +60,33 @@ Item {
                 visible: false
                 y: loopButton.y-height
                 width: 140
+                height: 200
 
                 contentItem:  Column {
                     spacing:  10
 
                     MyBarButton {
                         id: loop0
-                        text:  qsTr("顺序播放")
+                        text: qsTr("顺序播放")
                         icon.source: "qrc:/image/loop0.png"
-                        onClicked:  loopButton.setLoopType(0)
+                        onClicked: loopButton.setLoopType(0)
                         width: parent.width
+                    }
 
-                        MyBarButton {
-                            id: loop1
-                            text:  qsTr("随机循环")
-                            icon.source: "qrc:/image/loop1.png"
-                            onClicked:  loopButton.setLoopType(1)
-                            width: parent.width
-                        }
+                    MyBarButton {
+                        id: loop1
+                        text: qsTr("随机循环")
+                        icon.source: "qrc:/image/loop1.png"
+                        onClicked: loopButton.setLoopType(1)
+                        width: parent.width
+                    }
 
-                        MyBarButton {
-                            id: loop2
-                            text:  qsTr("单曲循环")
-                            icon.source: "qrc:/image/loop2.png"
-                            onClicked:  loopButton.setLoopType(2)
-                            width: parent.width
-                        }
+                    MyBarButton {
+                        id: loop2
+                        text: qsTr("单曲循环")
+                        icon.source: "qrc:/image/loop2.png"
+                        onClicked: loopButton.setLoopType(2)
+                        width: parent.width
                     }
                 }
             }

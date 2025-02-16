@@ -1,4 +1,4 @@
-﻿#ifndef TABLE_H
+#ifndef TABLE_H
 #define TABLE_H
 
 #include <QObject>
@@ -24,6 +24,9 @@ public:
     //排序
     void sortMusic();
 
+    //设置排序
+    void setSort(int key, bool forward);
+
     //得到最后id
     Q_INVOKABLE int getLastCoreId();
 
@@ -42,7 +45,6 @@ public:
 
     //显示所有歌曲
     Q_INVOKABLE void showAllMusic();
-
 
     //建立显示列表
     void buildShowMusics();

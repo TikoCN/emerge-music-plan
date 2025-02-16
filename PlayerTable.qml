@@ -1,4 +1,4 @@
-﻿import QtQuick
+import QtQuick
 import QtQuick.Controls.Basic
 import QtQuick.Layouts
 import MyAPI
@@ -73,65 +73,84 @@ Item {
             anchors.leftMargin: 10
             spacing: 10
 
-            Repeater{
-                delegate: MyBarButton{
-                    Layout.minimumWidth: 90
-                    onClicked: tableTool.work(i)
-                    text: name
-                    icon.source: icons
-                }
+            MyBarButton{
+                Layout.minimumWidth: 90
+                onClicked: MediaPlayer.tableList[tableId].showAllMusic()
+                text: qsTr("歌曲")
+                icon.source: "qrc:/image/music.png"
+            }
 
-                model: ListModel{
-                    ListElement{name: qsTr("歌曲"); icons:"qrc:/image/music.png" ;i:1}
-                    ListElement{name: qsTr("喜爱"); icons:"qrc:/image/love.png" ;i:2}
-                    ListElement{name: qsTr("打开"); icons:"qrc:/image/dir.png" ;i:3}
-                    ListElement{name: qsTr("排序"); icons:"qrc:/image/sort.png" ;i:4}
-                    ListElement{name: qsTr("命名"); icons:"qrc:/image/rename.png" ;i:5}
+            MyBarButton{
+                Layout.minimumWidth: 90
+                onClicked: MediaPlayer.tableList[tableId].showLove()
+                text: qsTr("喜爱")
+                icon.source: "qrc:/image/love.png"
+            }
+
+            MyBarButton{
+                Layout.minimumWidth: 90
+                onClicked: MediaPlayer.tableList[tableId].openDir()
+                text: qsTr("打开")
+                icon.source: "qrc:/image/dir.png"
+            }
+
+            MyBarButton{
+                Layout.minimumWidth: 90
+                onClicked: editName.open()
+                text: qsTr("命名")
+                icon.source: "qrc:/image/rename.png"
+
+                PopupInput{
+                    id: editName
+                    text: qsTr("请输入列表的新名字")
+                    orgText: MediaPlayer.tableList[tableId].name
+                    onAccept: ()=>{
+                                  MediaPlayer.tableList[tableId].name = inputText
+                              }
                 }
             }
 
-            MyMenu{
-                id: sortMenu
+            MyBarButton{
+                Layout.minimumWidth: 150
+                onClicked: sortMenu.open()
+                text: qsTr("排序")
+                icon.source: "qrc:/image/sort.png"
 
-                MyMenuItem{text: qsTr("标   题"); onTriggered: MediaPlayer.tableList[tableId].key = 0; icon.source: sortMenu.isSelectKey(0)}
-                MyMenuItem{text: qsTr("歌   手"); onTriggered: MediaPlayer.tableList[tableId].key = 1; icon.source: sortMenu.isSelectKey(1)}
-                MyMenuItem{text: qsTr("专   辑"); onTriggered: MediaPlayer.tableList[tableId].key = 2; icon.source: sortMenu.isSelectKey(2)}
-                MyMenuItem{text: qsTr("时   长"); onTriggered: MediaPlayer.tableList[tableId].key = 3; icon.source: sortMenu.isSelectKey(3)}
-                MyMenuItem{text: qsTr("修改时间"); onTriggered: MediaPlayer.tableList[tableId].key = 4; icon.source: sortMenu.isSelectKey(4)}
+                MyMenu{
+                    id: sortMenu
+                    width: parent.width
+                    y: parent.height
 
-                MyMenuItem{text: qsTr("升   序"); onTriggered: MediaPlayer.tableList[tableId].forward = false; icon.source: sortMenu.isSelectForward(false)}
-                MyMenuItem{text: qsTr("降   序"); onTriggered: MediaPlayer.tableList[tableId].forward = true; icon.source: sortMenu.isSelectForward(true)}
-
-                //被选中的键
-                function isSelectKey(key){
-                    if(MediaPlayer.tableList[tableId].key === key){
-                        return "qrc:/image/used.png"
-                    }
+                    MyMenuItem{
+                        text: qsTr("标   题");
+                        onTriggered: MediaPlayer.tableList[tableId].key = 0;
+                        icon.source: MediaPlayer.tableList[tableId].key === 0 ? "qrc:/image/used.png" : ""}
+                    MyMenuItem{
+                        text: qsTr("歌   手");
+                        onTriggered: MediaPlayer.tableList[tableId].key = 1;
+                        icon.source: MediaPlayer.tableList[tableId].key === 1 ? "qrc:/image/used.png" : ""}
+                    MyMenuItem{
+                        text: qsTr("专   辑");
+                        onTriggered: MediaPlayer.tableList[tableId].key = 2;
+                        icon.source: MediaPlayer.tableList[tableId].key === 2 ? "qrc:/image/used.png" : ""}
+                    MyMenuItem{
+                        text: qsTr("时   长");
+                        onTriggered: MediaPlayer.tableList[tableId].key = 3;
+                        icon.source: MediaPlayer.tableList[tableId].key === 3 ? "qrc:/image/used.png" : ""}
+                    MyMenuItem{
+                        text: qsTr("修改时间");
+                        onTriggered: MediaPlayer.tableList[tableId].key = 4;
+                        icon.source: MediaPlayer.tableList[tableId].key === 4 ? "qrc:/image/used.png" : ""}
+                    MenuSeparator{}
+                    MyMenuItem{
+                        text: qsTr("升   序");
+                        onTriggered: MediaPlayer.tableList[tableId].forward = false;
+                        icon.source: MediaPlayer.tableList[tableId].forward === false ? "qrc:/image/used.png" : ""}
+                    MyMenuItem{
+                        text: qsTr("降   序");
+                        onTriggered: MediaPlayer.tableList[tableId].forward = true;
+                        icon.source: MediaPlayer.tableList[tableId].forward === true ? "qrc:/image/used.png" : ""}
                 }
-
-                //被选中的键
-                function isSelectForward(forward){
-                    if(MediaPlayer.tableList[tableId].forward === forward){
-                        return "qrc:/image/used.png"
-                    }
-                }
-            }
-
-            PopupInput{
-                id: editName
-                text: qsTr("请输入列表的新名字")
-                orgText: MediaPlayer.tableList[tableId].name
-                onAccept: ()=>{
-                              MediaPlayer.tableList[tableId].name = inputText
-                          }
-            }
-
-            function work(type){
-                if(type === 1){MediaPlayer.tableList[tableId].showAllMusic()}
-                else if(type === 2){MediaPlayer.tableList[tableId].showLove()}
-                else if(type === 3){MediaPlayer.tableList[tableId].openDir()}
-                else if(type === 4){sortMenu.open()}
-                else if(type === 5){editName.open()}
             }
         }
 

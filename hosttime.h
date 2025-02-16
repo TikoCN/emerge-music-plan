@@ -1,4 +1,4 @@
-﻿#ifndef HOSTTIME_H
+#ifndef HOSTTIME_H
 #define HOSTTIME_H
 
 #include "music.h"
@@ -72,23 +72,6 @@ public slots:
 
     //子线程完成任务
     void cellFinishWork(TaskCell *cell);
-
-    //下载封面
-    void onLineGetCoverFromNetEase(QString key, QString url);
-
-    void onLineGetCoverFromQQMusic(QString key, QString url);
-
-    void onLineGetCoverFromBing(QString key, QString url);
-
-    void onLineGetCoverFromBaidu(QString key, QString url);
-
-    //下载歌词
-    void onLineGetLrcFromNetEase(QString key, QString url);
-
-    void onLineGetLrcFromQQMusic(QString key, QString url);
-
-    //加载图片写入文件
-    void onLineCoverToFile(QString url, QString file);
 
 signals:
     //筛选音乐文件

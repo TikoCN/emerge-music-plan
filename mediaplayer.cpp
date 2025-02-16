@@ -1,8 +1,9 @@
-﻿#include "mediaplayer.h"
+#include "mediaplayer.h"
 #include "extralibrary.h"
 #include "setting.h"
 #include "hosttime.h"
 #include "popupdata.h"
+#include "online.h"
 #include <QRandomGenerator>
 #include <QAudioDevice>
 #include <QPixmapCache>
@@ -38,12 +39,17 @@ MediaPlayer::MediaPlayer()
             playNext(1);
         }
     });
+
+    //关联网络模块
+    OnLine *onLine = OnLine::getInstance();
+    connect(this, &MediaPlayer::downLrc, onLine, &OnLine::downLrc);
+    connect(onLine, &OnLine::lrcDowned, this, &MediaPlayer::loadLrcList);
 }
 
 /*
  * 获得音乐核心
  */
-void MediaPlayer::getMusicCoreAndCover(QList<Music*> musicList, QStringList musicKeyList)
+void MediaPlayer::getMusicCore(QList<Music*> musicList, QStringList musicKeyList)
 {
     QStringList dirs;//本地文件列表
     QList<QList<Music *>> tableMusic;
@@ -63,6 +69,7 @@ void MediaPlayer::getMusicCoreAndCover(QList<Music*> musicList, QStringList musi
 
         tableMusic[aimTableId].append(musicList[i]);
     }
+
     for(int i=0; i<dirs.size(); i++){
         addTable(dirs[i], true);
         tableList[i]->insertMusic(tableMusic[i]);
@@ -128,9 +135,7 @@ void MediaPlayer::buildNoDirTable(QStringList musicKeyList)
         }
 
         if(aimTable != -1){
-            tableList[aimTable]->key = table.value("key").toInt();
-            tableList[aimTable]->forward = table.value("forward").toBool();
-            tableList[aimTable]->buildShowMusics();//排序
+            tableList[aimTable]->setSort(table.value("key").toInt(), table.value("forward").toBool());
         }
     }
 }
@@ -162,6 +167,8 @@ void MediaPlayer::addTable(QString tableName, bool isDir)
     tableList.append(table);
 
     if(isDir){
+        table->url = tableName;
+        table->name = tableName.split("/").last();
         emit cppAddDirTable(table->tableId);
     }
     else{
@@ -223,7 +230,6 @@ void MediaPlayer::playMusic(int table, int music)
     if(table != -1){
         musicList.clear();
         musicList.append(tableList[table]->showMusics);
-
         emit cppBuildPlayingTable();
     }
 
@@ -233,15 +239,17 @@ void MediaPlayer::playMusic(int table, int music)
     player->setSource(musicList[music]->url);
     player->play();
 
-    loadLrcList(musicList[music]->getLrcUrl(), musicList[music]->endTime);
+    lrcList.clear();//清空遗留歌词
+    emit downLrc(playingCore->getBaseName(), playingCore->getLrcUrl());//加载新歌词
 }
 
 /*
  * 加载歌词
  */
-void MediaPlayer::loadLrcList(QString lrcUrl, qint64 endTime)
+void MediaPlayer::loadLrcList()
 {
-    lrcList.clear();
+    QString lrcUrl = playingCore->getLrcUrl();
+    qint64 endTime = playingCore->endTime;
 
     QFile file(lrcUrl);
     if(file.open(QIODevice::ReadOnly| QIODevice::Text)){
@@ -303,6 +311,10 @@ void MediaPlayer::loadLrcList(QString lrcUrl, qint64 endTime)
 
 void MediaPlayer::selectPlayLrc(qint64 time)
 {
+    if(lrcList.size() == 0){
+        return;
+    }
+
     int play = playingLrc->id;
 
     //向下寻找
@@ -395,8 +407,7 @@ void MediaPlayer::buildFrequencySpectrum(QAudioBuffer buffer)
     int all = buffer.frameCount();//采样单元
     int sample = buffer.sampleCount();//总频道数
 
-    if(all != 0)
-    {
+    if(all != 0){
         int alone = sample/all;
         QVector<double>data(all);
 
@@ -431,7 +442,8 @@ void MediaPlayer::buildFrequencySpectrum(QAudioBuffer buffer)
         }
 
         QList<double> sampleList = data.mid(0, all/2);
-        if(allSamples.size() <= 0){
+        if(allSamples.size() != sampleList.size()){
+            allSamples.clear();
             allSamples.fill(0.0, sampleList.size());
         }
 

@@ -1,4 +1,4 @@
-﻿#ifndef EXTRALIBRARY_H
+#ifndef EXTRALIBRARY_H
 #define EXTRALIBRARY_H
 #include "music.h"
 #include <QAudioBuffer>
@@ -15,6 +15,8 @@ public:
     //从文件中提取图片
     QImage loadIndexCover(QString musicUrl);
 
+   //将音乐文件转化为mp3
+    int musicFileChangeMP3(QString url);
 
     //计算傅里叶变换
     QVector<double> useFftw3(QVector<double>in, int N);

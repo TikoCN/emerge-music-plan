@@ -1,8 +1,8 @@
-﻿#include "music.h"
+#include "music.h"
 #include "extralibrary.h"
 #include "setting.h"
-#include "hosttime.h"
 #include "popupdata.h"
+#include "online.h"
 #include <QDesktopServices>
 #include <QJsonObject>
 #include <QGuiApplication>
@@ -21,6 +21,7 @@ void Music::fromFileInfo(QFileInfo info)
 {
     url = info.filePath();
     lastEdit = info.lastModified().toString("yy-MM-dd hh:mm:ss");
+    lastEditTime = info.lastModified().toMSecsSinceEpoch();
 }
 /*
  * 来自Json
@@ -51,6 +52,11 @@ QString Music::getParentDir()
     return url.split("/"+fileName)[0];
 }
 
+QString Music::getBaseName()
+{
+    return url.split("/").last().split("." + url.split(".").last())[0];
+}
+
 /*
  * 时长
  */
@@ -60,11 +66,6 @@ QString Music::getStringTime()
     qint64 s = endTime / 1000 % 60;
     qint64 m = endTime / 1000 / 60;
     return QString::number(m) + ":" + QString::number(s);
-}
-
-qint64 Music::getNumberEdit()
-{
-    return QDateTime::fromString(lastEdit, "yy-MM-dd hh:mm:ss").toMSecsSinceEpoch();
 }
 
 /*
@@ -113,54 +114,6 @@ QImage Music::loadAloneCover()
         img = reader.read();
     }
     return img;
-}
-
-/*
-加载封面在线
-*/
-QPixmap Music::loadCoverOnline()
-{
-    Setting *seit = Setting::getInstance();
-    HostTime *host = HostTime::getInstance();
-    ExtraLibrary extraLibrary;
-
-    QString coverUrl = getCoverUrl();
-    QString key = url.split("/").last().split("." + url.split(".").last())[0];
-    QImage img = extraLibrary.loadIndexCover(url);
-
-    if(img.isNull() && QFile::exists(coverUrl)){//如果存在 独立封面
-        img = loadAloneCover();
-    }
-
-    if(img.isNull() && seit->isOnLine){
-        if(seit->isGetCoverFromQQMusic && !QFile::exists(coverUrl)){
-            host->onLineGetCoverFromQQMusic(key, coverUrl);
-        }
-
-        if(seit->isGetCoverFromNetEase && !QFile::exists(coverUrl)){
-            host->onLineGetCoverFromNetEase(key, coverUrl);
-        }
-
-        if(seit->isGetCoverFromBaidu && !QFile::exists(coverUrl)){
-            host->onLineGetCoverFromBaidu(key, coverUrl);
-        }
-
-        if(seit->isGetCoverFromBing && !QFile::exists(coverUrl)){
-            host->onLineGetCoverFromBing(key, coverUrl);
-        }
-
-        //加载完存在本地文件
-        if(QFile::exists(coverUrl)){
-            img = loadAloneCover();
-        }
-    }
-
-    //依旧为空,加载默认照片
-    if(img.isNull()){
-        img.load(":/image/default.jpg");
-    }
-
-    return QPixmap::fromImage(img);
 }
 
 /*

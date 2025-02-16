@@ -1,4 +1,4 @@
-﻿#include <QGuiApplication>
+#include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include "setting.h"
 #include "hosttime.h"
@@ -6,6 +6,7 @@
 #include "imageprovider.h"
 #include "popupdata.h"
 #include "toolhelper.h"
+#include "online.h"
 #include <QQmlContext>
 #include <QIcon>
 
@@ -14,6 +15,7 @@ HostTime* HostTime::instance = nullptr;
 MediaPlayer* MediaPlayer::instance = nullptr;
 PopupData* PopupData::instance = nullptr;
 ToolHelper* ToolHelper::instance = nullptr;
+OnLine* OnLine::instance = nullptr;
 
 int main(int argc, char *argv[])
 {
@@ -21,6 +23,7 @@ int main(int argc, char *argv[])
     app.setWindowIcon(QIcon(":/image/exe.png"));
 
     //建立
+    OnLine::buildInstance();
     MediaPlayer::buildInstance();
     Setting::buildInstance();
     HostTime::buildInstance();
@@ -39,7 +42,7 @@ int main(int argc, char *argv[])
     qmlRegisterSingletonInstance("MyAPI", 1, 0, "PopupData", popupData);
     qmlRegisterSingletonInstance("MyAPI", 1, 0, "ToolHelper", toolHelper);
 
-    QObject::connect(hostTime, &HostTime::musicsLoaded, mediaPlayer, &MediaPlayer::getMusicCoreAndCover);
+    QObject::connect(hostTime, &HostTime::musicsLoaded, mediaPlayer, &MediaPlayer::getMusicCore);
 
     QQmlApplicationEngine engine;
     QObject::connect(

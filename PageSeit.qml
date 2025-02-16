@@ -1,4 +1,4 @@
-﻿import QtQuick
+import QtQuick
 import QtQuick.Controls
 import QtQuick.Dialogs
 import QtQuick.Layouts
@@ -116,7 +116,7 @@ ScrollView{
             show.width: seitPage.modeTextWidth
 
             vessel: Column{
-                spacing: 10
+                spacing: 5
 
                 SelectColor{
                     width: 200

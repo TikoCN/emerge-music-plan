@@ -1,4 +1,4 @@
-﻿import QtQuick
+import QtQuick
 import QtQuick.Layouts
 import MyAPI
 Item {
@@ -54,7 +54,7 @@ Item {
             sourceSize.width: width
             width: 50
             height:50
-            cache: false
+            cache: true
             asynchronous: true
         }
 
