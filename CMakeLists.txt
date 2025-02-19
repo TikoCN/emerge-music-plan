@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.16)
 project(musicPlay VERSION 0.1 LANGUAGES CXX)
+set(CMAKE_TOOLCHAIN_FILE "C:/vcpkg/scripts/buildsystems/vcpkg.cmake")
 set(CMAKE_AUTORCC ON)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(Qt6 REQUIRED COMPONENTS Quick)
 find_package(Qt6 REQUIRED COMPONENTS Multimedia)
@@ -72,24 +74,7 @@ find_package(TagLib REQUIRED)
 target_link_libraries(appmusicPlay PRIVATE TagLib::TagLib)
 
 # link FFmpeg
-# 设置FFmpeg根目录（注意路径斜杠）
-set(FFMPEG_ROOT "C:/Users/18215/Documents/ExLib/ffmpeg")
-# 定义包含目录
-set(FFMPEG_INCLUDE_DIRS "${FFMPEG_ROOT}/include")
-# 定义库目录
-set(FFMPEG_LIBRARY_DIRS "${FFMPEG_ROOT}/lib")
-
-# 列出需要链接的FFmpeg核心库（根据实际使用的模块调整）
-set(FFMPEG_LIBRARIES
-    avcodec
-    avformat
-    avutil
-    avfilter
-    swresample
-    swscale
-)
-
-# 将FFmpeg链接到目标可执行文件
+find_package(FFMPEG REQUIRED)
 target_include_directories(appmusicPlay PRIVATE ${FFMPEG_INCLUDE_DIRS})
 target_link_directories(appmusicPlay PRIVATE ${FFMPEG_LIBRARY_DIRS})
 target_link_libraries(appmusicPlay PRIVATE ${FFMPEG_LIBRARIES})

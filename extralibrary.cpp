@@ -1,12 +1,13 @@
 #include "extralibrary.h"
 #include "popupdata.h"
+
 extern "C" {
 #include "libavformat/avformat.h"
 #include "libavcodec/avcodec.h"
 #include "libswresample/swresample.h"
-#include "fftw3.h"
 }
 
+#include "fftw3.h"
 #include "taglib.h"
 #include "fileref.h"
 #include "tstring.h"
@@ -103,180 +104,6 @@ QImage ExtraLibrary::loadIndexCover(QString musicUrl)
     return img;
 }
 
-//将音乐文件转化为mp3
-int ExtraLibrary::musicFileChangeMP3(QString url)
-{
-    QString inFile = url;
-    QString suffix = url.split(".").last();
-    if(suffix == "mp3"){
-        return -1;
-    }
-    QString onFile = url.replace("."+suffix, ".mp3");
-    AVFormatContext *inFmtCtx = NULL, *outFmtCtx = NULL;
-
-    if(0 > avformat_open_input(&inFmtCtx, inFile.toUtf8(), NULL, NULL)){
-        qDebug()<<"输入文件打开失败";
-        avformat_close_input(&inFmtCtx);
-        return -1;
-    }
-
-    if(0 > avformat_find_stream_info(inFmtCtx, NULL)){
-        qDebug()<<"找不到输入流";
-        avformat_close_input(&inFmtCtx);
-        return -1;
-    }
-
-    if(0 > avformat_alloc_output_context2(&outFmtCtx, NULL, NULL, onFile.toUtf8())){
-        qDebug()<<"输出文件打开失败";
-        avformat_close_input(&inFmtCtx);
-        avformat_close_input(&outFmtCtx);
-        return -1;
-    }
-
-    int aimStream = av_find_best_stream(inFmtCtx, AVMEDIA_TYPE_AUDIO, -1, -1, nullptr, 0);
-    AVStream *inStream = inFmtCtx->streams[aimStream];
-    AVStream *outStream = avformat_new_stream(outFmtCtx, NULL);
-
-    //生成解码器
-    const AVCodec *dncode = avcodec_find_decoder(inStream->codecpar->codec_id);
-    if(!dncode){
-        qDebug()<<"找不到解码器";
-        avformat_close_input(&inFmtCtx);
-        avformat_close_input(&outFmtCtx);
-        return -1;
-    }
-    AVCodecContext *dncodeCtx = avcodec_alloc_context3(dncode);
-    avcodec_parameters_to_context(dncodeCtx, inStream->codecpar);
-    if(avcodec_open2(dncodeCtx, dncode, NULL) < 0){//打开解码
-        qDebug()<<"解码器打开失败";
-        avformat_close_input(&inFmtCtx);
-        avformat_close_input(&outFmtCtx);
-        avcodec_free_context(&dncodeCtx);
-        return -1;
-    }
-
-    //生成mp3编码器
-    const AVCodec *encode = avcodec_find_encoder(AV_CODEC_ID_MP3);
-    if(!encode){
-        qDebug()<<"找不到编码器";
-        avformat_close_input(&inFmtCtx);
-        avformat_close_input(&outFmtCtx);
-        avcodec_free_context(&dncodeCtx);
-        return -1;
-    }
-    AVCodecContext *encodeCtx = avcodec_alloc_context3(encode);
-    avcodec_parameters_to_context(encodeCtx, inStream->codecpar);
-    encodeCtx->codec_id = AV_CODEC_ID_MP3;
-    encodeCtx->codec_type = AVMEDIA_TYPE_AUDIO;
-    encodeCtx->sample_fmt = AV_SAMPLE_FMT_S32P;
-    encodeCtx->sample_rate = 44100;
-    encodeCtx->bit_rate = 320000;
-    if(0 > avcodec_parameters_from_context(outStream->codecpar, encodeCtx)){
-        qDebug()<<"输入流拷贝数据失败";
-        avformat_close_input(&inFmtCtx);
-        avformat_close_input(&outFmtCtx);
-        avcodec_free_context(&encodeCtx);
-        avcodec_free_context(&dncodeCtx);
-        return -1;
-    }
-    if(avcodec_open2(encodeCtx, encode, NULL) < 0){//打开编码
-        qDebug()<<"编码器打开失败";
-        avformat_close_input(&inFmtCtx);
-        avformat_close_input(&outFmtCtx);
-        avcodec_free_context(&encodeCtx);
-        avcodec_free_context(&dncodeCtx);
-        return -1;
-    }
-
-    if(0 > avio_open(&outFmtCtx->pb, onFile.toUtf8(), AVIO_FLAG_WRITE)){
-        qDebug()<<"输出文件打开失败";
-        avformat_close_input(&inFmtCtx);
-        avformat_close_input(&outFmtCtx);
-        avcodec_free_context(&encodeCtx);
-        avcodec_free_context(&dncodeCtx);
-        return -1;
-    }
-
-    //拷贝元数据
-    AVDictionaryEntry* tag = nullptr;
-    while ((tag = av_dict_get(inFmtCtx->metadata, "", tag, AV_DICT_IGNORE_SUFFIX))) {
-        av_dict_set(&outFmtCtx->metadata, tag->key, tag->value, 0);
-    }
-
-    if(0 > avformat_write_header(outFmtCtx, NULL)){
-        qDebug()<<"写入文件头失败";
-        avformat_close_input(&inFmtCtx);
-        avformat_close_input(&outFmtCtx);
-        avcodec_free_context(&encodeCtx);
-        avcodec_free_context(&dncodeCtx);
-        return -1;
-    }
-
-    //解码再编码
-    AVPacket *iapk = av_packet_alloc();
-    AVFrame *inFrame = av_frame_alloc();
-    SwrContext *swr = NULL;
-    swr_alloc_set_opts2(&swr,
-                        &dncodeCtx->ch_layout, dncodeCtx->sample_fmt, dncodeCtx->sample_rate,
-                        &encodeCtx->ch_layout, encodeCtx->sample_fmt, encodeCtx->sample_rate,
-                        0, NULL);
-
-    while(av_read_frame(inFmtCtx, iapk) >= 0){
-        avcodec_send_packet(dncodeCtx, iapk);
-        while(avcodec_receive_frame(dncodeCtx, inFrame) >= 0){//接受解码后的数据
-            AVFrame *outFrame = av_frame_alloc();
-            outFrame->sample_rate = encodeCtx->sample_rate;
-            outFrame->ch_layout = encodeCtx->ch_layout;
-            outFrame->format = encodeCtx->sample_fmt;
-            swr_convert_frame(swr, outFrame, inFrame);//重采样
-
-            int pos = 0;
-            while(pos < outFrame->nb_samples){
-                AVFrame *frame = av_frame_alloc();
-                frame->sample_rate = encodeCtx->sample_rate;
-                frame->ch_layout = encodeCtx->ch_layout;
-                frame->format = encodeCtx->sample_fmt;
-                //得到实际帧数并处理短帧
-                int sampleNumber = pos + 1152 >= outFrame->nb_samples ? outFrame->nb_samples - pos : 1152;
-                int length = av_get_bytes_per_sample((AVSampleFormat)outFrame->format);
-                frame->nb_samples = sampleNumber;
-                encodeCtx->frame_size = sampleNumber;
-                av_frame_get_buffer(frame, 0);
-
-                for(int i=0; i<frame->ch_layout.nb_channels; i++){
-                    memcpy(frame->data[i],
-                           outFrame->data[i] + pos * length,
-                           length * sampleNumber
-                           );
-                }
-                pos += sampleNumber;
-
-                avcodec_send_frame(encodeCtx, frame);
-
-                AVPacket *oapk = av_packet_alloc();
-                while(avcodec_receive_packet(encodeCtx, oapk) >= 0){//接受编码后的数据
-                    if(av_interleaved_write_frame(outFmtCtx, oapk) < 0){
-                        qDebug()<<"写入数据帧失败";
-                        break;
-                    }
-                    av_packet_unref(oapk);
-                }
-            }
-            av_frame_unref(outFrame);
-        }
-    }
-    av_packet_unref(iapk);//消除
-
-    av_write_trailer(outFmtCtx);//写入文件尾
-
-    //清除控件
-    avformat_close_input(&inFmtCtx);
-    avformat_close_input(&outFmtCtx);
-    avcodec_free_context(&encodeCtx);
-    avcodec_free_context(&dncodeCtx);
-    return 1;
-}
-
 QVector<double> ExtraLibrary::useFftw3(QVector<double> in, int N)
 {
     QVector<double>out(N);
@@ -305,4 +132,368 @@ QVector<double> ExtraLibrary::useFftw3(QVector<double> in, int N)
     fftw_free(in_ptr);
     fftw_free(out_ptr);
     return out;
+}
+
+void formatConverByFFmpeg::logError(QString text){
+    char error[AV_ERROR_MAX_STRING_SIZE];
+    av_strerror(r, error, AV_ERROR_MAX_STRING_SIZE);
+    qDebug()<<text<<" "<<r<<":"<<error;
+
+    closeAll();
+}
+
+void formatConverByFFmpeg::closeAll()
+{
+    avcodec_free_context(&decodeCtx);
+    avcodec_free_context(&encodeCtx);
+    avformat_free_context(inFmtCtx);
+    avformat_free_context(outFmtCtx);
+    if (!(outFmtCtx->oformat->flags & AVFMT_NOFILE)) {
+        avio_closep(&outFmtCtx->pb);
+    }
+    av_packet_free(&inPak);
+    av_packet_free(&outPak);
+    av_frame_free(&inFrame);
+    av_frame_free(&outFrame);
+    swr_free(&swr);
+}
+
+bool formatConverByFFmpeg::toFlac(QString url){
+    QString inUrl = url;
+    QString suffix = url.split(".").last();
+    QString outUrl = url.replace("."+suffix, ".flac");
+    r = avformat_open_input(&inFmtCtx, inUrl.toUtf8(), nullptr, nullptr);
+    if(r<0){
+        logError("open input file fail");
+        return false;
+    }
+
+    r = avformat_find_stream_info(inFmtCtx, nullptr);
+    if(r<0){
+        logError("no stream find");
+        return false;
+    }
+
+    r = av_find_best_stream(inFmtCtx, AVMEDIA_TYPE_AUDIO, -1, -1, nullptr, 0);
+    if(r<0){
+        logError("no audio stream find");
+        return false;
+    }
+    inAudioStream = inFmtCtx->streams[r];
+
+    //生成解码器
+    const AVCodec *decodec = avcodec_find_decoder(inAudioStream->codecpar->codec_id);
+    decodeCtx = avcodec_alloc_context3(decodec);
+    avcodec_parameters_to_context(decodeCtx, inAudioStream->codecpar);
+    r = avcodec_open2(decodeCtx, decodec, nullptr);
+    if(r<0){
+        logError("open decodec fail");
+        return false;
+    }
+
+    //打开输出文件
+    r = avformat_alloc_output_context2(&outFmtCtx, nullptr, nullptr, outUrl.toUtf8());
+    if(r<0){
+        logError("outUrlile open fail");
+        return false;
+    }
+    //时长flac流
+    outAudioStream = avformat_new_stream(outFmtCtx, nullptr);
+    if(outAudioStream == NULL){
+        logError("get new stream fail");
+        return false;
+    }
+
+    const AVCodec *encodec = avcodec_find_encoder(AV_CODEC_ID_FLAC);
+    encodeCtx = avcodec_alloc_context3(encodec);
+    avcodec_parameters_to_context(encodeCtx, inAudioStream->codecpar);
+    encodeCtx->codec_id = AV_CODEC_ID_FLAC;
+    encodeCtx->codec_type = AVMEDIA_TYPE_AUDIO;
+    encodeCtx->ch_layout = decodeCtx->ch_layout;
+    encodeCtx->sample_fmt = AV_SAMPLE_FMT_S16;
+    encodeCtx->sample_rate = 44100;
+    encodeCtx->bit_rate = 0;
+    encodeCtx->time_base.den = encodeCtx->sample_rate;
+    encodeCtx->time_base.num = 1;
+    encodeCtx->bits_per_raw_sample = 16;
+    r = avcodec_open2(encodeCtx, encodec, nullptr);
+    if(r<0){
+        logError("open encodec fail");
+        return false;
+    }
+    avcodec_parameters_from_context(outAudioStream->codecpar, encodeCtx);
+
+    //拷贝元数据
+    AVDictionaryEntry* tag = nullptr;
+    while ((tag = av_dict_get(inFmtCtx->metadata, "", tag, AV_DICT_IGNORE_SUFFIX))) {
+        av_dict_set(&outFmtCtx->metadata, tag->key, tag->value, 0);
+    }
+
+    if (!(outFmtCtx->oformat->flags & AVFMT_NOFILE)) {
+        r = avio_open(&outFmtCtx->pb, outUrl.toUtf8(), AVIO_FLAG_WRITE);
+        if (r < 0) {
+            logError("Could not open output file");
+            return false;
+        }
+    }
+
+    r = avformat_write_header(outFmtCtx, nullptr);
+    if(r<0){
+        logError("write header fail");
+        return false;
+    }
+
+    inPak = av_packet_alloc();
+    inFrame = av_frame_alloc();
+    swr_alloc_set_opts2(&swr,
+                        &encodeCtx->ch_layout, encodeCtx->sample_fmt, encodeCtx->sample_rate,
+                        &decodeCtx->ch_layout, decodeCtx->sample_fmt, decodeCtx->sample_rate,
+                        0, nullptr);
+
+    int64_t pts = 0;
+
+    while(av_read_frame(inFmtCtx, inPak) >= 0){
+        inPak->stream_index = inAudioStream->index;
+        r = avcodec_send_packet(decodeCtx, inPak);
+        if(r<0){
+            logError("send packet fail");
+            return false;
+        }
+
+        while(avcodec_receive_frame(decodeCtx, inFrame) >= 0){
+            outFrame = av_frame_alloc();
+            outFrame->sample_rate = encodeCtx->sample_rate;
+            outFrame->format = encodeCtx->sample_fmt;
+            outFrame->ch_layout = encodeCtx->ch_layout;
+
+            r = swr_convert_frame(swr, outFrame, inFrame);
+            if(r<0){
+                logError("swr fail");
+                return false;
+            }
+            encodeCtx->frame_size = outFrame->nb_samples;
+
+            r = avcodec_send_frame(encodeCtx, outFrame);
+            if(r<0){
+                logError("send frame fail");
+                return false;
+            }
+
+            outPak = av_packet_alloc();
+            while(avcodec_receive_packet(encodeCtx, outPak) >= 0){
+                r = av_interleaved_write_frame(outFmtCtx, outPak);
+                if(r<0){
+                    logError("write frame fail");
+                    return false;
+                }
+            }
+            av_packet_unref(outPak);
+            av_frame_unref(outFrame);
+        }
+    }
+
+    //刷新编码器缓冲区
+    avcodec_send_frame(encodeCtx, nullptr);
+    while (avcodec_receive_packet(encodeCtx, outPak) >= 0) {
+        r = av_interleaved_write_frame(outFmtCtx, outPak);
+        if (r < 0) {
+            logError("write frame fail");
+            return false;
+        }
+        av_packet_unref(outPak);
+    }
+    av_packet_free(&outPak);
+
+    r = av_write_trailer(outFmtCtx);
+    if(r<0){
+        logError("write trailer fial");
+        return false;
+    }
+
+    closeAll();
+    return true;
+}
+
+bool formatConverByFFmpeg::toMp3(QString url){
+    QString inUrl = url;
+    QString suffix = url.split(".").last();
+    QString outUrl = url.replace("."+suffix, ".mp3");
+    r = avformat_open_input(&inFmtCtx, inUrl.toUtf8(), nullptr, nullptr);
+    if(r<0){
+        logError("open input file fail");
+        return false;
+    }
+
+    r = avformat_find_stream_info(inFmtCtx, nullptr);
+    if(r<0){
+        logError("no stream find");
+        return false;
+    }
+
+    r = av_find_best_stream(inFmtCtx, AVMEDIA_TYPE_AUDIO, -1, -1, nullptr, 0);
+    if(r<0){
+        logError("no audio stream find");
+        return false;
+    }
+    inAudioStream = inFmtCtx->streams[r];
+
+    //生成解码器
+    const AVCodec *decodec = avcodec_find_decoder(inAudioStream->codecpar->codec_id);
+    decodeCtx = avcodec_alloc_context3(decodec);
+    avcodec_parameters_to_context(decodeCtx, inAudioStream->codecpar);
+    r = avcodec_open2(decodeCtx, decodec, nullptr);
+    if(r<0){
+        logError("open decodec fail");
+        return false;
+    }
+
+    //打开输出文件
+    r = avformat_alloc_output_context2(&outFmtCtx, nullptr, nullptr, outUrl.toUtf8());
+    if(r<0){
+        logError("outUrlile open fail");
+        return false;
+    }
+    //时长flac流
+    outAudioStream = avformat_new_stream(outFmtCtx, nullptr);
+    if(outAudioStream == NULL){
+        logError("get new stream fail");
+        return false;
+    }
+
+    const AVCodec *encodec = avcodec_find_encoder(AV_CODEC_ID_MP3);
+    encodeCtx = avcodec_alloc_context3(encodec);
+    avcodec_parameters_to_context(encodeCtx, inAudioStream->codecpar);
+    encodeCtx->codec_id = AV_CODEC_ID_MP3;
+    encodeCtx->codec_type = AVMEDIA_TYPE_AUDIO;
+    encodeCtx->sample_fmt = AV_SAMPLE_FMT_S32P;
+    encodeCtx->sample_rate = 44100;
+    encodeCtx->bit_rate = 320000;
+    r = avcodec_open2(encodeCtx, encodec, nullptr);
+    if(r<0){
+        logError("open encodec fail");
+        return false;
+    }
+    avcodec_parameters_from_context(outAudioStream->codecpar, encodeCtx);
+
+    //拷贝元数据
+    AVDictionaryEntry* tag = nullptr;
+    while ((tag = av_dict_get(inFmtCtx->metadata, "", tag, AV_DICT_IGNORE_SUFFIX))) {
+        av_dict_set(&outFmtCtx->metadata, tag->key, tag->value, 0);
+    }
+
+    if (!(outFmtCtx->oformat->flags & AVFMT_NOFILE)) {
+        r = avio_open(&outFmtCtx->pb, outUrl.toUtf8(), AVIO_FLAG_WRITE);
+        if (r < 0) {
+            logError("Could not open output file");
+            return false;
+        }
+    }
+
+    r = avformat_write_header(outFmtCtx, nullptr);
+    if(r<0){
+        logError("write header fail");
+        return false;
+    }
+
+    inPak = av_packet_alloc();
+    inFrame = av_frame_alloc();
+    swr_alloc_set_opts2(&swr,
+                        &encodeCtx->ch_layout, encodeCtx->sample_fmt, encodeCtx->sample_rate,
+                        &decodeCtx->ch_layout, decodeCtx->sample_fmt, decodeCtx->sample_rate,
+                        0, nullptr);
+
+    int64_t pts = 0;
+
+    while(av_read_frame(inFmtCtx, inPak) >= 0){
+        //判断是否等于音频流,不是则跳过
+        if(inPak->stream_index != inAudioStream->index){
+            av_packet_unref(inPak);
+            continue;
+        }
+
+        //解码数据
+        r = avcodec_send_packet(decodeCtx, inPak);
+        if(r<0){
+            logError("send packet fail");
+            return false;
+        }
+
+        //接受解码之后的数据
+        while(avcodec_receive_frame(decodeCtx, inFrame) >= 0){
+            outFrame = av_frame_alloc();
+            outFrame->sample_rate = encodeCtx->sample_rate;
+            outFrame->format = encodeCtx->sample_fmt;
+            outFrame->ch_layout = encodeCtx->ch_layout;
+
+            r = swr_convert_frame(swr, outFrame, inFrame);
+            if(r<0){
+                logError("swr fail");
+                return false;
+            }
+
+            //处理不同长度的编码，长样本截断，短样本变化编码长度
+            int pos = 0;
+            while(pos < outFrame->nb_samples){
+                AVFrame *frame = av_frame_alloc();
+                frame->sample_rate = encodeCtx->sample_rate;
+                frame->ch_layout = encodeCtx->ch_layout;
+                frame->format = encodeCtx->sample_fmt;
+                frame->pts = av_rescale_q(inFrame->pts, inFrame->time_base, encodeCtx->time_base);
+                //得到实际帧数并处理短帧
+                int sampleNumber = pos + 1152 >= outFrame->nb_samples ? outFrame->nb_samples - pos : 1152;
+                int length = av_get_bytes_per_sample((AVSampleFormat)outFrame->format);
+                frame->nb_samples = sampleNumber;
+                encodeCtx->frame_size = sampleNumber;
+                av_frame_get_buffer(frame, 0);
+
+                for(int i=0; i<frame->ch_layout.nb_channels; i++){
+                    memcpy(frame->data[i],
+                           outFrame->data[i] + pos * length,
+                           length * sampleNumber
+                           );
+                }
+                pos += sampleNumber;
+
+                r = avcodec_send_frame(encodeCtx, outFrame);
+                if(r<0){
+                    logError("send frame fail");
+                    return false;
+                }
+
+                outPak = av_packet_alloc();
+                while(avcodec_receive_packet(encodeCtx, outPak) >= 0){
+                    r = av_interleaved_write_frame(outFmtCtx, outPak);
+                    if(r<0){
+                        logError("write frame fail");
+                        return false;
+                    }
+                }
+                av_packet_unref(outPak);
+                av_frame_free(&frame);
+            }
+            av_frame_unref(outFrame);
+        }
+    }
+
+
+    //刷新编码器缓冲区
+    outPak = av_packet_alloc();
+    avcodec_send_frame(encodeCtx, NULL);
+    while (avcodec_receive_packet(encodeCtx, outPak) >= 0) {
+        r = av_interleaved_write_frame(outFmtCtx, outPak);
+        if (r < 0) {
+            logError("write frame fail");
+            return false;
+        }
+    }
+    av_packet_unref(outPak);
+
+    r = av_write_trailer(outFmtCtx);
+    if(r<0){
+        logError("write trailer fial");
+        return false;
+    }
+
+    closeAll();
+    return true;
 }
