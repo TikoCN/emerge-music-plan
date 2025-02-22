@@ -19,29 +19,25 @@ ImageProvider::ImageProvider()
  */
 QPixmap ImageProvider::requestPixmap(const QString &id, QSize *size, const QSize &requestedSize)
 {
-    MediaPlayer *player = MediaPlayer::getInstance();
     QPixmap pix;
     QString type = id.split(":").first();
     int coreId = id.split(":").last().toInt();
 
     if(type == "onLine"){//在线加载
-        OnLine *onLine = OnLine::getInstance();
-        //onLine->downCover(player->coreList[coreId]->getBaseName(), player->coreList[coreId]->getCoverUrl());
+        pix = downOnlineCover(coreId);
     }
     else if(type == "file"){//本地加载
-        if(player->coreList[coreId]->cover != NULL){//读取已经加载好的封面
-            return *player->coreList[coreId]->cover;
-        }
+        pix = loadFileCover(coreId);
     }
 
-    pix = player->coreList[coreId]->loadCover();
+    //找不封面，设置为默认封面
+    if(pix.isNull()){
+        pix.load(":/image/default.jpg");
+    }
+
     pix = pix.scaled(requestedSize);
     buildRoundImage(&pix, requestedSize.width() * 0.2);
 
-    if(type == "file"){//读取已经加载好的封面
-        player->coreList[coreId]->cover = new QPixmap;
-        *player->coreList[coreId]->cover = pix;
-    }
     return pix;
 }
 
@@ -65,4 +61,33 @@ void ImageProvider::buildRoundImage(QPixmap *pix, int radius)
     painter.drawPixmap(rect, *pix);
 
     *pix = destImage;
+}
+
+QPixmap ImageProvider::downOnlineCover(int id)
+{
+    OnLine *onLine = OnLine::getInstance();
+    MediaPlayer *player = MediaPlayer::getInstance();
+    QPixmap pix;
+
+    //加载附加封面，和独立封面
+    pix = player->coreList[id]->loadCover();
+
+    if(pix.isNull()){
+        //从网络下载封面，并报错到独立封面
+        onLine->downCover(player->coreList[id]->getSearchString(), player->coreList[id]->getCoverUrl());
+    }
+
+    //加载附加封面，和独立封面
+    pix = player->coreList[id]->loadCover();
+    return pix;
+}
+
+QPixmap ImageProvider::loadFileCover(int id)
+{
+    MediaPlayer *player = MediaPlayer::getInstance();
+
+    if(player->coreList[id]->cover != NULL){//读取已经加载好的封面
+        return *player->coreList[id]->cover;
+    }
+    return player->coreList[id]->loadCover();
 }

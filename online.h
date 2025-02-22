@@ -23,25 +23,25 @@ public:
     }
 
     //下载封面
-    void downCover(QString key, QString url);
+    Q_INVOKABLE void downCover(QString key, QString url);
 
-    void downCoverFromNetEase(QString key, QString url);
+    Q_INVOKABLE void downCoverFromNetEase(QString key, QString url);
 
-    void downCoverFromQQMusic(QString key, QString url);
+    Q_INVOKABLE void downCoverFromQQMusic(QString key, QString url);
 
-    void downCoverFromBing(QString key, QString url);
+    Q_INVOKABLE void downCoverFromBing(QString key, QString url);
 
-    void downCoverFromBaidu(QString key, QString url);
+    Q_INVOKABLE void downCoverFromBaidu(QString key, QString url);
 
     //加载图片写入文件
     void writeCoverToFile(QString url, QString file);
 
     //下载歌词
-    void downLrc(QString key, QString url);
+    Q_INVOKABLE void downLrc(QString key, QString url);
 
-    void downLrcFromNetEase(QString key, QString url);
+    Q_INVOKABLE void downLrcFromNetEase(QString key, QString url);
 
-    void downLrcFromQQMusic(QString key, QString url);
+    Q_INVOKABLE void downLrcFromQQMusic(QString key, QString url);
 
 signals:
     void lrcDowned();

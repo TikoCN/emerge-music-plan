@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QFileInfo>
+#include "ffmpeg.h"
 
 class Music : public QObject//音乐单元
 {
@@ -61,6 +62,9 @@ public:
     //判断是否符合搜索条件
     bool isSearch(QString aim);
 
+    //获得搜索文本
+    Q_INVOKABLE QString getSearchString();
+
     //复制音乐信息
     Q_INVOKABLE void copyMusicData();
 
@@ -75,6 +79,9 @@ public:
 
     //打开音乐歌词文件
     Q_INVOKABLE void openMusicLrc();
+
+    //格式转换
+    Q_INVOKABLE void setSuffix(QString type);
 
     QString getTitle() const;
     void setTitle(const QString &newTitle);

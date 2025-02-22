@@ -147,8 +147,10 @@ Item {
             onTriggered: MediaPlayer.musicInsertPlayingTable(coreId)
         }
 
+        MyMenuSpeacer{}
+
         MyMenuItem{
-            text: qsTr("我喜欢")
+            text: qsTr("喜欢")
             icon.source: "qrc:/image/love.png"
         }
 
@@ -168,6 +170,8 @@ Item {
             onTriggered: root.core.openMusicCover()
         }
 
+        MyMenuSpeacer{}
+
         MyMenuItem{
             text: qsTr("复制 文件路径")
             onTriggered: root.core.copyMusicUrl()
@@ -178,10 +182,71 @@ Item {
             onTriggered: root.core.copyMusicData()
         }
 
+        MyMenuSpeacer{}
+
         MyMenuItem{
             text: qsTr("编辑音乐信息")
             onTriggered: ToolHelper.editMusic(root.coreId)
         }
+
+        MyMenu{
+            title: qsTr("从网络中下载")
+            MyMenuItem{
+                text: qsTr("从 网络中下载 封面")
+                onTriggered: OnLine.downCover(core.getSearchString(), core.url);
+            }
+            MyMenuItem{
+                text: qsTr("从 QQ音乐 下载 封面")
+                onTriggered: OnLine.downCoverFromQQMusic(core.getSearchString(), core.url);
+            }
+            MyMenuItem{
+                text: qsTr("从 网易云 下载 封面")
+                onTriggered: OnLine.downCoverFromNetEase(core.getSearchString(), core.url);
+            }
+            MyMenuItem{
+                text: qsTr("从 Bing搜索 下载 封面")
+                onTriggered: OnLine.downCoverFromBing(core.getSearchString(), core.url);
+            }
+            MyMenuItem{
+                text: qsTr("从 Baidu搜索 下载 封面")
+                onTriggered: OnLine.downCoverFromBaidu(core.getSearchString(), core.url);
+            }
+            MyMenuSpeacer{}
+            MyMenuItem{
+                text: qsTr("从 网络中下载 歌词")
+                onTriggered: OnLine.downLrc(core.getSearchString(), core.url);
+            }
+            MyMenuItem{
+                text: qsTr("从 QQ音乐 下载 歌词")
+                onTriggered: OnLine.downLrcFromQQMusic(core.getSearchString(), core.url);
+            }
+            MyMenuItem{
+                text: qsTr("从 网易云 下载 歌词")
+                onTriggered: OnLine.downLrcFromNetEase(core.getSearchString(), core.url);
+            }
+        }
+
+        MyMenu{
+            title: qsTr("格式转换为")
+            Repeater{
+                delegate: MyMenuItem{
+                    text: suffix
+                    onTriggered: core.setSuffix(suffix);
+                }
+                model: ListModel{
+                    ListElement{suffix: "MP3"}
+                    ListElement{suffix: "FLAC"}
+                    ListElement{suffix: "ALAC"}
+                    ListElement{suffix: "AAC"}
+                    ListElement{suffix: "WMA"}
+                    ListElement{suffix: "PCM16"}
+                    ListElement{suffix: "PCM32"}
+
+                }
+            }
+        }
+
+        MyMenuSpeacer{}
 
         MyMenu{
             title: qsTr("添加到")

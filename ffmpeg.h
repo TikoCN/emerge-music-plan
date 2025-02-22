@@ -2,13 +2,14 @@
 #define FFMPEG_H
 
 #include <QObject>
+#include <QDebug>
 extern "C" {
 #include "libavformat/avformat.h"
 #include "libavcodec/avcodec.h"
 #include "libswresample/swresample.h"
 }
 
-class FFmpeg
+class FFmpeg : public QObject
 {
 public:
     ~FFmpeg();
@@ -19,22 +20,22 @@ public:
     QList<AVFrame *>frmList;//数据指针列表
     int r = 0;
 
-    enum Suffix{MP3, FLAC, AAC, M4A, WMA, APTX, PCM16, PCM32, WAV, ALAC}suffix;
+    enum Suffix{MP3, FLAC, AAC, WMA, PCM16, PCM32, ALAC}suffix;
 
     //生成上下文
-    AVFormatContext *getAVFormatContext();
+    int getAVFormatContext();
 
     //生成数据包
-    AVPacket *getAVPacket();
+    int getAVPacket();
 
     //生成编解码
-    AVCodecContext *getAVCodecContext();
+    int getAVCodecContext();
 
     //生成重采样指针
-    SwrContext *getSwrContext();
+    int getSwrContext();
 
     //生成数据指针
-    AVFrame *getAVFrame();
+    int getAVFrame();
 
     //打印错误
     void logError(QString text);
@@ -52,7 +53,7 @@ public:
     bool transformCodec(QString url, enum Suffix);
 
     //设置编码器参数
-    const AVCodec *setEncodeParmeters(AVCodecContext *encodec, AVCodecParameters *parameter);
+    const AVCodec *setEncodeParmeters(AVCodecContext **encodec, AVCodecParameters *parameter);
 
     //加载变化输出帧
     QList<AVFrame *>changeFrame(AVFrame *swrFrm);

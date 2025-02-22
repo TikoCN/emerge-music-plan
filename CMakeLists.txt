@@ -64,6 +64,7 @@ qt_add_qml_module(appmusicPlay
     ui.qrc
     SOURCES online.h online.cpp
     SOURCES ffmpeg.h ffmpeg.cpp
+    QML_FILES MyMenuSpeacer.qml
 )
 
 # link fftw3

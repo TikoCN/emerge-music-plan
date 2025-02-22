@@ -26,7 +26,7 @@ void TaskCell::working(){
 
     while(true){
         QFileInfoList fileList;
-        //申请控件
+        //向 hosttime 申请任务 FileInfoList 数据
         if(!host->getInfoList(&fileList)){
             break;
         }
@@ -36,7 +36,8 @@ void TaskCell::working(){
 
         for(int i=0; i<fileList.size(); i++){
             QString suffix = fileList[i].suffix();
-            if(suffix != "mp3" && suffix != "flac"){
+            QStringList list = {"mp3", "flac", "m4a", "aav", "wma", "pcm"};
+            if(list.indexOf(suffix) < 0){
                 continue;
             }
 
@@ -55,6 +56,8 @@ void TaskCell::working(){
             //移动到主线程
             core->moveToThread(QCoreApplication::instance()->thread());
         }
+
+        //一次任务加载完成，返回数据
         emit musicLoaded(cores, keys);
     }
 
@@ -105,6 +108,10 @@ void HostTime::loadMusicFile(QStringList dirList)
  */
 QFileInfoList HostTime::getMusicUrl(QString dirPath)
 {
+    if(dirPath == ""){
+        return QFileInfoList();//返回空列表
+    }
+
     QDir dir(dirPath);
     QFileInfoList allFileList;
     QFileInfoList childDirList;
@@ -123,9 +130,12 @@ QFileInfoList HostTime::getMusicUrl(QString dirPath)
     return allFileList;
 }
 
+/*
+ * 申请分配文件列表
+ */
 bool HostTime::getInfoList(QFileInfoList *list)
 {
-    semaphore->acquire();
+    semaphore->acquire();                      //请求读写
     if(workPos >= musicFileList.size() - 1){
         semaphore->release();
         return false;
@@ -134,11 +144,11 @@ bool HostTime::getInfoList(QFileInfoList *list)
     int length = 30;
     int start = workPos;
     if(workPos + length >= musicFileList.size()){
-        length = musicFileList.size() - workPos - 1;
+        length = musicFileList.size() - workPos;
     }
+    *list = musicFileList.mid(start, length);
     workPos = start + length;
-    *list = musicFileList.mid(workPos, length);
-    semaphore->release();
+    semaphore->release();                      //释放读写
 
     return true;
 }

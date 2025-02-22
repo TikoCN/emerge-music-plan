@@ -1,8 +1,7 @@
 #include "music.h"
 #include "extralibrary.h"
-#include "setting.h"
 #include "popupdata.h"
-#include "online.h"
+#include "ffmpeg.h"
 #include <QDesktopServices>
 #include <QJsonObject>
 #include <QGuiApplication>
@@ -15,6 +14,7 @@ Music::Music() {
     maxHeight = 0.0;
     minHeight = 0.0;
     playNumber = 0;
+    url = "";
 }
 
 void Music::fromFileInfo(QFileInfo info)
@@ -76,6 +76,19 @@ QString Music::getKey()
     return title +"-&&-"+ artist;
 }
 
+QString Music::getSearchString()
+{
+    QString search;
+    if(!title.isNull() || !artist.isNull()){
+        search = title + artist;
+    }
+    else{
+        search = getBaseName();
+    }
+
+    return search;
+}
+
 /*
 加载封面
 */
@@ -90,10 +103,6 @@ QPixmap Music::loadCover()
         if(QFile::exists(coverUrl)){
             img = loadAloneCover();
         }
-    }
-
-    if(img.isNull()){
-        img.load(":/image/default.jpg");
     }
 
     return QPixmap::fromImage(img);
@@ -183,6 +192,44 @@ void Music::openMusicLrc()
     else{
         PopupData::getInstance()->message(tr("歌词文件不存在") + url);
     }
+}
+
+/*
+ * 格式转换
+*/
+void Music::setSuffix(QString type)
+{
+    FFmpeg ffmpeg;
+    FFmpeg::Suffix suffix = FFmpeg::MP3;
+    QStringList list = {"MP3", "FLAC", "ALAC", "AAC", "WMA", "PCM16", "PCM32"};
+    switch (list.indexOf(type)) {
+    case 0:
+        suffix = FFmpeg::MP3;
+        break;
+    case 1:
+        suffix = FFmpeg::FLAC;
+        break;
+    case 2:
+        suffix = FFmpeg::ALAC;
+        break;
+    case 3:
+        suffix = FFmpeg::AAC;
+        break;
+    case 4:
+        suffix = FFmpeg::WMA;
+        break;
+    case 5:
+        suffix = FFmpeg::PCM16;
+        break;
+    case 6:
+        suffix = FFmpeg::PCM32;
+        break;
+    default:
+        break;
+    }
+    bool s = false;
+    s = ffmpeg.transformCodec(url, suffix);
+    qDebug()<<s;
 }
 
 QString Music::getTitle() const
