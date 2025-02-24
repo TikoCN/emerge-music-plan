@@ -22,17 +22,25 @@ public:
 
     enum Suffix{MP3, FLAC, AAC, WMA, PCM16, PCM32, ALAC}suffix;
 
-    //生成上下文
-    int getAVFormatContext();
+    QString suffixToString(Suffix s);
+
+    //打开输出文件
+    AVFormatContext *getOutFormatContext(QString url);
+
+    //打开输入文件
+    AVFormatContext *getInputFormatContext(QString url);
+
+    //得到解码器文本
+    AVCodecContext *getDecodecContext(AVCodecID id, AVCodecParameters *para);
+
+    //得到编码器文本
+    AVCodecContext *getEncodecContext(AVCodecID id, AVCodecParameters *para, bool defult);
 
     //生成数据包
     int getAVPacket();
 
-    //生成编解码
-    int getAVCodecContext();
-
     //生成重采样指针
-    int getSwrContext();
+    SwrContext *getSwrContext(AVCodecContext *out, AVCodecContext *in);
 
     //生成数据指针
     int getAVFrame();
@@ -51,9 +59,6 @@ public:
 
     //转码装格式
     bool transformCodec(QString url, enum Suffix);
-
-    //设置编码器参数
-    const AVCodec *setEncodeParmeters(AVCodecContext **encodec, AVCodecParameters *parameter);
 
     //加载变化输出帧
     QList<AVFrame *>changeFrame(AVFrame *swrFrm);
