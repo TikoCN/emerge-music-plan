@@ -40,11 +40,11 @@ public:
     //打印错误
     void logError(QString text);
 
-    //转换为flac文件
-    bool toFlac(QString url);
+    //从音乐文件中提取独立封面
+    QImage getInlayCover(QString url);
 
-    //转换为mp3文件
-    bool toMp3(QString url);
+    //将音乐文件内嵌的音乐文件中
+    void setInlayCover(QString musicUrl, QString coverUrl);
 
     //得到输出路径
     QString getOutUrl(QString inUrl);

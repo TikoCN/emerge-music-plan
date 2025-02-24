@@ -1,6 +1,8 @@
 import QtQuick.Controls.Basic
 import QtQuick
 import MyAPI
+import "../base"
+import "../core"
 
 Drawer {
     id: playingTable

@@ -1,7 +1,9 @@
-﻿import QtQuick
+import QtQuick
 import QtQuick.Layouts
 import QtQuick.Controls
 import MyAPI
+import "../base"
+
 MyFrameless {
     id: toolEditMusic
     title: qsTr("编辑歌词")

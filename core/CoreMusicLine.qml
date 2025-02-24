@@ -1,6 +1,8 @@
 import QtQuick
 import QtQuick.Layouts
 import MyAPI
+import "../base"
+
 Item {
     id:root
     implicitHeight: 70

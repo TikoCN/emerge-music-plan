@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Controls.Basic
 import QtQuick.Layouts
 import MyAPI
+import "../base"
 
 Item {
     id: root
@@ -141,7 +142,7 @@ Item {
                         text: qsTr("修改时间");
                         onTriggered: MediaPlayer.tableList[tableId].key = 4;
                         icon.source: MediaPlayer.tableList[tableId].key === 4 ? "qrc:/image/used.png" : ""}
-                    MenuSeparator{}
+                    MyMenuSpeacer{}
                     MyMenuItem{
                         text: qsTr("升   序");
                         onTriggered: MediaPlayer.tableList[tableId].forward = false;

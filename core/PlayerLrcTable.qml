@@ -1,5 +1,6 @@
-﻿import QtQuick
+import QtQuick
 import MyAPI
+import "../base"
 
 Item {
     id:playerLrcTable

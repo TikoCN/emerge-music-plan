@@ -1,4 +1,4 @@
-﻿import QtQuick.Controls.Basic
+import QtQuick.Controls.Basic
 import QtQuick
 import MyAPI
 
@@ -9,7 +9,7 @@ Button {
     icon.width: 20
     icon.height: 20
 
-    property int radius: 3
+    property int radius: 10
     property double hover: 0.3
     property double normal: 0
 

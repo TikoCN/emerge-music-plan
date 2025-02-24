@@ -1,5 +1,8 @@
-﻿import QtQuick
+import QtQuick
 import MyAPI
+import "../base"
+import "../core"
+
 Item {
     id: pageMain
     property bool show:  false

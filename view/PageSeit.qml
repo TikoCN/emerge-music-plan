@@ -3,6 +3,7 @@ import QtQuick.Controls
 import QtQuick.Dialogs
 import QtQuick.Layouts
 import MyAPI
+import "../base"
 
 ScrollView{
     id: seitPage

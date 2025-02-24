@@ -1,4 +1,6 @@
 #include "ffmpeg.h"
+#include <QImage>
+#include <QFile>
 
 FFmpeg::~FFmpeg()
 {
@@ -84,6 +86,149 @@ void FFmpeg::logError(QString text){
     qDebug() << "AVCodec : "<< suffix << " error : " << r << " = " << text;
 }
 
+/*
+ * 从音乐文件中提取独立封面
+ */
+QImage FFmpeg::getInlayCover(QString url)
+{
+    QImage img;
+    //从文件中读取封面
+    AVFormatContext *fmt_ctx = NULL;
+    r = avformat_open_input(&fmt_ctx, url.toUtf8(), NULL, NULL);
+    if (r<0){
+        logError("open input file fail");
+    }
+    for (unsigned int i = 0; i < fmt_ctx->nb_streams; i++){
+        AVStream *stream = fmt_ctx->streams[i];
+        if (stream->codecpar->codec_type == AVMEDIA_TYPE_VIDEO && stream->disposition & AV_DISPOSITION_ATTACHED_PIC){
+            AVPacket pkt = stream->attached_pic;
+            //使用QImage读取完整图片数据
+            img = QImage::fromData((uchar*)pkt.data, pkt.size);
+        }
+    }
+
+    return img;
+}
+
+/*
+ * 将音乐文件内嵌的音乐文件中
+ */
+void FFmpeg::setInlayCover(QString musicUrl, QString coverUrl)
+{
+    QString outUrl = musicUrl;
+    //设置内嵌封面之后的路径
+    outUrl.replace("." + outUrl.split(".").last(), "-New." + outUrl.split(".").last());
+
+    //探测音乐文件，和封面文件是否存在
+    if(!QFile::exists(musicUrl)){
+        qDebug()<<"no find music file";
+        return;
+    }
+    if(!QFile::exists(coverUrl)){
+        qDebug()<<"no find cover file";
+        return ;
+    }
+
+    //读取封面中的数据
+    QFile cover(coverUrl);
+    if(!cover.open(QIODevice::ReadOnly)){
+        cover.close();
+        return;
+    }
+    QByteArray data = cover.readAll();
+    cover.close();
+
+    int inFmtCtx = getAVFormatContext();
+    int outFmtCtx = getAVFormatContext();
+    AVStream *inStream = nullptr;
+    AVStream *outStream = nullptr;
+    int inPak = getAVPacket();
+
+    //打开输入文件
+    r = avformat_open_input(&fmtCtxList[inFmtCtx], musicUrl.toUtf8(), nullptr, nullptr);
+    if(r<0){
+        logError(musicUrl + "input file open fail");
+        return;
+    }
+    r = avformat_find_stream_info(fmtCtxList[inFmtCtx], nullptr);
+    if(r<0){
+        logError(musicUrl + "not find stream info");
+        return;
+    }
+
+    r = avformat_alloc_output_context2(&fmtCtxList[outFmtCtx], nullptr, nullptr, outUrl.toUtf8());
+    if(r<0){
+        logError(outUrl + "output file open fail");
+        return;
+    }
+
+    int aimStream = -1;
+    for(int i=0; i<fmtCtxList[inFmtCtx]->nb_streams; i++){
+        inStream = fmtCtxList[inFmtCtx]->streams[i];
+        outStream = avformat_new_stream(fmtCtxList[outFmtCtx], nullptr);
+        avcodec_parameters_copy(outStream->codecpar, inStream->codecpar);
+        if(inStream->codecpar->codec_type == AVMEDIA_TYPE_VIDEO && inStream->disposition & AV_DISPOSITION_ATTACHED_PIC){
+            aimStream = i;
+        }
+    }
+
+    //创建一条命封面流
+    if(aimStream == -1){
+        outStream = avformat_new_stream(fmtCtxList[outFmtCtx], nullptr);
+        outStream->codecpar->codec_id = AV_CODEC_ID_MJPEG;
+        outStream->codecpar->codec_type = AVMEDIA_TYPE_VIDEO;
+        outStream->disposition |= AV_DISPOSITION_ATTACHED_PIC;
+        outStream->codecpar->width = 300;
+        outStream->codecpar->height = 300;
+        aimStream = outStream->index;
+    }
+
+    av_dict_copy(&fmtCtxList[outFmtCtx]->metadata, fmtCtxList[inFmtCtx]->metadata, 0);
+
+    r = avio_open(&fmtCtxList[outFmtCtx]->pb, outUrl.toUtf8(), AVIO_FLAG_WRITE);
+    if(r<0){
+        logError(outUrl + " pb open fail");
+        return;
+    }
+
+    //写入文件头
+    r = avformat_write_header(fmtCtxList[outFmtCtx], nullptr);
+    if(r<0){
+        logError(outUrl + " write header fail");
+        return;
+    }
+
+    pktList[inPak] = av_packet_alloc();
+    while(av_read_frame(fmtCtxList[inFmtCtx], pktList[inPak]) >= 0){
+        if(pktList[inPak]->stream_index == aimStream){
+            //放弃旧数据
+            continue;
+        }
+        av_interleaved_write_frame(fmtCtxList[outFmtCtx], pktList[inPak]);
+    }
+
+    //写入封面包
+    av_packet_unref(pktList[inPak]);
+    av_new_packet(pktList[inPak], data.size());
+
+    //拷贝数据包
+    memcpy(pktList[inPak]->data, data.data(), data.size());
+    pktList[inPak]->stream_index = aimStream;
+    pktList[inPak]->pts = 0;
+    pktList[inPak]->duration = fmtCtxList[inFmtCtx]->duration;
+    av_interleaved_write_frame(fmtCtxList[outFmtCtx], pktList[inPak]);
+
+    //写入文件尾
+    r = av_write_trailer(fmtCtxList[outFmtCtx]);
+    if(r<0){
+        logError(outUrl + " write trailer fail");
+        return;
+    }
+}
+
+/*
+ * 得到输出文件路径
+ */
 QString FFmpeg::getOutUrl(QString inUrl)
 {
     QString inSuffix = inUrl.split(".").last();

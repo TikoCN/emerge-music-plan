@@ -3,6 +3,7 @@ import QtQuick.Window
 import QtQuick.Controls.Basic
 import QtQml
 import MyAPI
+import "../base"
 
 Item {
     //背景

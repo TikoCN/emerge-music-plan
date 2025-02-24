@@ -1,6 +1,9 @@
-﻿import QtQuick
+import QtQuick
 import QtQuick.Layouts
 import MyAPI
+import "../core"
+import "../base"
+
 Window{
     id: deskLrcTool
     x: Setting.lrcTopPoint.x

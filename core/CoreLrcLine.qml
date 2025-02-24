@@ -1,6 +1,7 @@
-﻿import QtQuick
+import QtQuick
 import QtQuick.Controls.Basic
 import MyAPI
+import "../base"
 
 Item {
     id: coreLrcLine
@@ -8,7 +9,6 @@ Item {
     property font lrcFont
     property var lrcData
     property bool isUse: true
-
 
     Connections{
         target: lrcData

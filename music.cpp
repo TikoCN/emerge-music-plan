@@ -1,5 +1,5 @@
 #include "music.h"
-#include "extralibrary.h"
+#include "ffmpeg.h"
 #include "popupdata.h"
 #include "ffmpeg.h"
 #include <QDesktopServices>
@@ -94,10 +94,12 @@ QString Music::getSearchString()
 */
 QPixmap Music::loadCover()
 {
-    ExtraLibrary extraLibrary;
+    FFmpeg ffmpeg;
 
     QString coverUrl = getCoverUrl();
-    QImage img = extraLibrary.loadIndexCover(url);
+    //提取附加封面
+    QImage img = ffmpeg.getInlayCover(url);
+
     if(img.isNull()){
         //如果存在 独立封面
         if(QFile::exists(coverUrl)){
@@ -108,6 +110,9 @@ QPixmap Music::loadCover()
     return QPixmap::fromImage(img);
 }
 
+/*
+ * 加载独立的封面文件
+*/
 QImage Music::loadAloneCover()
 {
     QImage img;

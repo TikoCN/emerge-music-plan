@@ -136,7 +136,7 @@ QFileInfoList HostTime::getMusicUrl(QString dirPath)
 bool HostTime::getInfoList(QFileInfoList *list)
 {
     semaphore->acquire();                      //请求读写
-    if(workPos >= musicFileList.size() - 1){
+    if(workPos > musicFileList.size() - 1){
         semaphore->release();
         return false;
     }

@@ -1,8 +1,9 @@
-﻿import QtQuick
+import QtQuick
 import QtQuick.Window
 import QtQuick.Controls
 import QtQml
 import MyAPI
+import "../base"
 
 Item {
     id: conterView

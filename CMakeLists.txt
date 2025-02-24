@@ -3,6 +3,7 @@ project(musicPlay VERSION 0.1 LANGUAGES CXX)
 set(CMAKE_TOOLCHAIN_FILE "C:/vcpkg/scripts/buildsystems/vcpkg.cmake")
 set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(QT_QML_IMPORT_PATH "${CMAKE_CURRENT_SOURCE_DIR}" CACHE STRING "QML import path" FORCE)
 
 find_package(Qt6 REQUIRED COMPONENTS Quick)
 find_package(Qt6 REQUIRED COMPONENTS Multimedia)
@@ -14,41 +15,43 @@ qt_add_executable(appmusicPlay
     main.cpp
 )
 
+qt_policy(SET QTP0004 NEW)
 qt_add_qml_module(appmusicPlay
     URI musicPlay
     VERSION 1.0
     QML_FILES
     Main.qml
-    CoreMusicLine.qml
-    PlayerTable.qml
-    PageSeit.qml
-    ViewLeftBar.qml
-    ViewRightConter.qml
-    ViewBottomBar.qml
-    MyBarButton.qml
-    MyAutoText.qml
-    MyBar.qml
-    PageMain.qml
-    CoreLrcLine.qml
-    PlayerLrcTable.qml
-    ViewPlayingTable.qml
-    MyBorderButton.qml
-    PopupMessage.qml
-    ToolEditMusic.qml
-    MyFrameless.qml
-    MyUiButton.qml
-    MyInputText.qml
-    PlayerSpectrum.qml
-    MyRightVessel.qml
-    SelectColor.qml
-    SelectFont.qml
-    MyPopup.qml
-    MySlider.qml
-    MyMenu.qml
-    MyMenuItem.qml
-    MyCheckButton.qml
-    PopupInput.qml
-    ToolDeskLrc.qml
+    core/CoreMusicLine.qml
+    core/CoreLrcLine.qml
+    core/PlayerLrcTable.qml
+    core/PlayerSpectrum.qml
+    core/PlayerTable.qml
+    base/MyAutoText.qml
+    base/MyBar.qml
+    base/MyBarButton.qml
+    base/MyBorderButton.qml
+    base/MyCheckButton.qml
+    base/MyFrameless.qml
+    base/MyInputText.qml
+    base/MyMenu.qml
+    base/MyMenuItem.qml
+    base/MyMenuSpeacer.qml
+    base/MyPopup.qml
+    base/MyRightVessel.qml
+    base/MySlider.qml
+    base/MyUiButton.qml
+    base/PopupInput.qml
+    base/PopupMessage.qml
+    base/SelectColor.qml
+    base/SelectFont.qml
+    view/PageMain.qml
+    view/PageSeit.qml
+    view/ToolDeskLrc.qml
+    view/ToolEditMusic.qml
+    view/ViewBottomBar.qml
+    view/ViewLeftBar.qml
+    view/ViewPlayingTable.qml
+    view/ViewRightConter.qml
     SOURCES
     mediaplayer.h mediaplayer.cpp
     setting.h setting.cpp
@@ -60,11 +63,10 @@ qt_add_qml_module(appmusicPlay
     popupdata.h popupdata.cpp
     lrcdata.h lrcdata.cpp
     music.h music.cpp
+    online.h online.cpp
+    ffmpeg.h ffmpeg.cpp
     RESOURCES
     ui.qrc
-    SOURCES online.h online.cpp
-    SOURCES ffmpeg.h ffmpeg.cpp
-    QML_FILES MyMenuSpeacer.qml
 )
 
 # link fftw3

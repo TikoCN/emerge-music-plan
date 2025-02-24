@@ -12,12 +12,6 @@ public:
     //得到文件参数
     void getMedia(Music* core);
 
-    //从文件中提取图片
-    QImage loadIndexCover(QString musicUrl);
-
-    //将图片写入文件
-    int writeCoverToFile(QString musicUrl, QString coverUrl);
-
     //计算傅里叶变换
     QVector<double> useFftw3(QVector<double>in, int N);
 

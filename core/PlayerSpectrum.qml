@@ -1,5 +1,7 @@
-﻿import QtQuick
+import QtQuick
 import MyAPI
+import "../base"
+
 Canvas{
     id: canvas
     clip: true
