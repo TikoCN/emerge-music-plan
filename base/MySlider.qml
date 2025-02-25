@@ -1,6 +1,5 @@
-﻿import QtQuick
+import QtQuick
 import QtQuick.Controls.Basic
-import MyAPI
 
 // Horizontal 水平
 // Vertical 竖直
@@ -16,7 +15,7 @@ Slider {
         Rectangle{
             width: root.width
             height: root.height
-            color: Setting.transparentColor
+            color: BaseSeit.transparentColor
             opacity: 0.05
             radius: root.radius
         }
@@ -49,7 +48,7 @@ Slider {
                 }
             }
 
-            color: Setting.themeColor
+            color: BaseSeit.themeColor
             opacity: 0.4
         }
     }
@@ -73,7 +72,7 @@ Slider {
             }
         }
 
-        color: Setting.themeColor
+        color: BaseSeit.themeColor
         property var min: {
             if(root.orientation === Qt.Vertical){
                 return root.width

@@ -56,10 +56,10 @@ public:
 
 public slots:
     //生成加载单元列表
-    void buildTaskCellList();
+    void buildHostTime();
 
     //加载音乐文件资源
-    void loadMusicFile(QStringList dirList);
+    void loadMusicFile();
 
     //遍历文件夹得到所有子文件
     QFileInfoList getMusicUrl(QString dirPath);
@@ -73,6 +73,8 @@ public slots:
     //子线程完成任务
     void cellFinishWork(TaskCell *cell);
 
+    //删除数据
+    void clearData();
 signals:
     //筛选音乐文件
     void musicListBuild(QFileInfoList);
@@ -83,6 +85,8 @@ signals:
     //开始工作
     void startWork();
 
+    //初始化数据
+    void initData();
 };
 
 #endif // HOSTTIME_H

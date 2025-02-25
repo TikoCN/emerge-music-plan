@@ -16,8 +16,6 @@ MyFrameless{
     visible: true
     title: qsTr("尘星音乐")
 
-    property var tableList: []//列表指针
-
     Component.onDestruction:{
         //写入配置
         var mousePos = centerView.mapToGlobal(0, 0)
@@ -50,17 +48,17 @@ MyFrameless{
             visible: false
 
             ViewLeftBar{
-                height:parent.height
-                width:200
-                id:leftView
+                height: parent.height
+                width: 200
+                id: barView
             }
 
             //中间内容导航
-            ViewRightConter{
+            ViewMain{
                 id:mainView
-                width: parent.width - leftView.width
-                height: leftView.height
-                anchors.left:leftView.right
+                width: parent.width - barView.width
+                height: barView.height
+                anchors.left: barView.right
             }
         }
 
@@ -69,7 +67,7 @@ MyFrameless{
 
     //底部导航
     ViewBottomBar{
-        id:bottomView
+        id: bottomView
         height:90
         width:parent.width
         anchors.top:centerView.bottom
@@ -98,21 +96,21 @@ MyFrameless{
         text: qsTr("00:00")
         font: Setting.mainFont
         onBoundingRectChanged: {
-            Setting.timeWidth = boundingRect.width
+            CoreData.timeWidth = boundingRect.width
         }
     }
     TextMetrics{
         text: qsTr("00-00-00 00:00:0000")
         font: Setting.mainFont
         onBoundingRectChanged: {
-            Setting.editTimeWidth = boundingRect.width
+            CoreData.editTimeWidth = boundingRect.width
         }
     }
     TextMetrics{
         text: qsTr("000000000")
         font: Setting.mainFont
         onBoundingRectChanged: {
-            Setting.playNumberWidth = boundingRect.width
+            CoreData.playNumberWidth = boundingRect.width
         }
     }
 
@@ -132,5 +130,26 @@ MyFrameless{
             centerView.pop(null)
             centerView.pushItem(editPage)
         }
+    }
+
+    //关联
+    Connections{
+        target: MediaPlayer
+
+        function onCppAddDirTable(tableId){
+            mainView.addPlayTablePage(tableId)
+            barView.addDirTable(tableId)
+        }
+
+        function onCppAddUserTable(tableId){
+            mainView.addPlayTablePage(tableId)
+            barView.addUserTable(tableId)
+        }
+    }
+
+    function clearData(){
+        barView.clearData()
+        playingTable.clearData();
+        mainView.clearData()
     }
 }

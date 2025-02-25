@@ -1,6 +1,5 @@
-﻿import QtQuick.Controls.Basic
+import QtQuick.Controls.Basic
 import QtQuick
-import MyAPI
 
 ScrollBar {
     id:root
@@ -14,14 +13,14 @@ ScrollBar {
     background: Rectangle {  // 背景
         id:background
         anchors.fill:parent
-        color: root.active ? Setting.themeColor : Setting.backdropColor
+        color: root.active ? BaseSeit.themeColor : BaseSeit.backdropColor
         opacity:0.3
         radius:4
     }
 
     contentItem: Rectangle {  // 滑块
         id:handle
-        color: Setting.themeColor   // 颜色
+        color: BaseSeit.themeColor // 颜色
         radius:3
     }
 }

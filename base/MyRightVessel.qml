@@ -1,5 +1,4 @@
-﻿import QtQuick
-import MyAPI
+import QtQuick
 
 Item {
     id: root
@@ -27,7 +26,7 @@ Item {
     Rectangle{
         width: parent.width
         height: 3
-        color: Setting.themeColor
+        color: BaseSeit.themeColor
         opacity: 0.3
         radius: 1.5
     }

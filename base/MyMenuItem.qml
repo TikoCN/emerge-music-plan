@@ -1,17 +1,16 @@
-﻿import QtQuick
+import QtQuick
 import QtQuick.Controls.Basic
-import MyAPI
 
 MenuItem {
     id: root
-    font.family: Setting.mainFont.family
-    font.pixelSize: Setting.mainFont.pixelSize
+    font.family: BaseSeit.fontFamily
+    font.pixelSize: BaseSeit.fontPixelSize
     implicitHeight: 35
 
     //背景
     background: Rectangle{
         anchors.fill: parent
-        color: Setting.transparentColor
+        color: BaseSeit.transparentColor
         opacity: root.hovered ? 0.05 : 0
     }
 

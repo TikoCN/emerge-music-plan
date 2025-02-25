@@ -1,6 +1,5 @@
 import QtQuick.Controls.Basic
 import QtQuick
-import MyAPI
 
 Button {
     id: button
@@ -12,9 +11,10 @@ Button {
     property int radius: 10
     property double hover: 0.3
     property double normal: 0
+    property bool cache: true
 
     background: Rectangle{
-        color: Setting.transparentColor//背景颜色
+        color: BaseSeit.transparentColor//背景颜色
         radius: button.radius
         opacity: {
             return button.hovered ? button.hover :  button.normal
@@ -31,6 +31,7 @@ Button {
             sourceSize.height: height
             width: button.icon.width
             height: button.icon.height
+            cache: button.cache
         }
         MyAutoText{
             id: textShow

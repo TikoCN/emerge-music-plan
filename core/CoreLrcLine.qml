@@ -45,7 +45,7 @@ Item {
             color: Setting.playedLrcColor
             font.family: lrcFont.family
             font.bold: true
-            font.pixelSize: lrcData.isPlay ? lrcFont.pixelSize + 5 : lrcFont.pixelSize
+            font.pixelSize: lrcFont.pixelSize
             width: textMetrics.boundingRect.width
         }
 

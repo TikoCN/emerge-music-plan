@@ -1,4 +1,4 @@
-﻿#include "setting.h"
+#include "setting.h"
 #include <QSettings>
 #include <QDir>
 #include <QGuiApplication>
@@ -7,7 +7,9 @@
 #include "mediaplayer.h"
 
 void Setting::loadMusicCores(){
-    emit musicCoresChange(sourceList);
+    clearJsonData();//清空数据，防止内存泄露
+    readJsonData();//读取数据
+    emit loadMusics();
 }
 
 /*
@@ -56,8 +58,17 @@ bool Setting::getParameterList()
     ini->sync();//写入磁盘
     delete ini;
 
+    //读取成功
+    return true;
+}
 
+void Setting::readJsonData()
+{
     QFile dataFile(QDir::currentPath() + "/data.json");
+    data = nullptr;
+    coreJson = nullptr;
+
+    //打开文件
     if(dataFile.open(QIODevice::Text| QIODevice::ReadOnly)){
         QJsonDocument doc;
         data = new QJsonObject;
@@ -71,9 +82,27 @@ bool Setting::getParameterList()
         musicKeyList = coreJson->value("musicKeyList").toString().split("||");
     }
     dataFile.close();
+}
 
-    //读取成功
-    return true;
+void Setting::clearJsonData()
+{
+    if(!data){
+        delete data;
+    }
+
+    if(!coreJson){
+        delete coreJson;
+    }
+
+    musicKeyList.clear();
+}
+
+void Setting::removeUrl(QString url)
+{
+    int i = sourceList.indexOf(url);
+    if(i > 0){
+        sourceList.remove(i);
+    }
 }
 
 template<typename T>
@@ -329,45 +358,6 @@ void Setting::setIsOnLine(bool newIsOnLine)
     emit isOnLineChanged();
     //
     setParameter("isOnLine", isOnLine);
-}
-
-double Setting::getPlayNumberWidth() const
-{
-    return playNumberWidth;
-}
-
-void Setting::setPlayNumberWidth(double newPlayNumberWidth)
-{
-    if (qFuzzyCompare(playNumberWidth, newPlayNumberWidth))
-        return;
-    playNumberWidth = newPlayNumberWidth;
-    emit playNumberWidthChanged();
-}
-
-double Setting::getEditTimeWidth() const
-{
-    return editTimeWidth;
-}
-
-void Setting::setEditTimeWidth(double newEditTimeWidth)
-{
-    if (qFuzzyCompare(editTimeWidth, newEditTimeWidth))
-        return;
-    editTimeWidth = newEditTimeWidth;
-    emit editTimeWidthChanged();
-}
-
-double Setting::getTimeWidth() const
-{
-    return timeWidth;
-}
-
-void Setting::setTimeWidth(double newTimeWidth)
-{
-    if (qFuzzyCompare(timeWidth, newTimeWidth))
-        return;
-    timeWidth = newTimeWidth;
-    emit timeWidthChanged();
 }
 
 QPoint Setting::getLrcTopPoint() const

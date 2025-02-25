@@ -48,7 +48,10 @@ ScrollView{
                     width: selectDirButton.width
                     height: 50
                     text: qsTr("加载音乐")
-                    onClicked: Setting.loadMusicCores()
+                    onClicked: {
+                        window.clearData()
+                        Setting.loadMusicCores()
+                    }
                 }
 
                 Rectangle{
@@ -65,7 +68,7 @@ ScrollView{
 
                     Repeater{
                         model: ListModel{
-                            id:musicSourceModel
+                            id: musicSourceModel
                         }
 
                         delegate: MyAutoText {
@@ -81,6 +84,15 @@ ScrollView{
                             height: 40
                             width: sourceList.width
                             padding: 10
+
+                            MyUiButton{
+                                anchors.right: parent.right
+                                anchors.verticalCenter: parent.verticalCenter
+                                icon.source: "qrc:/image/close.png"
+                                onClicked: {
+                                    Setting.removeUrl(url)
+                                }
+                            }
                         }
                     }
 

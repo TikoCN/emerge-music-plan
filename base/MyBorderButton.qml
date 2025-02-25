@@ -1,6 +1,5 @@
-﻿import QtQuick
+import QtQuick
 import QtQuick.Controls.Basic
-import MyAPI
 
 Button {
     id: button
@@ -13,7 +12,7 @@ Button {
 
     background: Rectangle{
         border.color:{
-            return button.hovered ? Setting.themeColor : Setting.transparentColor
+            return button.hovered ? BaseSeit.themeColor : BaseSeit.transparentColor
         }
         border.width: 1.5
         radius: button.radius

@@ -1,22 +1,21 @@
 import QtQuick
 import QtQuick.Controls.Basic
-import MyAPI
 
 Menu {
     implicitWidth: 300
-    font.family: Setting.mainFont.family
-    font.pixelSize: Setting.mainFont.pixelSize
+    font.family: BaseSeit.fontFamily
+    font.pixelSize: BaseSeit.fontPixelSize
     topPadding: 5
     bottomPadding: 5
 
     //背景
     background: Rectangle{
-        color: Setting.backdropColor
+        color: BaseSeit.backdropColor
         radius: 10
 
         Rectangle{
             anchors.fill: parent
-            border.color: Setting.transparentColor
+            border.color: BaseSeit.transparentColor
             radius: 10
             border.width: 0.5
             opacity: 0.3

@@ -9,6 +9,9 @@ Item {
     id: conterView
     clip: true
 
+    property var tableList: []//列表指针
+    property PageSeit seitPage: PageSeit{visible: false}
+
     //背景
     Rectangle{
         width: parent.width
@@ -42,24 +45,17 @@ Item {
     }
 
     StackView{
-
-        PageSeit{
-            id: seitPage
-            visible: false
-        }
-
         id: stackView
         anchors.top: closeButton.bottom
         width: parent.width
         height: parent.height - closeButton.height
-
         initialItem: seitPage
     }
 
     //切换到列表
     function stackTable(page){
-        if(stackView.currentItem !== window.tableList[page]){
-            stackView.replace(window.tableList[page])
+        if(stackView.currentItem !== conterView.tableList[page]){
+            stackView.replace(conterView.tableList[page])
         }
     }
 
@@ -71,17 +67,23 @@ Item {
     }
 
     function addPlayTablePage(table){
-        var component = Qt.createComponent("PlayerTable.qml")
+        var component = Qt.createComponent("../core/PlayerTable.qml")
+
         if (component.status === Component.Ready) {
-            var playTable = component.createObject(stackView, {tableId: table})
-            stackView.replace(playTable)
+            var playTable = component.createObject(stackView, {tableId: table, visible: false})
 
             //插入链表
-            window.tableList.push(playTable)
-            return true
+            conterView.tableList.push(playTable)
         }
-        else {
-            return false
+    }
+
+    function clearData(){
+        //清空数据避免显示异常
+        for(let i = 0; i < conterView.tableList.length; i++){
+            conterView.tableList[i].destroy()
         }
+        conterView.tableList = []
+
+        turnToSeit()
     }
 }

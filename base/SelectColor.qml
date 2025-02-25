@@ -1,7 +1,6 @@
-﻿import QtQuick
+import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
-import MyAPI
 
 Item {
     id: root
@@ -15,7 +14,7 @@ Item {
         y: textShow.height * 0.2
         width: textShow.height * 0.6
         height: width
-        border.color: Setting.transparentColor
+        border.color: BaseSeit.transparentColor
         border.width: 1
         radius: height * 0.2
         smooth: true

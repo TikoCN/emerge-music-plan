@@ -1,17 +1,19 @@
 #include "hosttime.h"
 #include "extralibrary.h"
 #include "setting.h"
+#include "mediaplayer.h"
 #include <QPixmap>
 #include <QDir>
 #include <QCoreApplication>
 
 TaskCell::TaskCell(){
-    thread = new QThread;
+    thread = new QThread(this);
     this->moveToThread(thread);
     thread->start();
 }
 TaskCell::~TaskCell(){
-
+    thread->quit();
+    thread->wait();
 }
 
 /*
@@ -66,40 +68,51 @@ void TaskCell::working(){
 
 HostTime::HostTime()
 {
-    buildTaskCellList();
-    Setting* seit = Setting::getInstance();
-    connect(seit, &Setting::musicCoresChange, this, &HostTime::loadMusicFile);
-    semaphore = new QSemaphore(1);
+    MediaPlayer* play = MediaPlayer::getInstance();
+    connect(this, &HostTime::initData, play, &MediaPlayer::clearData);
+    connect(play, &MediaPlayer::finishClearData, this, &HostTime::loadMusicFile);
+
+    Setting* seit = Setting::getInstance();//获得设置指针
+    connect(seit, &Setting::loadMusics, this, &HostTime::buildHostTime);
 }
 
 /*
  *生成加载单元列表
  */
-void HostTime::buildTaskCellList()
+void HostTime::buildHostTime()
 {
+    //创建信号量
+    semaphore = new QSemaphore(1);
+
     Setting* seit = Setting::getInstance();//获得设置指针
     for(int i=0; i<seit->maxThreadNumber; i++){
         TaskCell* cell = new TaskCell;
         taskCellList.append(cell);
 
-        connect(this, &HostTime::startWork, cell, &TaskCell::working);
-        connect(cell, &TaskCell::musicLoaded, this, &HostTime::getMusicCoreList);
-        connect(cell, &TaskCell::finishLoad, this, &HostTime::cellFinishWork);
+        cell->connect(this, &HostTime::startWork, cell, &TaskCell::working);
+        cell->connect(cell, &TaskCell::musicLoaded, this, &HostTime::getMusicCoreList);
+        cell->connect(cell, &TaskCell::finishLoad, this, &HostTime::cellFinishWork);
     }
+
+    emit initData();
 }
 
 /*
  *加载音乐文件资源
  */
-void HostTime::loadMusicFile(QStringList dirList)
+void HostTime::loadMusicFile()
 {
+    Setting* seit = Setting::getInstance();//获得设置指针
+    QStringList dirList = seit->sourceList;
+
     //得到所有音乐文件
     for(int i=0; i<dirList.size(); i++){
         QUrl url(dirList[i]);
         musicFileList.append(getMusicUrl(url.toLocalFile()));
     }
 
-    workNumber = taskCellList.size();
+    workPos = 0;//重置工作位置
+    workNumber = taskCellList.size();//设置工作单元数
     emit startWork();
 }
 
@@ -108,7 +121,7 @@ void HostTime::loadMusicFile(QStringList dirList)
  */
 QFileInfoList HostTime::getMusicUrl(QString dirPath)
 {
-    if(dirPath == ""){
+    if(dirPath.isEmpty()){
         return QFileInfoList();//返回空列表
     }
 
@@ -136,7 +149,8 @@ QFileInfoList HostTime::getMusicUrl(QString dirPath)
 bool HostTime::getInfoList(QFileInfoList *list)
 {
     semaphore->acquire();                      //请求读写
-    if(workPos > musicFileList.size() - 1){
+    //查看任务是否完成，已经任务队列是否为空
+    if(workPos > musicFileList.size() - 1 || musicFileList.size() <= 0){
         semaphore->release();
         return false;
     }
@@ -164,8 +178,28 @@ void HostTime::getMusicCoreList(QList<Music *> coreList, QStringList musicKeyLis
 
 void HostTime::cellFinishWork(TaskCell *cell)
 {
+    //计算当前工作单元数
     workNumber--;
     if(workNumber == 0){
+        qDebug()<<"work success, loaded music files number : " + QString::number(coreList.size());
         emit musicsLoaded(coreList, musicKeyList);
     }
+}
+
+/*
+ *删除数据
+ */
+void HostTime::clearData()
+{
+    this->coreList.clear();
+    this->musicKeyList.clear();
+    this->musicFileList.clear();
+
+    //从头删除到尾
+    while (!taskCellList.empty()) {
+        delete taskCellList.takeFirst();
+    }
+
+    //删除信号量
+    delete semaphore;
 }

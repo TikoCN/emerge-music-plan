@@ -8,11 +8,10 @@ import "../base"
 Item {
     id: root
     clip: true
-    property string select: qsTr("切换到主页")
+    property string select: qsTr("切换到设置")
 
     //左侧导航
     ScrollView{
-        id: leftView
         anchors.fill: parent
         ScrollBar.vertical.visible: false
         ScrollBar.horizontal.visible: false
@@ -36,19 +35,7 @@ Item {
                 text: qsTr("切换到主页")
                 icon.source: "qrc:/image/main.png"
                 anchors.horizontalCenter: parent.horizontalCenter
-                onClicked: {
-                    root.select = this.text
-                    window.stackMain()
-                }
-
-                //按钮选中边框边框
-                Rectangle{
-                    visible: parent.text === root.select
-                    anchors.fill: parent
-                    color: Setting.themeColor
-                    opacity: 0.3
-                    radius: 10
-                }
+                onClicked: window.stackMain()
             }
 
             //切换到设置
@@ -77,19 +64,7 @@ Item {
                 text: qsTr("本地列表")
                 anchors.horizontalCenter: parent.horizontalCenter
                 icon.source: "qrc:/image/dir.png"
-                onClicked: {
-                    root.select = this.text
-                    dirTableListView.visible = !dirTableListView.visible
-                }
-
-                //按钮选中边框边框
-                Rectangle{
-                    visible: parent.text === root.select
-                    anchors.fill: parent
-                    color: Setting.themeColor
-                    opacity: 0.3
-                    radius: 10
-                }
+                onClicked: dirTableListView.visible = !dirTableListView.visible
             }
             ListView{
                 width: parent.width
@@ -97,29 +72,28 @@ Item {
                 implicitHeight: childrenRect.height
                 spacing: 5
 
-                delegate: Component{
-                    id: dirTableDelegate
-                    MyBarButton{
-                        width: parent.width
-                        text: MediaPlayer.tableList[i].name
-                        onClicked: {
-                            root.select = this.text
-                            mainView.stackTable(i)
-                        }
-                        icon.source: window.tableList[i].showCover
-                        icon.width: 30
-                        icon.height: 30
+                delegate: MyBarButton{
+                    width: dirTableListView.width
+                    text: MediaPlayer.tableList[i].name
+                    cache: false
+                    icon.source: mainView.tableList[i].showCover
+                    icon.width: 30
+                    icon.height: 30
+                    onClicked: {
+                        root.select = this.text
+                        mainView.stackTable(i)
+                    }
 
-                        //按钮选中边框边框
-                        Rectangle{
-                            visible: parent.text === root.select
-                            anchors.fill: parent
-                            color: Setting.themeColor
-                            opacity: 0.3
-                            radius: 10
-                        }
+                    //按钮选中边框边框
+                    Rectangle{
+                        visible: parent.text === root.select
+                        anchors.fill: parent
+                        color: Setting.themeColor
+                        opacity: 0.3
+                        radius: 10
                     }
                 }
+
 
                 model: ListModel{
                     id: dirTableModel
@@ -133,19 +107,7 @@ Item {
                 text: qsTr("新建列表")
                 anchors.horizontalCenter: parent.horizontalCenter
                 icon.source: "qrc:/image/new.png"
-                onClicked: {
-                    root.select = this.text
-                    inputName.open()
-                }
-
-                //按钮选中边框边框
-                Rectangle{
-                    visible: parent.text === root.select
-                    anchors.fill: parent
-                    color: Setting.themeColor
-                    opacity: 0.3
-                    radius: 10
-                }
+                onClicked: inputName.open()
 
                 PopupInput{
                     id: inputName
@@ -163,30 +125,28 @@ Item {
                 implicitHeight: childrenRect.height
                 spacing: 5
 
-                delegate: Component{
-                    id: userTableDelegate
+                delegate: MyBarButton{
+                    width: userTableListView.width
+                    text: MediaPlayer.tableList[i].name
+                    icon.source:  mainView.tableList[i].showCover
+                    icon.width: 30
+                    icon.height: 30
+                    cache: false
+                    onClicked: {
+                        root.select = this.text
+                        mainView.stackTable(i)
+                    }
 
-                    MyBarButton{
-                        width:  parent.width
-                        text:  MediaPlayer.tableList[i].name
-                        icon.source:  window.tableList[i].showCover
-                        icon.width: 30
-                        icon.height: 30
-                        onClicked: {
-                            root.select = this.text
-                            mainView.stackTable(i)
-                        }
-
-                        //按钮选中边框边框
-                        Rectangle{
-                            visible: parent.text === root.select
-                            anchors.fill: parent
-                            color: Setting.themeColor
-                            opacity: 0.3
-                            radius: 10
-                        }
+                    //按钮选中边框边框
+                    Rectangle{
+                        visible: parent.text === root.select
+                        anchors.fill: parent
+                        color: Setting.themeColor
+                        opacity: 0.3
+                        radius: 10
                     }
                 }
+
 
                 model: ListModel{
                     id: userTableModel
@@ -195,30 +155,16 @@ Item {
         }
     }
 
-    //新建本地列表
-    function addNewDirTable(table){
-        if(mainView.addPlayTablePage(table)){
-            dirTableModel.append({i: window.tableList.length-1})
-        }
+    function addDirTable(tableId){
+        dirTableModel.append({i: tableId})
     }
 
-    //新建用户列表
-    function addNewUserTable(table){
-        if(mainView.addPlayTablePage(table)){
-            userTableModel.append({i: window.tableList.length-1})
-        }
+    function addUserTable(tableId){
+        userTableModel.append({i: tableId})
     }
 
-    //关联
-    Connections{
-        target: MediaPlayer
-
-        function onCppAddDirTable(tableId){
-            root.addNewDirTable(tableId)
-        }
-
-        function onCppAddUserTable(tableId){
-            root.addNewUserTable(tableId)
-        }
+    function clearData(){
+        dirTableModel.clear()
+        userTableModel.clear()
     }
 }

@@ -1,5 +1,4 @@
-﻿import QtQuick
-import MyAPI
+import QtQuick
 Window{
     id:win
     color:"#00000000"
@@ -76,11 +75,11 @@ Window{
         height: parent.height
         topLeftRadius: 10
         topRightRadius: 10
-        color: Setting.backdropColor
+        color: BaseSeit.backdropColor
 
         Rectangle{
             anchors.fill: parent
-            border.color: Setting.transparentColor
+            border.color: BaseSeit.transparentColor
             topLeftRadius: 10
             topRightRadius: 10
             border.width: 0.5

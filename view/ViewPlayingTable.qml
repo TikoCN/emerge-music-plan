@@ -97,4 +97,8 @@ Drawer {
             addNewMuiscLine(i)
         }
     }
+
+    function clearData(){
+        musicModel.clear()
+    }
 }

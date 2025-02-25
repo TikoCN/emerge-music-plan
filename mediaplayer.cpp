@@ -8,15 +8,39 @@
 #include <QAudioDevice>
 #include <QPixmapCache>
 
+void MediaPlayer::clearData()
+{
+    while (!tableList.empty()) {
+        delete tableList.takeFirst();
+    }
+
+    while (!coreList.empty()) {
+        delete coreList.takeFirst();
+    }
+
+    while (!lrcList.empty()) {
+        delete lrcList.takeFirst();
+    }
+
+    while (!musicList.empty()) {
+        delete musicList.takeFirst();
+    }
+
+    allSamples.clear();
+
+    //发送信号，表示完成
+    emit finishClearData();
+}
+
 MediaPlayer::MediaPlayer()
 {
     loopType = 0;
     playingMusic = 0;
     playingCore = new Music;
     playingLrc = new LrcData;
-    playingLrc->text = tr("Ciallo～(∠・ω< )⌒★");
     playedLrc = new LrcData;
     playedLrc->text = tr("~");
+    playingLrc->text = tr("Ciallo～(∠・ω< )⌒★");
 
     player = new QMediaPlayer;//播放设备
     audioOutput = new QAudioOutput;//音频输出
@@ -70,26 +94,19 @@ void MediaPlayer::getMusicCore(QList<Music*> musicList, QStringList musicKeyList
         tableMusic[aimTableId].append(musicList[i]);
     }
 
+    //生成本地列表
     for(int i=0; i<dirs.size(); i++){
         addTable(dirs[i], true);
         tableList[i]->insertMusic(tableMusic[i]);
     }
 
     buildNoDirTable(musicKeyList);
-
     //清空数据
-    dirs.clear();
-    tableMusic.clear();
-
     Setting *seit = Setting::getInstance();
-    seit->musicKeyList.clear();
-    delete seit->data;
-    delete seit->coreJson;
-
     HostTime *host = HostTime::getInstance();
-    host->musicFileList.clear();
-    host->coreList.clear();
-    host->musicKeyList.clear();
+
+    seit->clearJsonData();
+    host->clearData();
 }
 
 void MediaPlayer::buildNoDirTable(QStringList musicKeyList)
@@ -97,12 +114,18 @@ void MediaPlayer::buildNoDirTable(QStringList musicKeyList)
     //清空数据
     Setting *seit = Setting::getInstance();
 
+    //没有读取数据，生成json结构，直接退出
+    if(!seit->data || !seit->coreJson){
+        return;
+    }
+
     QJsonObject tableJson = seit->data->value("table").toObject();
     if(tableJson.isEmpty()){
         return;
     }
     int max = tableJson.value("size").toInt();//获得列表数
 
+    //循环生成新列表
     for(int i=0; i<max; i++){
         QJsonObject table = tableJson.value(QString::number(i)).toObject();//获得列表数据单元
         QString name = table.value("name").toString();
@@ -117,7 +140,8 @@ void MediaPlayer::buildNoDirTable(QStringList musicKeyList)
                 }
             }
         }
-        else{//处理自建列表
+        //处理自建列表
+        else{
             addTable(name);
             aimTable = tableList.size()-1;
             QStringList tableMusic = table.value("music").toString().split("||");
@@ -167,6 +191,7 @@ void MediaPlayer::addTable(QString tableName, bool isDir)
     tableList.append(table);
 
     if(isDir){
+        //设置本地列表参数
         table->url = tableName;
         table->name = tableName.split("/").last();
         emit cppAddDirTable(table->tableId);

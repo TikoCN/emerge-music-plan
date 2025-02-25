@@ -1,6 +1,5 @@
-﻿import QtQuick
+import QtQuick
 import QtQuick.Controls
-import MyAPI
 
 Item{
     id: root
@@ -55,7 +54,7 @@ Item{
 
             Rectangle{
                 anchors.fill: fontList
-                color: Setting.transparentColor
+                color: BaseSeit.transparentColor
                 opacity: 0.03
             }
 

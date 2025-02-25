@@ -16,16 +16,29 @@ qt_add_executable(appmusicPlay
 )
 
 qt_policy(SET QTP0004 NEW)
+
+set_source_files_properties(base/BaseSeit.qml
+    PROPERTIES
+        QT_QML_SINGLETON_TYPE true
+)
+
+set_source_files_properties(core/CoreData.qml
+    PROPERTIES
+        QT_QML_SINGLETON_TYPE true
+)
+
 qt_add_qml_module(appmusicPlay
     URI musicPlay
     VERSION 1.0
     QML_FILES
     Main.qml
+    core/CoreData.qml
     core/CoreMusicLine.qml
     core/CoreLrcLine.qml
     core/PlayerLrcTable.qml
     core/PlayerSpectrum.qml
     core/PlayerTable.qml
+    base/BaseSeit.qml
     base/MyAutoText.qml
     base/MyBar.qml
     base/MyBarButton.qml
@@ -51,7 +64,7 @@ qt_add_qml_module(appmusicPlay
     view/ViewBottomBar.qml
     view/ViewLeftBar.qml
     view/ViewPlayingTable.qml
-    view/ViewRightConter.qml
+    view/ViewMain.qml
     SOURCES
     mediaplayer.h mediaplayer.cpp
     setting.h setting.cpp

@@ -69,6 +69,9 @@ public:
     //获得音乐核心
     void getMusicCore(QList<Music *>musicList, QStringList musicKeyList);
 
+    //删除以及加载的数据
+    Q_INVOKABLE void clearData();
+
     //新建播放列表
     Q_INVOKABLE void addTable(QString tableName, bool isDir = false);
 
@@ -146,6 +149,9 @@ signals:
     //下载歌词
     void downLrc(QString key, QString url);
 
+    //清空数据以及播放列表
+    void finishClearData();
+
     //新建本地列表
     void cppAddDirTable(int tableId);
 
@@ -171,11 +177,8 @@ signals:
     void cppPlayingLrc();
 
     void tableListChanged();
-
     void playerChanged();
-
     void loopTypeChanged();
-
     void playingCoreChanged();
     void lrcListChanged();
     void musicListChanged();

@@ -48,6 +48,7 @@ QString FFmpeg::suffixToString(Suffix s)
     case AAC: return "aac";
     case ALAC: return "alac";
     case WMA: return "wma";
+    default: return "none";
     }
 
     return "none";

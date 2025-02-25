@@ -1,6 +1,5 @@
-﻿import QtQuick
+import QtQuick
 import QtQuick.Controls.Basic
-import MyAPI
 
 Item {
     id: root
@@ -23,7 +22,7 @@ Item {
         height: parent.height
 
         background: Rectangle{
-            color: Setting.transparentColor
+            color: BaseSeit.transparentColor
             opacity: 0.05
         }
     }

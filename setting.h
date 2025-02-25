@@ -1,4 +1,4 @@
-﻿#ifndef SETTING_H
+#ifndef SETTING_H
 #define SETTING_H
 
 #include <QObject>
@@ -38,11 +38,6 @@ private:
 
     Q_PROPERTY(QPoint lrcTopPoint READ getLrcTopPoint WRITE setLrcTopPoint NOTIFY lrcTopPointChanged FINAL)
 
-    Q_PROPERTY(double timeWidth READ getTimeWidth WRITE setTimeWidth NOTIFY timeWidthChanged FINAL)
-
-    Q_PROPERTY(double editTimeWidth READ getEditTimeWidth WRITE setEditTimeWidth NOTIFY editTimeWidthChanged FINAL)
-
-    Q_PROPERTY(double playNumberWidth READ getPlayNumberWidth WRITE setPlayNumberWidth NOTIFY playNumberWidthChanged FINAL)
     Q_PROPERTY(bool isOnLine READ getIsOnLine WRITE setIsOnLine NOTIFY isOnLineChanged FINAL)
 
     Q_PROPERTY(bool isGetCoverFromNetEase READ getIsGetCoverFromNetEase WRITE setIsGetCoverFromNetEase NOTIFY isGetCoverFromNetEaseChanged FINAL)
@@ -97,10 +92,6 @@ public:
     QJsonObject *data;//数据
     QJsonObject *coreJson;//核心数据
 
-    double timeWidth;//时间字长
-    double editTimeWidth;//编辑时间字长
-    double playNumberWidth;//播放次数字长
-
     //设置参数
     template <typename T>
     void setParameter(QString key, T value);
@@ -109,7 +100,13 @@ public:
     bool getParameterList();
 
     //初始设置
-    void readData();
+    void readJsonData();
+
+    //清除附加数据
+    void clearJsonData();
+
+    //将路径移除
+    Q_INVOKABLE void removeUrl(QString url);
 
     Q_INVOKABLE void writeData();
 
@@ -152,15 +149,6 @@ public:
     QPoint getLrcTopPoint() const;
     void setLrcTopPoint(QPoint newLrcTopPoint);
 
-    double getTimeWidth() const;
-    void setTimeWidth(double newTimeWidth);
-
-    double getEditTimeWidth() const;
-    void setEditTimeWidth(double newEditTimeWidth);
-
-    double getPlayNumberWidth() const;
-    void setPlayNumberWidth(double newPlayNumberWidth);
-
     bool getIsOnLine() const;
     void setIsOnLine(bool newIsOnLine);
 
@@ -184,7 +172,7 @@ public:
 
 signals:
     //加载资源
-    void musicCoresChange(QStringList);
+    void loadMusics();
 
     void maxThreadNumberChanged();
     void sourceListChanged();
@@ -198,9 +186,6 @@ signals:
     void windowRectChanged();
     void mainLrcFontChanged();
     void lrcTopPointChanged();
-    void timeWidthChanged();
-    void editTimeWidthChanged();
-    void playNumberWidthChanged();
     void isOnLineChanged();
     void isGetCoverFromNetEaseChanged();
     void isGetCoverFromBingChanged();

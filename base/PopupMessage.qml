@@ -1,6 +1,5 @@
-﻿import QtQuick.Dialogs
+import QtQuick.Dialogs
 import QtQuick
-import MyAPI
 
 MyPopup {
     id:dialog
@@ -24,13 +23,6 @@ MyPopup {
         onClicked: dialog.close()
     }
 
-    //关联
-    Connections{
-        target:PopupData
-        function onCppMessage(text){
-            dialog.show(text)
-        }
-    }
 
     function show(text){
         dialog.text = text

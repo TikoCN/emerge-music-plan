@@ -110,20 +110,19 @@ Item {
                 onClicked: rightMenu.open()
                 icon.source: "qrc:/image/else.png"
             }
-
             MyAutoText{
                 text: root.core.getStringTime()
-                width: Setting.timeWidth
+                width: CoreData.timeWidth
                 height: 50
             }
             MyAutoText{
                 text: root.core.lastEdit
-                width: Setting.editTimeWidth
+                width: CoreData.editTimeWidth
                 height: 50
             }
             MyAutoText{
                 text: root.core.playNumber.toString()
-                width: Setting.playNumberWidth
+                width: CoreData.playNumberWidth
                 height: 50
             }
         }
