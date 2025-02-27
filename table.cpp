@@ -1,5 +1,4 @@
 #include "table.h"
-#include "popupdata.h"
 #include <QUrl>
 #include <QDesktopServices>
 
@@ -122,10 +121,6 @@ void Table::openDir()
     if(isDir){
         QString url = "file:///" + this->url;
         QDesktopServices::openUrl(QUrl(url));
-    }
-    else{
-        PopupData *popup = PopupData::getInstance();
-        popup->message(tr("打开失败，不是本地文件夹"));
     }
 }
 

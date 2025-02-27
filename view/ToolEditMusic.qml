@@ -141,14 +141,6 @@ MyFrameless {
         }
     }
 
-    //关联
-    Connections{
-        target: ToolHelper
-        function onCppEditMusic(text, coreId){
-            toolEditMusic.buildLrc(text, coreId)
-        }
-    }
-
     function buildLrc(lrc, coreId){
         core = MediaPlayer.coreList[coreId]
         lrcShow.text = lrc

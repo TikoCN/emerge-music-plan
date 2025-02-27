@@ -57,7 +57,7 @@ void OnLine::downCoverFromNetEase(QString title, QString url)
                         +title
                         +"&type=1&offset=0&total=true&limit=1"));
     reply = manager.get(request);
-    connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
+    loop.connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
     loop.exec();
 
     //解析
@@ -74,7 +74,7 @@ void OnLine::downCoverFromNetEase(QString title, QString url)
                         +matchList[1]
                         +"%5D"));
     reply = manager.get(request);
-    connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
+    loop.connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
     loop.exec();
 
     //解析
@@ -100,7 +100,7 @@ void OnLine::downCoverFromQQMusic(QString key, QString url)
                         +key
                         +"&format=json"));
     reply = manager.get(request);
-    connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
+    loop.connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
     loop.exec();
 
     htmlData = reply->readAll();
@@ -113,7 +113,7 @@ void OnLine::downCoverFromQQMusic(QString key, QString url)
                         +matchList[1]
                         +".jpg"));
     reply = manager.get(request);
-    connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
+    loop.connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
     loop.exec();
     htmlData = reply->readAll();
     matchList = regularExpression.match(htmlData).capturedTexts();
@@ -136,7 +136,7 @@ void OnLine::downCoverFromBing(QString key, QString url)
                         +key
                         +"&first=1&count=10&mmasync=1"));
     reply = manager.get(request);
-    connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
+    loop.connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
     loop.exec();
     //解析
     htmlData = reply->readAll();
@@ -163,7 +163,7 @@ void OnLine::downCoverFromBaidu(QString key, QString url)
                         +key+
                         "&cl=2&lm=-1&ie=utf-8&oe=utf-8&adpicid=&st=&z=&ic=&hd=&latest=©right=&s=&se=&tab=&width=&height=&face=&istype=&qc=&nc=1&expermode=&nojc=&isAsync=&pn=1&rn=10&gsm=5a&1668600962847="));
     reply = manager.get(request);
-    connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
+    loop.connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
     loop.exec();
     //解析
     htmlData = reply->readAll();
@@ -184,7 +184,7 @@ void OnLine::writeCoverToFile(QString url, QString fileUrl)
     //得到实际图片数据
     request.setUrl(QUrl(url));
     reply = manager.get(request);
-    connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
+    loop.connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
     loop.exec();
 
     //写入文件
@@ -228,7 +228,7 @@ void OnLine::downLrcFromNetEase(QString key, QString url)
                         +key+
                         +"&type=1&offset=0&total=true&limit=1"));
     reply = manager.get(request);
-    connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
+    loop.connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
     loop.exec();
 
     //解析
@@ -243,7 +243,7 @@ void OnLine::downLrcFromNetEase(QString key, QString url)
                         + matchList[1]
                         + "&lv=1&kv=1&tv=-1"));
     reply = manager.get(request);
-    connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
+    loop.connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
     loop.exec();
     //解析
     htmlData = reply->readAll();
@@ -275,7 +275,7 @@ void OnLine::downLrcFromQQMusic(QString key, QString url)
                         +key
                         +"&format=json"));
     reply = manager.get(request);
-    connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
+    loop.connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
     loop.exec();//开始阻塞
 
     htmlData = reply->readAll();
@@ -289,7 +289,7 @@ void OnLine::downLrcFromQQMusic(QString key, QString url)
                         +"&format=json&nobase64=1"));
     request.setRawHeader("Referer" , "https//y.qq.com/portal/player.html");
     reply = manager.get(request);
-    connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
+    loop.connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
     loop.exec();//开始阻塞
 
     htmlData = reply->readAll();

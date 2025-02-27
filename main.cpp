@@ -4,8 +4,6 @@
 #include "hosttime.h"
 #include "mediaplayer.h"
 #include "imageprovider.h"
-#include "popupdata.h"
-#include "toolhelper.h"
 #include "online.h"
 #include <QQmlContext>
 #include <QIcon>
@@ -13,8 +11,6 @@
 Setting* Setting::instance = nullptr;
 HostTime* HostTime::instance = nullptr;
 MediaPlayer* MediaPlayer::instance = nullptr;
-PopupData* PopupData::instance = nullptr;
-ToolHelper* ToolHelper::instance = nullptr;
 OnLine* OnLine::instance = nullptr;
 
 int main(int argc, char *argv[])
@@ -27,21 +23,15 @@ int main(int argc, char *argv[])
     MediaPlayer::buildInstance();
     Setting::buildInstance();
     HostTime::buildInstance();
-    PopupData::buildInstance();
-    ToolHelper::buildInstance();
 
     //获得单例指针
     Setting* seit = Setting::getInstance();
     MediaPlayer* mediaPlayer = MediaPlayer::getInstance();
     HostTime* hostTime = HostTime::getInstance();
-    PopupData* popupData = PopupData::getInstance();
-    ToolHelper* toolHelper = ToolHelper::getInstance();
     OnLine* onLine = OnLine::getInstance();
 
     qmlRegisterSingletonInstance("MyAPI", 1, 0, "Setting", seit);
     qmlRegisterSingletonInstance("MyAPI", 1, 0, "MediaPlayer", mediaPlayer);
-    qmlRegisterSingletonInstance("MyAPI", 1, 0, "PopupData", popupData);
-    qmlRegisterSingletonInstance("MyAPI", 1, 0, "ToolHelper", toolHelper);
     qmlRegisterSingletonInstance("MyAPI", 1, 0, "OnLine", onLine);
 
     QObject::connect(hostTime, &HostTime::musicsLoaded, mediaPlayer, &MediaPlayer::getMusicCore);

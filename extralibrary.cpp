@@ -1,5 +1,4 @@
 #include "extralibrary.h"
-#include "popupdata.h"
 
 #include "fftw3.h"
 #include "taglib.h"
@@ -15,11 +14,9 @@
 */
 bool ExtraLibrary::setMedia(QString url, QString title, QString artist, QString alumb, QString genre, QString year)
 {
-    PopupData* pop = PopupData::getInstance();
     TagLib::FileRef f(TagLib::String(url.toStdString(), TagLib::String::UTF8).toCWString());
 
     if(f.isNull()){
-        pop->message(url + "打开文件失败");
         return false;
     }
 
@@ -30,7 +27,6 @@ bool ExtraLibrary::setMedia(QString url, QString title, QString artist, QString 
     f.tag()->setGenre(TagLib::String(genre.toStdString(), TagLib::String::UTF8));
 
     if(!f.save()){
-        pop->message(url + "保存文件失败");
         return false;
     }
 
@@ -42,10 +38,8 @@ bool ExtraLibrary::setMedia(QString url, QString title, QString artist, QString 
 */
 void ExtraLibrary::getMedia(Music* core)
 {
-    PopupData* pop = PopupData::getInstance();
     TagLib::FileRef f(TagLib::String(core->url.toStdString(), TagLib::String::UTF8).toCWString());
     if(f.isNull()){
-        pop->message(core->url + "打开文件失败");
         return;
     }
     TagLib::Tag* t = f.tag();

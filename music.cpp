@@ -1,6 +1,5 @@
 #include "music.h"
 #include "ffmpeg.h"
-#include "popupdata.h"
 #include "ffmpeg.h"
 #include <QDesktopServices>
 #include <QJsonObject>
@@ -180,9 +179,6 @@ void Music::openMusicCover()
     if(QFile::exists(getCoverUrl())){
         QDesktopServices::openUrl(QUrl(url));
     }
-    else{
-        PopupData::getInstance()->message(tr("音乐封面不存在") + url);
-    }
 }
 
 /*
@@ -193,9 +189,6 @@ void Music::openMusicLrc()
     QString url = "file:///" + getLrcUrl();
     if(QFile::exists(getLrcUrl())){
         QDesktopServices::openUrl(QUrl(url));
-    }
-    else{
-        PopupData::getInstance()->message(tr("歌词文件不存在") + url);
     }
 }
 

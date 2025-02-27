@@ -2,7 +2,6 @@
 #include "extralibrary.h"
 #include "setting.h"
 #include "hosttime.h"
-#include "popupdata.h"
 #include "online.h"
 #include <QRandomGenerator>
 #include <QAudioDevice>
@@ -169,16 +168,10 @@ void MediaPlayer::buildNoDirTable(QStringList musicKeyList)
  */
 void MediaPlayer::addTable(QString tableName, bool isDir)
 {
-    PopupData *popup = PopupData::getInstance();
-    if(tableName == ""){
-        popup->message(tr("列表名不能为空"));
-        return;
-    }
     //判断该列表是否已经存在
     if(!isDir){
         for(int i=0; i<tableList.size(); i++){
             if(tableList[i]->name == tableName && !tableList[i]->isDir){
-                popup->message(tr("该自建立列表已存在"));
                 return;
             }
         }
@@ -392,8 +385,6 @@ void MediaPlayer::playNext(int forward)
     int aim = -1;
 
     if(max == 0){
-        PopupData *popup = PopupData::getInstance();
-        popup->message(tr("播放列表为空，请先播放音乐"));
         return;
     }
     switch (loopType) {

@@ -27,6 +27,12 @@ set_source_files_properties(core/CoreData.qml
         QT_QML_SINGLETON_TYPE true
 )
 
+file(GLOB SOURCE_LIST "source/*.cpp" "source/*.c")
+
+file(GLOB HEADER_LIST "*.h" )
+
+file(GLOB_RECURSE QML_LIST "screen/*.qml" )
+
 qt_add_qml_module(appmusicPlay
     URI musicPlay
     VERSION 1.0
@@ -72,8 +78,6 @@ qt_add_qml_module(appmusicPlay
     table.h table.cpp
     extralibrary.h extralibrary.cpp
     imageprovider.h imageprovider.cpp
-    toolhelper.h toolhelper.cpp
-    popupdata.h popupdata.cpp
     lrcdata.h lrcdata.cpp
     music.h music.cpp
     online.h online.cpp
