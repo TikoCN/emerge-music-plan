@@ -1,5 +1,5 @@
 import QtQuick
-import MyAPI
+import TikoAPI
 import "../base"
 import "../core"
 
@@ -8,7 +8,7 @@ Item {
     property bool show:  false
 
     //关闭
-    MyUiButton{
+    TikoButton{
         id: close
         anchors.right: parent.right
         text: qsTr("关闭")
@@ -17,7 +17,7 @@ Item {
     }
 
     //最大化
-    MyUiButton{
+    TikoButton{
         id: max
         anchors.right: close.left
         anchors.rightMargin: 20
@@ -34,7 +34,7 @@ Item {
     }
 
     //最小化
-    MyUiButton{
+    TikoButton{
         id: min
         anchors.right: max.left
         anchors.rightMargin: 20
@@ -44,7 +44,7 @@ Item {
     }
 
     //返回主页
-    MyUiButton{
+    TikoButton{
         id: back
         anchors.left: parent.left
         anchors.leftMargin: 20
@@ -53,7 +53,7 @@ Item {
         onClicked: window.stackCenter()
     }
 
-    MyAutoText{
+    TikoAutoText{
         id: title
         width: cover.width + parent.width / 20
         height: 30
@@ -64,7 +64,7 @@ Item {
         text: qsTr("标题")
     }
 
-    MyAutoText{
+    TikoAutoText{
         id: artist
         width: cover.width + parent.width / 20
         height: 30

@@ -8,14 +8,14 @@ Text {
     id: root
     elide: Text.ElideRight
     verticalAlignment: Text.AlignVCenter
-    color: BaseSeit.transparentColor//背景颜色
-    font.family: BaseSeit.fontFamily
-    font.pixelSize: BaseSeit.fontPixelSize + exSize
+    color: TikoSeit.transparentColor
+    font.family: TikoSeit.fontFamily
+    font.pixelSize: TikoSeit.fontPixelSize + exSize
 
     Rectangle {
         id: background
         anchors.fill: parent
-        color: BaseSeit.transparentColor
+        color: TikoSeit.transparentColor
         opacity: 0
     }
 }

@@ -6,13 +6,19 @@ Item{
     property font selectedFont: Qt.font
     property string text
 
-    MyBorderButton{
-        text: root.text
+    MouseArea{
         anchors.fill: parent
         onClicked: editFont.open()
     }
 
-    MyPopup{
+    TikoAutoText{
+        font.family: selectedFont.family
+        font.pixelSize: selectedFont.pixelSize
+        anchors.fill: root
+        text: root.text
+    }
+
+    TikoPopup{
         id: editFont
         width: 200
         height: 230
@@ -27,7 +33,7 @@ Item{
                     id: fontModel
                 }
 
-                delegate: MyBarButton{
+                delegate: TikoButton{
                     width: fontList.width
                     height: 30
                     text: name
@@ -54,11 +60,11 @@ Item{
 
             Rectangle{
                 anchors.fill: fontList
-                color: BaseSeit.transparentColor
+                color: TikoSeit.transparentColor
                 opacity: 0.03
             }
 
-            MyAutoText{
+            TikoAutoText{
                 id: fontSizeShow
                 y: 160
                 width: 50
@@ -66,7 +72,7 @@ Item{
                 text: fontSize.value.toString()
             }
 
-            MySlider{
+            TikoSlider{
                 id: fontSize
                 anchors.left: fontSizeShow.right
                 anchors.leftMargin: 10

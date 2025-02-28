@@ -30,9 +30,9 @@ int main(int argc, char *argv[])
     HostTime* hostTime = HostTime::getInstance();
     OnLine* onLine = OnLine::getInstance();
 
-    qmlRegisterSingletonInstance("MyAPI", 1, 0, "Setting", seit);
-    qmlRegisterSingletonInstance("MyAPI", 1, 0, "MediaPlayer", mediaPlayer);
-    qmlRegisterSingletonInstance("MyAPI", 1, 0, "OnLine", onLine);
+    qmlRegisterSingletonInstance("TikoAPI", 1, 0, "Setting", seit);
+    qmlRegisterSingletonInstance("TikoAPI", 1, 0, "MediaPlayer", mediaPlayer);
+    qmlRegisterSingletonInstance("TikoAPI", 1, 0, "OnLine", onLine);
 
     QObject::connect(hostTime, &HostTime::musicsLoaded, mediaPlayer, &MediaPlayer::getMusicCore);
 

@@ -1,5 +1,5 @@
 import QtQuick
-import MyAPI
+import TikoAPI
 import "../base"
 
 Item {
@@ -18,11 +18,11 @@ Item {
                        }
                    }
 
-        MyMenu{
+        TikoMenu{
             id: menu
 
-            MyMenuItem{text: qsTr("字体加大"); icon.source: "qrc:/image/size+.png"; onClicked: Setting.mainLrcFont.pixelSize++}
-            MyMenuItem{text: qsTr("字体减小"); icon.source: "qrc:/image/size+.png"; onClicked: Setting.mainLrcFont.pixelSize--}
+            TikoMenuItem{text: qsTr("字体加大"); icon.source: "qrc:/image/size+.png"; onClicked: Setting.mainLrcFont.pixelSize++}
+            TikoMenuItem{text: qsTr("字体减小"); icon.source: "qrc:/image/size+.png"; onClicked: Setting.mainLrcFont.pixelSize--}
         }
     }
 

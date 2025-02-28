@@ -17,7 +17,7 @@ qt_add_executable(appmusicPlay
 
 qt_policy(SET QTP0004 NEW)
 
-set_source_files_properties(base/BaseSeit.qml
+set_source_files_properties(base/TikoSeit.qml
     PROPERTIES
         QT_QML_SINGLETON_TYPE true
 )
@@ -26,12 +26,6 @@ set_source_files_properties(core/CoreData.qml
     PROPERTIES
         QT_QML_SINGLETON_TYPE true
 )
-
-file(GLOB SOURCE_LIST "source/*.cpp" "source/*.c")
-
-file(GLOB HEADER_LIST "*.h" )
-
-file(GLOB_RECURSE QML_LIST "screen/*.qml" )
 
 qt_add_qml_module(appmusicPlay
     URI musicPlay
@@ -44,25 +38,26 @@ qt_add_qml_module(appmusicPlay
     core/PlayerLrcTable.qml
     core/PlayerSpectrum.qml
     core/PlayerTable.qml
-    base/BaseSeit.qml
-    base/MyAutoText.qml
-    base/MyBar.qml
-    base/MyBarButton.qml
-    base/MyBorderButton.qml
-    base/MyCheckButton.qml
-    base/MyFrameless.qml
-    base/MyInputText.qml
-    base/MyMenu.qml
-    base/MyMenuItem.qml
-    base/MyMenuSpeacer.qml
-    base/MyPopup.qml
-    base/MyRightVessel.qml
-    base/MySlider.qml
-    base/MyUiButton.qml
-    base/PopupInput.qml
-    base/PopupMessage.qml
-    base/SelectColor.qml
-    base/SelectFont.qml
+    base/TikoSeit.qml
+    base/TikoAutoText.qml
+    base/TikoBar.qml
+    base/TikoButton.qml
+    base/TikoBorderButton.qml
+    base/TikoCheckButton.qml
+    base/TikoComboxButton.qml
+    base/TikoFrameless.qml
+    base/TikoInputText.qml
+    base/TikoMenu.qml
+    base/TikoMenuItem.qml
+    base/TikoMenuSpeacer.qml
+    base/TikoPopup.qml
+    base/TikoRightVessel.qml
+    base/TikoSlider.qml
+    base/TikoUiButton.qml
+    base/TikoPopupInput.qml
+    base/TikoPopupMessage.qml
+    base/TikoSelectColor.qml
+    base/TikoSelectFont.qml
     view/PageMain.qml
     view/PageSeit.qml
     view/ToolDeskLrc.qml

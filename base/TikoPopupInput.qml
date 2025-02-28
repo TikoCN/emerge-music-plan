@@ -1,6 +1,6 @@
-﻿import QtQuick.Controls.Basic
+import QtQuick.Controls.Basic
 
-MyPopup {
+TikoPopup {
     id: root
     implicitWidth: 600
     implicitHeight: 400
@@ -11,7 +11,7 @@ MyPopup {
     property var onAccept: ()=>{}
     property var onCancel: ()=>{}
 
-    MyInputText{
+    TikoInputText{
         id: inputLine
         show.text: text
         input.text: orgText
@@ -21,7 +21,7 @@ MyPopup {
         width: parent.width - 20
     }
 
-    MyBorderButton{
+    TikoBorderButton{
         id: yes
         text: qsTr("确定")
         anchors.verticalCenter: parent.verticalCenter
@@ -34,7 +34,7 @@ MyPopup {
         }
     }
 
-    MyBorderButton{
+    TikoBorderButton{
         id: no
         text: qsTr("取消")
         anchors.verticalCenter: parent.verticalCenter

@@ -2,39 +2,34 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Dialogs
 import QtQuick.Layouts
-import MyAPI
+import TikoAPI
 import "../base"
 
 ScrollView{
     id: seitPage
     ScrollBar.horizontal.visible: false
-    ScrollBar.vertical: MyBar{}
+    ScrollBar.vertical: TikoBar{}
 
     property double modeTextWidth: 150
     
-    Column{
+    ColumnLayout{
         id: column
         x: 10
         y: 10
-        width: parent.width
+        width: parent.width - 20
         spacing: 10
-        property double vesselWidth: parent.width * 0.8
 
-        Item{
-            width: column.parent.width
-            height: 1
-        }
-        
         //资源文件管理
-        MyRightVessel{
-            width: column.vesselWidth
+        TikoRightVessel{
+            Layout.fillWidth: true
+            Layout.preferredHeight: this.height
             show.text: qsTr("资源文件管理")
             show.width: seitPage.modeTextWidth
 
             vessel: Item{
                 height: childrenRect.height
 
-                MyBorderButton{
+                TikoBorderButton{
                     id: selectDirButton
                     width: 150
                     height: 50
@@ -42,7 +37,7 @@ ScrollView{
                     onClicked: selectMusicDir.open()
                 }
 
-                MyBorderButton{
+                TikoBorderButton{
                     anchors.left: selectDirButton.right
                     anchors.leftMargin: 10
                     width: selectDirButton.width
@@ -64,14 +59,14 @@ ScrollView{
                     id: sourceList
                     anchors.top: selectDirButton.bottom
                     anchors.topMargin: 10
-                    width: 600
+                    width: parent.width * 0.8
 
                     Repeater{
                         model: ListModel{
                             id: musicSourceModel
                         }
 
-                        delegate: MyAutoText {
+                        delegate: TikoAutoText {
                             text: url
                             background.opacity: {
                                 if(i % 2 === 0){
@@ -85,7 +80,7 @@ ScrollView{
                             width: sourceList.width
                             padding: 10
 
-                            MyUiButton{
+                            TikoButton{
                                 anchors.right: parent.right
                                 anchors.verticalCenter: parent.verticalCenter
                                 icon.source: "qrc:/image/close.png"
@@ -123,16 +118,18 @@ ScrollView{
         }
 
         //颜色管理
-        MyRightVessel{
-            width: column.vesselWidth
+        TikoRightVessel{
+            Layout.fillWidth: true
+            Layout.minimumHeight: height
             show.text: qsTr("颜色管理")
             show.width: seitPage.modeTextWidth
 
             vessel: Column{
-                spacing: 5
+                spacing: 10
+                property double itemWidth: 300
 
-                SelectColor{
-                    width: 200
+                TikoSelectColor{
+                    width: parent.itemWidth
                     text: qsTr("主题颜色")
                     selectedColor: Setting.themeColor
                     onSelectedColorChanged: {
@@ -140,8 +137,8 @@ ScrollView{
                     }
                 }
 
-                SelectColor{
-                    width: 200
+                TikoSelectColor{
+                    width: parent.itemWidth
                     text: qsTr("背景颜色")
                     selectedColor: Setting.backdropColor
                     onSelectedColorChanged: {
@@ -149,8 +146,8 @@ ScrollView{
                     }
                 }
 
-                SelectColor{
-                    width: 200
+                TikoSelectColor{
+                    width: parent.itemWidth
                     text: qsTr("透明层颜色")
                     selectedColor: Setting.transparentColor
                     onSelectedColorChanged: {
@@ -158,8 +155,8 @@ ScrollView{
                     }
                 }
 
-                SelectColor{
-                    width: 200
+                TikoSelectColor{
+                    width: parent.itemWidth
                     text: qsTr("正在播放颜色")
                     selectedColor: Setting.playingLrcColor
                     onSelectedColorChanged: {
@@ -167,8 +164,8 @@ ScrollView{
                     }
                 }
 
-                SelectColor{
-                    width: 200
+                TikoSelectColor{
+                    width: parent.itemWidth
                     text: qsTr("完成播放颜色")
                     selectedColor: Setting.playedLrcColor
                     onSelectedColorChanged: {
@@ -179,16 +176,18 @@ ScrollView{
         }
 
         //字体管理
-        MyRightVessel{
-            width: column.vesselWidth
+        TikoRightVessel{
+            Layout.fillWidth: true
+            Layout.preferredHeight: this.height
             show.text: qsTr("字体管理")
             show.width: seitPage.modeTextWidth
 
             vessel: Column{
                 spacing: 10
+                property double itemWidth: 300
 
-                SelectFont{
-                    width: 200
+                TikoSelectFont{
+                    width: parent.itemWidth
                     height: 30
                     text: qsTr("ui字体")
                     selectedFont: Setting.mainFont
@@ -198,8 +197,8 @@ ScrollView{
                     }
                 }
 
-                SelectFont{
-                    width: 200
+                TikoSelectFont{
+                    width: parent.itemWidth
                     height: 30
                     text: qsTr("桌面滚动歌词字体")
                     selectedFont: Setting.deskFont
@@ -209,8 +208,8 @@ ScrollView{
                     }
                 }
 
-                SelectFont{
-                    width: 200
+                TikoSelectFont{
+                    width: parent.itemWidth
                     height: 30
                     text: qsTr("主页滚动歌词字体")
                     selectedFont: Setting.mainLrcFont
@@ -223,11 +222,14 @@ ScrollView{
         }
 
         //参数管理
-        MyRightVessel{
-            width: column.vesselWidth
+        TikoRightVessel{
+            Layout.fillWidth: true
+            Layout.preferredHeight: this.height
             show.text: qsTr("参数管理")
             show.width: seitPage.modeTextWidth
             vessel: Column{
+                property double itemWidth: 300
+
                 function inputNumber(input, number){
                     var rx = /[^0-9]/
                     if(input.text.match(rx) !== null ){
@@ -240,8 +242,8 @@ ScrollView{
                     return number
                 }
 
-                MyInputText{
-                    width: parent.width
+                TikoInputText{
+                    width: parent.itemWidth
                     show.text: qsTr("最大加载线程数")
                     show.width: 200
                     input.text: Setting.maxThreadNumber.toString()
@@ -251,56 +253,58 @@ ScrollView{
         }
 
         //选项管理
-        MyRightVessel{
-            width: column.vesselWidth
+        TikoRightVessel{
+            Layout.fillWidth: true
+            Layout.preferredHeight: this.height
             show.text: qsTr("选项管理")
             show.width: seitPage.modeTextWidth
             vessel: Column{
+                property double itemWidth: 300
 
-                MyCheckButton{
-                    width: parent.width * 0.6
+                TikoCheckButton{
+                    width: parent.itemWidth
                     text: qsTr("在线模块")
                     check: Setting.isOnLine
                     onCheckChanged: Setting.isOnLine = check
                 }
 
-                MyCheckButton{
-                    width: parent.width * 0.6
+                TikoCheckButton{
+                    width: parent.itemWidth
                     text: qsTr("从网易获得封面")
                     check: Setting.isGetCoverFromNetEase
                     onCheckChanged: Setting.isGetCoverFromNetEase = check
                 }
 
-                MyCheckButton{
-                    width: parent.width * 0.6
+                TikoCheckButton{
+                    width: parent.itemWidth
                     text: qsTr("从qq音乐获得歌词")
                     check: Setting.isGetCoverFromQQMusic
                     onCheckChanged: Setting.isGetCoverFromQQMusic = check
                 }
 
-                MyCheckButton{
-                    width: parent.width * 0.6
+                TikoCheckButton{
+                    width: parent.itemWidth
                     text: qsTr("从baidu获得封面")
                     check: Setting.isGetCoverFromBaidu
                     onCheckChanged: Setting.isGetCoverFromBaidu = check
                 }
 
-                MyCheckButton{
-                    width: parent.width * 0.6
+                TikoCheckButton{
+                    width: parent.itemWidth
                     text: qsTr("从bing获得封面")
                     check: Setting.isGetCoverFromBing
                     onCheckChanged: Setting.isGetCoverFromBing = check
                 }
 
-                MyCheckButton{
-                    width: parent.width * 0.6
+                TikoCheckButton{
+                    width: parent.itemWidth
                     text: qsTr("从qq音乐获得歌词")
                     check: Setting.isGetLrcFromNetEase
                     onCheckChanged: Setting.isGetLrcFromNetEase = check
                 }
 
-                MyCheckButton{
-                    width: parent.width * 0.6
+                TikoCheckButton{
+                    width: parent.itemWidth
                     text: qsTr("从网易获得歌词")
                     check: Setting.isGetLrcFromQQMusic
                     onCheckChanged: Setting.isGetLrcFromQQMusic = check

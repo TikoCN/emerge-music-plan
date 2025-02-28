@@ -12,9 +12,10 @@ Button {
     property double hover: 0.3
     property double normal: 0
     property bool cache: true
+    property TikoAutoText textShow: textShow
 
     background: Rectangle{
-        color: BaseSeit.transparentColor//背景颜色
+        color: TikoSeit.transparentColor//背景颜色
         radius: button.radius
         opacity: {
             return button.hovered ? button.hover :  button.normal
@@ -33,7 +34,7 @@ Button {
             height: button.icon.height
             cache: button.cache
         }
-        MyAutoText{
+        TikoAutoText{
             id: textShow
             anchors.left: iconImg.right
             anchors.leftMargin: 3

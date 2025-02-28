@@ -1,6 +1,6 @@
 import QtQuick
 import QtQuick.Layouts
-import MyAPI
+import TikoAPI
 import "../base"
 
 Item {
@@ -64,21 +64,21 @@ Item {
             id: coreName
             width: (parent.width - tool.width - cover.width) / 2
 
-            MyAutoText{
+            TikoAutoText{
                 text: root.core.title
                 exSize: 3
                 font.bold: true
                 height: 30
                 width: parent.width
             }
-            MyAutoText{
+            TikoAutoText{
                 text: root.core.artist
                 height: 20
                 width: parent.width
             }
         }
 
-        MyAutoText{
+        TikoAutoText{
             id: alumb
             text: root.core.alumb
             width: coreName.width
@@ -89,7 +89,7 @@ Item {
             id: tool
             spacing: 10
 
-            MyUiButton{
+            TikoButton{
                 text: qsTr("喜欢")
                 width: 50
                 height: 50
@@ -103,24 +103,24 @@ Item {
                     }
                 }
             }
-            MyUiButton{
+            TikoButton{
                 text: qsTr("更多")
                 width: 50
                 height: 50
                 onClicked: rightMenu.open()
                 icon.source: "qrc:/image/else.png"
             }
-            MyAutoText{
+            TikoAutoText{
                 text: root.core.getStringTime()
                 width: CoreData.timeWidth
                 height: 50
             }
-            MyAutoText{
+            TikoAutoText{
                 text: root.core.lastEdit
                 width: CoreData.editTimeWidth
                 height: 50
             }
-            MyAutoText{
+            TikoAutoText{
                 text: root.core.playNumber.toString()
                 width: CoreData.playNumberWidth
                 height: 50
@@ -128,109 +128,109 @@ Item {
         }
     }
 
-    MyMenu{
+    TikoMenu{
         id: rightMenu
         cascade: true
 
-        MyMenuItem{
+        TikoMenuItem{
             text: qsTr("播放")
             onTriggered: root.play()
             icon.source: "qrc:/image/playBlack.png"
         }
 
-        MyMenuItem{
+        TikoMenuItem{
             text: qsTr("下一首播放")
             onTriggered: MediaPlayer.playingInsertMusic(coreId)
         }
 
-        MyMenuItem{
+        TikoMenuItem{
             text: qsTr("添加到播放")
             onTriggered: MediaPlayer.musicInsertPlayingTable(coreId)
         }
 
-        MyMenuSpeacer{}
+        TikoMenuSpeacer{}
 
-        MyMenuItem{
+        TikoMenuItem{
             text: qsTr("喜欢")
             icon.source: "qrc:/image/love.png"
         }
 
-        MyMenuItem{
+        TikoMenuItem{
             text: qsTr("打开文件夹")
             onTriggered: root.core.openMusicDir()
             icon.source: "qrc:/image/dir.png"
         }
 
-        MyMenuItem{
+        TikoMenuItem{
             text: qsTr("打开歌词")
             onTriggered: root.core.openMusicLrc()
         }
 
-        MyMenuItem{
+        TikoMenuItem{
             text: qsTr("打开封面")
             onTriggered: root.core.openMusicCover()
         }
 
-        MyMenuSpeacer{}
+        TikoMenuSpeacer{}
 
-        MyMenuItem{
+        TikoMenuItem{
             text: qsTr("复制 文件路径")
             onTriggered: root.core.copyMusicUrl()
         }
 
-        MyMenuItem{
+        TikoMenuItem{
             text: qsTr("复制 歌曲信息")
             onTriggered: root.core.copyMusicData()
         }
 
-        MyMenuSpeacer{}
+        TikoMenuSpeacer{}
 
-        MyMenuItem{
+        TikoMenuItem{
             text: qsTr("编辑音乐信息")
             onTriggered: ToolHelper.editMusic(root.coreId)
         }
 
-        MyMenu{
+        TikoMenu{
             title: qsTr("从网络中下载")
-            MyMenuItem{
+            TikoMenuItem{
                 text: qsTr("从 网络中下载 封面")
                 onTriggered: OnLine.downCover(core.getSearchString(), core.url);
             }
-            MyMenuItem{
+            TikoMenuItem{
                 text: qsTr("从 QQ音乐 下载 封面")
                 onTriggered: OnLine.downCoverFromQQMusic(core.getSearchString(), core.url);
             }
-            MyMenuItem{
+            TikoMenuItem{
                 text: qsTr("从 网易云 下载 封面")
                 onTriggered: OnLine.downCoverFromNetEase(core.getSearchString(), core.url);
             }
-            MyMenuItem{
+            TikoMenuItem{
                 text: qsTr("从 Bing搜索 下载 封面")
                 onTriggered: OnLine.downCoverFromBing(core.getSearchString(), core.url);
             }
-            MyMenuItem{
+            TikoMenuItem{
                 text: qsTr("从 Baidu搜索 下载 封面")
                 onTriggered: OnLine.downCoverFromBaidu(core.getSearchString(), core.url);
             }
-            MyMenuSpeacer{}
-            MyMenuItem{
+            TikoMenuSpeacer{}
+            TikoMenuItem{
                 text: qsTr("从 网络中下载 歌词")
                 onTriggered: OnLine.downLrc(core.getSearchString(), core.url);
             }
-            MyMenuItem{
+            TikoMenuItem{
                 text: qsTr("从 QQ音乐 下载 歌词")
                 onTriggered: OnLine.downLrcFromQQMusic(core.getSearchString(), core.url);
             }
-            MyMenuItem{
+            TikoMenuItem{
                 text: qsTr("从 网易云 下载 歌词")
                 onTriggered: OnLine.downLrcFromNetEase(core.getSearchString(), core.url);
             }
         }
 
-        MyMenu{
+        TikoMenu{
             title: qsTr("格式转换为")
             Repeater{
-                delegate: MyMenuItem{
+                delegate: TikoMenuItem{
                     text: suffix
                     onTriggered: core.setSuffix(suffix);
                 }
@@ -247,9 +247,9 @@ Item {
             }
         }
 
-        MyMenuSpeacer{}
+        TikoMenuSpeacer{}
 
-        MyMenu{
+        TikoMenu{
             title: qsTr("添加到")
             icon.source: "qrc:/image/move.png"
 
@@ -261,7 +261,7 @@ Item {
             }
             Component {
                 id:  addMenu
-                MyMenuItem {
+                TikoMenuItem {
                     text: MediaPlayer.tableList[aim].name
                     onTriggered: MediaPlayer.tableList[aim].insertMusic(core)
                 }
@@ -275,7 +275,7 @@ Item {
             }
         }
 
-        MyMenu{
+        TikoMenu{
             title: qsTr("移动到")
             icon.source: "qrc:/image/addR.png"
 
@@ -287,7 +287,7 @@ Item {
             }
             Component {
                 id:  moveMenu
-                MyMenuItem {
+                TikoMenuItem {
                     text:  MediaPlayer.tableList[aim].name
                     onTriggered: MediaPlayer.tableMoveMusic(root.tableId, root.listId, aim)
                 }

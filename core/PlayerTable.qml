@@ -1,7 +1,7 @@
 import QtQuick
 import QtQuick.Controls.Basic
 import QtQuick.Layouts
-import MyAPI
+import TikoAPI
 import "../base"
 
 Item {
@@ -31,20 +31,21 @@ Item {
         }
 
         //列表名字
-        MyAutoText{
+        TikoAutoText{
             id: tableName
             anchors.left: tableCover.right
             anchors.leftMargin: 10
             anchors.top: tableCover.top
             text: MediaPlayer.tableList[tableId].name
-            width: parent.width
+            width: parent.width - tableCover.width
+            height: tableCover.height - playButton.height
             exSize: 20
             font.bold: true
-            height: 50
+            horizontalAlignment: Text.AlignHCenter
         }
 
         //播放列表
-        MyBarButton{
+        TikoButton{
             id: playButton
             anchors.left: tableName.left
             anchors.bottom: tableCover.bottom
@@ -56,7 +57,7 @@ Item {
         }
 
         //批量操作
-        MyBarButton{
+        TikoButton{
             anchors.left: playButton.right
             anchors.leftMargin: 10
             anchors.bottom: tableCover.bottom
@@ -74,34 +75,34 @@ Item {
             anchors.leftMargin: 10
             spacing: 10
 
-            MyBarButton{
-                Layout.minimumWidth: 90
+            TikoButton{
+                Layout.minimumWidth: 70
                 onClicked: MediaPlayer.tableList[tableId].showAllMusic()
                 text: qsTr("歌曲")
                 icon.source: "qrc:/image/music.png"
             }
 
-            MyBarButton{
-                Layout.minimumWidth: 90
+            TikoButton{
+                Layout.minimumWidth: 70
                 onClicked: MediaPlayer.tableList[tableId].showLove()
                 text: qsTr("喜爱")
                 icon.source: "qrc:/image/love.png"
             }
 
-            MyBarButton{
-                Layout.minimumWidth: 90
+            TikoButton{
+                Layout.minimumWidth: 70
                 onClicked: MediaPlayer.tableList[tableId].openDir()
                 text: qsTr("打开")
                 icon.source: "qrc:/image/dir.png"
             }
 
-            MyBarButton{
-                Layout.minimumWidth: 90
+            TikoButton{
+                Layout.minimumWidth: 70
                 onClicked: editName.open()
                 text: qsTr("命名")
                 icon.source: "qrc:/image/rename.png"
 
-                PopupInput{
+                TikoPopupInput{
                     id: editName
                     text: qsTr("请输入列表的新名字")
                     orgText: MediaPlayer.tableList[tableId].name
@@ -111,43 +112,43 @@ Item {
                 }
             }
 
-            MyBarButton{
-                Layout.minimumWidth: 150
+            TikoButton{
+                Layout.minimumWidth: 70
                 onClicked: sortMenu.open()
                 text: qsTr("排序")
                 icon.source: "qrc:/image/sort.png"
 
-                MyMenu{
+                TikoMenu{
                     id: sortMenu
                     width: parent.width
                     y: parent.height
 
-                    MyMenuItem{
+                    TikoMenuItem{
                         text: qsTr("标   题");
                         onTriggered: MediaPlayer.tableList[tableId].key = 0;
                         icon.source: MediaPlayer.tableList[tableId].key === 0 ? "qrc:/image/used.png" : ""}
-                    MyMenuItem{
+                    TikoMenuItem{
                         text: qsTr("歌   手");
                         onTriggered: MediaPlayer.tableList[tableId].key = 1;
                         icon.source: MediaPlayer.tableList[tableId].key === 1 ? "qrc:/image/used.png" : ""}
-                    MyMenuItem{
+                    TikoMenuItem{
                         text: qsTr("专   辑");
                         onTriggered: MediaPlayer.tableList[tableId].key = 2;
                         icon.source: MediaPlayer.tableList[tableId].key === 2 ? "qrc:/image/used.png" : ""}
-                    MyMenuItem{
+                    TikoMenuItem{
                         text: qsTr("时   长");
                         onTriggered: MediaPlayer.tableList[tableId].key = 3;
                         icon.source: MediaPlayer.tableList[tableId].key === 3 ? "qrc:/image/used.png" : ""}
-                    MyMenuItem{
+                    TikoMenuItem{
                         text: qsTr("修改时间");
                         onTriggered: MediaPlayer.tableList[tableId].key = 4;
                         icon.source: MediaPlayer.tableList[tableId].key === 4 ? "qrc:/image/used.png" : ""}
-                    MyMenuSpeacer{}
-                    MyMenuItem{
+                    TikoMenuSpeacer{}
+                    TikoMenuItem{
                         text: qsTr("升   序");
                         onTriggered: MediaPlayer.tableList[tableId].forward = false;
                         icon.source: MediaPlayer.tableList[tableId].forward === false ? "qrc:/image/used.png" : ""}
-                    MyMenuItem{
+                    TikoMenuItem{
                         text: qsTr("降   序");
                         onTriggered: MediaPlayer.tableList[tableId].forward = true;
                         icon.source: MediaPlayer.tableList[tableId].forward === true ? "qrc:/image/used.png" : ""}
@@ -159,19 +160,20 @@ Item {
             anchors.right: parent.right
             anchors.rightMargin: 20
             anchors.verticalCenter: tableTool.verticalCenter
-            width: 200
+            width: 150
             height: 40
             color: Setting.themeColor
-            radius: 15
+            radius: 10
             opacity: 0.3
 
             //搜索
-            MyInputText{
+            TikoInputText{
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.left: parent.left
                 anchors.leftMargin: 20
                 width: parent.width - 20 - 25
                 show.text: qsTr("搜索：")
+                borderColor: "#00000000"
                 input.onEditingFinished: {
                     if(MediaPlayer.tableList[tableId].search !== input.text){
                         MediaPlayer.tableList[tableId].search = input.text
@@ -179,7 +181,7 @@ Item {
                 }
             }
 
-            MyUiButton{
+            TikoUiButton{
                 text: qsTr("搜索")
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.right: parent.right
@@ -200,7 +202,7 @@ Item {
         anchors.rightMargin: 5
 
         ScrollBar.horizontal.visible: false
-        ScrollBar.vertical: MyBar{}
+        ScrollBar.vertical: TikoBar{}
 
         ListView{
             id: musicList

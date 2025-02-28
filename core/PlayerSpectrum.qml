@@ -1,5 +1,5 @@
 import QtQuick
-import MyAPI
+import TikoAPI
 import "../base"
 
 Canvas{

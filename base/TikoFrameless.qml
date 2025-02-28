@@ -75,11 +75,11 @@ Window{
         height: parent.height
         topLeftRadius: 10
         topRightRadius: 10
-        color: BaseSeit.backdropColor
+        color: TikoSeit.backdropColor
 
         Rectangle{
             anchors.fill: parent
-            border.color: BaseSeit.transparentColor
+            border.color: TikoSeit.transparentColor
             topLeftRadius: 10
             topRightRadius: 10
             border.width: 0.5

@@ -1,16 +1,16 @@
 import QtQuick
 import QtQuick.Layouts
 import QtQuick.Controls
-import MyAPI
+import TikoAPI
 import "../base"
 
-MyFrameless {
+TikoFrameless {
     id: toolEditMusic
     title: qsTr("编辑歌词")
 
     property var core
 
-    MyUiButton{
+    TikoButton{
         id: noEdit
         anchors.top: parent.top
         anchors.topMargin: 10
@@ -28,7 +28,7 @@ MyFrameless {
         spacing: 10
         height: 30
 
-        MyUiButton{
+        TikoButton{
             id:downMark
             icon.source:"qrc:/image/downY.png"
             text:qsTr("重新添加时间戳并跳转下一行")
@@ -38,21 +38,21 @@ MyFrameless {
             }
         }
 
-        MyUiButton{
+        TikoButton{
             id: editMark
             icon.source: "qrc:/image/addR.png"
             text: qsTr("添加时间戳")
             onClicked: toolEditMusic.timeWork(1)
         }
 
-        MyUiButton{
+        TikoButton{
             id: deleteMark
             icon.source: "qrc:/image/minR.png"
             text: qsTr("删除时间戳")
             onClicked: toolEditMusic.timeWork(2)
         }
 
-        MyUiButton{
+        TikoButton{
             id: yesEdit
             icon.source: "qrc:/image/yesR.png"
             text: qsTr("确定编辑并保存")
@@ -72,35 +72,35 @@ MyFrameless {
         property int showW: 30
         property int itemW: (musicData.width - 50) / 5
 
-        MyInputText{
+        TikoInputText{
             id: title
             show.text: qsTr("标题")
             show.width: musicData.showW
             implicitWidth: musicData.itemW
         }
 
-        MyInputText{
+        TikoInputText{
             id: artist
             show.text: qsTr("歌手")
             show.width: musicData.showW
             implicitWidth: musicData.itemW
         }
 
-        MyInputText{
+        TikoInputText{
             id: alumb
             show.text: qsTr("专辑")
             show.width: musicData.showW
             implicitWidth: musicData.itemW
         }
 
-        MyInputText{
+        TikoInputText{
             id: genre
             show.text: qsTr("流派")
             show.width: musicData.showW
             implicitWidth: musicData.itemW
         }
 
-        MyInputText{
+        TikoInputText{
             id: year
             show.text: qsTr("年份")
             show.width: musicData.showW
@@ -117,7 +117,7 @@ MyFrameless {
         anchors.margins: 10
 
         ScrollBar.horizontal.visible: false
-        ScrollBar.vertical: MyBar{}
+        ScrollBar.vertical: TikoBar{}
 
         background:Rectangle{
             color: Setting.transparentColor

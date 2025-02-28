@@ -1,6 +1,6 @@
 import QtQuick
 import QtQuick.Controls.Basic
-import MyAPI
+import TikoAPI
 import "../base"
 
 Item {
@@ -32,7 +32,7 @@ Item {
         id: moveArea
         anchors.fill: parent
         ScrollBar.vertical.visible: false
-        ScrollBar.horizontal:MyBar{
+        ScrollBar.horizontal:TikoBar{
             id: moveBar
             visible: false
             width: 0

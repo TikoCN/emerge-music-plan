@@ -1,6 +1,6 @@
 import QtQuick.Controls.Basic
 import QtQuick
-import MyAPI
+import TikoAPI
 import "../base"
 import "../core"
 
@@ -14,7 +14,7 @@ Drawer {
         anchors.fill:  parent
     }
 
-    MyAutoText{
+    TikoAutoText{
         id: playingTableText
         text: qsTr("正在播放: ") + qsTr("暂无歌曲")
         y: 10

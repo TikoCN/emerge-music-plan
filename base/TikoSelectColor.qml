@@ -3,36 +3,38 @@ import QtQuick.Controls
 import QtQuick.Layouts
 
 Item {
-    id: root
+    id: tikoColorSelcet
+    implicitHeight: 40
+
     property color selectedColor: "red"
-    property string text
-    height: 50
+    property color borderColor: TikoSeit.transparentColor
+    property string text: qsTr("颜色选择")
+
+    MouseArea{
+        onClicked: colorSelect.open()
+        anchors.fill: parent
+    }
+
+    TikoAutoText{
+        text: tikoColorSelcet.text
+        anchors.left: tikoColorSelcet.left
+        height: tikoColorSelcet.height
+        width: tikoColorSelcet.width - tikoColorSelcet.height * 0.6
+    }
 
     Rectangle{
-        id: colorShow
-        color: root.selectedColor
-        y: textShow.height * 0.2
-        width: textShow.height * 0.6
-        height: width
-        border.color: BaseSeit.transparentColor
-        border.width: 1
-        radius: height * 0.2
-        smooth: true
+        height: tikoColorSelcet.height * 0.6
+        width: this.height
+        anchors.right: tikoColorSelcet.right
+        color: tikoColorSelcet.selectedColor
+        border.color: tikoColorSelcet.borderColor
     }
 
-    MyBarButton{
-        id: textShow
-        anchors.left: colorShow.right
-        anchors.leftMargin: 3
-        width: parent.width - colorShow.width - 20
-        text: root.text
-        onClicked: colorSelect.open()
-    }
 
-    MyPopup{
+    TikoPopup{
         id: colorSelect
-        width: 200
-        height: 150
+        width: 600
+        height: 350
 
         contentItem: Item{
             //红色
@@ -43,7 +45,7 @@ Item {
                 height: 15
             }
 
-            MySlider{
+            TikoSlider{
                 anchors.left: redR.right
                 anchors.leftMargin: 15
                 anchors.top: redR.top
@@ -53,8 +55,8 @@ Item {
                 radius: 6
                 from: 0
                 to: 255
-                value: root.selectedColor.r * 255
-                onMoved: root.selectedColor.r = redSlider.value / 255
+                value: tikoColorSelcet.selectedColor.r * 255
+                onMoved: tikoColorSelcet.selectedColor.r = redSlider.value / 255
             }
 
             //绿色
@@ -66,7 +68,7 @@ Item {
                 height: 15
             }
 
-            MySlider{
+            TikoSlider{
                 anchors.left: greenR.right
                 anchors.leftMargin: 15
                 anchors.top: greenR.top
@@ -76,8 +78,8 @@ Item {
                 radius: 6
                 from: 0
                 to: 255
-                value: root.selectedColor.g * 255
-                onMoved: root.selectedColor.g = greenSlider.value / 255
+                value: tikoColorSelcet.selectedColor.g * 255
+                onMoved: tikoColorSelcet.selectedColor.g = greenSlider.value / 255
             }
 
             //蓝色
@@ -89,7 +91,7 @@ Item {
                 height: 15
             }
 
-            MySlider{
+            TikoSlider{
                 anchors.left: blueR.right
                 anchors.leftMargin: 15
                 anchors.top: blueR.top
@@ -99,8 +101,8 @@ Item {
                 radius: 6
                 from: 0
                 to: 255
-                value: root.selectedColor.b * 255
-                onMoved: root.selectedColor.b = blueSlider.value / 255
+                value: tikoColorSelcet.selectedColor.b * 255
+                onMoved: tikoColorSelcet.selectedColor.b = blueSlider.value / 255
             }
 
             //选择预定颜色
@@ -125,7 +127,7 @@ Item {
                             }
                             MouseArea{
                                 anchors.fill: parent
-                                onClicked: root.selectedColor = showColor
+                                onClicked: tikoColorSelcet.selectedColor = showColor
                             }
                         }
                     }

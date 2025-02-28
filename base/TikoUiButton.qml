@@ -20,7 +20,7 @@ Button {
     ToolTip.text: text
 
     background: Rectangle{
-        color: BaseSeit.transparentColor//背景颜色
+        color: TikoSeit.transparentColor//背景颜色
         radius: button.radius
         opacity: {
             return button.hovered ? button.hover :  button.normal

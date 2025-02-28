@@ -4,7 +4,7 @@ MenuSeparator {
     padding: 12
     contentItem: Rectangle {
         implicitHeight: 1
-        color: BaseSeit.transparentColor
+        color: TikoSeit.transparentColor
         opacity: 0.3
     }
 }

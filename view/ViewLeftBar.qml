@@ -2,7 +2,7 @@ import QtQuick
 import QtQuick.Window
 import QtQuick.Controls
 import QtQml
-import MyAPI
+import TikoAPI
 import "../base"
 
 Item {
@@ -29,7 +29,7 @@ Item {
             height: parent.height
 
             //切换到主页
-            MyBarButton{
+            TikoButton{
                 width: parent.width
                 id: mainPageButton
                 text: qsTr("切换到主页")
@@ -39,7 +39,7 @@ Item {
             }
 
             //切换到设置
-            MyBarButton{
+            TikoButton{
                 width: parent.width
                 id: seitPageButton
                 text: qsTr("切换到设置")
@@ -59,7 +59,7 @@ Item {
                     radius: 10
                 }
             }
-            MyBarButton{
+            TikoButton{
                 width: parent.width
                 text: qsTr("本地列表")
                 anchors.horizontalCenter: parent.horizontalCenter
@@ -72,7 +72,7 @@ Item {
                 implicitHeight: childrenRect.height
                 spacing: 5
 
-                delegate: MyBarButton{
+                delegate: TikoButton{
                     width: dirTableListView.width
                     text: MediaPlayer.tableList[i].name
                     cache: false
@@ -101,7 +101,7 @@ Item {
             }
 
             //新建列表
-            MyBarButton{
+            TikoButton{
                 width: parent.width
                 id: addTableButton
                 text: qsTr("新建列表")
@@ -109,7 +109,7 @@ Item {
                 icon.source: "qrc:/image/new.png"
                 onClicked: inputName.open()
 
-                PopupInput{
+                TikoPopupInput{
                     id: inputName
                     x: window.width / 2 - this.width / 2
                     y: window.height / 2 - this.height
@@ -125,7 +125,7 @@ Item {
                 implicitHeight: childrenRect.height
                 spacing: 5
 
-                delegate: MyBarButton{
+                delegate: TikoButton{
                     width: userTableListView.width
                     text: MediaPlayer.tableList[i].name
                     icon.source:  mainView.tableList[i].showCover

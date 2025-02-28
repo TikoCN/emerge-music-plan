@@ -13,14 +13,14 @@ ScrollBar {
     background: Rectangle {  // 背景
         id:background
         anchors.fill:parent
-        color: root.active ? BaseSeit.themeColor : BaseSeit.backdropColor
+        color: root.active ? TikoSeit.themeColor : TikoSeit.backdropColor
         opacity:0.3
         radius:4
     }
 
     contentItem: Rectangle {  // 滑块
         id:handle
-        color: BaseSeit.themeColor // 颜色
+        color: TikoSeit.themeColor // 颜色
         radius:3
     }
 }

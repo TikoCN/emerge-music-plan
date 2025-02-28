@@ -15,7 +15,7 @@ Slider {
         Rectangle{
             width: root.width
             height: root.height
-            color: BaseSeit.transparentColor
+            color: TikoSeit.transparentColor
             opacity: 0.05
             radius: root.radius
         }
@@ -48,7 +48,7 @@ Slider {
                 }
             }
 
-            color: BaseSeit.themeColor
+            color: TikoSeit.themeColor
             opacity: 0.4
         }
     }
@@ -72,7 +72,7 @@ Slider {
             }
         }
 
-        color: BaseSeit.themeColor
+        color: TikoSeit.themeColor
         property var min: {
             if(root.orientation === Qt.Vertical){
                 return root.width

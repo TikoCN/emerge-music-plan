@@ -2,7 +2,7 @@ import QtQuick
 import QtQuick.Window
 import QtQuick.Controls.Basic
 import QtQml
-import MyAPI
+import TikoAPI
 import "../base"
 
 Item {
@@ -29,7 +29,7 @@ Item {
             source: "qrc:/image/cover.png"
         }
 
-        MyAutoText{
+        TikoAutoText{
             id: title
             width: 200
             height: 30
@@ -38,7 +38,7 @@ Item {
             text: qsTr("标题")
         }
 
-        MyAutoText{
+        TikoAutoText{
             id: artist
             width: 200
             height: 20
@@ -50,13 +50,13 @@ Item {
         }
 
         //设置循环模式
-        MyUiButton{
+        TikoButton{
             id: loopButton
             anchors.right: nextMusicUp.left
             anchors.rightMargin: 15
             text: qsTr("设置循环模式")
 
-            MyPopup{
+            TikoPopup{
                 id: loopSelect
                 visible: false
                 y: loopButton.y-height
@@ -66,7 +66,7 @@ Item {
                 contentItem:  Column {
                     spacing:  10
 
-                    MyBarButton {
+                    TikoButton {
                         id: loop0
                         text: qsTr("顺序播放")
                         icon.source: "qrc:/image/loop0.png"
@@ -74,7 +74,7 @@ Item {
                         width: parent.width
                     }
 
-                    MyBarButton {
+                    TikoButton {
                         id: loop1
                         text: qsTr("随机循环")
                         icon.source: "qrc:/image/loop1.png"
@@ -82,7 +82,7 @@ Item {
                         width: parent.width
                     }
 
-                    MyBarButton {
+                    TikoButton {
                         id: loop2
                         text: qsTr("单曲循环")
                         icon.source: "qrc:/image/loop2.png"
@@ -111,7 +111,7 @@ Item {
         }
 
         //播放上一首歌曲
-        MyUiButton{
+        TikoButton{
             id: nextMusicUp
             anchors.right: playerControl.left
             anchors.rightMargin: 10
@@ -129,7 +129,7 @@ Item {
             radius: 15
         }
         //播放 暂停按钮
-        MyUiButton{
+        TikoButton{
             x: parent.width/2 - width/2
             id: playerControl
             icon.source: MediaPlayer.player.playing ? "qrc:/image/stop.png" : "qrc:/image/play.png"
@@ -138,7 +138,7 @@ Item {
         }
 
         //下一首
-        MyUiButton{
+        TikoButton{
             id: nextMusicDown
             anchors.left: playerControl.right
             anchors.leftMargin: 10
@@ -148,7 +148,7 @@ Item {
         }
 
         //音量
-        MyUiButton{
+        TikoButton{
             id: playVolume
             anchors.left: nextMusicDown.right
             anchors.leftMargin: 15
@@ -156,7 +156,7 @@ Item {
             onClicked: volumePopup.open()
             text: qsTr("控制音量")
 
-            MyPopup{
+            TikoPopup{
                 id: volumePopup
                 y: - parent.height - height
                 x: - width / 2 + parent.width / 2
@@ -164,7 +164,7 @@ Item {
                 width: 35
                 padding: 10
 
-                contentItem: MySlider{
+                contentItem: TikoSlider{
                     from: 0
                     to: 100
                     value: MediaPlayer.audioOutput.volume * 100
@@ -176,7 +176,7 @@ Item {
         }
 
         //桌面歌词
-        MyUiButton{
+        TikoButton{
             id: deskLrc
             anchors.right: playingListTabel.left
             anchors.rightMargin: 3
@@ -205,7 +205,7 @@ Item {
         }
 
         //播放列表
-        MyUiButton{
+        TikoButton{
             id: playingListTabel
             anchors.right: parent.right
             anchors.rightMargin: 10
@@ -223,7 +223,7 @@ Item {
         }
     }
 
-    MySlider{
+    TikoSlider{
         id: playPos
         width: parent.width
         height: 15

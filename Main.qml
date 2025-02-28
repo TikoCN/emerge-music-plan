@@ -2,19 +2,47 @@ import QtQuick
 import QtQuick.Window
 import QtQuick.Controls
 import QtQml
-import MyAPI
+import TikoAPI
 import "base"
 import "view"
 import "core"
 
-MyFrameless{
+TikoFrameless{
     id: window
     width:Setting.windowRect.width
+    minimumWidth: 800
     height:Setting.windowRect.height
+    minimumHeight: 600
     x:Setting.windowRect.x
     y:Setting.windowRect.y
     visible: true
     title: qsTr("尘星音乐")
+
+    Binding{
+        target: TikoSeit
+        property: "themeColor"
+        value: Setting.themeColor
+    }
+    Binding{
+        target: TikoSeit
+        property: "transparentColor"
+        value: Setting.transparentColor
+    }
+    Binding{
+        target: TikoSeit
+        property: "backdropColor"
+        value: Setting.backdropColor
+    }
+    Binding{
+        target: TikoSeit
+        property: "fontFamily"
+        value: Setting.mainFont.family
+    }
+    Binding{
+        target: TikoSeit
+        property: "fontPixelSize"
+        value: Setting.mainFont.pixelSize
+    }
 
     Component.onDestruction:{
         //写入配置
@@ -81,7 +109,7 @@ MyFrameless{
     }
 
     //对话框
-    PopupMessage{
+    TikoPopupMessage{
         id: popupMessage
     }
 
