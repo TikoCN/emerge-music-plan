@@ -1,4 +1,5 @@
 import QtQuick
+import "../control"
 
 Item {
     id: rightVessel

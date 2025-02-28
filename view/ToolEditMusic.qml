@@ -2,7 +2,7 @@ import QtQuick
 import QtQuick.Layouts
 import QtQuick.Controls
 import TikoAPI
-import "../base"
+import Tiko
 
 TikoFrameless {
     id: toolEditMusic
@@ -10,7 +10,7 @@ TikoFrameless {
 
     property var core
 
-    TikoButton{
+    TikoUiButton{
         id: noEdit
         anchors.top: parent.top
         anchors.topMargin: 10
@@ -38,21 +38,21 @@ TikoFrameless {
             }
         }
 
-        TikoButton{
+        TikoUiButton{
             id: editMark
             icon.source: "qrc:/image/addR.png"
             text: qsTr("添加时间戳")
             onClicked: toolEditMusic.timeWork(1)
         }
 
-        TikoButton{
+        TikoUiButton{
             id: deleteMark
             icon.source: "qrc:/image/minR.png"
             text: qsTr("删除时间戳")
             onClicked: toolEditMusic.timeWork(2)
         }
 
-        TikoButton{
+        TikoUiButton{
             id: yesEdit
             icon.source: "qrc:/image/yesR.png"
             text: qsTr("确定编辑并保存")

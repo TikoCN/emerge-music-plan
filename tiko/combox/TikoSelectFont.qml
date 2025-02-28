@@ -1,5 +1,7 @@
 import QtQuick
 import QtQuick.Controls
+import "../control"
+import "../"
 
 Item{
     id: root
@@ -72,7 +74,7 @@ Item{
                 text: fontSize.value.toString()
             }
 
-            TikoSlider{
+            TikoHSlider{
                 id: fontSize
                 anchors.left: fontSizeShow.right
                 anchors.leftMargin: 10

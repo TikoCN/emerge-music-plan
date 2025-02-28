@@ -3,7 +3,7 @@ import QtQuick.Window
 import QtQuick.Controls
 import QtQml
 import TikoAPI
-import "../base"
+import Tiko
 
 Item {
     id: root

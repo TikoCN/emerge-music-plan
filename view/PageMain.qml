@@ -1,6 +1,6 @@
 import QtQuick
 import TikoAPI
-import "../base"
+import Tiko
 import "../core"
 
 Item {
@@ -8,7 +8,7 @@ Item {
     property bool show:  false
 
     //关闭
-    TikoButton{
+    TikoUiButton{
         id: close
         anchors.right: parent.right
         text: qsTr("关闭")
@@ -17,7 +17,7 @@ Item {
     }
 
     //最大化
-    TikoButton{
+    TikoUiButton{
         id: max
         anchors.right: close.left
         anchors.rightMargin: 20
@@ -34,7 +34,7 @@ Item {
     }
 
     //最小化
-    TikoButton{
+    TikoUiButton{
         id: min
         anchors.right: max.left
         anchors.rightMargin: 20
@@ -44,7 +44,7 @@ Item {
     }
 
     //返回主页
-    TikoButton{
+    TikoUiButton{
         id: back
         anchors.left: parent.left
         anchors.leftMargin: 20

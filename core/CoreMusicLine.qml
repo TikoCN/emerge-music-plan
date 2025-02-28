@@ -1,7 +1,7 @@
 import QtQuick
 import QtQuick.Layouts
 import TikoAPI
-import "../base"
+import Tiko
 
 Item {
     id:root
@@ -89,7 +89,7 @@ Item {
             id: tool
             spacing: 10
 
-            TikoButton{
+            TikoUiButton{
                 text: qsTr("喜欢")
                 width: 50
                 height: 50
@@ -103,7 +103,7 @@ Item {
                     }
                 }
             }
-            TikoButton{
+            TikoUiButton{
                 text: qsTr("更多")
                 width: 50
                 height: 50

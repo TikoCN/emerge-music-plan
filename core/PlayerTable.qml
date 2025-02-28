@@ -2,7 +2,7 @@ import QtQuick
 import QtQuick.Controls.Basic
 import QtQuick.Layouts
 import TikoAPI
-import "../base"
+import Tiko
 
 Item {
     id: root
@@ -45,24 +45,22 @@ Item {
         }
 
         //播放列表
-        TikoButton{
+        TikoBorderButton{
             id: playButton
             anchors.left: tableName.left
             anchors.bottom: tableCover.bottom
             text: qsTr("播放")
-            normal: 0.1
             icon.source: "qrc:/image/play.png"
             width: 100
             onClicked: MediaPlayer.playMusic(tableId, 0)
         }
 
         //批量操作
-        TikoButton{
+        TikoBorderButton{
             anchors.left: playButton.right
             anchors.leftMargin: 10
             anchors.bottom: tableCover.bottom
             text: qsTr("批量")
-            normal: 0.1
             icon.source: "qrc:/image/batch.png"
             width: 100
         }

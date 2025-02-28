@@ -1,6 +1,6 @@
 import QtQuick
 import TikoAPI
-import "../base"
+import Tiko
 
 Item {
     id:playerLrcTable

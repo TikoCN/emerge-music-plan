@@ -3,7 +3,7 @@ import QtQuick.Controls
 import QtQuick.Dialogs
 import QtQuick.Layouts
 import TikoAPI
-import "../base"
+import Tiko
 
 ScrollView{
     id: seitPage
@@ -80,7 +80,7 @@ ScrollView{
                             width: sourceList.width
                             padding: 10
 
-                            TikoButton{
+                            TikoUiButton{
                                 anchors.right: parent.right
                                 anchors.verticalCenter: parent.verticalCenter
                                 icon.source: "qrc:/image/close.png"
@@ -261,49 +261,49 @@ ScrollView{
             vessel: Column{
                 property double itemWidth: 300
 
-                TikoCheckButton{
+                TikoSwitchButton{
                     width: parent.itemWidth
                     text: qsTr("在线模块")
                     check: Setting.isOnLine
                     onCheckChanged: Setting.isOnLine = check
                 }
 
-                TikoCheckButton{
+                TikoSwitchButton{
                     width: parent.itemWidth
                     text: qsTr("从网易获得封面")
                     check: Setting.isGetCoverFromNetEase
                     onCheckChanged: Setting.isGetCoverFromNetEase = check
                 }
 
-                TikoCheckButton{
+                TikoSwitchButton{
                     width: parent.itemWidth
                     text: qsTr("从qq音乐获得歌词")
                     check: Setting.isGetCoverFromQQMusic
                     onCheckChanged: Setting.isGetCoverFromQQMusic = check
                 }
 
-                TikoCheckButton{
+                TikoSwitchButton{
                     width: parent.itemWidth
                     text: qsTr("从baidu获得封面")
                     check: Setting.isGetCoverFromBaidu
                     onCheckChanged: Setting.isGetCoverFromBaidu = check
                 }
 
-                TikoCheckButton{
+                TikoSwitchButton{
                     width: parent.itemWidth
                     text: qsTr("从bing获得封面")
                     check: Setting.isGetCoverFromBing
                     onCheckChanged: Setting.isGetCoverFromBing = check
                 }
 
-                TikoCheckButton{
+                TikoSwitchButton{
                     width: parent.itemWidth
                     text: qsTr("从qq音乐获得歌词")
                     check: Setting.isGetLrcFromNetEase
                     onCheckChanged: Setting.isGetLrcFromNetEase = check
                 }
 
-                TikoCheckButton{
+                TikoSwitchButton{
                     width: parent.itemWidth
                     text: qsTr("从网易获得歌词")
                     check: Setting.isGetLrcFromQQMusic

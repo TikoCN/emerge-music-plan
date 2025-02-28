@@ -1,7 +1,7 @@
 import QtQuick.Controls.Basic
 import QtQuick
 import TikoAPI
-import "../base"
+import Tiko
 import "../core"
 
 Drawer {

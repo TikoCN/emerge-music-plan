@@ -1,7 +1,7 @@
 import QtQuick
 import QtQuick.Controls.Basic
 import TikoAPI
-import "../base"
+import Tiko
 
 Item {
     id: coreLrcLine

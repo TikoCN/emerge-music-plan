@@ -1,6 +1,8 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import "../control"
+import "../"
 
 Item {
     id: tikoColorSelcet
@@ -45,7 +47,7 @@ Item {
                 height: 15
             }
 
-            TikoSlider{
+            TikoHSlider{
                 anchors.left: redR.right
                 anchors.leftMargin: 15
                 anchors.top: redR.top
@@ -68,7 +70,7 @@ Item {
                 height: 15
             }
 
-            TikoSlider{
+            TikoHSlider{
                 anchors.left: greenR.right
                 anchors.leftMargin: 15
                 anchors.top: greenR.top
@@ -91,7 +93,7 @@ Item {
                 height: 15
             }
 
-            TikoSlider{
+            TikoHSlider{
                 anchors.left: blueR.right
                 anchors.leftMargin: 15
                 anchors.top: blueR.top

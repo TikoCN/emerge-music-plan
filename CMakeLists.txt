@@ -16,11 +16,7 @@ qt_add_executable(appmusicPlay
 )
 
 qt_policy(SET QTP0004 NEW)
-
-set_source_files_properties(base/TikoSeit.qml
-    PROPERTIES
-        QT_QML_SINGLETON_TYPE true
-)
+add_subdirectory(tiko)
 
 set_source_files_properties(core/CoreData.qml
     PROPERTIES
@@ -38,26 +34,6 @@ qt_add_qml_module(appmusicPlay
     core/PlayerLrcTable.qml
     core/PlayerSpectrum.qml
     core/PlayerTable.qml
-    base/TikoSeit.qml
-    base/TikoAutoText.qml
-    base/TikoBar.qml
-    base/TikoButton.qml
-    base/TikoBorderButton.qml
-    base/TikoCheckButton.qml
-    base/TikoComboxButton.qml
-    base/TikoFrameless.qml
-    base/TikoInputText.qml
-    base/TikoMenu.qml
-    base/TikoMenuItem.qml
-    base/TikoMenuSpeacer.qml
-    base/TikoPopup.qml
-    base/TikoRightVessel.qml
-    base/TikoSlider.qml
-    base/TikoUiButton.qml
-    base/TikoPopupInput.qml
-    base/TikoPopupMessage.qml
-    base/TikoSelectColor.qml
-    base/TikoSelectFont.qml
     view/PageMain.qml
     view/PageSeit.qml
     view/ToolDeskLrc.qml

@@ -1,6 +1,5 @@
 import QtQuick
 import QtQuick.Controls.Basic
-
 Button {
     id: button
     implicitWidth: textRect.boundingRect.width * 4

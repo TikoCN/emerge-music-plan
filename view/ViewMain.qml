@@ -3,7 +3,7 @@ import QtQuick.Window
 import QtQuick.Controls
 import QtQml
 import TikoAPI
-import "../base"
+import Tiko
 
 Item {
     id: conterView
@@ -20,7 +20,7 @@ Item {
         opacity: 0.03
     }
 
-    TikoButton{
+    TikoUiButton{
         id: closeButton
         anchors.right: parent.right
         icon.source: "qrc:/image/close.png"
@@ -28,7 +28,7 @@ Item {
         text: qsTr("关闭")
     }
 
-    TikoButton{
+    TikoUiButton{
         id: maxButton
         anchors.right: closeButton.left
         icon.source: window.visibility === 4 ? "qrc:/image/normal.png" : "qrc:/image/max.png"
@@ -36,7 +36,7 @@ Item {
         onClicked: window.visibility === 4 ? window.showNormal() : window.showMaximized()
     }
 
-    TikoButton{
+    TikoUiButton{
         id: minButton
         anchors.right: maxButton.left
         icon.source: "qrc:/image/min.png"

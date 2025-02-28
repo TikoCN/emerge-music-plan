@@ -1,5 +1,6 @@
 import QtQuick.Dialogs
 import QtQuick
+import "../"
 
 TikoPopup {
     id:dialog
