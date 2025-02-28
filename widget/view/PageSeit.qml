@@ -51,12 +51,12 @@ ScrollView{
 
                 Rectangle{
                     color: Setting.transparentColor
-                    anchors.fill: sourceList
+                    anchors.fill: sourceListColumn
                     opacity: 0.05
                 }
 
                 Column{
-                    id: sourceList
+                    id: sourceListColumn
                     anchors.top: selectDirButton.bottom
                     anchors.topMargin: 10
                     width: parent.width * 0.8
@@ -77,7 +77,7 @@ ScrollView{
                                 }
                             }
                             height: 40
-                            width: sourceList.width
+                            width: sourceListColumn.width
                             padding: 10
 
                             TikoUiButton{
@@ -86,6 +86,7 @@ ScrollView{
                                 icon.source: "qrc:/image/close.png"
                                 onClicked: {
                                     Setting.removeUrl(url)
+                                    sourceListColumn.bulidSoure()
                                 }
                             }
                         }
@@ -96,7 +97,7 @@ ScrollView{
                         onAccepted: {
                             var url = selectMusicDir.selectedFolder
                             Setting.sourceList.push(url)
-                            sourceList.bulidSoure()
+                            sourceListColumn.bulidSoure()
                         }
                     }
 

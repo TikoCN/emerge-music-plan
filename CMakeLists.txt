@@ -17,31 +17,11 @@ qt_add_executable(appmusicPlay
 
 qt_policy(SET QTP0004 NEW)
 add_subdirectory(tiko)
-
-set_source_files_properties(core/CoreData.qml
-    PROPERTIES
-        QT_QML_SINGLETON_TYPE true
-)
+add_subdirectory(widget)
 
 qt_add_qml_module(appmusicPlay
     URI musicPlay
     VERSION 1.0
-    QML_FILES
-    Main.qml
-    core/CoreData.qml
-    core/CoreMusicLine.qml
-    core/CoreLrcLine.qml
-    core/PlayerLrcTable.qml
-    core/PlayerSpectrum.qml
-    core/PlayerTable.qml
-    view/PageMain.qml
-    view/PageSeit.qml
-    view/ToolDeskLrc.qml
-    view/ToolEditMusic.qml
-    view/ViewBottomBar.qml
-    view/ViewLeftBar.qml
-    view/ViewPlayingTable.qml
-    view/ViewMain.qml
     SOURCES
     mediaplayer.h mediaplayer.cpp
     setting.h setting.cpp
@@ -53,8 +33,7 @@ qt_add_qml_module(appmusicPlay
     music.h music.cpp
     online.h online.cpp
     ffmpeg.h ffmpeg.cpp
-    RESOURCES
-    ui.qrc
+    SOURCES base.h base.cpp
 )
 
 # link fftw3

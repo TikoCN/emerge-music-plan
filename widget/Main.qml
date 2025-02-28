@@ -4,8 +4,7 @@ import QtQuick.Controls
 import QtQml
 import TikoAPI
 import Tiko
-import "view"
-import "core"
+import Widget
 
 TikoFrameless{
     id: window
@@ -113,12 +112,6 @@ TikoFrameless{
         id: popupMessage
     }
 
-    ToolEditMusic{
-        id:toolEditMusic
-        width:600
-        height:600
-    }
-
     //计算长度
     TextMetrics{
         text: qsTr("00:00")
@@ -175,6 +168,16 @@ TikoFrameless{
         }
     }
 
+    //关联
+    Connections{
+        target: Base
+
+        function onSendMessage(text, type){
+            TikoSeit.sendMessage(window, text, type)
+        }
+    }
+
+    //清理数据
     function clearData(){
         barView.clearData()
         playingTable.clearData();

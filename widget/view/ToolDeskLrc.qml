@@ -1,8 +1,8 @@
 import QtQuick
 import QtQuick.Layouts
 import TikoAPI
-import "../core"
 import Tiko
+import "../"
 
 Window{
     id: deskLrcTool

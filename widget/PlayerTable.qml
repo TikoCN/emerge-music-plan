@@ -53,6 +53,7 @@ Item {
             icon.source: "qrc:/image/play.png"
             width: 100
             onClicked: MediaPlayer.playMusic(tableId, 0)
+
         }
 
         //批量操作
@@ -76,7 +77,7 @@ Item {
             TikoButton{
                 Layout.minimumWidth: 70
                 onClicked: MediaPlayer.tableList[tableId].showAllMusic()
-                text: qsTr("歌曲")
+                text: qsTr("歌曲") + allMusic.toString()
                 icon.source: "qrc:/image/music.png"
             }
 

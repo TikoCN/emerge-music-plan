@@ -6,13 +6,16 @@ TikoPopup {
     id: littleMessage
     width: icon.width + messageShow.width + 60
     height: messageShow.height
-    padding: 0
     y: 0
-    backColor: TikoSeit.themeColor
+    x: (Overlay.overlay.width - width)/2
+    padding: 0
     borderColor: TikoSeit.themeColor
+    backColor: TikoSeit.themeColor
+    backOpacity: 0.4
 
     property string message: qsTr("消息送达")
     property int type: 0
+    property double aimY: 30
 
     Image {
         id: icon
@@ -41,6 +44,7 @@ TikoPopup {
         height: 30
         anchors.right: parent.right
         anchors.rightMargin: 30
+        anchors.verticalCenter: parent.verticalCenter
     }
 
     //计算文本长度，用于设置宽度
@@ -57,7 +61,7 @@ TikoPopup {
         NumberAnimation{
             target: littleMessage
             property: "y"
-            to: littleMessage.parent.height / 6 - littleMessage.height / 2
+            to: aimY
             duration: 100
         }
     }
@@ -65,8 +69,10 @@ TikoPopup {
     //关闭动画
     ParallelAnimation{
         id: closeAnimation
-        onStopped: littleMessage.destroy()
-
+        onStopped: {
+            TikoSeit.messageY -= littleMessage.height + 10
+            littleMessage.destroy()
+        }
 
         NumberAnimation{
             target: littleMessage
@@ -84,6 +90,8 @@ TikoPopup {
     }
 
     function show(){
+        TikoSeit.messageY += littleMessage.height + 10
+        aimY = TikoSeit.messageY + 1
         littleMessage.open()
         showAnimation.start()
         timer.start()

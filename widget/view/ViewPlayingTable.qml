@@ -2,7 +2,7 @@ import QtQuick.Controls.Basic
 import QtQuick
 import TikoAPI
 import Tiko
-import "../core"
+import "../"
 
 Drawer {
     id: playingTable

@@ -198,9 +198,7 @@ Item {
 
             Component{
                 id: deskLrcMake
-                ToolDeskLrc{
-
-                }
+                ToolDeskLrc{}
             }
         }
 

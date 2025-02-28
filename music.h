@@ -3,7 +3,6 @@
 
 #include <QObject>
 #include <QFileInfo>
-#include "ffmpeg.h"
 
 class Music : public QObject//音乐单元
 {
@@ -28,6 +27,9 @@ public:
 public:
 
     Music();
+
+    //将数据写入文件
+    Q_INVOKABLE void writeDataToFile(QString lrc, QString title, QString artist, QString alumb, QString genre, QString year);
 
     //来自文件
     void fromFileInfo(QFileInfo info);
@@ -61,6 +63,9 @@ public:
 
     //判断是否符合搜索条件
     bool isSearch(QString aim);
+
+    //得到lrc文件数据
+    Q_INVOKABLE QString getLrcData();
 
     //获得搜索文本
     Q_INVOKABLE QString getSearchString();

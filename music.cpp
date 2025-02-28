@@ -1,6 +1,7 @@
 #include "music.h"
 #include "ffmpeg.h"
-#include "ffmpeg.h"
+#include "base.h"
+#include "extralibrary.h"
 #include <QDesktopServices>
 #include <QJsonObject>
 #include <QGuiApplication>
@@ -14,6 +15,34 @@ Music::Music() {
     minHeight = 0.0;
     playNumber = 0;
     url = "";
+}
+
+void Music::writeDataToFile(QString lrc, QString title, QString artist, QString alumb, QString genre, QString year)
+{
+    Base *base = Base::getInstance();
+    QString lrcUrl = getLrcUrl();
+    bool r = base->writeFileText(lrcUrl, lrc);
+    if(r){
+        emit base->sendMessage(lrcUrl + tr(" 修改歌词文件成功"), 0);
+    }
+    else{
+        emit base->sendMessage(lrcUrl + tr(" 修改歌词文件失败"), 1);
+    }
+
+    ExtraLibrary ex;
+    r = ex.setMedia(url, title, artist, alumb, genre, year);
+    if(r){
+        emit base->sendMessage(url + tr(" 修改音乐文件属性成功"), 0);
+    }
+    else{
+        emit base->sendMessage(url + tr(" 修改音乐文件属性失败"), 1);
+    }
+
+    setTitle(title);
+    setArtist(artist);
+    setAlumb(alumb);
+    setGenre(genre);
+    setYear(year);
 }
 
 void Music::fromFileInfo(QFileInfo info)
@@ -140,6 +169,11 @@ bool Music::isSearch(QString aim)
     return false;
 }
 
+QString Music::getLrcData()
+{
+    return Base::getInstance()->readFileText(getLrcUrl());
+}
+
 /*
  * 复制音乐信息
 */
@@ -148,8 +182,7 @@ void Music::copyMusicData()
     QString data = tr("标题") +":"+ title +" "
                    +tr("歌手") +":"+ artist +" "
                    +tr("专辑") +":"+ alumb;
-    QClipboard* copy = QGuiApplication::clipboard();
-    copy->setText(data);
+    Base::getInstance()->copyString(data);
 }
 
 /*
@@ -157,8 +190,7 @@ void Music::copyMusicData()
 */
 void Music::copyMusicUrl()
 {
-    QClipboard* copy = QGuiApplication::clipboard();
-    copy->setText(url);
+    Base::getInstance()->copyString(url);
 }
 
 /*
@@ -166,8 +198,7 @@ void Music::copyMusicUrl()
 */
 void Music::openMusicDir()
 {
-    QString url = "file:///" + getParentDir();
-    QDesktopServices::openUrl(QUrl(url));
+    Base::getInstance()->deskOpenFile(getParentDir(), 1);
 }
 
 /*
@@ -175,10 +206,7 @@ void Music::openMusicDir()
 */
 void Music::openMusicCover()
 {
-    QString url = "file:///" + getCoverUrl();
-    if(QFile::exists(getCoverUrl())){
-        QDesktopServices::openUrl(QUrl(url));
-    }
+    Base::getInstance()->deskOpenFile(getCoverUrl(), 1);
 }
 
 /*
@@ -186,10 +214,7 @@ void Music::openMusicCover()
 */
 void Music::openMusicLrc()
 {
-    QString url = "file:///" + getLrcUrl();
-    if(QFile::exists(getLrcUrl())){
-        QDesktopServices::openUrl(QUrl(url));
-    }
+    Base::getInstance()->deskOpenFile(getLrcUrl(), 1);
 }
 
 /*

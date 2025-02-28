@@ -6,7 +6,7 @@ import TikoAPI
 import Tiko
 
 Item {
-    id: conterView
+    id: mainView
     clip: true
 
     property var tableList: []//列表指针
@@ -54,8 +54,8 @@ Item {
 
     //切换到列表
     function stackTable(page){
-        if(stackView.currentItem !== conterView.tableList[page]){
-            stackView.replace(conterView.tableList[page])
+        if(stackView.currentItem !== mainView.tableList[page]){
+            stackView.replace(mainView.tableList[page])
         }
     }
 
@@ -67,22 +67,22 @@ Item {
     }
 
     function addPlayTablePage(table){
-        var component = Qt.createComponent("../core/PlayerTable.qml")
+        var component = Qt.createComponent("../PlayerTable.qml")
 
         if (component.status === Component.Ready) {
             var playTable = component.createObject(stackView, {tableId: table, visible: false})
 
             //插入链表
-            conterView.tableList.push(playTable)
+            mainView.tableList.push(playTable)
         }
     }
 
     function clearData(){
         //清空数据避免显示异常
-        for(let i = 0; i < conterView.tableList.length; i++){
-            conterView.tableList[i].destroy()
+        for(let i = 0; i < mainView.tableList.length; i++){
+            mainView.tableList[i].destroy()
         }
-        conterView.tableList = []
+        mainView.tableList = []
 
         turnToSeit()
     }

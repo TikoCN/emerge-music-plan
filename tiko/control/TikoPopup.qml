@@ -10,10 +10,12 @@ Popup {
     property double radius: 0
     property color borderColor: TikoSeit.transparentColor
     property color backColor: TikoSeit.backdropColor
+    property double backOpacity: 1
 
     background: Rectangle{
         color: popup.backColor
         radius: popup.radius
+        opacity: popup.backOpacity
 
         Rectangle{
             anchors.fill: parent

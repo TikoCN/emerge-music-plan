@@ -128,7 +128,7 @@ Item {
                 delegate: TikoButton{
                     width: userTableListView.width
                     text: MediaPlayer.tableList[i].name
-                    icon.source:  mainView.tableList[i].showCover
+                    icon.source: mainView.tableList[i].showCover
                     icon.width: 30
                     icon.height: 30
                     cache: false
@@ -146,7 +146,6 @@ Item {
                         radius: 10
                     }
                 }
-
 
                 model: ListModel{
                     id: userTableModel

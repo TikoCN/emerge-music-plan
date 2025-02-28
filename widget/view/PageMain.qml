@@ -1,7 +1,7 @@
 import QtQuick
 import TikoAPI
 import Tiko
-import "../core"
+import "../"
 
 Item {
     id: pageMain

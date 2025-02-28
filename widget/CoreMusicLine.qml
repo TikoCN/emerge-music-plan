@@ -187,7 +187,7 @@ Item {
 
         TikoMenuItem{
             text: qsTr("编辑音乐信息")
-            onTriggered: ToolHelper.editMusic(root.coreId)
+            onTriggered: CoreData.editMusic(root, root.core)
         }
 
         TikoMenu{
@@ -242,7 +242,6 @@ Item {
                     ListElement{suffix: "WMA"}
                     ListElement{suffix: "PCM16"}
                     ListElement{suffix: "PCM32"}
-
                 }
             }
         }
@@ -286,7 +285,7 @@ Item {
                 }
             }
             Component {
-                id:  moveMenu
+                id: moveMenu
                 TikoMenuItem {
                     text:  MediaPlayer.tableList[aim].name
                     onTriggered: MediaPlayer.tableMoveMusic(root.tableId, root.listId, aim)

@@ -7,7 +7,8 @@ import Tiko
 TikoFrameless {
     id: toolEditMusic
     title: qsTr("编辑歌词")
-
+    width: 800
+    height: 600
     property var core
 
     TikoUiButton{
@@ -28,7 +29,7 @@ TikoFrameless {
         spacing: 10
         height: 30
 
-        TikoButton{
+        TikoUiButton{
             id:downMark
             icon.source:"qrc:/image/downY.png"
             text:qsTr("重新添加时间戳并跳转下一行")
@@ -56,7 +57,12 @@ TikoFrameless {
             id: yesEdit
             icon.source: "qrc:/image/yesR.png"
             text: qsTr("确定编辑并保存")
-            onClicked:ToolHelper.finishEdit(core.coreId, lrcShow.text, title.input.text, artist.input.text, alumb.input.text, genre.input.text, year.input.text)
+            onClicked: core.writeDataToFile(lrcShow.text,
+                                            title.input.text,
+                                            artist.input.text,
+                                            alumb.input.text,
+                                            genre.input.text,
+                                            year.input.text)
         }
     }
 
@@ -77,6 +83,7 @@ TikoFrameless {
             show.text: qsTr("标题")
             show.width: musicData.showW
             implicitWidth: musicData.itemW
+            input.text: core.title
         }
 
         TikoInputText{
@@ -84,6 +91,7 @@ TikoFrameless {
             show.text: qsTr("歌手")
             show.width: musicData.showW
             implicitWidth: musicData.itemW
+            input.text: core.artist
         }
 
         TikoInputText{
@@ -91,6 +99,7 @@ TikoFrameless {
             show.text: qsTr("专辑")
             show.width: musicData.showW
             implicitWidth: musicData.itemW
+            input.text: core.alumb
         }
 
         TikoInputText{
@@ -98,6 +107,7 @@ TikoFrameless {
             show.text: qsTr("流派")
             show.width: musicData.showW
             implicitWidth: musicData.itemW
+            input.text: core.genre
         }
 
         TikoInputText{
@@ -105,6 +115,7 @@ TikoFrameless {
             show.text: qsTr("年份")
             show.width: musicData.showW
             implicitWidth: musicData.itemW
+            input.text: core.year
         }
     }
 
@@ -131,6 +142,7 @@ TikoFrameless {
             cursorVisible: true
             inputMethodHints: Qt.ImhPreferLowercase | Qt.ImhNoPredictiveText
             onCursorVisibleChanged: cursorVisible = true
+            text: core.getLrcData()
 
             cursorDelegate: Rectangle{
                 height: 10
@@ -139,19 +151,6 @@ TikoFrameless {
                 opacity: 0.3
             }
         }
-    }
-
-    function buildLrc(lrc, coreId){
-        core = MediaPlayer.coreList[coreId]
-        lrcShow.text = lrc
-
-        show()
-
-        artist.input.text = core.artist
-        title.input.text = core.title
-        alumb.input.text = core.alumb
-        genre.input.text = core.genre
-        year.input.text = core.year
     }
 
     //替换当前行的时间戳

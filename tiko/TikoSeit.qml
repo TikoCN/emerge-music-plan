@@ -8,6 +8,7 @@ QtObject {
     property color backdropColor: "#ffffff"
     property double fontPixelSize: 13
     property string fontFamily: "Times"
+    property double messageY: 30
 
     //发送消息
     function sendMessage(parent, msg, type){
