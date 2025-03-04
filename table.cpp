@@ -24,56 +24,103 @@ void Table::copy(Table* a)
     musics.append(a->showMusics);
 }
 
-void Table::sortMusic()
+void Table::sortMusic(int type)
 {
     if(showMusics.size() == 0){
         return;
     }
 
-    switch (key) {
-    case 0:
+    SORT_TYPE inSort = static_cast<SORT_TYPE>(type);
+    if(sort == inSort){
+        return;
+    }
+
+    sort = inSort;
+
+    switch (sort) {
+    case SORT_TITTLE_ASC:
         std::sort(showMusics.begin(), showMusics.end(), [this](Music *a, Music *b){
             bool isRight = a->title > b->title;
-            return forward ? isRight : !isRight;
+            return isRight;
         });
         break;
-    case 1:
+    case SORT_TITTLE_DESC:
+        std::sort(showMusics.begin(), showMusics.end(), [this](Music *a, Music *b){
+            bool isRight = a->title < b->title;
+            return isRight;
+        });
+        break;
+    case SORT_ATRIST_ASC:
         std::sort(showMusics.begin(), showMusics.end(), [this](Music *a, Music *b){
             bool isRight = a->artist > b->artist;
-            return forward ? isRight : !isRight;
+            return isRight;
         });
         break;
-    case 2:
+    case SORT_ATRIST_DESC:
+        std::sort(showMusics.begin(), showMusics.end(), [this](Music *a, Music *b){
+            bool isRight = a->artist < b->artist;
+            return isRight;
+        });
+        break;
+    case SORT_ALUMB_ASC:
         std::sort(showMusics.begin(), showMusics.end(), [this](Music *a, Music *b){
             bool isRight = a->alumb > b->alumb;
-            return forward ? isRight : !isRight;
+            return isRight;
         });
         break;
-    case 3:
-        std::sort(showMusics.begin(), showMusics.end(), [this](Music *a, Music *b){        
+    case SORT_ALUMB_DESC:
+        std::sort(showMusics.begin(), showMusics.end(), [this](Music *a, Music *b){
+            bool isRight = a->alumb < b->alumb;
+            return isRight;
+        });
+        break;
+    case SORT_NED_TIME_ASC:
+        std::sort(showMusics.begin(), showMusics.end(), [this](Music *a, Music *b){
             bool isRight = a->endTime > b->endTime;
-            return forward ? isRight : !isRight;
+            return isRight;
         });
         break;
-    case 4:
+    case SORT_NED_TIME_DESC:
+        std::sort(showMusics.begin(), showMusics.end(), [this](Music *a, Music *b){
+            bool isRight = a->endTime < b->endTime;
+            return isRight;
+        });
+        break;
+    case SORT_LAST_EDIT_TIME_ASC:
         std::sort(showMusics.begin(), showMusics.end(), [this](Music *a, Music *b){
             bool isRight = a->lastEditTime > b->lastEditTime;
-            return forward ? isRight : !isRight;
+            return isRight;
         });
         break;
-    default:
+    case SORT_LAST_EDIT_TIME_DESC:
+        std::sort(showMusics.begin(), showMusics.end(), [this](Music *a, Music *b){
+            bool isRight = a->lastEditTime < b->lastEditTime;
+            return isRight;
+        });
         break;
     }
+
+    //qml重新生成控件
+    emit rebuildShowMusic();
 }
 
-void Table::setSort(int key, bool forward)
+int Table::getSort()
 {
-    this->key = key;
-    this->forward = forward;
-    emit keyChanged();
-    emit forwardChanged();
-    sortMusic();//排序
-    emit showMusicsChanged();
+    return static_cast<int>(sort);
+}
+
+void Table::searchMusic(QString search)
+{
+    //清空并重建
+    showMusics.clear();
+    for(int i=0; i<musics.size(); i++){
+        if(musics[i]->isSearch(search)){
+            showMusics.append(musics[i]);
+        }
+    }
+
+    //qml重新生成控件
+    emit rebuildShowMusic();
 }
 
 int Table::getLastCoreId()
@@ -87,11 +134,8 @@ int Table::getLastCoreId()
 void Table::insertMusic(Music *core)
 {
     musics.append(core);//插入到数据库
-
-    if(core->isSearch(search)){
-        showMusics.append(core);//符合条件插入显示
-        emit addMusic(1);
-    }
+    showMusics.append(core);//符合条件插入显示
+    emit addMusic(1);
 }
 
 void Table::insertMusic(QList<Music *> core)
@@ -100,10 +144,8 @@ void Table::insertMusic(QList<Music *> core)
 
     int success = 0;
     for(int i=0; i<core.size(); i++){
-        if(core[i]->isSearch(search)){
             showMusics.append(core[i]);//符合条件插入显示
             success++;
-        }
     }
     emit addMusic(success);
 }
@@ -133,8 +175,8 @@ void Table::showLove()
         }
     }
 
-    sortMusic();
-    emit showMusicsChanged();
+    //qml重新生成控件
+    emit rebuildShowMusic();
 }
 
 void Table::showAllMusic()
@@ -142,22 +184,8 @@ void Table::showAllMusic()
     showMusics.clear();
     showMusics = musics;
 
-    sortMusic();
-    emit showMusicsChanged();
-}
-
-void Table::buildShowMusics()
-{
-    //清空并重建
-    showMusics.clear();
-    for(int i=0; i<musics.size(); i++){
-        if(musics[i]->isSearch(search)){
-            showMusics.append(musics[i]);
-        }
-    }
-
-    sortMusic();//排序
-    emit showMusicsChanged();
+    //qml重新生成控件
+    emit rebuildShowMusic();
 }
 
 QString Table::getName() const
@@ -186,46 +214,4 @@ void Table::setShowMusics(const QList<Music *> &newShowMusics)
     emit showMusicsChanged();
 }
 
-QString Table::getSearch() const
-{
-    return search;
-}
 
-void Table::setSearch(const QString &newSearch)
-{
-    if (search == newSearch)
-        return;
-    search = newSearch;
-    emit searchChanged();
-
-    //清空并重建
-    buildShowMusics();
-}
-
-bool Table::getForward() const
-{
-    return forward;
-}
-
-void Table::setForward(bool newForward)
-{
-    if (forward == newForward)
-        return;
-    forward = newForward;
-
-    setSort(key, forward);
-}
-
-int Table::getKey() const
-{
-    return key;
-}
-
-void Table::setKey(int newKey)
-{
-    if (key == newKey)
-        return;
-    key = newKey;
-
-    setSort(key, forward);
-}

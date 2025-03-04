@@ -8,24 +8,28 @@ class Table : public QObject //播放列表
 {
     Q_OBJECT
 public:
+    enum SORT_TYPE{SORT_TITTLE_ASC, SORT_TITTLE_DESC,
+                     SORT_ATRIST_ASC, SORT_ATRIST_DESC,
+                     SORT_ALUMB_ASC, SORT_ALUMB_DESC,
+                     SORT_NED_TIME_ASC, SORT_NED_TIME_DESC,
+                     SORT_LAST_EDIT_TIME_ASC, SORT_LAST_EDIT_TIME_DESC}sort;
+
     QString name;//列表名
     QString url;//文件夹路径
-    QString search = "";//搜索
     QList<Music *>musics;//音乐库列表
     QList<Music *>showMusics;//显示音乐列表
-    int key = 1;//排序关键词
     int tableId;//列表id
-    bool forward = true;//排序方向
     bool isDir;
 
 public:
     void copy(Table *a);
 
     //排序
-    void sortMusic();
+    Q_INVOKABLE void sortMusic(int type);
+    int getSort();
 
-    //设置排序
-    void setSort(int key, bool forward);
+    //搜索
+    Q_INVOKABLE void searchMusic(QString search);
 
     //得到最后id
     Q_INVOKABLE int getLastCoreId();
@@ -46,9 +50,6 @@ public:
     //显示所有歌曲
     Q_INVOKABLE void showAllMusic();
 
-    //建立显示列表
-    void buildShowMusics();
-
     QList<Music *> getShowMusics() const;
     void setShowMusics(const QList<Music *> &newShowMusics);
 
@@ -58,15 +59,6 @@ public:
     QList<Music *> getMusicList() const;
     void setMusicList(const QList<Music *> &newMusicList);
 
-    QString getSearch() const;
-    void setSearch(const QString &newSearch);
-
-    bool getForward() const;
-    void setForward(bool newForward);
-
-    int getKey() const;
-    void setKey(int newKey);
-
     QList<Music *> getMusics() const;
     void setMusics(const QList<Music *> &newMusics);
 
@@ -74,23 +66,20 @@ signals:
     //插入新条目
     void addMusic(int);
 
+    //重建展示列表
+    void rebuildShowMusic();
+
     //更新封面
     void cppUpdateCover();
 
     void showMusicsChanged();
     void nameChanged();
     void musicListChanged();
-    void searchChanged();
-    void forwardChanged();
-    void keyChanged();
     void musicsChanged();
 
 private:
     Q_PROPERTY(QString name READ getName WRITE setName NOTIFY nameChanged FINAL)
     Q_PROPERTY(QList<Music *> showMusics READ getShowMusics WRITE setShowMusics NOTIFY showMusicsChanged FINAL)
-    Q_PROPERTY(QString search READ getSearch WRITE setSearch NOTIFY searchChanged FINAL)
-    Q_PROPERTY(bool forward READ getForward WRITE setForward NOTIFY forwardChanged FINAL)
-    Q_PROPERTY(int key READ getKey WRITE setKey NOTIFY keyChanged FINAL)
     Q_PROPERTY(QList<Music *> musics READ getMusics WRITE setMusics NOTIFY musicsChanged FINAL)
 };
 #endif // TABLE_H

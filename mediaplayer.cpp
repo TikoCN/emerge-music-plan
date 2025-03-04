@@ -158,7 +158,8 @@ void MediaPlayer::buildNoDirTable(QStringList musicKeyList)
         }
 
         if(aimTable != -1){
-            tableList[aimTable]->setSort(table.value("key").toInt(), table.value("forward").toBool());
+            //格式转化
+            tableList[aimTable]->sortMusic(table.value("sort").toInt());
         }
     }
 }

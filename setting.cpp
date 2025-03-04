@@ -185,8 +185,7 @@ void Setting::writeData()
         QJsonObject tableJson;
         for(int i=0; i<player->tableList.size(); i++){
             QJsonObject table;
-            table.insert("key", player->tableList[i]->key);
-            table.insert("forward", player->tableList[i]->forward);
+            table.insert("sort", player->tableList[i]->getSort());
             table.insert("isDir", player->tableList[i]->isDir);
             table.insert("url", player->tableList[i]->url);
             table.insert("name", player->tableList[i]->name);

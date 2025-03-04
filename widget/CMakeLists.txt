@@ -30,4 +30,5 @@ qt_add_qml_module(WidgetLib
     view/ViewMain.qml
     view/ViewPlayingTable.qml
     RESOURCES ui.qrc
+    RESOURCES
 )

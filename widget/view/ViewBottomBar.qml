@@ -55,18 +55,21 @@ Item {
             anchors.right: nextMusicUp.left
             anchors.rightMargin: 15
             text: qsTr("设置循环模式")
+            onClicked: loopSelect.open()
+            Component.onCompleted: setLoopType(MediaPlayer.loopType)
+
 
             TikoPopup{
                 id: loopSelect
-                visible: false
+                parent: loopButton
                 y: loopButton.y-height
                 width: 140
-                height: 200
+                height: 150
 
                 contentItem:  Column {
                     spacing:  10
 
-                    TikoUiButton {
+                    TikoButton {
                         id: loop0
                         text: qsTr("顺序播放")
                         icon.source: "qrc:/image/loop0.png"
@@ -74,7 +77,7 @@ Item {
                         width: parent.width
                     }
 
-                    TikoUiButton {
+                    TikoButton {
                         id: loop1
                         text: qsTr("随机循环")
                         icon.source: "qrc:/image/loop1.png"
@@ -82,7 +85,7 @@ Item {
                         width: parent.width
                     }
 
-                    TikoUiButton {
+                    TikoButton {
                         id: loop2
                         text: qsTr("单曲循环")
                         icon.source: "qrc:/image/loop2.png"
@@ -91,8 +94,6 @@ Item {
                     }
                 }
             }
-            onClicked: loopSelect.visible = true
-            Component.onCompleted: setLoopType(MediaPlayer.loopType)
 
             function setLoopType(loopType){
                 switch (loopType){
@@ -158,6 +159,7 @@ Item {
 
             TikoPopup{
                 id: volumePopup
+                parent: playVolume
                 y: - parent.height - height
                 x: - width / 2 + parent.width / 2
                 height: 200

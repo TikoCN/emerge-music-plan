@@ -74,6 +74,7 @@ Item {
             anchors.leftMargin: 10
             spacing: 10
 
+            //显示所有歌曲列表
             TikoButton{
                 Layout.minimumWidth: 70
                 onClicked: MediaPlayer.tableList[tableId].showAllMusic()
@@ -81,6 +82,7 @@ Item {
                 icon.source: "qrc:/image/music.png"
             }
 
+            //显示喜爱歌曲列表
             TikoButton{
                 Layout.minimumWidth: 70
                 onClicked: MediaPlayer.tableList[tableId].showLove()
@@ -88,6 +90,7 @@ Item {
                 icon.source: "qrc:/image/love.png"
             }
 
+            //打开本地文件夹
             TikoButton{
                 Layout.minimumWidth: 70
                 onClicked: MediaPlayer.tableList[tableId].openDir()
@@ -95,6 +98,7 @@ Item {
                 icon.source: "qrc:/image/dir.png"
             }
 
+            //重命名
             TikoButton{
                 Layout.minimumWidth: 70
                 onClicked: editName.open()
@@ -111,6 +115,7 @@ Item {
                 }
             }
 
+            //排序
             TikoButton{
                 Layout.minimumWidth: 70
                 onClicked: sortMenu.open()
@@ -124,67 +129,64 @@ Item {
 
                     TikoMenuItem{
                         text: qsTr("标   题");
-                        onTriggered: MediaPlayer.tableList[tableId].key = 0;
-                        icon.source: MediaPlayer.tableList[tableId].key === 0 ? "qrc:/image/used.png" : ""}
+                        onTriggered: MediaPlayer.tableList[tableId].sortMusic(0, this);
+                        icon.source: "qrc:/image/asc.png"
+                    }
                     TikoMenuItem{
-                        text: qsTr("歌   手");
-                        onTriggered: MediaPlayer.tableList[tableId].key = 1;
-                        icon.source: MediaPlayer.tableList[tableId].key === 1 ? "qrc:/image/used.png" : ""}
-                    TikoMenuItem{
-                        text: qsTr("专   辑");
-                        onTriggered: MediaPlayer.tableList[tableId].key = 2;
-                        icon.source: MediaPlayer.tableList[tableId].key === 2 ? "qrc:/image/used.png" : ""}
-                    TikoMenuItem{
-                        text: qsTr("时   长");
-                        onTriggered: MediaPlayer.tableList[tableId].key = 3;
-                        icon.source: MediaPlayer.tableList[tableId].key === 3 ? "qrc:/image/used.png" : ""}
-                    TikoMenuItem{
-                        text: qsTr("修改时间");
-                        onTriggered: MediaPlayer.tableList[tableId].key = 4;
-                        icon.source: MediaPlayer.tableList[tableId].key === 4 ? "qrc:/image/used.png" : ""}
+                        text: qsTr("标   题");
+                        onTriggered: MediaPlayer.tableList[tableId].sortMusic(1, this);
+                        icon.source: "qrc:/image/desc.png"
+                    }
                     TikoMenuSpeacer{}
                     TikoMenuItem{
-                        text: qsTr("升   序");
-                        onTriggered: MediaPlayer.tableList[tableId].forward = false;
-                        icon.source: MediaPlayer.tableList[tableId].forward === false ? "qrc:/image/used.png" : ""}
+                        text: qsTr("歌   手");
+                        onTriggered: MediaPlayer.tableList[tableId].sortMusic(2, this);
+                        icon.source: "qrc:/image/asc.png"
+                    }
                     TikoMenuItem{
-                        text: qsTr("降   序");
-                        onTriggered: MediaPlayer.tableList[tableId].forward = true;
-                        icon.source: MediaPlayer.tableList[tableId].forward === true ? "qrc:/image/used.png" : ""}
-                }
-            }
-        }
-
-        Rectangle{
-            anchors.right: parent.right
-            anchors.rightMargin: 20
-            anchors.verticalCenter: tableTool.verticalCenter
-            width: 150
-            height: 40
-            color: Setting.themeColor
-            radius: 10
-            opacity: 0.3
-
-            //搜索
-            TikoInputText{
-                anchors.verticalCenter: parent.verticalCenter
-                anchors.left: parent.left
-                anchors.leftMargin: 20
-                width: parent.width - 20 - 25
-                show.text: qsTr("搜索：")
-                borderColor: "#00000000"
-                input.onEditingFinished: {
-                    if(MediaPlayer.tableList[tableId].search !== input.text){
-                        MediaPlayer.tableList[tableId].search = input.text
+                        text: qsTr("歌   手");
+                        onTriggered: MediaPlayer.tableList[tableId].sortMusic(3, this);
+                        icon.source: "qrc:/image/desc.png"
+                    }
+                    TikoMenuSpeacer{}
+                    TikoMenuItem{
+                        text: qsTr("专   辑");
+                        onTriggered: MediaPlayer.tableList[tableId].sortMusic(4, this);
+                        icon.source: "qrc:/image/asc.png"
+                    }
+                    TikoMenuItem{
+                        text: qsTr("专   辑");
+                        onTriggered: MediaPlayer.tableList[tableId].sortMusic(5, this);
+                        icon.source: "qrc:/image/desc.png"
+                    }
+                    TikoMenuSpeacer{}
+                    TikoMenuItem{
+                        text: qsTr("时   长");
+                        onTriggered: MediaPlayer.tableList[tableId].sortMusic(6, this);
+                        icon.source: "qrc:/image/asc.png"
+                    }
+                    TikoMenuItem{
+                        text: qsTr("时   长");
+                        onTriggered: MediaPlayer.tableList[tableId].sortMusic(7, this);
+                        icon.source: "qrc:/image/desc.png"
+                    }
+                    TikoMenuSpeacer{}
+                    TikoMenuItem{
+                        text: qsTr("修改时间");
+                        onTriggered: MediaPlayer.tableList[tableId].sortMusic(8, this);
+                        icon.source: "qrc:/image/asc.png"
+                    }
+                    TikoMenuItem{
+                        text: qsTr("修改时间");
+                        onTriggered: MediaPlayer.tableList[tableId].sortMusic(9, this);
+                        icon.source: "qrc:/image/desc.png"
                     }
                 }
             }
 
+            //搜索
             TikoUiButton{
                 text: qsTr("搜索")
-                anchors.verticalCenter: parent.verticalCenter
-                anchors.right: parent.right
-                anchors.rightMargin: 20
                 icon.source: "qrc:/image/search.png"
             }
         }
@@ -226,24 +228,24 @@ Item {
     }
 
     Connections{
-        target: MediaPlayer.tableList[tableId]
-        function onShowMusicsChanged(){
+        target: MediaPlayer.tableList[root.tableId]
+        function onRebuildShowMusic(){
             //重新建立条目
             musicModel.clear()
-            for(let i=0; i<MediaPlayer.tableList[tableId].showMusics.length; i++){
+            for(let i=0; i<MediaPlayer.tableList[root.tableId].showMusics.length; i++){
                 musicModel.append({music: i,
                                       table: root.tableId,
-                                      musicCore: MediaPlayer.tableList[tableId].showMusics[i]})
+                                      musicCore: MediaPlayer.tableList[root.tableId].showMusics[i]})
             }
         }
 
         function onAddMusic(size){
             musicModel.clear()
             for(var i=0; i<size; i++){
-                var music = MediaPlayer.tableList[tableId].showMusics.length - size + i
+                var music = MediaPlayer.tableList[root.tableId].showMusics.length - size + i
                 musicModel.append({music: music,
                                       table: root.tableId,
-                                      musicCore: MediaPlayer.tableList[tableId].showMusics[music]})
+                                      musicCore: MediaPlayer.tableList[root.tableId].showMusics[music]})
             }
 
             //调整列表展示信息
