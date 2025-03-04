@@ -2,6 +2,7 @@
 #include "extralibrary.h"
 #include "setting.h"
 #include "mediaplayer.h"
+#include "base.h"
 #include <QPixmap>
 #include <QDir>
 #include <QCoreApplication>
@@ -181,7 +182,8 @@ void HostTime::cellFinishWork(TaskCell *cell)
     //计算当前工作单元数
     workNumber--;
     if(workNumber == 0){
-        qDebug()<<"work success, loaded music files number : " + QString::number(coreList.size());
+        QString t = tr("加载音乐文件完成，加载了 ") + QString::number(coreList.size()) + tr(" 个音乐文件");
+        emit Base::getInstance()->sendMessage(t, 0);
         emit musicsLoaded(coreList, musicKeyList);
     }
 }

@@ -1,10 +1,11 @@
 #include "setting.h"
+#include "base.h"
+#include "mediaplayer.h"
 #include <QSettings>
 #include <QDir>
 #include <QGuiApplication>
 #include <QScreen>
 #include <QJsonDocument>
-#include "mediaplayer.h"
 
 void Setting::loadMusicCores(){
     clearJsonData();//清空数据，防止内存泄露
@@ -100,9 +101,11 @@ void Setting::clearJsonData()
 void Setting::removeUrl(QString url)
 {
     int i = sourceList.indexOf(url);
-    if(i > 0){
+    if(i >= 0){
         sourceList.remove(i);
     }
+
+    emit Base::getInstance()->sendMessage(url + tr(" 路径移除成功，将在下次加载时生效"), 0);
 }
 
 template<typename T>
@@ -182,8 +185,7 @@ void Setting::writeData()
         QJsonObject tableJson;
         for(int i=0; i<player->tableList.size(); i++){
             QJsonObject table;
-            table.insert("key", player->tableList[i]->key);
-            table.insert("forward", player->tableList[i]->forward);
+            table.insert("sort", player->tableList[i]->getSort());
             table.insert("isDir", player->tableList[i]->isDir);
             table.insert("url", player->tableList[i]->url);
             table.insert("name", player->tableList[i]->name);

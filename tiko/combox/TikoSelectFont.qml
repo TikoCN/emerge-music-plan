@@ -1,0 +1,91 @@
+import QtQuick
+import QtQuick.Controls
+import "../control"
+import "../"
+
+Item{
+    id: root
+    property font selectedFont: Qt.font
+    property string text
+
+    MouseArea{
+        anchors.fill: parent
+        onClicked: editFont.open()
+    }
+
+    TikoAutoText{
+        font.family: selectedFont.family
+        font.pixelSize: selectedFont.pixelSize
+        anchors.fill: root
+        text: root.text
+    }
+
+    TikoPopup{
+        id: editFont
+        width: 200
+        height: 230
+        contentItem: Item{
+            ListView{
+                id: fontList
+                width: parent.width
+                height: 150
+                clip: true
+
+                model: ListModel{
+                    id: fontModel
+                }
+
+                delegate: TikoButton{
+                    width: fontList.width
+                    height: 30
+                    text: name
+                    font.family: name
+                    onClicked: {
+                        root.selectedFont.family = name
+                        editFont.close()
+                    }
+                }
+
+                Component.onCompleted:{
+                    var list = Qt.fontFamilies()
+                    var aim = 0
+                    for(var i=0; i<list.length; i++){
+                        fontModel.append({name:list[i]})
+                        if(list[i] === root.selectedFont.family){
+                            aim = i
+                        }
+                    }
+                    fontList.currentIndex = aim
+                    fontList.positionViewAtIndex(aim, ListView.Center)
+                }
+            }
+
+            Rectangle{
+                anchors.fill: fontList
+                color: TikoSeit.transparentColor
+                opacity: 0.03
+            }
+
+            TikoAutoText{
+                id: fontSizeShow
+                y: 160
+                width: 50
+                height: fontSize.height
+                text: fontSize.value.toString()
+            }
+
+            TikoHSlider{
+                id: fontSize
+                anchors.left: fontSizeShow.right
+                anchors.leftMargin: 10
+                from: 10
+                to: 30
+                y: 160
+                width: parent.width - fontSizeShow.width - 10
+                radius: 6
+                value: root.selectedFont.pixelSize
+                onMoved: root.selectedFont.pixelSize = value
+            }
+        }
+    }
+}
