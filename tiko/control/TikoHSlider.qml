@@ -11,13 +11,16 @@ Slider {
         if(hSlider.hovered){
             hoverAnimation.start()
         }
+        else{
+            closeAnimation.start()
+        }
     }
 
     property double radius: 0
     property color lineColor: TikoSeit.transparentColor
     property color showColor: TikoSeit.themeColor
     property color handleColor: TikoSeit.backdropColor
-    property double size: 0.3
+    property double size: 0.2
 
     //滑行航道
     background: Item{
@@ -51,35 +54,27 @@ Slider {
         id: handleRect
         color: hSlider.handleColor
         border.color: hSlider.showColor
-        border.width: 3
+        border.width: 1
         width: hSlider.height * handleRect.zoomIn
         height: hSlider.height * handleRect.zoomIn
         radius: hSlider.height * handleRect.zoomIn
         x: hSlider.visualPosition * hSlider.width - width / 2
         anchors.verticalCenter: hSlider.verticalCenter
 
-        property double zoomIn: 1.0
+        property double zoomIn: 0
     }
 
 
     //游览动画
     ParallelAnimation{
         id: hoverAnimation
-        onStopped: {
-            if(hSlider.hovered){
-                hoverAnimation.start()
-            }
-            else{
-                closeAnimation.start()
-            }
-        }
 
         NumberAnimation{
             target: handleRect
             easing.type: Easing.OutElastic
             property: "zoomIn"
-            from: 1.0
-            to: 1.3
+            from: 0
+            to: 1 + hSlider.size
             duration: 1000
         }
     }
@@ -92,8 +87,8 @@ Slider {
             target: handleRect
             easing.type: Easing.InElastic
             property: "zoomIn"
-            from: 1.3
-            to: 1.0
+            from: 1 + hSlider.size
+            to: 0
             duration: 1000
         }
     }

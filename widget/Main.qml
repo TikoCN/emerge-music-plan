@@ -67,18 +67,39 @@ TikoFrameless{
             id: editPage
             visible: false
 
+            //圆角背景
+            Rectangle{
+                width: parent.width
+                height: parent.height
+                topLeftRadius: 10
+                topRightRadius: 10
+                color: Setting.backdropColor
+
+                Rectangle{
+                    anchors.fill: parent
+                    border.color: Setting.transparentColor
+                    topLeftRadius: 10
+                    topRightRadius: 10
+                    border.width: 0.5
+                    opacity: 0.3
+                }
+            }
+
             ViewLeftBar{
-                height: parent.height - bottomView.height
-                width: 200
                 id: barView
+                height: parent.height - bottomView.height - 10
+                width: 200
+                x: 10
+                y: 10
             }
 
             //中间内容导航
             ViewMain{
                 id:mainView
-                width: parent.width - barView.width
+                width: parent.width - barView.width - 20
                 height: barView.height
                 anchors.left: barView.right
+                y: 10
             }
 
             //底部导航

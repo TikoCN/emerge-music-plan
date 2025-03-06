@@ -43,7 +43,7 @@ QPixmap ImageProvider::requestPixmap(const QString &id, QSize *size, const QSize
     }
 
     pix = pix.scaled(requestedSize);
-    buildRoundImage(&pix, requestedSize.width() * 0.2);
+    buildRoundImage(&pix, 10);
 
     return pix;
 }

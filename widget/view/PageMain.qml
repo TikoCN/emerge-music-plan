@@ -36,6 +36,12 @@ Item {
         }
     }
 
+    //纯色底片
+    Rectangle{
+        anchors.fill: backCover
+        color: Setting.transparentColor
+    }
+    //模糊背景
     Image {
         id: backCover
         anchors.fill: pageMain
@@ -43,7 +49,6 @@ Item {
         sourceSize.height: backCover.height
         visible: false
     }
-
     MultiEffect {
         autoPaddingEnabled: true
         source: backCover
@@ -52,9 +57,10 @@ Item {
         blurMax: 64
         blur: 1.0
     }
+    //透明成显示
     Rectangle{
         anchors.fill: backCover
-        color: Setting.backdropColor
+        color: Setting.transparentColor
         opacity: 0.3
     }
 
@@ -65,15 +71,19 @@ Item {
         text: qsTr("关闭")
         icon.source: "qrc:/image/close.png"
         onClicked: window.close()
+        icon.width: 15
+        icon.height: 15
     }
 
     //最大化
     TikoUiButton{
         id: max
         anchors.right: close.left
-        anchors.rightMargin: 20
+        anchors.rightMargin: 6
         text: qsTr("最大化")
         icon.source: "qrc:/image/max.png"
+        icon.width: 15
+        icon.height: 15
         onClicked: {
             if(window.visibility === 5){
                 window.showNormal()
@@ -88,9 +98,11 @@ Item {
     TikoUiButton{
         id: min
         anchors.right: max.left
-        anchors.rightMargin: 20
+        anchors.rightMargin: 6
         text: qsTr("最小化")
         icon.source: "qrc:/image/min.png"
+        icon.width: 15
+        icon.height: 15
         onClicked: window.showMinimized()
     }
 
@@ -101,6 +113,8 @@ Item {
         anchors.leftMargin: 20
         text: qsTr("返回")
         icon.source: "qrc:/image/back.png"
+        icon.width: 15
+        icon.height: 15
         onClicked: window.stackCenter()
     }
 
@@ -116,9 +130,5 @@ Item {
         function onSourceChanged(){
             backCover.source = "image://cover/back:" + MediaPlayer.playingCore.coreId.toString()
         }
-    }
-
-    Component.onCompleted: {
-        backCover.source = "image://cover/back:" + MediaPlayer.playingCore.coreId.toString()
     }
 }

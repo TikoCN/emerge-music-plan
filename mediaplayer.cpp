@@ -31,44 +31,6 @@ void MediaPlayer::clearData()
     emit finishClearData();
 }
 
-MediaPlayer::MediaPlayer()
-{
-    loopType = 0;
-    playingMusic = 0;
-    playingCore = new Music;
-    playingLrc = new LrcData;
-    playedLrc = new LrcData;
-    playedLrc->text = tr("~");
-    playingLrc->text = tr("Ciallo～(∠・ω< )⌒★");
-
-    player = new QMediaPlayer;//播放设备
-    audioOutput = new QAudioOutput;//音频输出
-    bufferOutput = new QAudioBufferOutput;//缓冲区输出
-
-    player->setAudioOutput(audioOutput);
-    player->setAudioBufferOutput(bufferOutput);
-
-    connect(bufferOutput, &QAudioBufferOutput::audioBufferReceived, this, &MediaPlayer::buildFrequencySpectrum);
-
-    connect(player, &QMediaPlayer::positionChanged, this, [=](qint64 time){
-        updateAudioOutPut();
-        selectPlayLrc(time);
-    });
-    //自动播放
-
-    connect(player, &QMediaPlayer::mediaStatusChanged, this, [=](QMediaPlayer::MediaStatus staus){
-        if(staus == QMediaPlayer::EndOfMedia)
-        {
-            playNext(1);
-        }
-    });
-
-    //关联网络模块
-    OnLine *onLine = OnLine::getInstance();
-    connect(this, &MediaPlayer::downLrc, onLine, &OnLine::downLrc);
-    connect(onLine, &OnLine::lrcDowned, this, &MediaPlayer::loadLrcList);
-}
-
 /*
  * 获得音乐核心
  */
@@ -301,11 +263,7 @@ void MediaPlayer::loadLrcList()
                                       + date.split(":")[1].split(".")[0].toInt()) *1000
                                      + date.split(":")[1].split(".")[1].toInt();
                 }
-                if(text == "")
-                {
-                    text = "~";
-                }
-                lrc->text = text.replace("/", "\n");
+                lrc->text = text;
             }
         }
         while(!in.atEnd());
@@ -313,8 +271,20 @@ void MediaPlayer::loadLrcList()
     file.close();
 
     if(lrcList.size() > 1){
+        //设置结束时间，以及字时间
         for(int i=0; i<lrcList.size()-1;i++){
             lrcList[i]->endTime = lrcList[i+1]->startTime;
+
+            //设置每个字的开始，结束时间
+            QString mainLrc = lrcList[i]->text.split("/")[0];
+            if(mainLrc.length() <= 0){
+                continue;
+            }
+            long long cell = (lrcList[i]->endTime - lrcList[i]->startTime)/mainLrc.length();
+            for(int j=0; j<mainLrc.length(); j++){
+                lrcList[i]->startList.append(cell * j);
+                lrcList[i]->endList.append(cell * (j+1));
+            }
         }
         lrcList.last()->endTime = endTime;
     }
@@ -504,6 +474,44 @@ void MediaPlayer::buildFrequencySpectrum(QAudioBuffer buffer)
         }
         emit cppDrawLine(outSamples);
     }
+}
+
+MediaPlayer::MediaPlayer()
+{
+    loopType = 0;
+    playingMusic = 0;
+    playingCore = new Music;
+    playingLrc = new LrcData;
+    playedLrc = new LrcData;
+    playedLrc->text = tr("~");
+    playingLrc->text = tr("Ciallo～(∠・ω< )⌒★");
+
+    player = new QMediaPlayer;//播放设备
+    audioOutput = new QAudioOutput;//音频输出
+    bufferOutput = new QAudioBufferOutput;//缓冲区输出
+
+    player->setAudioOutput(audioOutput);
+    player->setAudioBufferOutput(bufferOutput);
+
+    connect(bufferOutput, &QAudioBufferOutput::audioBufferReceived, this, &MediaPlayer::buildFrequencySpectrum);
+
+    connect(player, &QMediaPlayer::positionChanged, this, [=](qint64 time){
+        updateAudioOutPut();
+        selectPlayLrc(time);
+    });
+    //自动播放
+
+    connect(player, &QMediaPlayer::mediaStatusChanged, this, [=](QMediaPlayer::MediaStatus staus){
+        if(staus == QMediaPlayer::EndOfMedia)
+        {
+            playNext(1);
+        }
+    });
+
+    //关联网络模块
+    OnLine *onLine = OnLine::getInstance();
+    connect(this, &MediaPlayer::downLrc, onLine, &OnLine::downLrc);
+    connect(onLine, &OnLine::lrcDowned, this, &MediaPlayer::loadLrcList);
 }
 
 QAudioOutput *MediaPlayer::getAudioOutput() const

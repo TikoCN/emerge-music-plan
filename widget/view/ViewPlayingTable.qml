@@ -36,7 +36,6 @@ Drawer {
         anchors.top: playingTableText.bottom
         anchors.topMargin: 10
         anchors.horizontalCenter: parent.horizontalCenter
-        clip: true
 
         model: ListModel{
             id: musicModel

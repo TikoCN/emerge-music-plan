@@ -28,10 +28,6 @@ private:
 
     Q_PROPERTY(QFont deskFont READ getDeskFont WRITE setDeskFont NOTIFY deskFontChanged FINAL)
 
-    Q_PROPERTY(QColor playingLrcColor READ getPlayingLrcColor WRITE setPlayingLrcColor NOTIFY playingLrcColorChanged FINAL)
-
-    Q_PROPERTY(QColor playedLrcColor READ getPlayedLrcColor WRITE setPlayedLrcColor NOTIFY playedLrcColorChanged FINAL)
-
     Q_PROPERTY(QRectF windowRect READ getWindowRect WRITE setWindowRect NOTIFY windowRectChanged FINAL)
 
     Q_PROPERTY(QFont mainLrcFont READ getMainLrcFont WRITE setMainLrcFont NOTIFY mainLrcFontChanged FINAL)
@@ -79,8 +75,6 @@ public:
     QColor themeColor;//主题颜色
     QColor transparentColor;//透明层颜色
     QColor backdropColor;//背景颜色
-    QColor playingLrcColor;//正在播放字体颜色
-    QColor playedLrcColor;//完成播放歌词颜色
 
     QPoint lrcTopPoint;//桌面歌词位置
     QRectF windowRect;//主界面
@@ -134,12 +128,6 @@ public:
     QFont getDeskFont() const;
     void setDeskFont(const QFont &newdeskFont);
 
-    QColor getPlayingLrcColor() const;
-    void setPlayingLrcColor(const QColor &newPlayingLrcColor);
-
-    QColor getPlayedLrcColor() const;
-    void setPlayedLrcColor(const QColor &newPlayedLrcColor);
-
     QRectF getWindowRect() const;
     void setWindowRect(const QRectF &newWindowRect);
 
@@ -181,8 +169,6 @@ signals:
     void backdropColorChanged();
     void mainFontChanged();
     void deskFontChanged();
-    void playingLrcColorChanged();
-    void playedLrcColorChanged();
     void windowRectChanged();
     void mainLrcFontChanged();
     void lrcTopPointChanged();

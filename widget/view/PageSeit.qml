@@ -155,24 +155,6 @@ ScrollView{
                         Setting.transparentColor = selectedColor
                     }
                 }
-
-                TikoSelectColor{
-                    width: parent.itemWidth
-                    text: qsTr("正在播放颜色")
-                    selectedColor: Setting.playingLrcColor
-                    onSelectedColorChanged: {
-                        Setting.playingLrcColor = selectedColor
-                    }
-                }
-
-                TikoSelectColor{
-                    width: parent.itemWidth
-                    text: qsTr("完成播放颜色")
-                    selectedColor: Setting.playedLrcColor
-                    onSelectedColorChanged: {
-                        Setting.playedLrcColor = selectedColor
-                    }
-                }
             }
         }
 

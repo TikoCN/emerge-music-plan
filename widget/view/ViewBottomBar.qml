@@ -226,7 +226,7 @@ Item {
     TikoHSlider{
         id: playPos
         width: parent.width
-        height: 15
+        height: 10
         from: 0
         to: MediaPlayer.player.duration
         value: MediaPlayer.player.position

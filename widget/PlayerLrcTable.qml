@@ -28,15 +28,15 @@ Item {
     ListView{
         id:lrcList
         anchors.fill:parent
-        clip: true
 
         delegate: CoreLrcLine{
             width: lrcList.width
-            height: 70
-            lrcFont: Setting.mainLrcFont
             text: MediaPlayer.lrcList[lrc].text
             pos: MediaPlayer.lrcList[lrc].pos
             lrcId: MediaPlayer.lrcList[lrc].id
+            endList: MediaPlayer.lrcList[lrc].endList
+            startList: MediaPlayer.lrcList[lrc].startList
+            startTime: MediaPlayer.lrcList[lrc].startTime
         }
 
         model:ListModel{
@@ -60,7 +60,7 @@ Item {
 
             var playLine = MediaPlayer.playingLrc.id
             lrcList.currentIndex = playLine
-            lrcList.positionViewAtIndex(playLine, ListView.Center)
+            lrcList.positionViewAtIndex(playLine, ListView.Beginning)
         }
     }
 

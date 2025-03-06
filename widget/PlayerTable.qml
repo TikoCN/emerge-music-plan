@@ -129,56 +129,56 @@ Item {
 
                     TikoMenuItem{
                         text: qsTr("标   题");
-                        onTriggered: MediaPlayer.tableList[tableId].sortMusic(0, this);
+                        onTriggered: MediaPlayer.tableList[tableId].sortMusic(0);
                         icon.source: "qrc:/image/asc.png"
                     }
                     TikoMenuItem{
                         text: qsTr("标   题");
-                        onTriggered: MediaPlayer.tableList[tableId].sortMusic(1, this);
+                        onTriggered: MediaPlayer.tableList[tableId].sortMusic(1);
                         icon.source: "qrc:/image/desc.png"
                     }
                     TikoMenuSpeacer{}
                     TikoMenuItem{
                         text: qsTr("歌   手");
-                        onTriggered: MediaPlayer.tableList[tableId].sortMusic(2, this);
+                        onTriggered: MediaPlayer.tableList[tableId].sortMusic(2);
                         icon.source: "qrc:/image/asc.png"
                     }
                     TikoMenuItem{
                         text: qsTr("歌   手");
-                        onTriggered: MediaPlayer.tableList[tableId].sortMusic(3, this);
+                        onTriggered: MediaPlayer.tableList[tableId].sortMusic(3);
                         icon.source: "qrc:/image/desc.png"
                     }
                     TikoMenuSpeacer{}
                     TikoMenuItem{
                         text: qsTr("专   辑");
-                        onTriggered: MediaPlayer.tableList[tableId].sortMusic(4, this);
+                        onTriggered: MediaPlayer.tableList[tableId].sortMusic(4);
                         icon.source: "qrc:/image/asc.png"
                     }
                     TikoMenuItem{
                         text: qsTr("专   辑");
-                        onTriggered: MediaPlayer.tableList[tableId].sortMusic(5, this);
+                        onTriggered: MediaPlayer.tableList[tableId].sortMusic(5);
                         icon.source: "qrc:/image/desc.png"
                     }
                     TikoMenuSpeacer{}
                     TikoMenuItem{
                         text: qsTr("时   长");
-                        onTriggered: MediaPlayer.tableList[tableId].sortMusic(6, this);
+                        onTriggered: MediaPlayer.tableList[tableId].sortMusic(6);
                         icon.source: "qrc:/image/asc.png"
                     }
                     TikoMenuItem{
                         text: qsTr("时   长");
-                        onTriggered: MediaPlayer.tableList[tableId].sortMusic(7, this);
+                        onTriggered: MediaPlayer.tableList[tableId].sortMusic(7);
                         icon.source: "qrc:/image/desc.png"
                     }
                     TikoMenuSpeacer{}
                     TikoMenuItem{
                         text: qsTr("修改时间");
-                        onTriggered: MediaPlayer.tableList[tableId].sortMusic(8, this);
+                        onTriggered: MediaPlayer.tableList[tableId].sortMusic(8);
                         icon.source: "qrc:/image/asc.png"
                     }
                     TikoMenuItem{
                         text: qsTr("修改时间");
-                        onTriggered: MediaPlayer.tableList[tableId].sortMusic(9, this);
+                        onTriggered: MediaPlayer.tableList[tableId].sortMusic(9);
                         icon.source: "qrc:/image/desc.png"
                     }
                 }

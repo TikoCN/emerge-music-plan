@@ -26,6 +26,21 @@ void LrcData::setLine(int newLine)
     emit lineChanged();
 }
 
+QList<long long> LrcData::getStartList() const
+{
+    return startList;
+}
+
+QList<long long> LrcData::getEndList() const
+{
+    return endList;
+}
+
+qint64 LrcData::getStartTime() const
+{
+    return startTime;
+}
+
 LrcData::LrcData(){
     id = 0;
     startTime = 0;

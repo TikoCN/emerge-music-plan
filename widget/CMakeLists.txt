@@ -19,7 +19,6 @@ qt_add_qml_module(WidgetLib
     CoreLrcLine.qml
     CoreMusicLine.qml
     PlayerLrcTable.qml
-    PlayerSpectrum.qml
     PlayerTable.qml
     view/PageMain.qml
     view/PageSeit.qml

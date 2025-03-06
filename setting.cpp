@@ -41,8 +41,6 @@ bool Setting::getParameterList()
     transparentColor = QColor::fromString(ini->value("transparentColor").toString());
     backdropColor = QColor::fromString(ini->value("backdropColor").toString());
     themeColor = QColor::fromString(ini->value("themeColor").toString());
-    playingLrcColor = QColor::fromString(ini->value("playingLrcColor").toString());
-    playedLrcColor = QColor::fromString(ini->value("playedLrcColor").toString());
 
     deskFont.fromString(ini->value("deskFont").toString());
     mainFont.fromString(ini->value("mainFont").toString());
@@ -142,8 +140,6 @@ void Setting::writeData()
     ini->setValue("themeColor", themeColor.name());
     ini->setValue("transparentColor", transparentColor.name());
     ini->setValue("backdropColor", backdropColor.name());
-    ini->setValue("playedLrcColor", playedLrcColor.name());
-    ini->setValue("playingLrcColor", playingLrcColor.name());
 
     ini->setValue("mainFont", mainFont.toString());
     ini->setValue("mainLrcFont", mainLrcFont.toString());
@@ -227,8 +223,6 @@ Setting::Setting()
         themeColor = Qt::red;
         transparentColor = Qt::black;
         backdropColor = Qt::white;
-        playedLrcColor = Qt::blue;
-        playingLrcColor = Qt::red;
 
         mainFont.setFamily("Microsoft YaHei");
         mainFont.setPixelSize(12);
@@ -393,36 +387,6 @@ void Setting::setWindowRect(const QRectF &newWindowRect)
     setParameter("windowRectY", windowRect.y());
     setParameter("windowRectW", windowRect.width());
     setParameter("windowRectH", windowRect.height());
-}
-
-QColor Setting::getPlayedLrcColor() const
-{
-    return playedLrcColor;
-}
-
-void Setting::setPlayedLrcColor(const QColor &newPlayedLrcColor)
-{
-    if (playedLrcColor == newPlayedLrcColor)
-        return;
-    playedLrcColor = newPlayedLrcColor;
-    emit playedLrcColorChanged();
-    //写入设置文件
-    setParameter("playedLrcColor", playedLrcColor);
-}
-
-QColor Setting::getPlayingLrcColor() const
-{
-    return playingLrcColor;
-}
-
-void Setting::setPlayingLrcColor(const QColor &newPlayingLrcColor)
-{
-    if (playingLrcColor == newPlayingLrcColor)
-        return;
-    playingLrcColor = newPlayingLrcColor;
-    emit playingLrcColorChanged();
-    //写入设置文件
-    setParameter("playingLrcColor",playingLrcColor);
 }
 
 QFont Setting::getDeskFont() const

@@ -68,22 +68,4 @@ Window{
             acttion = 0
         }
     }
-
-    //圆角
-    Rectangle{
-        width: parent.width
-        height: parent.height
-        topLeftRadius: 10
-        topRightRadius: 10
-        color: TikoSeit.backdropColor
-
-        Rectangle{
-            anchors.fill: parent
-            border.color: TikoSeit.transparentColor
-            topLeftRadius: 10
-            topRightRadius: 10
-            border.width: 0.5
-            opacity: 0.3
-        }
-    }
 }

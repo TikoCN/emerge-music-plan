@@ -54,5 +54,6 @@
         <file>image/else.png</file>
         <file>image/asc.png</file>
         <file>image/desc.png</file>
+        <file>image/star.png</file>
     </qresource>
 </RCC>

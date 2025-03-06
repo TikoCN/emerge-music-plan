@@ -1,8 +1,7 @@
-﻿#ifndef LRCDATA_H
+#ifndef LRCDATA_H
 #define LRCDATA_H
 
 #include <QObject>
-
 class LrcData : public QObject
 {
     Q_OBJECT
@@ -12,6 +11,8 @@ public:
     QString text;
     qint64 startTime;
     qint64 endTime;
+    QList<long long> startList;
+    QList<long long> endList;
     double pos;//播放进度
     bool isPlay;
 
@@ -33,6 +34,12 @@ public:
     int getLine() const;
     void setLine(int newLine);
 
+    QList<long long> getStartList() const;
+
+    QList<long long> getEndList() const;
+
+    qint64 getStartTime() const;
+
 signals:
     void textChanged();
 
@@ -50,6 +57,9 @@ private:
     Q_PROPERTY(double pos READ getPos WRITE setPos NOTIFY posChanged FINAL)
     Q_PROPERTY(int id READ getId WRITE setId NOTIFY idChanged FINAL)
     Q_PROPERTY(int line READ getLine WRITE setLine NOTIFY lineChanged FINAL)
+    Q_PROPERTY(QList<long long> startList READ getStartList CONSTANT FINAL)
+    Q_PROPERTY(QList<long long> endList READ getEndList CONSTANT FINAL)
+    Q_PROPERTY(qint64 startTime READ getStartTime CONSTANT FINAL)
 };
 
 #endif // LRCDATA_H
