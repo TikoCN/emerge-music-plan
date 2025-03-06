@@ -55,15 +55,8 @@ TikoFrameless{
     }
 
     StackView{
-        id:centerView
-        height:parent.height - bottomView.height
-        width:parent.width - 20
-        anchors.left:parent.left
-        anchors.right:parent.right
-        anchors.leftMargin:10
-        anchors.rightMargin:10
-        anchors.top:parent.top
-        anchors.topMargin:10
+        id: centerView
+        anchors.fill: parent
 
         PageMain{
             id:mainPage
@@ -75,7 +68,7 @@ TikoFrameless{
             visible: false
 
             ViewLeftBar{
-                height: parent.height
+                height: parent.height - bottomView.height
                 width: 200
                 id: barView
             }
@@ -87,17 +80,17 @@ TikoFrameless{
                 height: barView.height
                 anchors.left: barView.right
             }
+
+            //底部导航
+            ViewBottomBar{
+                id: bottomView
+                height: 90
+                width: parent.width
+                anchors.top: mainView.bottom
+            }
         }
 
         initialItem: editPage
-    }
-
-    //底部导航
-    ViewBottomBar{
-        id: bottomView
-        height:90
-        width:parent.width
-        anchors.top:centerView.bottom
     }
 
     ViewPlayingTable {
@@ -138,9 +131,9 @@ TikoFrameless{
     //切换到主页
     function stackMain(){
         if(centerView.currentItem != mainPage){
-            mainPage.show = true
             centerView.pop(null)
             centerView.pushItem(mainPage)
+            mainPage.show = true
         }
     }
 

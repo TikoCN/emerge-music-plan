@@ -4,7 +4,6 @@ import Tiko
 
 Item {
     id:playerLrcTable
-    property bool show: false
     property bool have: false
 
     MouseArea{
@@ -35,7 +34,9 @@ Item {
             width: lrcList.width
             height: 70
             lrcFont: Setting.mainLrcFont
-            lrcData: MediaPlayer.lrcList[lrc]
+            text: MediaPlayer.lrcList[lrc].text
+            pos: MediaPlayer.lrcList[lrc].pos
+            lrcId: MediaPlayer.lrcList[lrc].id
         }
 
         model:ListModel{
@@ -43,11 +44,13 @@ Item {
         }
     }
 
+    Component.onCompleted: buildLrcList()
+
     //关联
     Connections{
         target:MediaPlayer
         function onCppLrcLoaded(size){
-            playerLrcTable.buildLrcList(size)
+            playerLrcTable.buildLrcList()
         }
 
         function onCppPlayingLrc(){
@@ -62,9 +65,9 @@ Item {
     }
 
     //插入歌词
-    function buildLrcList(size){
+    function buildLrcList(){
         lrcDataList.clear()
-        for(var i=0; i<size; i++){
+        for(var i=0; i<MediaPlayer.lrcList.length; i++){
             lrcDataList.append({lrc:i})
         }
     }

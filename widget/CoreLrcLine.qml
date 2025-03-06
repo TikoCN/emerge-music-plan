@@ -5,22 +5,24 @@ import Tiko
 
 Item {
     id: coreLrcLine
-    height: textMetrics.boundingRect.height * lrcData.line
+    height: textMetrics.boundingRect.height
     property font lrcFont
-    property var lrcData
+    property double pos: 0
+    property string text: qsTr("歌词加载中")
     property bool isUse: true
+    property int lrcId: 0//歌词序号
 
     Connections{
-        target: lrcData
+        target: coreLrcLine
         function onPosChanged(){
             if(textMetrics.boundingRect.width < width){
                 moveBar.position = 0
                 return;//不超出长度，退出
             }
 
-            var shwoLine = lrcData.pos * textMetrics.boundingRect.width
+            var shwoLine = coreLrcLine.pos * textMetrics.boundingRect.width
             if(shwoLine > width * 2 / 3){
-                moveBar.position = (lrcData.pos * textMetrics.boundingRect.width - width* 2 / 3) / textMetrics.boundingRect.width
+                moveBar.position = (coreLrcLine.pos * textMetrics.boundingRect.width - width* 2 / 3) / textMetrics.boundingRect.width
             }
             else if(shwoLine < width){
                 moveBar.position = 0
@@ -43,20 +45,20 @@ Item {
             text: lrcPlayingText.text
             anchors.left: parent.left
             color: Setting.playedLrcColor
-            font.family: lrcFont.family
+            font.family: coreLrcLine.lrcFont.family
             font.bold: true
-            font.pixelSize: lrcFont.pixelSize
+            font.pixelSize: coreLrcLine.lrcFont.pixelSize
             width: textMetrics.boundingRect.width
         }
 
         Text{
             id: lrcPlayingText
-            text: lrcData.text
+            text: coreLrcLine.text
             anchors.left: parent.left
             color: Setting.playingLrcColor
             font: lrcPlayedText.font
             clip: true
-            width: lrcData.pos * textMetrics.boundingRect.width
+            width: coreLrcLine.pos * textMetrics.boundingRect.width
         }
     }
 
@@ -74,7 +76,7 @@ Item {
         onClicked:(mouse)=>{
                       //跳转到当前时间
                       if(mouse.button === Qt.LeftButton && isUse){
-                          MediaPlayer.turnToLrc(lrcData.id)
+                          MediaPlayer.turnToLrc(coreLrcLine.lrcId)
                       }
                       mouse.accepted = false
                   }

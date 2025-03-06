@@ -1,11 +1,62 @@
 import QtQuick
+import QtQuick.Effects
 import TikoAPI
 import Tiko
-import "../"
+import Widget
 
 Item {
     id: pageMain
-    property bool show:  false
+    property bool show: false
+    property int type: 1
+    onShowChanged: {
+        if(!pageMain.show){
+            loaderStyle.source = ""
+            return
+        }
+
+        switch(pageMain.type){
+        case 0:
+            loaderStyle.source = "./mainStyle/MainStyle0.qml"
+            break
+        case 1:
+            loaderStyle.source = "./mainStyle/MainStyle1.qml"
+            break
+        case 2:
+            loaderStyle.source = "./mainStyle/MainStyle2.qml"
+            break
+        case 3:
+            loaderStyle.source = "./mainStyle/MainStyle3.qml"
+            break
+        case 4:
+            loaderStyle.source = "./mainStyle/MainStyle4.qml"
+            break
+        case 5:
+            loaderStyle.source = "./mainStyle/MainStyle5.qml"
+            break
+        }
+    }
+
+    Image {
+        id: backCover
+        anchors.fill: pageMain
+        sourceSize.width: backCover.width
+        sourceSize.height: backCover.height
+        visible: false
+    }
+
+    MultiEffect {
+        autoPaddingEnabled: true
+        source: backCover
+        anchors.fill: backCover
+        blurEnabled: true
+        blurMax: 64
+        blur: 1.0
+    }
+    Rectangle{
+        anchors.fill: backCover
+        color: Setting.backdropColor
+        opacity: 0.3
+    }
 
     //关闭
     TikoUiButton{
@@ -48,71 +99,26 @@ Item {
         id: back
         anchors.left: parent.left
         anchors.leftMargin: 20
-        text: qsTr("最小化")
+        text: qsTr("返回")
         icon.source: "qrc:/image/back.png"
         onClicked: window.stackCenter()
     }
 
-    TikoAutoText{
-        id: title
-        width: cover.width + parent.width / 20
-        height: 30
-        anchors.bottom: artist.top
-        anchors.left: cover.left
-        font.bold: true
-        exSize: 6
-        text: qsTr("标题")
+    Loader{
+        id: loaderStyle
+        width: pageMain.width
+        height: pageMain.height - back.height
+        y: back.height
     }
 
-    TikoAutoText{
-        id: artist
-        width: cover.width + parent.width / 20
-        height: 30
-        anchors.bottom: cover.top
-        anchors.left: cover.left
-        exSize: 3
-        text: qsTr("作者")
-    }
-
-    Image {
-        id: cover
-        cache: false
-        anchors.horizontalCenter: parent.horizontalCenter
-        anchors.horizontalCenterOffset:  -width/2 - parent.width / 20
-        anchors.verticalCenter: parent.verticalCenter
-        width: 300
-        height: 300
-        sourceSize.width: width
-        sourceSize.height: height
-        asynchronous: true
-        source: "qrc:/image/cover.png"
-    }
-
-    //滚动歌词
-    PlayerLrcTable{
-        id: lrcShow
-        anchors.horizontalCenter: parent.horizontalCenter
-        anchors.horizontalCenterOffset: width/2 + parent.width / 20
-        anchors.verticalCenter: parent.verticalCenter
-        width: parent.width / 3
-        height: title.height + artist.height + cover.height
-        show: pageMain.show
-    }
-
-    PlayerSpectrum{
-        anchors.horizontalCenter: parent.horizontalCenter
-        anchors.bottom: parent.bottom
-        height: parent.height / 2 - lrcShow.height / 2
-        width: parent.width * 2 / 3
-    }
-
-    //关联
     Connections{
         target:MediaPlayer.player
         function onSourceChanged(){
-            artist.text = MediaPlayer.playingCore.artist
-            title.text = MediaPlayer.playingCore.title
-            cover.source = "image://cover/onLine:" + MediaPlayer.playingCore.coreId.toString()
+            backCover.source = "image://cover/back:" + MediaPlayer.playingCore.coreId.toString()
         }
+    }
+
+    Component.onCompleted: {
+        backCover.source = "image://cover/back:" + MediaPlayer.playingCore.coreId.toString()
     }
 }

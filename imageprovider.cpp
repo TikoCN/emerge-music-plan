@@ -22,12 +22,19 @@ QPixmap ImageProvider::requestPixmap(const QString &id, QSize *size, const QSize
     QPixmap pix;
     QString type = id.split(":").first();
     int coreId = id.split(":").last().toInt();
-
-    if(type == "onLine"){//在线加载
+    MediaPlayer *player = MediaPlayer::getInstance();
+    if(coreId < -1 || coreId > player->coreList.size()){
+        pix.load(":/image/default.jpg");
+    }
+    else if(type == "onLine"){//在线加载
         pix = downOnlineCover(coreId);
     }
     else if(type == "file"){//本地加载
         pix = loadFileCover(coreId);
+    }
+    else if(type == "back"){
+        pix = downOnlineCover(coreId);
+        return pix;
     }
 
     //找不封面，设置为默认封面
@@ -91,3 +98,4 @@ QPixmap ImageProvider::loadFileCover(int id)
     }
     return player->coreList[id]->loadCover();
 }
+

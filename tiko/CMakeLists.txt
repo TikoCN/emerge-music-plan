@@ -26,6 +26,8 @@ qt_add_qml_module(TikoLib
     control/TikoMenuItem.qml
     control/TikoMenuSpeacer.qml
     control/TikoLittleMessage.qml
+    control/TikoProgressBar.qml
+    control/TikoProgressRing.qml
     control/TikoPopup.qml
     control/TikoPopupInput.qml
     control/TikoPopupMessage.qml

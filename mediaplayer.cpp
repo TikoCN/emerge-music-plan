@@ -17,12 +17,12 @@ void MediaPlayer::clearData()
         delete coreList.takeFirst();
     }
 
-    while (!lrcList.empty()) {
-        delete lrcList.takeFirst();
-    }
-
     while (!musicList.empty()) {
         delete musicList.takeFirst();
+    }
+
+    while (!lrcList.empty()) {
+        delete lrcList.takeFirst();
     }
 
     allSamples.clear();
@@ -106,6 +106,15 @@ void MediaPlayer::getMusicCore(QList<Music*> musicList, QStringList musicKeyList
 
     seit->clearJsonData();
     host->clearData();
+
+    //初始化部分数据
+    playingCore->title = tr("歌曲标题");
+    playingCore->artist = tr("歌手");
+    allSamples.fill(0, 1024);
+
+    LrcData *lrc = new LrcData;
+    lrc->text = tr("歌词加载中");
+    lrcList.append(lrc);
 }
 
 void MediaPlayer::buildNoDirTable(QStringList musicKeyList)
@@ -477,7 +486,23 @@ void MediaPlayer::buildFrequencySpectrum(QAudioBuffer buffer)
                 }
             }
         }
-        emit cppDrawLine();
+
+        int aim = 120;
+        int cell = allSamples.size() / aim;
+        QVector<double> outSamples;//处理之后的音乐样本
+        outSamples.fill(0, aim);
+        cell = cell <= 0 ? 1 : cell;
+        for(int i=0; i<aim && i * cell < allSamples.size(); i++){
+            double max = allSamples[i * cell];
+
+            for(int j=1; j<cell && i * cell + j < allSamples.size(); j++){
+                if(max < allSamples[i * cell + j]){
+                    max = allSamples[i * cell + j];
+                }
+            }
+            outSamples[i] = max;
+        }
+        emit cppDrawLine(outSamples);
     }
 }
 

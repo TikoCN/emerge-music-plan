@@ -16,8 +16,8 @@ qt_add_executable(appmusicPlay
 )
 
 qt_policy(SET QTP0004 NEW)
-add_subdirectory(tiko)
-add_subdirectory(widget)
+add_subdirectory(Tiko)
+add_subdirectory(Widget)
 
 qt_add_qml_module(appmusicPlay
     URI musicPlay

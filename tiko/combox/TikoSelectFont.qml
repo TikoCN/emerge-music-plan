@@ -22,7 +22,7 @@ Item{
 
     TikoPopup{
         id: editFont
-        width: 200
+        width: 300
         height: 230
         contentItem: Item{
             ListView{
@@ -66,22 +66,41 @@ Item{
                 opacity: 0.03
             }
 
-            TikoAutoText{
+            TikoInputText{
                 id: fontSizeShow
-                y: 160
-                width: 50
-                height: fontSize.height
-                text: fontSize.value.toString()
+                anchors.top: fontList.bottom
+                anchors.topMargin: 10
+                width: 150
+                height: 30
+                show.text: qsTr("文本大小")
+                input.width: 50
+                input.text: fontSize.value.toFixed(2).toString()
+                input.onEditingFinished: {
+                    root.selectedFont.pixelSize = inputNumber(input, root.selectedFont.pixelSize);
+                }
+
+                function inputNumber(input, number){
+                    var rx = /[^0-9.]/
+                    if(input.text.match(rx) !== null ){
+                        popupMessage.show(qsTr("请输入数字"))
+                        input.text = number.toFixed(2).toString()
+                    }
+                    else if(Number(input.text) !== number){
+                        return Number(input.text)
+                    }
+                    return number
+                }
             }
 
             TikoHSlider{
                 id: fontSize
                 anchors.left: fontSizeShow.right
                 anchors.leftMargin: 10
+                anchors.verticalCenter: fontSizeShow.verticalCenter
                 from: 10
                 to: 30
-                y: 160
                 width: parent.width - fontSizeShow.width - 10
+                height: 15
                 radius: 6
                 value: root.selectedFont.pixelSize
                 onMoved: root.selectedFont.pixelSize = value

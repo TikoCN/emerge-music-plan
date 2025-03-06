@@ -171,7 +171,7 @@ signals:
     void cppPlayingInsertMusic(int musicId);
 
     //绘制音频波形
-    void cppDrawLine();
+    void cppDrawLine(QVector<double>);
 
     //正在播放歌词改变
     void cppPlayingLrc();

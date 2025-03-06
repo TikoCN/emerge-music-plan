@@ -29,6 +29,7 @@ qt_add_qml_module(WidgetLib
     view/ViewLeftBar.qml
     view/ViewMain.qml
     view/ViewPlayingTable.qml
+    view/mainStyle/MainStyle1.qml
+    view/mainStyle/MainStyle2.qml
     RESOURCES ui.qrc
-    RESOURCES
 )

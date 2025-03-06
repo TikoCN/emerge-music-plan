@@ -113,7 +113,9 @@ Window{
             anchors.topMargin: 10
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.leftMargin: 20
-            lrcData: MediaPlayer.playingLrc
+            text: MediaPlayer.playingLrc.text
+            pos: MediaPlayer.playingLrc.pos
+            lrcId: MediaPlayer.playingLrc.id
             lrcFont: Setting.deskFont
             width: parent.width - 40
             isUse: false
@@ -125,7 +127,9 @@ Window{
             anchors.topMargin: 20
             anchors.leftMargin: 20
             anchors.horizontalCenter: parent.horizontalCenter
-            lrcData: MediaPlayer.playedLrc
+            text: MediaPlayer.playedLrc.text
+            pos: MediaPlayer.playedLrc.pos
+            lrcId: MediaPlayer.playedLrc.id
             lrcFont: Setting.deskFont
             width: parent.width - 40
             isUse: false
