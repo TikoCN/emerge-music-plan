@@ -41,58 +41,58 @@ Window{
             visible: deskLrcToolArea.containsMouse ? true : false
             height: 40
 
-            TikoUiButton{
+            TikoButtonIcon{
                 icon.source: "qrc:/image/music.png"
                 onClicked: window.show()
                 text: qsTr("显示主窗口")
             }
 
-            TikoUiButton{
+            TikoButtonIcon{
                 icon.source: "qrc:/image/size-.png"
                 onClicked: Setting.deskFont.pixelSize--
                 text: qsTr("字体减小")
             }
 
-            TikoUiButton{
+            TikoButtonIcon{
                 icon.source: "qrc:/image/leftArrow.png"
                 onClicked: MediaPlayer.player.position = MediaPlayer.player.position - 0.5 * 1000
                 text: qsTr("快退")
             }
 
             //播放上一首歌曲
-            TikoUiButton{
+            TikoButtonIcon{
                 icon.source: "qrc:/image/up.png"
                 onClicked: MediaPlayer.playNext(-1)
                 text: qsTr("播放上一首歌曲")
             }
 
             //播放 暂停按钮
-            TikoUiButton{
+            TikoButtonIcon{
                 icon.source: MediaPlayer.player.playing ? "qrc:/image/stop.png" : "qrc:/image/playBlack.png"
                 onClicked: MediaPlayer.player.playing ? MediaPlayer.player.pause() : MediaPlayer.player.play()
                 text: MediaPlayer.player.playing ? qsTr("暂停") : qsTr("播放")
             }
 
             //下一首
-            TikoUiButton{
+            TikoButtonIcon{
                 icon.source: "qrc:/image/down.png"
                 onClicked: MediaPlayer.playNext(1)
                 text: qsTr("播放下一首歌曲")
             }
 
-            TikoUiButton{
+            TikoButtonIcon{
                 icon.source: "qrc:/image/rightArrow.png"
                 onClicked: MediaPlayer.player.position = MediaPlayer.player.position + 0.5 * 1000
                 text: qsTr("快进")
             }
 
-            TikoUiButton{
+            TikoButtonIcon{
                 icon.source: "qrc:/image/size+.png"
                 onClicked: Setting.deskFont.pixelSize++
                 text: qsTr("字体加大")
             }
 
-            TikoUiButton{
+            TikoButtonIcon{
                 icon.source: "qrc:/image/close.png"
                 onClicked: deskLrcTool.close()
                 text: qsTr("隐藏歌词")
@@ -113,8 +113,7 @@ Window{
             anchors.topMargin: 10
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.leftMargin: 20
-            text: MediaPlayer.playingLrc.text
-            pos: MediaPlayer.playingLrc.pos
+            textList: MediaPlayer.playingLrc.textList
             lrcId: MediaPlayer.playingLrc.id
             lrcFont: Setting.deskFont
             width: parent.width - 40
@@ -127,8 +126,7 @@ Window{
             anchors.topMargin: 20
             anchors.leftMargin: 20
             anchors.horizontalCenter: parent.horizontalCenter
-            text: MediaPlayer.playedLrc.text
-            pos: MediaPlayer.playedLrc.pos
+            textList: MediaPlayer.playedLrc.textList
             lrcId: MediaPlayer.playedLrc.id
             lrcFont: Setting.deskFont
             width: parent.width - 40

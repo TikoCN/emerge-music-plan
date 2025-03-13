@@ -1,6 +1,6 @@
 import QtQuick
 import QtQuick.Controls.Basic
-import "../"
+import Tiko
 
 MenuItem {
     id: root
@@ -24,7 +24,7 @@ MenuItem {
             anchors.verticalCenter: parent.verticalCenter
             source: root.icon.source
         }
-        TikoAutoText{
+        TikoTextLine{
             text: root.text
             width: parent.width - icon.width
             x: 35

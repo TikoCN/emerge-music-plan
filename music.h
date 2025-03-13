@@ -1,6 +1,7 @@
 #ifndef MUSIC_H
 #define MUSIC_H
 
+#include "lrcdata.h"
 #include <QObject>
 #include <QFileInfo>
 
@@ -40,8 +41,10 @@ public:
     //获得封面路径
     QString getCoverUrl();
 
-    //获得歌词文件路径
     QString getLrcUrl();
+
+    //获得歌词文件路径
+    QList<LrcData *> getLyricsData();
 
     //获得父文件夹
     QString getParentDir();

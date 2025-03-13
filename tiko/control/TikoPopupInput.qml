@@ -11,7 +11,7 @@ TikoPopup {
     property var onAccept: ()=>{}
     property var onCancel: ()=>{}
 
-    TikoInputText{
+    TikoTextInput{
         id: inputLine
         show.text: text
         input.text: orgText
@@ -21,7 +21,7 @@ TikoPopup {
         width: parent.width - 20
     }
 
-    TikoBorderButton{
+    TikoButtonBorder{
         id: yes
         text: qsTr("确定")
         anchors.verticalCenter: parent.verticalCenter
@@ -34,7 +34,7 @@ TikoPopup {
         }
     }
 
-    TikoBorderButton{
+    TikoButtonBorder{
         id: no
         text: qsTr("取消")
         anchors.verticalCenter: parent.verticalCenter

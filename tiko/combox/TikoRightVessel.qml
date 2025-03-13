@@ -5,18 +5,18 @@ Item {
     id: rightVessel
     height: rightVessel.itemShow && show.height < bgLoader.height ?
                 bgLoader.height + 50 : show.height + 50
-    property TikoButton show: show
+    property TikoButtonNormal show: show
     property Component vessel
     property bool itemShow: true
 
-    TikoButton{
+    TikoButtonNormal{
         id: show
         x: 10
         y: 25
-        textShow.exSize: 5
+        autoText.exSize: 5
         implicitWidth: 100
         opacity: 0.3
-        onClicked: rightVessel.itemShow = !rightVessel.itemShow
+        onClickLeft: rightVessel.itemShow = !rightVessel.itemShow
 
     }
 

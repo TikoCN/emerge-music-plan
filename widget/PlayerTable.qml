@@ -10,7 +10,6 @@ Item {
     property int allMusic:  0
     property string showCover: "qrc:/image/default.jpg"
 
-
     Item{
         id: showView
         width: parent.width
@@ -31,7 +30,7 @@ Item {
         }
 
         //列表名字
-        TikoAutoText{
+        TikoTextLine{
             id: tableName
             anchors.left: tableCover.right
             anchors.leftMargin: 10
@@ -45,7 +44,7 @@ Item {
         }
 
         //播放列表
-        TikoBorderButton{
+        TikoButtonBorder{
             id: playButton
             anchors.left: tableName.left
             anchors.bottom: tableCover.bottom
@@ -57,7 +56,7 @@ Item {
         }
 
         //批量操作
-        TikoBorderButton{
+        TikoButtonBorder{
             anchors.left: playButton.right
             anchors.leftMargin: 10
             anchors.bottom: tableCover.bottom
@@ -75,52 +74,27 @@ Item {
             spacing: 10
 
             //显示所有歌曲列表
-            TikoButton{
+            TikoButtonNormal{
                 Layout.minimumWidth: 70
-                onClicked: MediaPlayer.tableList[tableId].showAllMusic()
+                onClickLeft: MediaPlayer.tableList[tableId].showAllMusic()
                 text: qsTr("歌曲") + allMusic.toString()
-                icon.source: "qrc:/image/music.png"
+                iconSource: "qrc:/image/music.png"
             }
 
             //显示喜爱歌曲列表
-            TikoButton{
+            TikoButtonNormal{
                 Layout.minimumWidth: 70
-                onClicked: MediaPlayer.tableList[tableId].showLove()
+                onClickLeft: MediaPlayer.tableList[tableId].showLove()
                 text: qsTr("喜爱")
-                icon.source: "qrc:/image/love.png"
-            }
-
-            //打开本地文件夹
-            TikoButton{
-                Layout.minimumWidth: 70
-                onClicked: MediaPlayer.tableList[tableId].openDir()
-                text: qsTr("打开")
-                icon.source: "qrc:/image/dir.png"
-            }
-
-            //重命名
-            TikoButton{
-                Layout.minimumWidth: 70
-                onClicked: editName.open()
-                text: qsTr("命名")
-                icon.source: "qrc:/image/rename.png"
-
-                TikoPopupInput{
-                    id: editName
-                    text: qsTr("请输入列表的新名字")
-                    orgText: MediaPlayer.tableList[tableId].name
-                    onAccept: ()=>{
-                                  MediaPlayer.tableList[tableId].name = inputText
-                              }
-                }
+                iconSource: "qrc:/image/love.png"
             }
 
             //排序
-            TikoButton{
+            TikoButtonNormal{
                 Layout.minimumWidth: 70
-                onClicked: sortMenu.open()
+                onClickLeft: sortMenu.open()
                 text: qsTr("排序")
-                icon.source: "qrc:/image/sort.png"
+                iconSource: "qrc:/image/sort.png"
 
                 TikoMenu{
                     id: sortMenu
@@ -128,56 +102,52 @@ Item {
                     y: parent.height
 
                     TikoMenuItem{
-                        text: qsTr("标   题");
+                        text: qsTr("标题升序");
                         onTriggered: MediaPlayer.tableList[tableId].sortMusic(0);
                         icon.source: "qrc:/image/asc.png"
                     }
                     TikoMenuItem{
-                        text: qsTr("标   题");
+                        text: qsTr("标题降序");
                         onTriggered: MediaPlayer.tableList[tableId].sortMusic(1);
                         icon.source: "qrc:/image/desc.png"
                     }
-                    TikoMenuSpeacer{}
                     TikoMenuItem{
-                        text: qsTr("歌   手");
+                        text: qsTr("歌手升序");
                         onTriggered: MediaPlayer.tableList[tableId].sortMusic(2);
                         icon.source: "qrc:/image/asc.png"
                     }
                     TikoMenuItem{
-                        text: qsTr("歌   手");
+                        text: qsTr("歌手降序");
                         onTriggered: MediaPlayer.tableList[tableId].sortMusic(3);
                         icon.source: "qrc:/image/desc.png"
                     }
-                    TikoMenuSpeacer{}
                     TikoMenuItem{
-                        text: qsTr("专   辑");
+                        text: qsTr("专辑升序");
                         onTriggered: MediaPlayer.tableList[tableId].sortMusic(4);
                         icon.source: "qrc:/image/asc.png"
                     }
                     TikoMenuItem{
-                        text: qsTr("专   辑");
+                        text: qsTr("专辑降序");
                         onTriggered: MediaPlayer.tableList[tableId].sortMusic(5);
                         icon.source: "qrc:/image/desc.png"
                     }
-                    TikoMenuSpeacer{}
                     TikoMenuItem{
-                        text: qsTr("时   长");
+                        text: qsTr("时长升序");
                         onTriggered: MediaPlayer.tableList[tableId].sortMusic(6);
                         icon.source: "qrc:/image/asc.png"
                     }
                     TikoMenuItem{
-                        text: qsTr("时   长");
+                        text: qsTr("时长降序");
                         onTriggered: MediaPlayer.tableList[tableId].sortMusic(7);
                         icon.source: "qrc:/image/desc.png"
                     }
-                    TikoMenuSpeacer{}
                     TikoMenuItem{
-                        text: qsTr("修改时间");
+                        text: qsTr("修改时间升序");
                         onTriggered: MediaPlayer.tableList[tableId].sortMusic(8);
                         icon.source: "qrc:/image/asc.png"
                     }
                     TikoMenuItem{
-                        text: qsTr("修改时间");
+                        text: qsTr("修改时间降序");
                         onTriggered: MediaPlayer.tableList[tableId].sortMusic(9);
                         icon.source: "qrc:/image/desc.png"
                     }
@@ -185,9 +155,55 @@ Item {
             }
 
             //搜索
-            TikoUiButton{
+            TikoButtonIcon{
+                id: searchButton
                 text: qsTr("搜索")
                 icon.source: "qrc:/image/search.png"
+                onClicked: rotAnimation.start()
+
+                //旋转动画
+                RotationAnimation{
+                    id: rotAnimation
+                    target: searchButton
+                    from: 0
+                    to: 360
+                    duration: 300
+                    onFinished: {
+                        searchButton.visible = false
+                        inputText.visible = true
+                        widthAnimation.start()
+                    }
+                }
+
+                PropertyAnimation{
+                    id: widthAnimation
+                    target: inputText
+                    property: "Layout.maximumWidth"
+                    from: 0
+                    to: 200
+                    duration: 500
+                }
+            }
+
+            TikoTextInput{
+                id: inputText
+                Layout.maximumWidth: 0
+                show.text: qsTr("搜索")
+                input.onEditingFinished: closeWidthAnimation.start()
+                visible: false
+
+                PropertyAnimation{
+                    id: closeWidthAnimation
+                    target: inputText
+                    property: "Layout.maximumWidth"
+                    from: 200
+                    to: 0
+                    duration: 500
+                    onFinished: {
+                        searchButton.visible = true
+                        inputText.visible = false
+                    }
+                }
             }
         }
     }

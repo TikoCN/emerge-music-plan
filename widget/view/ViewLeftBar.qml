@@ -29,26 +29,26 @@ Item {
             height: parent.height
 
             //切换到主页
-            TikoButton{
+            TikoButtonNormal{
                 width: parent.width
                 id: mainPageButton
                 text: qsTr("切换到主页")
-                icon.source: "qrc:/image/main.png"
+                iconSource: "qrc:/image/main.png"
                 anchors.horizontalCenter: parent.horizontalCenter
-                onClicked: window.stackMain()
+                onClickLeft: window.stackMain()
             }
 
             //切换到设置
-            TikoButton{
+            TikoButtonNormal{
                 width: parent.width
                 id: seitPageButton
                 text: qsTr("切换到设置")
                 anchors.horizontalCenter: parent.horizontalCenter
-                onClicked:{
+                onClickLeft:{
                     root.select = this.text
                     mainView.turnToSeit();
                 }
-                icon.source: "qrc:/image/seit.png"
+                iconSource: "qrc:/image/seit.png"
 
                 //按钮选中边框边框
                 Rectangle{
@@ -59,55 +59,15 @@ Item {
                     radius: 10
                 }
             }
-            TikoButton{
-                width: parent.width
-                text: qsTr("本地列表")
-                anchors.horizontalCenter: parent.horizontalCenter
-                icon.source: "qrc:/image/dir.png"
-                onClicked: dirTableListView.visible = !dirTableListView.visible
-            }
-            ListView{
-                width: parent.width
-                id: dirTableListView
-                implicitHeight: childrenRect.height
-                spacing: 5
-
-                delegate: TikoButton{
-                    width: dirTableListView.width
-                    text: MediaPlayer.tableList[i].name
-                    cache: false
-                    icon.source: mainView.tableList[i].showCover
-                    icon.width: 30
-                    icon.height: 30
-                    onClicked: {
-                        root.select = this.text
-                        mainView.stackTable(i)
-                    }
-
-                    //按钮选中边框边框
-                    Rectangle{
-                        visible: parent.text === root.select
-                        anchors.fill: parent
-                        color: Setting.themeColor
-                        opacity: 0.3
-                        radius: 10
-                    }
-                }
-
-
-                model: ListModel{
-                    id: dirTableModel
-                }
-            }
 
             //新建列表
-            TikoButton{
+            TikoButtonNormal{
                 width: parent.width
                 id: addTableButton
                 text: qsTr("新建列表")
                 anchors.horizontalCenter: parent.horizontalCenter
-                icon.source: "qrc:/image/new.png"
-                onClicked: inputName.open()
+                iconSource: "qrc:/image/new.png"
+                onClickLeft: inputName.open()
 
                 TikoPopupInput{
                     id: inputName
@@ -125,17 +85,18 @@ Item {
                 implicitHeight: childrenRect.height
                 spacing: 5
 
-                delegate: TikoButton{
+                delegate: TikoButtonNormal{
                     width: userTableListView.width
                     text: MediaPlayer.tableList[i].name
-                    icon.source: mainView.tableList[i].showCover
-                    icon.width: 30
-                    icon.height: 30
+                    iconSource: mainView.tableList[i].showCover
+                    iconWidth: 30
+                    iconHeight: 30
                     cache: false
-                    onClicked: {
+                    onClickLeft: {
                         root.select = this.text
                         mainView.stackTable(i)
                     }
+                    onClickRight: tableMenu.open()
 
                     //按钮选中边框边框
                     Rectangle{
@@ -144,6 +105,14 @@ Item {
                         color: Setting.themeColor
                         opacity: 0.3
                         radius: 10
+                    }
+
+                    TikoMenu{
+                        id: tableMenu
+                        TikoMenuItem{text: qsTr("打开本地文件夹")}
+                        TikoMenuItem{text: qsTr("打开本地文件夹")}
+                        TikoMenuItem{text: qsTr("打开本地文件夹")}
+                        TikoMenuItem{text: qsTr("打开本地文件夹")}
                     }
                 }
 
@@ -154,16 +123,11 @@ Item {
         }
     }
 
-    function addDirTable(tableId){
-        dirTableModel.append({i: tableId})
-    }
-
-    function addUserTable(tableId){
+    function addTable(tableId){
         userTableModel.append({i: tableId})
     }
 
     function clearData(){
-        dirTableModel.clear()
         userTableModel.clear()
     }
 }

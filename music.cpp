@@ -2,6 +2,7 @@
 #include "ffmpeg.h"
 #include "base.h"
 #include "extralibrary.h"
+#include "lrcdata.h"
 #include <QDesktopServices>
 #include <QJsonObject>
 #include <QGuiApplication>
@@ -68,7 +69,112 @@ QString Music::getCoverUrl()
 
 QString Music::getLrcUrl()
 {
-    return url.split("." + url.split(".").last())[0] + ".lrc";
+    QString lrc = url.split("." + url.split(".").last())[0];
+    QString hlrc = lrc + ".hlrc";
+
+    if(QFile::exists(hlrc)){
+        lrc = hlrc;
+    }
+    else {
+        lrc += ".lrc";
+    }
+    return lrc;
+}
+
+QList<LrcData *> Music::getLyricsData()
+{
+    QString lrc = getLrcUrl();
+    QList<LrcData *> lrcList;
+
+    QFile lrcFile(lrc);
+    if(!lrcFile.open(QIODevice::Text |QIODevice::ReadOnly)){
+        return lrcList;
+    }
+
+    QTextStream in(&lrcFile);
+    QRegularExpression rx;
+    QRegularExpressionMatch match;
+    QString line;
+    LrcData *lrcD = nullptr;
+
+    //读取高级歌词
+    if(lrc.split(".").last() == "hlrc"){
+        while(!in.atEnd()){
+            line = in.readLine();
+
+            //捕获开始时间和结束时间
+            rx.setPattern(R"(\[(\d+),(\d+)\])");
+            match = rx.match(line);
+            //初始化并设置开始结束时间
+            if(match.isValid()){
+                lrcD = new LrcData;
+                lrcList.append(lrcD);
+                lrcD->id = lrcList.size()-1;
+                lrcD->startTime = match.captured(1).toLong();
+                lrcD->endTime = match.captured(2).toLong();
+            }
+            else{//没有发现行头，下一行
+                continue;
+            }
+
+            //捕获主体
+            rx.setPattern(R"(\((\d+),(\d+)\)\s*([^(]*))");
+            QRegularExpressionMatchIterator it = rx.globalMatch(line);
+            while(it.hasNext()){
+                match = it.next();
+                long long start = match.captured(1).toLong();
+                long long end = match.captured(2).toLong();
+                QString text = match.captured(3);
+                lrcD->append(start, end, text);
+            }
+        }
+    }
+    else{
+        rx.setPattern(R"(\[(\d+):(\d+).(\d+)\]([\s\S]*))");
+        QStringList lrcTextList;
+        //读取基本数据以及文本行
+        while (!in.atEnd()) {
+            line = in.readLine();
+            match = rx.match(line);
+            if(match.capturedTexts().size() == 5){
+                lrcD = new LrcData;
+                lrcList.append(lrcD);
+                lrcD->id = lrcList.size()-1;
+                lrcD->startTime = match.captured(1).toLong() * 60 * 100 +
+                                  match.captured(2).toLong() * 1000 +
+                                  match.captured(3).toLong();
+                lrcTextList.append(match.captured(4));
+            }
+            else{
+                continue;
+            }
+        }
+
+        //设置逐字时间戳
+        for(int i=0; i<lrcList.size(); i++){
+            long long start = lrcList[i]->startTime;
+            long long end;
+            if(i == lrcList.size() - 1){
+                end = this->endTime;
+            }
+            else{
+                end = lrcList[i+1]->startTime;
+            }
+            lrcList[i]->endTime = end;
+            int length = lrcTextList[i].length() == 0 ? 1 : lrcTextList[i].length();
+            int wordTime = (end - start) / length;
+
+            //逐字遍历
+            QString text = lrcTextList[i];
+            for(int j=0; j<text.size(); j++){
+                lrcList[i]->append(start + j * wordTime,
+                                   end + (j + 1) * wordTime,
+                                   text[j]);
+            }
+        }
+    }
+
+    return lrcList;
 }
 
 /*
@@ -252,7 +358,6 @@ void Music::setSuffix(QString type)
     }
     bool s = false;
     s = ffmpeg.transformCodec(url, suffix);
-    qDebug()<<s;
 }
 
 QString Music::getTitle() const

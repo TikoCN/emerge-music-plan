@@ -14,9 +14,9 @@ Button {
         }
     }
 
-    property int radius:  3
-    property double hover:  0.3
-    property double normal:  0
+    property int radius: 3
+    property double hover: 0.3
+    property double normal: 0
     property bool cache: false
 
     background: Rectangle{

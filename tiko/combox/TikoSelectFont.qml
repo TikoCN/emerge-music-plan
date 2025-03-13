@@ -13,7 +13,7 @@ Item{
         onClicked: editFont.open()
     }
 
-    TikoAutoText{
+    TikoTextLine{
         font.family: selectedFont.family
         font.pixelSize: selectedFont.pixelSize
         anchors.fill: root
@@ -35,12 +35,12 @@ Item{
                     id: fontModel
                 }
 
-                delegate: TikoButton{
+                delegate: TikoButtonNormal{
                     width: fontList.width
                     height: 30
                     text: name
-                    font.family: name
-                    onClicked: {
+                    autoText.font.family: name
+                    onClickLeft: {
                         root.selectedFont.family = name
                         editFont.close()
                     }
@@ -66,7 +66,7 @@ Item{
                 opacity: 0.03
             }
 
-            TikoInputText{
+            TikoTextInput{
                 id: fontSizeShow
                 anchors.top: fontList.bottom
                 anchors.topMargin: 10

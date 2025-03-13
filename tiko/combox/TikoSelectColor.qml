@@ -17,7 +17,7 @@ Item {
         anchors.fill: parent
     }
 
-    TikoAutoText{
+    TikoTextLine{
         text: tikoColorSelcet.text
         anchors.left: tikoColorSelcet.left
         height: tikoColorSelcet.height

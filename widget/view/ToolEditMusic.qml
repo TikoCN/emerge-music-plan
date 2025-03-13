@@ -11,7 +11,7 @@ TikoFrameless {
     height: 600
     property var core
 
-    TikoUiButton{
+    TikoButtonIcon{
         id: noEdit
         anchors.top: parent.top
         anchors.topMargin: 10
@@ -29,7 +29,7 @@ TikoFrameless {
         spacing: 10
         height: 30
 
-        TikoUiButton{
+        TikoButtonIcon{
             id:downMark
             icon.source:"qrc:/image/downY.png"
             text:qsTr("重新添加时间戳并跳转下一行")
@@ -39,21 +39,21 @@ TikoFrameless {
             }
         }
 
-        TikoUiButton{
+        TikoButtonIcon{
             id: editMark
             icon.source: "qrc:/image/addR.png"
             text: qsTr("添加时间戳")
             onClicked: toolEditMusic.timeWork(1)
         }
 
-        TikoUiButton{
+        TikoButtonIcon{
             id: deleteMark
             icon.source: "qrc:/image/minR.png"
             text: qsTr("删除时间戳")
             onClicked: toolEditMusic.timeWork(2)
         }
 
-        TikoUiButton{
+        TikoButtonIcon{
             id: yesEdit
             icon.source: "qrc:/image/yesR.png"
             text: qsTr("确定编辑并保存")
@@ -78,7 +78,7 @@ TikoFrameless {
         property int showW: 30
         property int itemW: (musicData.width - 50) / 5
 
-        TikoInputText{
+        TikoTextInput{
             id: title
             show.text: qsTr("标题")
             show.width: musicData.showW
@@ -86,7 +86,7 @@ TikoFrameless {
             input.text: core.title
         }
 
-        TikoInputText{
+        TikoTextInput{
             id: artist
             show.text: qsTr("歌手")
             show.width: musicData.showW
@@ -94,7 +94,7 @@ TikoFrameless {
             input.text: core.artist
         }
 
-        TikoInputText{
+        TikoTextInput{
             id: alumb
             show.text: qsTr("专辑")
             show.width: musicData.showW
@@ -102,7 +102,7 @@ TikoFrameless {
             input.text: core.alumb
         }
 
-        TikoInputText{
+        TikoTextInput{
             id: genre
             show.text: qsTr("流派")
             show.width: musicData.showW
@@ -110,7 +110,7 @@ TikoFrameless {
             input.text: core.genre
         }
 
-        TikoInputText{
+        TikoTextInput{
             id: year
             show.text: qsTr("年份")
             show.width: musicData.showW

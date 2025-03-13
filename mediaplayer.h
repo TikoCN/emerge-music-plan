@@ -73,7 +73,7 @@ public:
     Q_INVOKABLE void clearData();
 
     //新建播放列表
-    Q_INVOKABLE void addTable(QString tableName, bool isDir = false);
+    Q_INVOKABLE void appendTable(QString tableName, bool isDir = false);
 
     //读取自建列表
     void buildNoDirTable(QStringList musicKeyList);
@@ -153,10 +153,7 @@ signals:
     void finishClearData();
 
     //新建本地列表
-    void cppAddDirTable(int tableId);
-
-    //新建用户列表
-    void cppAddUserTable(int tableId);
+    void addTable(int tableId);
 
     //歌词加载完成
     void cppLrcLoaded(int size);

@@ -11,12 +11,12 @@ TikoPopup {
 
     property string text
 
-    TikoAutoText{
+    TikoTextLine{
         anchors.centerIn: parent
         text: dialog.text
     }
 
-    TikoBorderButton{
+    TikoButtonBorder{
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.bottom: parent.bottom
         anchors.bottomMargin: 10

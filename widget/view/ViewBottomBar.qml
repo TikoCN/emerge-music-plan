@@ -29,7 +29,7 @@ Item {
             source: "qrc:/image/cover.png"
         }
 
-        TikoAutoText{
+        TikoTextLine{
             id: title
             width: 200
             height: 30
@@ -38,7 +38,7 @@ Item {
             text: qsTr("标题")
         }
 
-        TikoAutoText{
+        TikoTextLine{
             id: artist
             width: 200
             height: 20
@@ -50,7 +50,7 @@ Item {
         }
 
         //设置循环模式
-        TikoUiButton{
+        TikoButtonIcon{
             id: loopButton
             anchors.right: nextMusicUp.left
             anchors.rightMargin: 15
@@ -69,27 +69,27 @@ Item {
                 contentItem:  Column {
                     spacing:  10
 
-                    TikoButton {
+                    TikoButtonNormal {
                         id: loop0
                         text: qsTr("顺序播放")
-                        icon.source: "qrc:/image/loop0.png"
-                        onClicked: loopButton.setLoopType(0)
+                        iconSource: "qrc:/image/loop0.png"
+                        onClickLeft: loopButton.setLoopType(0)
                         width: parent.width
                     }
 
-                    TikoButton {
+                    TikoButtonNormal {
                         id: loop1
                         text: qsTr("随机循环")
-                        icon.source: "qrc:/image/loop1.png"
-                        onClicked: loopButton.setLoopType(1)
+                        iconSource: "qrc:/image/loop1.png"
+                        onClickLeft: loopButton.setLoopType(1)
                         width: parent.width
                     }
 
-                    TikoButton {
+                    TikoButtonNormal {
                         id: loop2
                         text: qsTr("单曲循环")
-                        icon.source: "qrc:/image/loop2.png"
-                        onClicked: loopButton.setLoopType(2)
+                        iconSource: "qrc:/image/loop2.png"
+                        onClickLeft: loopButton.setLoopType(2)
                         width: parent.width
                     }
                 }
@@ -98,13 +98,13 @@ Item {
             function setLoopType(loopType){
                 switch (loopType){
                 case 0:
-                    loopButton.icon.source = loop0.icon.source
+                    loopButton.icon.source = loop0.iconSource
                     break
                 case 1:
-                    loopButton.icon.source = loop1.icon.source
+                    loopButton.icon.source = loop1.iconSource
                     break
                 case 2:
-                    loopButton.icon.source = loop2.icon.source
+                    loopButton.icon.source = loop2.iconSource
                     break
                 }
                 MediaPlayer.loopType = loopType
@@ -112,7 +112,7 @@ Item {
         }
 
         //播放上一首歌曲
-        TikoUiButton{
+        TikoButtonIcon{
             id: nextMusicUp
             anchors.right: playerControl.left
             anchors.rightMargin: 10
@@ -130,7 +130,7 @@ Item {
             radius: 15
         }
         //播放 暂停按钮
-        TikoUiButton{
+        TikoButtonIcon{
             x: parent.width/2 - width/2
             id: playerControl
             icon.source: MediaPlayer.player.playing ? "qrc:/image/stop.png" : "qrc:/image/play.png"
@@ -139,7 +139,7 @@ Item {
         }
 
         //下一首
-        TikoUiButton{
+        TikoButtonIcon{
             id: nextMusicDown
             anchors.left: playerControl.right
             anchors.leftMargin: 10
@@ -149,7 +149,7 @@ Item {
         }
 
         //音量
-        TikoUiButton{
+        TikoButtonIcon{
             id: playVolume
             anchors.left: nextMusicDown.right
             anchors.leftMargin: 15
@@ -178,7 +178,7 @@ Item {
         }
 
         //桌面歌词
-        TikoUiButton{
+        TikoButtonIcon{
             id: deskLrc
             anchors.right: playingListTabel.left
             anchors.rightMargin: 3
@@ -205,7 +205,7 @@ Item {
         }
 
         //播放列表
-        TikoUiButton{
+        TikoButtonIcon{
             id: playingListTabel
             anchors.right: parent.right
             anchors.rightMargin: 10

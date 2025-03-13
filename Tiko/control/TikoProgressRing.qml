@@ -22,7 +22,7 @@ Shape {
         radius: progressRing.diameter * 0.4
         color: progressRing.backColor
 
-        TikoAutoText {
+        TikoTextLine {
             property int finish: progressRing.precent * 100
             anchors.centerIn: parent
             text: finish.toString()+ "%"

@@ -63,7 +63,7 @@ Item {
         }
     }
 
-    TikoAutoText{
+    TikoTextLine{
         text: switchButton.text
         anchors.left: switchButton.left
         anchors.leftMargin: 10

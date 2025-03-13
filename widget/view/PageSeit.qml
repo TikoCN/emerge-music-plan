@@ -29,7 +29,7 @@ ScrollView{
             vessel: Item{
                 height: childrenRect.height
 
-                TikoBorderButton{
+                TikoButtonBorder{
                     id: selectDirButton
                     width: 150
                     height: 50
@@ -37,7 +37,7 @@ ScrollView{
                     onClicked: selectMusicDir.open()
                 }
 
-                TikoBorderButton{
+                TikoButtonBorder{
                     anchors.left: selectDirButton.right
                     anchors.leftMargin: 10
                     width: selectDirButton.width
@@ -66,7 +66,7 @@ ScrollView{
                             id: musicSourceModel
                         }
 
-                        delegate: TikoAutoText {
+                        delegate: TikoTextLine {
                             text: url
                             background.opacity: {
                                 if(i % 2 === 0){
@@ -80,7 +80,7 @@ ScrollView{
                             width: sourceListColumn.width
                             padding: 10
 
-                            TikoUiButton{
+                            TikoButtonIcon{
                                 anchors.right: parent.right
                                 anchors.verticalCenter: parent.verticalCenter
                                 icon.source: "qrc:/image/close.png"
@@ -225,7 +225,7 @@ ScrollView{
                     return number
                 }
 
-                TikoInputText{
+                TikoTextInput{
                     width: parent.itemWidth
                     show.text: qsTr("最大加载线程数")
                     show.width: 200
@@ -244,49 +244,49 @@ ScrollView{
             vessel: Column{
                 property double itemWidth: 300
 
-                TikoSwitchButton{
+                TikoButtonSwitch{
                     width: parent.itemWidth
                     text: qsTr("在线模块")
                     check: Setting.isOnLine
                     onCheckChanged: Setting.isOnLine = check
                 }
 
-                TikoSwitchButton{
+                TikoButtonSwitch{
                     width: parent.itemWidth
                     text: qsTr("从网易获得封面")
                     check: Setting.isGetCoverFromNetEase
                     onCheckChanged: Setting.isGetCoverFromNetEase = check
                 }
 
-                TikoSwitchButton{
+                TikoButtonSwitch{
                     width: parent.itemWidth
                     text: qsTr("从qq音乐获得歌词")
                     check: Setting.isGetCoverFromQQMusic
                     onCheckChanged: Setting.isGetCoverFromQQMusic = check
                 }
 
-                TikoSwitchButton{
+                TikoButtonSwitch{
                     width: parent.itemWidth
                     text: qsTr("从baidu获得封面")
                     check: Setting.isGetCoverFromBaidu
                     onCheckChanged: Setting.isGetCoverFromBaidu = check
                 }
 
-                TikoSwitchButton{
+                TikoButtonSwitch{
                     width: parent.itemWidth
                     text: qsTr("从bing获得封面")
                     check: Setting.isGetCoverFromBing
                     onCheckChanged: Setting.isGetCoverFromBing = check
                 }
 
-                TikoSwitchButton{
+                TikoButtonSwitch{
                     width: parent.itemWidth
                     text: qsTr("从qq音乐获得歌词")
                     check: Setting.isGetLrcFromNetEase
                     onCheckChanged: Setting.isGetLrcFromNetEase = check
                 }
 
-                TikoSwitchButton{
+                TikoButtonSwitch{
                     width: parent.itemWidth
                     text: qsTr("从网易获得歌词")
                     check: Setting.isGetLrcFromQQMusic

@@ -13,7 +13,7 @@ Item {
     property color backColor: TikoSeit.transparentColor
     property color focusColor: TikoSeit.themeColor
 
-    TikoAutoText{
+    TikoTextLine{
         id: show
         anchors.left: inputText.left
         anchors.leftMargin: 10

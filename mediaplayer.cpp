@@ -57,7 +57,7 @@ void MediaPlayer::getMusicCore(QList<Music*> musicList, QStringList musicKeyList
 
     //生成本地列表
     for(int i=0; i<dirs.size(); i++){
-        addTable(dirs[i], true);
+        appendTable(dirs[i], true);
         tableList[i]->insertMusic(tableMusic[i]);
     }
 
@@ -75,7 +75,6 @@ void MediaPlayer::getMusicCore(QList<Music*> musicList, QStringList musicKeyList
     allSamples.fill(0, 1024);
 
     LrcData *lrc = new LrcData;
-    lrc->text = tr("歌词加载中");
     lrcList.append(lrc);
 }
 
@@ -112,7 +111,7 @@ void MediaPlayer::buildNoDirTable(QStringList musicKeyList)
         }
         //处理自建列表
         else{
-            addTable(name);
+            appendTable(name);
             aimTable = tableList.size()-1;
             QStringList tableMusic = table.value("music").toString().split("||");
             int musicNumber = table.value("musicNumber").toInt();
@@ -138,7 +137,7 @@ void MediaPlayer::buildNoDirTable(QStringList musicKeyList)
 /*
  * 新建播放列表
  */
-void MediaPlayer::addTable(QString tableName, bool isDir)
+void MediaPlayer::appendTable(QString tableName, bool isDir)
 {
     //判断该列表是否已经存在
     if(!isDir){
@@ -159,11 +158,9 @@ void MediaPlayer::addTable(QString tableName, bool isDir)
         //设置本地列表参数
         table->url = tableName;
         table->name = tableName.split("/").last();
-        emit cppAddDirTable(table->tableId);
     }
-    else{
-        emit cppAddUserTable(table->tableId);
-    }
+
+    emit addTable(table->tableId);
 }
 
 /*
@@ -238,72 +235,7 @@ void MediaPlayer::playMusic(int table, int music)
  */
 void MediaPlayer::loadLrcList()
 {
-    QString lrcUrl = playingCore->getLrcUrl();
-    qint64 endTime = playingCore->endTime;
-
-    QFile file(lrcUrl);
-    if(file.open(QIODevice::ReadOnly| QIODevice::Text)){
-        QTextStream in(&file);
-        QString line;
-        do{
-            line = in.readLine();//读取歌词
-            //判断为有效行
-            if(line.contains("]")){
-                //插入歌词行
-                LrcData *lrc = new LrcData;
-                lrc->id = lrcList.size();
-                lrcList.append(lrc);
-
-                QString text = line.split("]")[1];
-                QString date = line.split("[")[1].split("]")[0];
-
-                if(line.contains(":") && line.contains("."))
-                {
-                    lrc->startTime = (date.split(":")[0].toInt() * 60
-                                      + date.split(":")[1].split(".")[0].toInt()) *1000
-                                     + date.split(":")[1].split(".")[1].toInt();
-                }
-                lrc->text = text;
-            }
-        }
-        while(!in.atEnd());
-    }
-    file.close();
-
-    if(lrcList.size() > 1){
-        //设置结束时间，以及字时间
-        for(int i=0; i<lrcList.size()-1;i++){
-            lrcList[i]->endTime = lrcList[i+1]->startTime;
-
-            //设置每个字的开始，结束时间
-            QString mainLrc = lrcList[i]->text.split("/")[0];
-            if(mainLrc.length() <= 0){
-                continue;
-            }
-            long long cell = (lrcList[i]->endTime - lrcList[i]->startTime)/mainLrc.length();
-            for(int j=0; j<mainLrc.length(); j++){
-                lrcList[i]->startList.append(cell * j);
-                lrcList[i]->endList.append(cell * (j+1));
-            }
-        }
-        lrcList.last()->endTime = endTime;
-    }
-    else{
-        LrcData *lrc = new LrcData;
-        lrcList.append(lrc);
-        lrc->text = tr("暂无歌词");
-        lrc->startTime = 0;
-        lrc->endTime = endTime;
-    }
-
-    playingLrc->id = 0;
-    playingLrc->setText(lrcList[0]->text);
-    if(lrcList.size() > 2){
-        playedLrc->setText(lrcList[1]->text);
-    }else{
-        playedLrc->setText("~");
-    }
-
+    lrcList = playingCore->getLyricsData();
     emit cppLrcLoaded(lrcList.size());
 }
 
@@ -317,36 +249,28 @@ void MediaPlayer::selectPlayLrc(qint64 time)
 
     //向下寻找
     while(play < lrcList.size()-1 && time > lrcList[play]->endTime){
-        lrcList[play]->setPos(0);
-        lrcList[play]->setIsPlay(false);
+        lrcList[play]->isPlay = false;
         play++;
     }
 
     //向前寻找
     while(play > 0 && lrcList[play]->startTime > time){
-        lrcList[play]->setPos(0);
-        lrcList[play]->setIsPlay(false);
+        lrcList[play]->isPlay = false;
         play--;
     }
 
     if(play != playingLrc->id){
-        lrcList[play]->setIsPlay(true);
-        playingLrc->setText(lrcList[play]->text);
         playingLrc->id = play;
-
-        if(play < lrcList.size()-1){
-            playedLrc->setText(lrcList[play + 1]->text);
-        }
-        else{
-            playedLrc->setText(tr("歌曲已结束"));
-        }
-
         emit cppPlayingLrc();
     }
 
-    double pos = double(time - lrcList[play]->startTime) / double(lrcList[play]->endTime - lrcList[play]->startTime);
-    lrcList[play]->setPos(pos);
-    playingLrc->setPos(pos);
+    if(lrcList[play]->isPlay != true){
+        lrcList[play]->isPlay = true;
+    }
+    for(int i=0; i<lrcList.size(); i++){
+        emit lrcList[i]->update();
+    }
+    emit playingLrc->update();
 }
 
 void MediaPlayer::turnToLrc(int lrcId)
@@ -483,8 +407,6 @@ MediaPlayer::MediaPlayer()
     playingCore = new Music;
     playingLrc = new LrcData;
     playedLrc = new LrcData;
-    playedLrc->text = tr("~");
-    playingLrc->text = tr("Ciallo～(∠・ω< )⌒★");
 
     player = new QMediaPlayer;//播放设备
     audioOutput = new QAudioOutput;//音频输出

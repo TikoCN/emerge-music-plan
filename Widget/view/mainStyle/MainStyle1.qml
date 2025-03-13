@@ -27,7 +27,7 @@ Item{
             property double min: Math.min(leftShow.height * 0.5, leftShow.width * 0.8)
         }
 
-        TikoAutoText{
+        TikoTextLine{
             id: title
             anchors.top: cover.bottom
             anchors.topMargin: 30
@@ -38,7 +38,7 @@ Item{
             text: qsTr("标题")
         }
 
-        TikoAutoText{
+        TikoTextLine{
             id: artist
             width: cover.width
             anchors.top: title.bottom
@@ -67,7 +67,7 @@ Item{
             }
         }
 
-        TikoAutoText{
+        TikoTextLine{
             id: nowTime
             anchors.top: playControl.bottom
             anchors.topMargin: 10
@@ -85,7 +85,7 @@ Item{
             }
         }
 
-        TikoAutoText{
+        TikoTextLine{
             id: lastTime
             anchors.top: playControl.bottom
             anchors.topMargin: 10

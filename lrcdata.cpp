@@ -13,19 +13,6 @@ void LrcData::setId(int newId)
     emit idChanged();
 }
 
-int LrcData::getLine() const
-{
-    return line;
-}
-
-void LrcData::setLine(int newLine)
-{
-    if (line == newLine)
-        return;
-    line = newLine;
-    emit lineChanged();
-}
-
 QList<long long> LrcData::getStartList() const
 {
     return startList;
@@ -41,26 +28,17 @@ qint64 LrcData::getStartTime() const
     return startTime;
 }
 
-LrcData::LrcData(){
-    id = 0;
-    startTime = 0;
-    endTime = 0;
-    isPlay = false;
-    line = 0;
-    pos = 0.0;
+QList<QString> LrcData::getTextList() const
+{
+    return textList;
 }
 
-double LrcData::getPos() const
+void LrcData::setTextList(const QList<QString> &newTextList)
 {
-    return pos;
-}
-
-void LrcData::setPos(double newPos)
-{
-    if (qFuzzyCompare(pos, newPos))
+    if (textList == newTextList)
         return;
-    pos = newPos;
-    emit posChanged();
+    textList = newTextList;
+    emit textListChanged();
 }
 
 bool LrcData::getIsPlay() const
@@ -76,17 +54,20 @@ void LrcData::setIsPlay(bool newIsPlay)
     emit isPlayChanged();
 }
 
-QString LrcData::getText() const
-{
-    return text;
+LrcData::LrcData(){
+    id = 0;
+    startTime = 0;
+    endTime = 0;
+    isPlay = false;
 }
 
-void LrcData::setText(const QString &newText)
+void LrcData::append(long long start, long long end, QString text)
 {
-    if (text == newText)
-        return;
-    text = newText;
-    setLine(text.split("\n").size());
-    emit textChanged();
+    startList.append(start);
+    endList.append(end);
+    textList.append(text);
 }
+
+
+
 

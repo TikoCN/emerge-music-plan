@@ -39,7 +39,7 @@ Item {
         width: 70
         height: progressBar.height
 
-        TikoAutoText {
+        TikoTextLine {
             property int finish: progressBar.precent * 100
             anchors.fill: parent
             text: finish.toString()+ "%"

@@ -1,0 +1,13 @@
+import QtQuick
+
+Item {
+    id: baseButton
+    property var onClickLeft: {}
+    
+    MouseArea{
+        anchors.fill: baseButton
+        onClicked: (mouse)=>{
+                       
+                   }
+    }
+}

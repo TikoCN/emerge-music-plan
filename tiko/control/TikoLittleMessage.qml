@@ -1,6 +1,6 @@
 import QtQuick
 import QtQuick.Controls
-import "../"
+import Tiko
 
 TikoPopup {
     id: littleMessage
@@ -37,7 +37,7 @@ TikoPopup {
     }
 
     //文本展示
-    TikoAutoText{
+    TikoTextLine{
         id: messageShow
         text: littleMessage.message
         width: mathWidth.advanceWidth

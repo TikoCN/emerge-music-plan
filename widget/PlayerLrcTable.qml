@@ -31,12 +31,7 @@ Item {
 
         delegate: CoreLrcLine{
             width: lrcList.width
-            text: MediaPlayer.lrcList[lrc].text
-            pos: MediaPlayer.lrcList[lrc].pos
-            lrcId: MediaPlayer.lrcList[lrc].id
-            endList: MediaPlayer.lrcList[lrc].endList
-            startList: MediaPlayer.lrcList[lrc].startList
-            startTime: MediaPlayer.lrcList[lrc].startTime
+            core: MediaPlayer.lrcList[lrc]
         }
 
         model:ListModel{

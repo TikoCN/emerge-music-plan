@@ -14,7 +14,7 @@ Drawer {
         anchors.fill:  parent
     }
 
-    TikoAutoText{
+    TikoTextLine{
         id: playingTableText
         text: qsTr("正在播放: ") + qsTr("暂无歌曲")
         y: 10

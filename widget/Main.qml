@@ -171,14 +171,9 @@ TikoFrameless{
     Connections{
         target: MediaPlayer
 
-        function onCppAddDirTable(tableId){
+        function onAddTable(tableId){
             mainView.addPlayTablePage(tableId)
-            barView.addDirTable(tableId)
-        }
-
-        function onCppAddUserTable(tableId){
-            mainView.addPlayTablePage(tableId)
-            barView.addUserTable(tableId)
+            barView.addTable(tableId)
         }
     }
 

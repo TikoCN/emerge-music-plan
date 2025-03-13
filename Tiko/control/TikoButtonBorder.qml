@@ -1,5 +1,7 @@
 import QtQuick
 import QtQuick.Controls.Basic
+import Tiko
+
 Button {
     id: button
     implicitWidth: textRect.boundingRect.width * 4
@@ -23,11 +25,7 @@ Button {
         opacity: 0.05
     }
 
-    PropertyAnimation{
-
-    }
-
-    contentItem: TikoAutoText{
+    contentItem: TikoTextLine{
         id: textShow
         anchors.fill: parent
         text: button.text

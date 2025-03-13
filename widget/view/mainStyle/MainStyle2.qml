@@ -112,7 +112,7 @@ Item{
         }
     }
 
-    TikoAutoText{
+    TikoTextLine{
         id: title
         x: style.width * 0.5 + style.width * 0.5 * 0.1
         y: style.height * 0.2
@@ -120,7 +120,7 @@ Item{
         exSize: 8
     }
 
-    TikoAutoText{
+    TikoTextLine{
         id: artist
         x: title.x
         width: title.width

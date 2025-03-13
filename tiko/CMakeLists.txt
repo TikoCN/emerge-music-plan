@@ -1,5 +1,4 @@
 add_library(Tiko)
-
 project(TikoLib VERSION 0.1 LANGUAGES CXX)
 
 set(CMAKE_AUTORCC true)
@@ -9,19 +8,20 @@ set_source_files_properties(TikoSeit.qml
 )
 
 qt_policy(SET QTP0004 NEW)
-
 qt_add_qml_module(TikoLib
     URI Tiko
     VERSION 1.0
     QML_FILES
     TikoSeit.qml
-    TikoAutoText.qml
+    TikoTextLine.qml
     TikoFrameless.qml
+    TikoWidget.qml
     control/TikoBar.qml
-    control/TikoBorderButton.qml
-    control/TikoButton.qml
-    control/TikoComboxButton.qml
-    control/TikoInputText.qml
+    control/TikoButtonBorder.qml
+    control/TikoButtonNormal.qml
+    control/TikoButtonBase.qml
+    control/TikoButtonCombox.qml
+    control/TikoTextInput.qml
     control/TikoMenu.qml
     control/TikoMenuItem.qml
     control/TikoMenuSpeacer.qml
@@ -33,11 +33,10 @@ qt_add_qml_module(TikoLib
     control/TikoPopupMessage.qml
     control/TikoHSlider.qml
     control/TikoVSlider.qml
-    control/TikoSwitchButton.qml
-    control/TikoUiButton.qml
+    control/TikoButtonSwitch.qml
+    control/TikoButtonIcon.qml
     combox/TikoRightVessel.qml
     combox/TikoSelectColor.qml
     combox/TikoSelectFont.qml
     RESOURCES icon.qrc
-    QML_FILES TikoWidget.qml
 )

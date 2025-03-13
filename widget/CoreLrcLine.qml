@@ -7,28 +7,27 @@ import Tiko
 Item {
     id: coreLrcLine
     height: 100
-    visible: !(text === " ")
 
-    property font lrcFont: Setting.mainLrcFont
-    property double pos: 0
-    property string text: qsTr("歌词加载中")
-    property bool isUse: true
-    property bool isPlay: pos > 0
-    property int lrcId: 0//歌词序号
     property color playingColor: "#ffffffff"
     property color normalColor: "#80ffffff"
-    property var startList: []
-    property var endList: []
-    property real over: 0
-    property real startTime: 0
+    property font lrcFont: Setting.mainLrcFont
+
+    property var core
+    property string i18n: ""
+    property bool isUse: true
+    property int lrcId: core.id
+    property var startList: core.startList
+    property var endList: core.endList
+    property var textList: core.textList
 
     MultiEffect {
+        id: effct
         autoPaddingEnabled: true
         source: lrcShow
         anchors.fill: lrcShow
-        blurEnabled: !coreLrcLine.isPlay
-        blurMax: 20
-        blur: 0.5
+        blurEnabled: true
+        blurMax: maxFontMetrics.boundingRect.height * 0.8
+        blur: 0
     }
 
     Canvas{
@@ -41,17 +40,17 @@ Item {
             ctx.clearRect(0, 0, width, height);
             ctx.font = "bold "+ lrcFont.pixelSize.toString() +"px 'Microsoft YaHei', SimSun, sans-serif"
             var maxH = maxFontMetrics.boundingRect.height
-            var replace = new RegExp("[ ]*/[ ]*")
-            var lrc = coreLrcLine.text.split(replace)
+            var lrc = coreLrcLine.textList
             var startX = 20
-            var startY = 20+maxH
+            var startY = maxH * 1.8
             var length = 0
             var overF = 0.0//超出当前字长
+            var playingPos = MediaPlayer.player.position
 
             //计算主文本
-            for(var i=0; i<lrc[0].length; i++){
+            for(var i=0; i<lrc.length; i++){
                 //计算字长
-                oneFontMetrics.text = lrc[0][i]
+                oneFontMetrics.text = lrc[i]
                 length = oneFontMetrics.advanceWidth + 3
                 //达到长度底部
                 if(startX + length > coreLrcLine.width - 20){//超出长度
@@ -59,20 +58,18 @@ Item {
                     startY += maxH
                 }
 
-                if(coreLrcLine.over >= coreLrcLine.endList[i]){
+                if(playingPos >= coreLrcLine.endList[i]){
                     overF = 1
                     ctx.fillStyle = coreLrcLine.playingColor;
                 }
-                else if(coreLrcLine.over < coreLrcLine.startList[i]){
+                else if(playingPos < coreLrcLine.startList[i]){
                     overF = 0
                     ctx.fillStyle = coreLrcLine.normalColor;
                 }
                 else{
-                    overF = (coreLrcLine.over - coreLrcLine.startList[i]) /
+                    overF = (playingPos - coreLrcLine.startList[i]) /
                             (coreLrcLine.endList[i] - coreLrcLine.startList[i])
-                    overF = overF > 1 ? 1 : overF
-                    overF = overF < 0 ? 0 : overF
-
+                    overF = overF || 0
                     // 创建线性渐变（从左到右）
                     var gradient = ctx.createLinearGradient(startX, startY, startX + length - 3, startY);
 
@@ -86,38 +83,38 @@ Item {
                     ctx.fillStyle = gradient;
                 }
 
-                ctx.fillText(lrc[0][i], startX, startY - overF * 3)
+                ctx.fillText(lrc[i], startX, startY - overF * 3)
                 startX += length
             }
 
             //计算辅助文本
             ctx.fillStyle = coreLrcLine.normalColor;
-            for(var j=1; j<lrc.length; j++){
-                startX = 20
-                startY += maxFontMetrics.boundingRect.height
-                for(i=0; i<lrc[j].length; i++){
-                    //计算字长
-                    oneFontMetrics.text = lrc[j][i]
-                    length = oneFontMetrics.advanceWidth + 3
-                    //达到长度底部
-                    if(startX + length > coreLrcLine.width - 20){//超出长度
-                        startX = 20
-                        startY += maxH
-                    }
-                    ctx.fillText(lrc[j][i], startX, startY - overF * 3)
-                    startX += length
+
+            for(i=0; i<i18n.length; i++){
+                //计算字长
+                oneFontMetrics.text = i18n[i]
+                length = oneFontMetrics.advanceWidth + 3
+                //达到长度底部
+                if(startX + length > coreLrcLine.width - 20){//超出长度
+                    startX = 20
+                    startY += maxH
                 }
+                ctx.fillText(i18n[i], startX, startY - overF * 3)
+                startX += length
             }
         }
     }
 
     onLrcFontChanged: lrcShow.requestPaint()
-    onPosChanged: {
-        coreLrcLine.over = MediaPlayer.player.position - startTime
-        lrcShow.requestPaint()
-    }
     onWidthChanged: setHeight()
     Component.onCompleted: {setHeight()}
+    Connections{
+        target: core
+        function onUpdate(){
+            effct.blur = 0.3 * Math.abs(MediaPlayer.playingLrc.id - lrcId)
+            lrcShow.requestPaint()
+        }
+    }
 
     TextMetrics{
         id: oneFontMetrics
@@ -141,33 +138,38 @@ Item {
                           MediaPlayer.turnToLrc(coreLrcLine.lrcId)
                       }
                       mouse.accepted = false
-                      console.log(text)
                   }
     }
 
     function setHeight(){
         var startX = 20
         var length = 0
-        var line = 0
-        var replace = new RegExp("[ ]*/[ ]*")
-        var lrc = coreLrcLine.text.split(replace)
+        var line = 1
+        var lrc = coreLrcLine.textList
 
-        for(var j=0; j<lrc.length; j++){
-            startX = 20
-            line++
-            for(var i=0; i<lrc[j].length; i++){
+        for(var i=0; i<lrc.length; i++){
+            //计算字长
+            oneFontMetrics.text = lrc[i]
+            length = oneFontMetrics.advanceWidth + 3
+            if(startX + length > coreLrcLine.width){
+                line++
+                startX = 20
+            }
+            startX += length
+        }
+
+        for(i=0; i<coreLrcLine.i18n.length; i++){
                 //计算字长
-                oneFontMetrics.text = lrc[j][i]
+                oneFontMetrics.text = coreLrcLine.i18n[i]
                 length = oneFontMetrics.advanceWidth + 3
                 if(startX + length > coreLrcLine.width){
                     line++
                     startX = 20
                 }
                 startX += length
-            }
         }
 
-        coreLrcLine.height = 20 * 2 + line * maxFontMetrics.boundingRect.height
+        coreLrcLine.height = (line + 1.6) * maxFontMetrics.boundingRect.height
     }
 }
 

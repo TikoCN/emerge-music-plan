@@ -1,14 +1,11 @@
 import QtQuick.Controls.Basic
 import QtQuick
-import "../"
+import Tiko
 
-Button {
+TikoButtonBase {
     id: button
     implicitWidth: 100
     implicitHeight: 40
-    icon.width: 20
-    icon.height: 20
-    text: qsTr("Tiko的按钮")
     onHoveredChanged: {
         if(button.hovered){
             hoveringAnimation.start()
@@ -18,15 +15,19 @@ Button {
         }
     }
 
+    property bool cache: true
     property int radius: 10
+    property int iconWidth: 20
+    property int iconHeight: 20
     property double hover: 0.5
     property double normal: 0
-    property bool cache: true
-    property TikoAutoText textShow: textShow
     property double borderWidth: 1
+    property string iconSource: ""
+    property string text: "button"
+    property TikoTextLine autoText: textShow
 
     //背景颜色
-    background: Rectangle{
+    Rectangle{
         id: backRect
         color: TikoSeit.themeColor
         radius: button.radius
@@ -54,26 +55,28 @@ Button {
         duration: 300
     }
 
-    contentItem: Item {
-        Image{
-            id: iconImg
-            anchors.left: parent.left
-            anchors.verticalCenter: parent.verticalCenter
-            source: button.icon.source
-            sourceSize.width: button.icon.width
-            sourceSize.height: button.icon.height
-            width: button.icon.width
-            height: button.icon.height
-            cache: button.cache
-        }
+    //显示图标
+    Image{
+        id: iconImg
+        anchors.left: parent.left
+        anchors.leftMargin: 10
+        anchors.verticalCenter: parent.verticalCenter
+        source: button.iconSource
+        sourceSize.width: button.iconWidth
+        sourceSize.height: button.iconHeight
+        width: button.iconWidth
+        height: button.iconHeight
+        cache: button.cache
+    }
 
-        TikoAutoText{
-            id: textShow
-            anchors.left: iconImg.right
-            anchors.leftMargin: 3
-            anchors.verticalCenter: parent.verticalCenter
-            text: button.text
-            width: button.width - iconImg.width - 20
-        }
+    //显示文本
+    TikoTextLine{
+        id: textShow
+        anchors.left: iconImg.right
+        anchors.leftMargin: 3
+        text: button.text
+        width: button.width - iconImg.width - 20
+        height: button.height
+        verticalAlignment: Text.AlignVCenter
     }
 }

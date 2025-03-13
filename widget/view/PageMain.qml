@@ -64,8 +64,15 @@ Item {
         opacity: 0.3
     }
 
+    Loader{
+        id: loaderStyle
+        width: pageMain.width
+        height: pageMain.height - back.height
+        y: back.height
+    }
+
     //关闭
-    TikoUiButton{
+    TikoButtonIcon{
         id: close
         anchors.right: parent.right
         text: qsTr("关闭")
@@ -76,7 +83,7 @@ Item {
     }
 
     //最大化
-    TikoUiButton{
+    TikoButtonIcon{
         id: max
         anchors.right: close.left
         anchors.rightMargin: 6
@@ -95,7 +102,7 @@ Item {
     }
 
     //最小化
-    TikoUiButton{
+    TikoButtonIcon{
         id: min
         anchors.right: max.left
         anchors.rightMargin: 6
@@ -107,7 +114,7 @@ Item {
     }
 
     //返回主页
-    TikoUiButton{
+    TikoButtonIcon{
         id: back
         anchors.left: parent.left
         anchors.leftMargin: 20
@@ -116,13 +123,6 @@ Item {
         icon.width: 15
         icon.height: 15
         onClicked: window.stackCenter()
-    }
-
-    Loader{
-        id: loaderStyle
-        width: pageMain.width
-        height: pageMain.height - back.height
-        y: back.height
     }
 
     Connections{

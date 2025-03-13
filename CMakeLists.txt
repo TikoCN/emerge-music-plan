@@ -34,6 +34,7 @@ qt_add_qml_module(appmusicPlay
     online.h online.cpp
     ffmpeg.h ffmpeg.cpp
     SOURCES base.h base.cpp
+    SOURCES
 )
 
 # link fftw3

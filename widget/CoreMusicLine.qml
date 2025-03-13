@@ -64,21 +64,21 @@ Item {
             id: coreName
             width: (parent.width - tool.width - cover.width) / 2
 
-            TikoAutoText{
+            TikoTextLine{
                 text: root.core.title
                 exSize: 3
                 font.bold: true
                 height: 30
                 width: parent.width
             }
-            TikoAutoText{
+            TikoTextLine{
                 text: root.core.artist
                 height: 20
                 width: parent.width
             }
         }
 
-        TikoAutoText{
+        TikoTextLine{
             id: alumb
             text: root.core.alumb
             width: coreName.width
@@ -89,7 +89,7 @@ Item {
             id: tool
             spacing: 10
 
-            TikoUiButton{
+            TikoButtonIcon{
                 text: qsTr("喜欢")
                 width: 50
                 height: 50
@@ -103,24 +103,24 @@ Item {
                     }
                 }
             }
-            TikoUiButton{
+            TikoButtonIcon{
                 text: qsTr("更多")
                 width: 50
                 height: 50
                 onClicked: rightMenu.open()
                 icon.source: "qrc:/image/else.png"
             }
-            TikoAutoText{
+            TikoTextLine{
                 text: root.core.getStringTime()
                 width: CoreData.timeWidth
                 height: 50
             }
-            TikoAutoText{
+            TikoTextLine{
                 text: root.core.lastEdit
                 width: CoreData.editTimeWidth
                 height: 50
             }
-            TikoAutoText{
+            TikoTextLine{
                 text: root.core.playNumber.toString()
                 width: CoreData.playNumberWidth
                 height: 50

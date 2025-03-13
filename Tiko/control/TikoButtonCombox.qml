@@ -1,8 +1,8 @@
 import QtQuick
 
-TikoButton {
+TikoButtonNormal {
     id: tikoComboxButton
-    onClicked: tikoPopup.open()
+    onClickLeft: tikoPopup.open()
     property var data: []
     property int show: 0
 
@@ -23,11 +23,11 @@ TikoButton {
                     id: listModel
                 }
 
-                delegate: TikoButton{
+                delegate: TikoButtonNormal{
                     radius: 0
                     text: tikoComboxButton.data[index]
                     width: tikoComboxButton.width
-                    onClicked: {
+                    onClickLeft: {
                         tikoComboxButton.text = this.text
                         tikoPopup.close()
                     }

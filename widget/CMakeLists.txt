@@ -1,5 +1,4 @@
 add_library(Widget)
-
 project(WidgetLib VERSION 0.1 LANGUAGES CXX)
 
 set(CMAKE_AUTORCC true)
@@ -9,7 +8,6 @@ set_source_files_properties(CoreData.qml
 )
 
 qt_policy(SET QTP0004 NEW)
-
 qt_add_qml_module(WidgetLib
     URI Widget
     VERSION 1.0
