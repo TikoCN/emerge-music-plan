@@ -57,8 +57,6 @@ void ExtraLibrary::getMedia(Music* core)
     if(core->alumb == "" || QString(core->alumb).replace(" ", "") == ""){
         core->alumb = core->title;
     }
-    core->genre = QString::fromStdString(t->genre().toCString(1));
-    core->year = QString::number(t->year());
 
     //读取已毫秒为时长
     TagLib::AudioProperties* audio = f.audioProperties();

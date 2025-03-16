@@ -48,7 +48,7 @@ Item {
             playerLrcTable.buildLrcList()
         }
 
-        function onCppPlayingLrc(){
+        function onPlayingLrcLineChange(){
             if(!show && MediaPlayer.lrcList.length <= 1 && !mouseHover.containsMouse){
                 return
             }

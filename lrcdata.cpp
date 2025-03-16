@@ -5,14 +5,6 @@ int LrcData::getId() const
     return id;
 }
 
-void LrcData::setId(int newId)
-{
-    if (id == newId)
-        return;
-    id = newId;
-    emit idChanged();
-}
-
 QList<long long> LrcData::getStartList() const
 {
     return startList;
@@ -31,27 +23,6 @@ qint64 LrcData::getStartTime() const
 QList<QString> LrcData::getTextList() const
 {
     return textList;
-}
-
-void LrcData::setTextList(const QList<QString> &newTextList)
-{
-    if (textList == newTextList)
-        return;
-    textList = newTextList;
-    emit textListChanged();
-}
-
-bool LrcData::getIsPlay() const
-{
-    return isPlay;
-}
-
-void LrcData::setIsPlay(bool newIsPlay)
-{
-    if (isPlay == newIsPlay)
-        return;
-    isPlay = newIsPlay;
-    emit isPlayChanged();
 }
 
 LrcData::LrcData(){

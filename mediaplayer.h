@@ -15,27 +15,25 @@ private:
     static MediaPlayer* instance;
     MediaPlayer();
 
-    Q_PROPERTY(QList<Table *> tableList READ getTableList WRITE setTableList NOTIFY tableListChanged FINAL)
+    Q_PROPERTY(QList<Table *> tableList READ getTableList CONSTANT)
 
-    Q_PROPERTY(QMediaPlayer *player READ getPlayer WRITE setPlayer NOTIFY playerChanged FINAL)
+    Q_PROPERTY(QMediaPlayer *player READ getPlayer CONSTANT)
 
     Q_PROPERTY(int loopType READ getLoopType WRITE setLoopType NOTIFY loopTypeChanged FINAL)
 
-    Q_PROPERTY(Music *playingCore READ getPlayingCore WRITE setPlayingCore NOTIFY playingCoreChanged FINAL)
+    Q_PROPERTY(Music *playingCore READ getPlayingCore CONSTANT)
 
-    Q_PROPERTY(QList<LrcData *> lrcList READ getLrcList WRITE setLrcList NOTIFY lrcListChanged FINAL)
+    Q_PROPERTY(QList<LrcData *> lrcList READ getLrcList CONSTANT)
 
-    Q_PROPERTY(QList<Music *> musicList READ getMusicList WRITE setMusicList NOTIFY musicListChanged FINAL)
+    Q_PROPERTY(QList<Music *> musicList READ getMusicList CONSTANT)
 
-    Q_PROPERTY(QList<Music *> coreList READ getCoreList WRITE setCoreList NOTIFY coreListChanged FINAL)
+    Q_PROPERTY(QList<Music *> coreList READ getCoreList CONSTANT)
 
-    Q_PROPERTY(QVector<double> allSamples READ getAllSamples WRITE setAllSamples NOTIFY allSamplesChanged FINAL)
+    Q_PROPERTY(QVector<double> allSamples READ getAllSamples CONSTANT)
 
-    Q_PROPERTY(QAudioOutput *audioOutput READ getAudioOutput WRITE setAudioOutput NOTIFY audioOutputChanged FINAL)
+    Q_PROPERTY(QAudioOutput *audioOutput READ getAudioOutput CONSTANT)
 
-    Q_PROPERTY(LrcData *playedLrc READ getPlayedLrc WRITE setPlayedLrc NOTIFY playedLrcChanged FINAL)
-
-    Q_PROPERTY(LrcData *playingLrc READ getPlayingLrc WRITE setPlayingLrc NOTIFY playingLrcChanged FINAL)
+    Q_PROPERTY(LrcData *playingLrc READ getPlayingLrc CONSTANT)
 
 public:
     static MediaPlayer* getInstance(){
@@ -60,23 +58,19 @@ public:
 
     Music *playingCore;//正在播放核心
     LrcData* playingLrc;//正在播放歌词
-    LrcData* playedLrc;//即将播放歌词
 
     int playingMusic;//正在播放音乐id
     int loopType;//播放种类
 
 public:
     //获得音乐核心
-    void getMusicCore(QList<Music *>musicList, QStringList musicKeyList);
+    void getMusicCore(QList<Music *>musicList);
 
     //删除以及加载的数据
     Q_INVOKABLE void clearData();
 
     //新建播放列表
     Q_INVOKABLE void appendTable(QString tableName, bool isDir = false);
-
-    //读取自建列表
-    void buildNoDirTable(QStringList musicKeyList);
 
     //将歌曲移动到
     Q_INVOKABLE void tableMoveMusic(int orgTableId, int musicId, int aimTalbeId);
@@ -112,37 +106,25 @@ public:
     void buildFrequencySpectrum(QAudioBuffer buffer);
 
     QList<Table*> getTableList() const;
-    void setTableList(const QList<Table*> &newTableList);
 
     QMediaPlayer *getPlayer() const;
-    void setPlayer(QMediaPlayer *newPlayer);
 
     int getLoopType() const;
     void setLoopType(int newLoopType);
 
     Music *getPlayingCore() const;
-    void setPlayingCore(Music *newPlayingCore);
 
     QList<LrcData *> getLrcList() const;
-    void setLrcList(const QList<LrcData *> &newLrcList);
 
     QList<Music *> getMusicList() const;
-    void setMusicList(const QList<Music *> &newMusicList);
 
     QList<Music *> getCoreList() const;
-    void setCoreList(const QList<Music *> &newCoreList);
 
     QVector<double> getAllSamples() const;
-    void setAllSamples(const QVector<double> &newAllSamples);
 
     QAudioOutput *getAudioOutput() const;
-    void setAudioOutput(QAudioOutput *newAudioOutput);
-
-    LrcData *getPlayedLrc() const;
-    void setPlayedLrc(LrcData *newPlayedLrc);
 
     LrcData *getPlayingLrc() const;
-    void setPlayingLrc(LrcData *newPlayingLrc);
 
 signals:
 
@@ -151,6 +133,9 @@ signals:
 
     //清空数据以及播放列表
     void finishClearData();
+
+    //正在播放歌曲改变
+    void playingLrcLineChange();
 
     //新建本地列表
     void addTable(int tableId);
@@ -170,20 +155,7 @@ signals:
     //绘制音频波形
     void cppDrawLine(QVector<double>);
 
-    //正在播放歌词改变
-    void cppPlayingLrc();
-
-    void tableListChanged();
-    void playerChanged();
     void loopTypeChanged();
-    void playingCoreChanged();
-    void lrcListChanged();
-    void musicListChanged();
-    void coreListChanged();
-    void allSamplesChanged();
-    void audioOutputChanged();
-    void playedLrcChanged();
-    void playingLrcChanged();
 };
 
 #endif // MEDIAPLAYER_H

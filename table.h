@@ -44,9 +44,6 @@ public:
     //打开本地文件夹
     Q_INVOKABLE void openDir();
 
-    //显示喜爱歌曲
-    Q_INVOKABLE void showLove();
-
     //显示所有歌曲
     Q_INVOKABLE void showAllMusic();
 

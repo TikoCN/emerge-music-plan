@@ -5,7 +5,7 @@
 #include <QObject>
 #include <QFileInfo>
 
-class Music : public QObject//音乐单元
+class Music : public QObject
 {
     Q_OBJECT
 public:
@@ -14,15 +14,9 @@ public:
     QString url;
     QString alumb;
     QString lastEdit;
-    QString genre;
-    QString year;
     qint64 endTime;
     qint64 lastEditTime;
-    double maxHeight;
-    double minHeight;
     int coreId;
-    int playNumber;
-    bool love;
     QPixmap *cover = NULL;
 
 public:
@@ -34,9 +28,6 @@ public:
 
     //来自文件
     void fromFileInfo(QFileInfo info);
-
-    //来自Json
-    void fromJson(QJsonObject obj);
 
     //获得封面路径
     QString getCoverUrl();
@@ -61,7 +52,7 @@ public:
     //加载封面
     QPixmap loadCover();
 
-    //加载封面
+    //加载封面·
     QImage loadAloneCover();
 
     //判断是否符合搜索条件
@@ -92,67 +83,28 @@ public:
     Q_INVOKABLE void setSuffix(QString type);
 
     QString getTitle() const;
-    void setTitle(const QString &newTitle);
 
     QString getArtist() const;
-    void setArtist(const QString &newArtist);
 
     QString getUrl() const;
-    void setUrl(const QString &newUrl);
 
     QString getAlumb() const;
-    void setAlumb(const QString &newAlumb);
 
     QString getLastEdit() const;
-    void setLastEdit(const QString &newLastEdit);
 
     int getCoreId() const;
-    void setCoreId(int newCoreId);
-
-    bool getLove() const;
-    void setLove(bool newLove);
 
     QString getGenre() const;
-    void setGenre(const QString &newGenre);
 
     QString getYear() const;
-    void setYear(const QString &newYear);
-
-    int getPlayNumber() const;
-    void setPlayNumber(int newPlayNumber);
-
-signals:
-    void titleChanged();
-
-    void artistChanged();
-
-    void urlChanged();
-
-    void alumbChanged();
-
-    void lastEditChanged();
-
-    void coreIdChanged();
-
-    void loveChanged();
-
-    void genreChanged();
-
-    void yearChanged();
-
-    void playNumberChanged();
 
 private:
-    Q_PROPERTY(QString title READ getTitle WRITE setTitle NOTIFY titleChanged FINAL)
-    Q_PROPERTY(QString artist READ getArtist WRITE setArtist NOTIFY artistChanged FINAL)
-    Q_PROPERTY(QString url READ getUrl WRITE setUrl NOTIFY urlChanged FINAL)
-    Q_PROPERTY(QString alumb READ getAlumb WRITE setAlumb NOTIFY alumbChanged FINAL)
-    Q_PROPERTY(QString lastEdit READ getLastEdit WRITE setLastEdit NOTIFY lastEditChanged FINAL)
-    Q_PROPERTY(int coreId READ getCoreId WRITE setCoreId NOTIFY coreIdChanged FINAL)
-    Q_PROPERTY(bool love READ getLove WRITE setLove NOTIFY loveChanged FINAL)
-    Q_PROPERTY(QString genre READ getGenre WRITE setGenre NOTIFY genreChanged FINAL)
-    Q_PROPERTY(QString year READ getYear WRITE setYear NOTIFY yearChanged FINAL)
-    Q_PROPERTY(int playNumber READ getPlayNumber WRITE setPlayNumber NOTIFY playNumberChanged FINAL)
+    Q_PROPERTY(QString title READ getTitle CONSTANT)
+    Q_PROPERTY(QString artist READ getArtist CONSTANT)
+    Q_PROPERTY(QString url READ getUrl CONSTANT)
+    Q_PROPERTY(QString alumb READ getAlumb CONSTANT)
+    Q_PROPERTY(QString lastEdit READ getLastEdit CONSTANT)
+    Q_PROPERTY(int coreId READ getCoreId CONSTANT)
 };
 
 #endif // MUSIC_H

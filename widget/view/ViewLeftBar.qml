@@ -74,11 +74,11 @@ Item {
                     x: window.width / 2 - this.width / 2
                     y: window.height / 2 - this.height
                     text: qsTr("新建列表，请输入列表名")
-                    onAccept: ()=>{
-                                MediaPlayer.addTable(inputText)
-                              }
+                    onAccept: ()=>{MediaPlayer.appendTable(inputText)}
                 }
             }
+
+            // 插入的列表按钮
             ListView{
                 width: parent.width
                 id: userTableListView

@@ -70,7 +70,6 @@ public:
     int maxThreadNumber;//最大线程数量
 
     QStringList sourceList;//资源地址列表
-    QStringList musicKeyList;//音乐文件id对照表 no qml
 
     QColor themeColor;//主题颜色
     QColor transparentColor;//透明层颜色
@@ -83,21 +82,12 @@ public:
     QFont mainLrcFont;//主页歌词颜色
     QFont mainFont;//主界面字体
 
-    QJsonObject *data;//数据
-    QJsonObject *coreJson;//核心数据
-
     //设置参数
     template <typename T>
     void setParameter(QString key, T value);
 
     //读取参数
     bool getParameterList();
-
-    //初始设置
-    void readJsonData();
-
-    //清除附加数据
-    void clearJsonData();
 
     //将路径移除
     Q_INVOKABLE void removeUrl(QString url);

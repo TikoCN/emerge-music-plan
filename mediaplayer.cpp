@@ -34,7 +34,7 @@ void MediaPlayer::clearData()
 /*
  * 获得音乐核心
  */
-void MediaPlayer::getMusicCore(QList<Music*> musicList, QStringList musicKeyList)
+void MediaPlayer::getMusicCore(QList<Music*> musicList)
 {
     QStringList dirs;//本地文件列表
     QList<QList<Music *>> tableMusic;
@@ -61,12 +61,9 @@ void MediaPlayer::getMusicCore(QList<Music*> musicList, QStringList musicKeyList
         tableList[i]->insertMusic(tableMusic[i]);
     }
 
-    buildNoDirTable(musicKeyList);
     //清空数据
-    Setting *seit = Setting::getInstance();
     HostTime *host = HostTime::getInstance();
 
-    seit->clearJsonData();
     host->clearData();
 
     //初始化部分数据
@@ -76,62 +73,6 @@ void MediaPlayer::getMusicCore(QList<Music*> musicList, QStringList musicKeyList
 
     LrcData *lrc = new LrcData;
     lrcList.append(lrc);
-}
-
-void MediaPlayer::buildNoDirTable(QStringList musicKeyList)
-{
-    //清空数据
-    Setting *seit = Setting::getInstance();
-
-    //没有读取数据，生成json结构，直接退出
-    if(!seit->data || !seit->coreJson){
-        return;
-    }
-
-    QJsonObject tableJson = seit->data->value("table").toObject();
-    if(tableJson.isEmpty()){
-        return;
-    }
-    int max = tableJson.value("size").toInt();//获得列表数
-
-    //循环生成新列表
-    for(int i=0; i<max; i++){
-        QJsonObject table = tableJson.value(QString::number(i)).toObject();//获得列表数据单元
-        QString name = table.value("name").toString();
-        int aimTable = -1;
-
-        if(table.value("isDir").toBool()){//处理本地列表
-            QString url = table.value("url").toString();
-
-            for(int j=0; j<tableList.size(); j++){
-                if(tableList[j]->url == url){
-                    aimTable = j;
-                }
-            }
-        }
-        //处理自建列表
-        else{
-            appendTable(name);
-            aimTable = tableList.size()-1;
-            QStringList tableMusic = table.value("music").toString().split("||");
-            int musicNumber = table.value("musicNumber").toInt();
-
-            for(int j=0; j<musicNumber; j++){
-                int musicId = tableMusic[j].toInt();
-                if(musicId >= seit->musicKeyList.size()){
-                    continue;
-                }
-                QString musicKey = seit->musicKeyList[musicId];
-                int aim = musicKeyList.indexOf(musicKey);
-                tableList[aimTable]->insertMusic(coreList[aim]);
-            }
-        }
-
-        if(aimTable != -1){
-            //格式转化
-            tableList[aimTable]->sortMusic(table.value("sort").toInt());
-        }
-    }
 }
 
 /*
@@ -222,7 +163,6 @@ void MediaPlayer::playMusic(int table, int music)
 
     playingMusic = music;
     playingCore = musicList[music];
-    musicList[music]->setPlayNumber(musicList[music]->playNumber+1);
     player->setSource(musicList[music]->url);
     player->play();
 
@@ -247,30 +187,21 @@ void MediaPlayer::selectPlayLrc(qint64 time)
 
     int play = playingLrc->id;
 
-    //向下寻找
-    while(play < lrcList.size()-1 && time > lrcList[play]->endTime){
-        lrcList[play]->isPlay = false;
-        play++;
+    if(playingLrc->startTime <= time && playingLrc->endTime >= time){
+        emit lrcList[play]->update();
+        emit playingLrc->update();
+    }
+    else{
+        for(int i=0; i<lrcList.size(); i++){
+            if(lrcList[i]->startTime <= time && lrcList[i]->endTime >= time){
+                playingLrc->id = i;
+                emit playingLrcLineChange();
+                emit lrcList[i]->update();
+                break;
+            }
+        }
     }
 
-    //向前寻找
-    while(play > 0 && lrcList[play]->startTime > time){
-        lrcList[play]->isPlay = false;
-        play--;
-    }
-
-    if(play != playingLrc->id){
-        playingLrc->id = play;
-        emit cppPlayingLrc();
-    }
-
-    if(lrcList[play]->isPlay != true){
-        lrcList[play]->isPlay = true;
-    }
-    for(int i=0; i<lrcList.size(); i++){
-        emit lrcList[i]->update();
-    }
-    emit playingLrc->update();
 }
 
 void MediaPlayer::turnToLrc(int lrcId)
@@ -344,20 +275,21 @@ void MediaPlayer::buildFrequencySpectrum(QAudioBuffer buffer)
         data = ex.useFftw3(data, all);
 
         //归一化
+        double maxHeight = 0.0, minHeight = 0.0;
         for(int i=0; i<data.size()/2; i++)
         {
-            if(data[i] > playingCore->maxHeight)
+            if(data[i] > maxHeight)
             {
-                playingCore->maxHeight = data[i];
+                maxHeight = data[i];
             }
-            if(data[i] < playingCore->minHeight)
+            if(data[i] < minHeight)
             {
-                playingCore->minHeight = data[i];
+                minHeight = data[i];
             }
         }
         for(int i=0; i<data.size()/2; i++)
         {
-            data[i] = (data[i]- playingCore->minHeight)/(playingCore->maxHeight - playingCore->minHeight);
+            data[i] = (data[i]- minHeight)/(maxHeight - minHeight);
             data[i] = data[i]<0?0:data[i];
         }
 
@@ -406,8 +338,6 @@ MediaPlayer::MediaPlayer()
     playingMusic = 0;
     playingCore = new Music;
     playingLrc = new LrcData;
-    playedLrc = new LrcData;
-
     player = new QMediaPlayer;//播放设备
     audioOutput = new QAudioOutput;//音频输出
     bufferOutput = new QAudioBufferOutput;//缓冲区输出
@@ -441,25 +371,9 @@ QAudioOutput *MediaPlayer::getAudioOutput() const
     return audioOutput;
 }
 
-void MediaPlayer::setAudioOutput(QAudioOutput *newAudioOutput)
-{
-    if (audioOutput == newAudioOutput)
-        return;
-    audioOutput = newAudioOutput;
-    emit audioOutputChanged();
-}
-
 QVector<double> MediaPlayer::getAllSamples() const
 {
     return allSamples;
-}
-
-void MediaPlayer::setAllSamples(const QVector<double> &newAllSamples)
-{
-    if (allSamples == newAllSamples)
-        return;
-    allSamples = newAllSamples;
-    emit allSamplesChanged();
 }
 
 QList<Music *> MediaPlayer::getCoreList() const
@@ -467,25 +381,9 @@ QList<Music *> MediaPlayer::getCoreList() const
     return coreList;
 }
 
-void MediaPlayer::setCoreList(const QList<Music *> &newCoreList)
-{
-    if (coreList == newCoreList)
-        return;
-    coreList = newCoreList;
-    emit coreListChanged();
-}
-
 QList<Music *> MediaPlayer::getMusicList() const
 {
     return musicList;
-}
-
-void MediaPlayer::setMusicList(const QList<Music *> &newMusicList)
-{
-    if (musicList == newMusicList)
-        return;
-    musicList = newMusicList;
-    emit musicListChanged();
 }
 
 QList<LrcData *> MediaPlayer::getLrcList() const
@@ -493,25 +391,9 @@ QList<LrcData *> MediaPlayer::getLrcList() const
     return lrcList;
 }
 
-void MediaPlayer::setLrcList(const QList<LrcData *> &newLrcList)
-{
-    if (lrcList == newLrcList)
-        return;
-    lrcList = newLrcList;
-    emit lrcListChanged();
-}
-
 Music *MediaPlayer::getPlayingCore() const
 {
     return playingCore;
-}
-
-void MediaPlayer::setPlayingCore(Music *newPlayingCore)
-{
-    if (playingCore == newPlayingCore)
-        return;
-    playingCore = newPlayingCore;
-    emit playingCoreChanged();
 }
 
 int MediaPlayer::getLoopType() const
@@ -532,25 +414,9 @@ QMediaPlayer *MediaPlayer::getPlayer() const
     return player;
 }
 
-void MediaPlayer::setPlayer(QMediaPlayer *newPlayer)
-{
-    if (player == newPlayer)
-        return;
-    player = newPlayer;
-    emit playerChanged();
-}
-
 QList<Table *> MediaPlayer::getTableList() const
 {
     return tableList;
-}
-
-void MediaPlayer::setTableList(const QList<Table *> &newTableList)
-{
-    if (tableList == newTableList)
-        return;
-    tableList = newTableList;
-    emit tableListChanged();
 }
 
 LrcData *MediaPlayer::getPlayingLrc() const
@@ -558,23 +424,3 @@ LrcData *MediaPlayer::getPlayingLrc() const
     return playingLrc;
 }
 
-void MediaPlayer::setPlayingLrc(LrcData *newPlayingLrc)
-{
-    if (playingLrc == newPlayingLrc)
-        return;
-    playingLrc = newPlayingLrc;
-    emit playingLrcChanged();
-}
-
-LrcData *MediaPlayer::getPlayedLrc() const
-{
-    return playedLrc;
-}
-
-void MediaPlayer::setPlayedLrc(LrcData *newPlayedLrc)
-{
-    if (playedLrc == newPlayedLrc)
-        return;
-    playedLrc = newPlayedLrc;
-    emit playedLrcChanged();
-}

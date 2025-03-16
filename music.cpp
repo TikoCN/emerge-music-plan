@@ -11,10 +11,6 @@
 #include <QPixmap>
 
 Music::Music() {
-    love = false;
-    maxHeight = 0.0;
-    minHeight = 0.0;
-    playNumber = 0;
     url = "";
 }
 
@@ -24,26 +20,20 @@ void Music::writeDataToFile(QString lrc, QString title, QString artist, QString 
     QString lrcUrl = getLrcUrl();
     bool r = base->writeFileText(lrcUrl, lrc);
     if(r){
-        emit base->sendMessage(lrcUrl + tr(" 修改歌词文件成功"), 0);
+        emit base->sendMessage(lrcUrl + QObject::tr(" 修改歌词文件成功"), 0);
     }
     else{
-        emit base->sendMessage(lrcUrl + tr(" 修改歌词文件失败"), 1);
+        emit base->sendMessage(lrcUrl + QObject::tr(" 修改歌词文件失败"), 1);
     }
 
     ExtraLibrary ex;
     r = ex.setMedia(url, title, artist, alumb, genre, year);
     if(r){
-        emit base->sendMessage(url + tr(" 修改音乐文件属性成功"), 0);
+        emit base->sendMessage(url + QObject::tr(" 修改音乐文件属性成功"), 0);
     }
     else{
-        emit base->sendMessage(url + tr(" 修改音乐文件属性失败"), 1);
+        emit base->sendMessage(url + QObject::tr(" 修改音乐文件属性失败"), 1);
     }
-
-    setTitle(title);
-    setArtist(artist);
-    setAlumb(alumb);
-    setGenre(genre);
-    setYear(year);
 }
 
 void Music::fromFileInfo(QFileInfo info)
@@ -51,14 +41,6 @@ void Music::fromFileInfo(QFileInfo info)
     url = info.filePath();
     lastEdit = info.lastModified().toString("yy-MM-dd hh:mm:ss");
     lastEditTime = info.lastModified().toMSecsSinceEpoch();
-}
-/*
- * 来自Json
-*/
-void Music::fromJson(QJsonObject obj)
-{
-    playNumber = obj.value("playNumber").toInt();
-    love = obj.value("love").toBool();
 }
 
 //获得封面路径
@@ -140,9 +122,9 @@ QList<LrcData *> Music::getLyricsData()
                 lrcD = new LrcData;
                 lrcList.append(lrcD);
                 lrcD->id = lrcList.size()-1;
-                lrcD->startTime = match.captured(1).toLong() * 60 * 100 +
+                lrcD->startTime = match.captured(1).toLong() * 60 * 1000 +
                                   match.captured(2).toLong() * 1000 +
-                                  match.captured(3).toLong();
+                                  match.captured(3).toLong() * 10;
                 lrcTextList.append(match.captured(4));
             }
             else{
@@ -161,14 +143,14 @@ QList<LrcData *> Music::getLyricsData()
                 end = lrcList[i+1]->startTime;
             }
             lrcList[i]->endTime = end;
-            int length = lrcTextList[i].length() == 0 ? 1 : lrcTextList[i].length();
+            int length = lrcTextList[i].size() == 0 ? 1 : lrcTextList[i].size();
             int wordTime = (end - start) / length;
 
             //逐字遍历
             QString text = lrcTextList[i];
             for(int j=0; j<text.size(); j++){
                 lrcList[i]->append(start + j * wordTime,
-                                   end + (j + 1) * wordTime,
+                                   start + (j + 1) * wordTime,
                                    text[j]);
             }
         }
@@ -285,9 +267,9 @@ QString Music::getLrcData()
 */
 void Music::copyMusicData()
 {
-    QString data = tr("标题") +":"+ title +" "
-                   +tr("歌手") +":"+ artist +" "
-                   +tr("专辑") +":"+ alumb;
+    QString data = QObject::tr("标题") +":"+ title +" "
+                   +QObject::tr("歌手") +":"+ artist +" "
+                   +QObject::tr("专辑") +":"+ alumb;
     Base::getInstance()->copyString(data);
 }
 
@@ -365,25 +347,9 @@ QString Music::getTitle() const
     return title;
 }
 
-void Music::setTitle(const QString &newTitle)
-{
-    if (title == newTitle)
-        return;
-    title = newTitle;
-    emit titleChanged();
-}
-
 QString Music::getArtist() const
 {
     return artist;
-}
-
-void Music::setArtist(const QString &newArtist)
-{
-    if (artist == newArtist)
-        return;
-    artist = newArtist;
-    emit artistChanged();
 }
 
 QString Music::getUrl() const
@@ -391,25 +357,9 @@ QString Music::getUrl() const
     return url;
 }
 
-void Music::setUrl(const QString &newUrl)
-{
-    if (url == newUrl)
-        return;
-    url = newUrl;
-    emit urlChanged();
-}
-
 QString Music::getAlumb() const
 {
     return alumb;
-}
-
-void Music::setAlumb(const QString &newAlumb)
-{
-    if (alumb == newAlumb)
-        return;
-    alumb = newAlumb;
-    emit alumbChanged();
 }
 
 QString Music::getLastEdit() const
@@ -417,75 +367,8 @@ QString Music::getLastEdit() const
     return lastEdit;
 }
 
-void Music::setLastEdit(const QString &newLastEdit)
-{
-    if (lastEdit == newLastEdit)
-        return;
-    lastEdit = newLastEdit;
-    emit lastEditChanged();
-}
-
 int Music::getCoreId() const
 {
     return coreId;
 }
 
-void Music::setCoreId(int newCoreId)
-{
-    if (coreId == newCoreId)
-        return;
-    coreId = newCoreId;
-    emit coreIdChanged();
-}
-
-bool Music::getLove() const
-{
-    return love;
-}
-
-void Music::setLove(bool newLove)
-{
-    if (love == newLove)
-        return;
-    love = newLove;
-    emit loveChanged();
-}
-
-QString Music::getGenre() const
-{
-    return genre;
-}
-
-void Music::setGenre(const QString &newGenre)
-{
-    if (genre == newGenre)
-        return;
-    genre = newGenre;
-    emit genreChanged();
-}
-
-QString Music::getYear() const
-{
-    return year;
-}
-
-void Music::setYear(const QString &newYear)
-{
-    if (year == newYear)
-        return;
-    year = newYear;
-    emit yearChanged();
-}
-
-int Music::getPlayNumber() const
-{
-    return playNumber;
-}
-
-void Music::setPlayNumber(int newPlayNumber)
-{
-    if (playNumber == newPlayNumber)
-        return;
-    playNumber = newPlayNumber;
-    emit playNumberChanged();
-}

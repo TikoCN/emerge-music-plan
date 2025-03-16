@@ -29,4 +29,5 @@ qt_add_qml_module(WidgetLib
     view/mainStyle/MainStyle1.qml
     view/mainStyle/MainStyle2.qml
     RESOURCES ui.qrc
+    QML_FILES view/MenuMusic.qml
 )

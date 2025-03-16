@@ -21,7 +21,7 @@ public:
 
 signals:
     //音乐加载完成
-    void musicLoaded(QList<Music *>, QStringList);
+    void musicLoaded(QList<Music *>);
 
     //完成任务
     void finishLoad(TaskCell* cell);
@@ -68,7 +68,7 @@ public slots:
     bool getInfoList(QFileInfoList *list);
 
     //获得加载好的音乐数据
-    void getMusicCoreList(QList<Music *> coreList, QStringList musicKeyList);
+    void getMusicCoreList(QList<Music *> coreList);
 
     //子线程完成任务
     void cellFinishWork(TaskCell *cell);
@@ -80,7 +80,7 @@ signals:
     void musicListBuild(QFileInfoList);
 
     //音乐文件加载完成
-    void musicsLoaded(QList<Music *>, QStringList);
+    void musicsLoaded(QList<Music *>);
 
     //开始工作
     void startWork();

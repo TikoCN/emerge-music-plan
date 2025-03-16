@@ -8,8 +8,6 @@
 #include <QJsonDocument>
 
 void Setting::loadMusicCores(){
-    clearJsonData();//清空数据，防止内存泄露
-    readJsonData();//读取数据
     emit loadMusics();
 }
 
@@ -59,41 +57,6 @@ bool Setting::getParameterList()
 
     //读取成功
     return true;
-}
-
-void Setting::readJsonData()
-{
-    QFile dataFile(QDir::currentPath() + "/data.json");
-    data = nullptr;
-    coreJson = nullptr;
-
-    //打开文件
-    if(dataFile.open(QIODevice::Text| QIODevice::ReadOnly)){
-        QJsonDocument doc;
-        data = new QJsonObject;
-        coreJson = new QJsonObject;
-
-        doc = doc.fromJson(dataFile.readAll());
-        *data = doc.object();
-        //读取数据到data中
-
-        *coreJson = data->value("core").toObject();
-        musicKeyList = coreJson->value("musicKeyList").toString().split("||");
-    }
-    dataFile.close();
-}
-
-void Setting::clearJsonData()
-{
-    if(!data){
-        delete data;
-    }
-
-    if(!coreJson){
-        delete coreJson;
-    }
-
-    musicKeyList.clear();
 }
 
 void Setting::removeUrl(QString url)
@@ -168,11 +131,7 @@ void Setting::writeData()
         QJsonObject coreJson;
         QStringList nameList;
         for(int i=0; i<player->coreList.size(); i++){
-            QJsonObject music;
-            music.insert("love", player->coreList[i]->love);
-            music.insert("playNumber", player->coreList[i]->playNumber);
             nameList.append(player->coreList[i]->getKey());
-            coreJson.insert(QString::number(i), music);
         }
         coreJson.insert("size", player->coreList.size());
         coreJson.insert("musicKeyList", nameList.join("||"));

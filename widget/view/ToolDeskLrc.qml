@@ -113,9 +113,6 @@ Window{
             anchors.topMargin: 10
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.leftMargin: 20
-            textList: MediaPlayer.playingLrc.textList
-            lrcId: MediaPlayer.playingLrc.id
-            lrcFont: Setting.deskFont
             width: parent.width - 40
             isUse: false
         }
@@ -126,9 +123,6 @@ Window{
             anchors.topMargin: 20
             anchors.leftMargin: 20
             anchors.horizontalCenter: parent.horizontalCenter
-            textList: MediaPlayer.playedLrc.textList
-            lrcId: MediaPlayer.playedLrc.id
-            lrcFont: Setting.deskFont
             width: parent.width - 40
             isUse: false
         }

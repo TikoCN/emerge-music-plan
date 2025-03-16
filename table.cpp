@@ -166,19 +166,6 @@ void Table::openDir()
     }
 }
 
-void Table::showLove()
-{
-    showMusics.clear();
-    for(int i=0; i<musics.size(); i++){
-        if(musics[i]->love){
-            showMusics.append(musics[i]);
-        }
-    }
-
-    //qml重新生成控件
-    emit rebuildShowMusic();
-}
-
 void Table::showAllMusic()
 {
     showMusics.clear();

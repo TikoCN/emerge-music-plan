@@ -24,8 +24,6 @@ void TaskCell::working(){
     ExtraLibrary extraLibrary;
     Setting *seit = Setting::getInstance();
     HostTime *host = HostTime::getInstance();
-    QJsonObject *coreJson = seit->coreJson;
-    QStringList *musicKeyList = &seit->musicKeyList;
 
     while(true){
         QFileInfoList fileList;
@@ -35,7 +33,6 @@ void TaskCell::working(){
         }
 
         QList<Music *> cores;
-        QStringList keys;
 
         for(int i=0; i<fileList.size(); i++){
             QString suffix = fileList[i].suffix();
@@ -49,19 +46,10 @@ void TaskCell::working(){
             core->fromFileInfo(fileList[i]);
             extraLibrary.getMedia(core);
             cores.append(core);
-            keys.append(core->getKey());
-
-            int aim = musicKeyList->indexOf(core->getKey());
-            if(aim != -1){
-                core->fromJson(coreJson->value(QString::number(aim)).toObject());
-            }
-
-            //移动到主线程
-            core->moveToThread(QCoreApplication::instance()->thread());
         }
 
         //一次任务加载完成，返回数据
-        emit musicLoaded(cores, keys);
+        emit musicLoaded(cores);
     }
 
     emit finishLoad(this);
@@ -171,7 +159,7 @@ bool HostTime::getInfoList(QFileInfoList *list)
 /*
  *获得加载好的音乐数据
  */
-void HostTime::getMusicCoreList(QList<Music *> coreList, QStringList musicKeyList)
+void HostTime::getMusicCoreList(QList<Music *> coreList)
 {
     this->musicKeyList.append(musicKeyList);
     this->coreList.append(coreList);
@@ -184,7 +172,7 @@ void HostTime::cellFinishWork(TaskCell *cell)
     if(workNumber == 0){
         QString t = tr("加载音乐文件完成，加载了 ") + QString::number(coreList.size()) + tr(" 个音乐文件");
         emit Base::getInstance()->sendMessage(t, 0);
-        emit musicsLoaded(coreList, musicKeyList);
+        emit musicsLoaded(coreList);
     }
 }
 

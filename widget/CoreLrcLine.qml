@@ -27,7 +27,7 @@ Item {
         anchors.fill: lrcShow
         blurEnabled: true
         blurMax: maxFontMetrics.boundingRect.height * 0.8
-        blur: 0
+        blur: 0.6
     }
 
     Canvas{
@@ -111,7 +111,6 @@ Item {
     Connections{
         target: core
         function onUpdate(){
-            effct.blur = 0.3 * Math.abs(MediaPlayer.playingLrc.id - lrcId)
             lrcShow.requestPaint()
         }
     }
