@@ -87,7 +87,7 @@ Item {
 
                 delegate: TikoButtonNormal{
                     width: userTableListView.width
-                    text: MediaPlayer.tableList[i].name
+                    text: Core.tableList[i].name
                     iconSource: mainView.tableList[i].showCover
                     iconWidth: 30
                     iconHeight: 30

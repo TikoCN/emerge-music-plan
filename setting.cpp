@@ -127,8 +127,6 @@ void Setting::writeData()
     QFile dataFile(QDir::currentPath() + "/data.json");
     QJsonObject writeData;
     if(dataFile.open(QIODevice::Text | QIODevice::WriteOnly)){
-        MediaPlayer *player = MediaPlayer::getInstance();
-
         //获得音乐核心json
         QJsonObject coreJson;
         QStringList nameList;

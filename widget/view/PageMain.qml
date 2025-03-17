@@ -128,7 +128,7 @@ Item {
     Connections{
         target:MediaPlayer.player
         function onSourceChanged(){
-            backCover.source = "image://cover/back:" + MediaPlayer.playingCore.coreId.toString()
+            backCover.source = "image://cover/back:" + MediaPlayer.playingMusic.coreId.toString()
         }
     }
 }

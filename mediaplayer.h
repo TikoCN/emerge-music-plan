@@ -1,9 +1,8 @@
 #ifndef MEDIAPLAYER_H
 #define MEDIAPLAYER_H
 
-#include "table.h"
-#include "lrcdata.h"
 #include "musiccore.h"
+#include "lrcdata.h"
 #include <QMediaPlayer>
 #include <QAudioBufferOutput>
 #include <QAudioOutput>
@@ -20,15 +19,17 @@ private:
 
     Q_PROPERTY(int loopType READ getLoopType WRITE setLoopType NOTIFY loopTypeChanged FINAL)
 
-    Q_PROPERTY(Music *playingCore READ getPlayingCore CONSTANT)
-
     Q_PROPERTY(QVector<double> allSamples READ getAllSamples CONSTANT)
 
     Q_PROPERTY(QAudioOutput *audioOutput READ getAudioOutput CONSTANT)
 
-    Q_PROPERTY(LrcData *playingLrc READ getPlayingLrc CONSTANT)
-
     Q_PROPERTY(QList<Music *> musicList READ getMusicList CONSTANT)
+
+    Q_PROPERTY(QList<LrcData *> lrcList READ getLrcList CONSTANT)
+
+    Q_PROPERTY(Music *playingMusic READ getPlayingMusic CONSTANT)
+
+    Q_PROPERTY(LrcData *playingLrc READ getPlayingLrc CONSTANT)
 
 public:
     static MediaPlayer* getInstance(){
@@ -47,11 +48,13 @@ public:
 
     QList<Music *> musicList;//正在播放列表
     QVector<double> allSamples;//处理之后的音乐样本
+    QList<LrcData *> lrcList;//歌词
 
     MusicCore *core;//音乐数据中心
     int loopType;//播放种类
-    int playingMusicId;// 正在播放音乐,列表id
-    int playingLrcId;// 正在播放歌词行,id
+    int playingMusicListId;//正在播放歌曲的列表id
+    Music *playingMusic;// 正在播放音乐
+    LrcData *playingLrc;// 正在播放歌词行
 
 public:
     //删除以及加载的数据
@@ -62,6 +65,9 @@ public:
 
     //播放音乐
     Q_INVOKABLE void playMusic(int table, int music);
+
+    //加载歌词
+    void loadLrcList();
 
     //将歌曲添加到正在播放
     Q_INVOKABLE void musicInsertPlayingTable(int coreId);
@@ -89,11 +95,15 @@ public:
     int getLoopType() const;
     void setLoopType(int newLoopType);
 
-    Music *getPlayingCore() const;
-
     QVector<double> getAllSamples() const;
 
+    QList<Music *> getMusicList() const;
+
     QAudioOutput *getAudioOutput() const;
+
+    QList<LrcData *> getLrcList() const;
+
+    Music *getPlayingMusic() const;
 
     LrcData *getPlayingLrc() const;
 
@@ -104,15 +114,6 @@ signals:
 
     //清空数据以及播放列表
     void finishClearData();
-
-    //正在播放歌曲改变
-    void playingLrcLineChange();
-
-    //新建本地列表
-    void addTable(int tableId);
-
-    //歌词加载完成
-    void cppLrcLoaded(int size);
 
     //重建播放列表
     void cppBuildPlayingTable();
@@ -126,7 +127,12 @@ signals:
     //绘制音频波形
     void cppDrawLine(QVector<double>);
 
+    //歌词加载完成
+    void lrcLoaded();
+
     void loopTypeChanged();
+
+    void playingLrcIdChange();
 };
 
 #endif // MEDIAPLAYER_H

@@ -43,17 +43,23 @@ Item {
 
     //关联
     Connections{
-        target:MediaPlayer
-        function onCppLrcLoaded(size){
+        target: MediaPlayer
+        function onLrcLoaded(){
             playerLrcTable.buildLrcList()
         }
 
-        function onPlayingLrcLineChange(){
-            if(!show && MediaPlayer.lrcList.length <= 1 && !mouseHover.containsMouse){
+        function onPlayingLrcIdChange(){
+            if(
+                    !show &&
+                    MediaPlayer.lrcList.length <= 1 &&
+                    MediaPlayer.playingLrc === null &&
+                    !mouseHover.containsMouse
+                    ){
                 return
             }
 
             var playLine = MediaPlayer.playingLrc.id
+
             lrcList.currentIndex = playLine
             lrcList.positionViewAtIndex(playLine, ListView.Beginning)
         }

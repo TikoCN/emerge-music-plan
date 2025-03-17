@@ -5,7 +5,7 @@ import TikoAPI
 import Tiko
 
 Item {
-    id: root
+    id: playerTable
     property int tableId//歌曲标题
     property int allMusic:  0
     property string showCover: "qrc:/image/default.jpg"
@@ -20,7 +20,7 @@ Item {
             id: tableCover
             anchors.left: parent.left
             anchors.leftMargin: 10
-            source: root.showCover
+            source: playerTable.showCover
             sourceSize.width: width
             sourceSize.height: height
             width: 200
@@ -35,7 +35,7 @@ Item {
             anchors.left: tableCover.right
             anchors.leftMargin: 10
             anchors.top: tableCover.top
-            text: MediaPlayer.tableList[tableId].name
+            text: Core.tableList[tableId].name
             width: parent.width - tableCover.width
             height: tableCover.height - playButton.height
             exSize: 20
@@ -209,13 +209,13 @@ Item {
     }
 
     ScrollView{
-        width: parent.width
-        height: parent.height - showView.height - 20
+        width: playerTable.width
+        height: playerTable.height - showView.height - 20
         anchors.top: showView.bottom
         anchors.topMargin: 20
-        anchors.left: parent.left
+        anchors.left: playerTable.left
         anchors.leftMargin: 5
-        anchors.right: parent.right
+        anchors.right: playerTable.right
         anchors.rightMargin: 5
 
         ScrollBar.horizontal.visible: false
@@ -237,38 +237,42 @@ Item {
             delegate: CoreMusicLine{
                 width: musicList.width - 20
                 tableId: table
-                listId: music
-                core: musicCore
+                listId: musicListId
+                music: musicCore
             }
         }
     }
 
     Connections{
-        target: MediaPlayer.tableList[root.tableId]
+        target: Core.tableList[playerTable.tableId]
         function onRebuildShowMusic(){
             //重新建立条目
             musicModel.clear()
-            for(let i=0; i<MediaPlayer.tableList[root.tableId].showMusics.length; i++){
-                musicModel.append({music: i,
-                                      table: root.tableId,
-                                      musicCore: MediaPlayer.tableList[root.tableId].showMusics[i]})
+            for(let i=0; i<Core.tableList[playerTable.tableId].showMusics.length; i++){
+                musicModel.append({
+                                      musicListId: i,
+                                      table: playerTable.tableId,
+                                      musicCore: Core.tableList[playerTable.tableId].showMusics[i]
+                                  })
             }
         }
 
         function onAddMusic(size){
             musicModel.clear()
             for(var i=0; i<size; i++){
-                var music = MediaPlayer.tableList[root.tableId].showMusics.length - size + i
-                musicModel.append({music: music,
-                                      table: root.tableId,
-                                      musicCore: MediaPlayer.tableList[root.tableId].showMusics[music]})
+                var music = Core.tableList[playerTable.tableId].showMusics.length - size + i
+                musicModel.append({
+                                      musicListId: music,
+                                      table: playerTable.tableId,
+                                      musicCore: Core.tableList[playerTable.tableId].showMusics[music]
+                                  })
             }
 
             //调整列表展示信息
-            if(MediaPlayer.tableList[tableId].showMusics.length !== 0){
-                var coorId = MediaPlayer.tableList[root.tableId].getLastCoreId()
-                root.showCover = "image://cover/file:" + coorId.toString()
-                root.allMusic = MediaPlayer.tableList[root.tableId].musics.length
+            if(Core.tableList[tableId].showMusics.length !== 0){
+                var coorId = Core.tableList[playerTable.tableId].getLastCoreId()
+                playerTable.showCover = "image://cover/file:" + coorId.toString()
+                playerTable.allMusic = Core.tableList[playerTable.tableId].musics.length
             }
         }
     }

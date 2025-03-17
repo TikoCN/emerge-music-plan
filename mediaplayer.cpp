@@ -1,29 +1,35 @@
 #include "mediaplayer.h"
 #include "extralibrary.h"
-#include "setting.h"
-#include "hosttime.h"
-#include "online.h"
 #include <QRandomGenerator>
 #include <QAudioDevice>
 #include <QPixmapCache>
 
+/*
+ * 加载歌词
+ */
+void MediaPlayer::loadLrcList()
+{
+    lrcList = playingMusic->getLyricsData();
+    emit lrcLoaded();
+}
+
 void MediaPlayer::selectPlayLrc(qint64 time)
 {
-    QList<LrcData *>lrcList = core->lrcList;
-
     if(lrcList.size() == 0){
         return;
     }
 
-    if(playingLrc->startTime <= time && playingLrc->endTime >= time){
-        emit lrcList[playingLrcId]->update();
+    if(playingLrc != nullptr &&
+        playingLrc->startTime <= time && playingLrc->endTime >= time){
+        emit playingLrc->update();
     }
     else{
         for(int i=0; i<lrcList.size(); i++){
             if(lrcList[i]->startTime <= time && lrcList[i]->endTime >= time){
-                playingLrc->id = i;
-                emit playingLrcLineChange();
+                //改变 qml
+                playingLrc = lrcList[i];
                 emit lrcList[i]->update();
+                emit playingLrcIdChange();
                 break;
             }
         }
@@ -31,13 +37,17 @@ void MediaPlayer::selectPlayLrc(qint64 time)
 }
 void MediaPlayer::turnToLrc(int lrcId)
 {
-    if(lrcId >=0 && lrcId < core->lrcList.size()){
-        player->setPosition(core->lrcList[lrcId]->startTime);
+    if(lrcId >=0 && lrcId < lrcList.size()){
+        player->setPosition(lrcList[lrcId]->startTime);
     }
 }
 
 void MediaPlayer::clearData()
 {
+    while (!lrcList.empty()) {
+        delete lrcList.takeFirst();
+    }
+
     while (!musicList.empty()) {
         delete musicList.takeFirst();
     }
@@ -54,9 +64,9 @@ void MediaPlayer::clearData()
 void MediaPlayer::playingInsertMusic(int coreId)
 {
     Music *music = core->coreList[coreId];
-    musicList.insert(playingCore, music);
+    musicList.insert(playingMusicListId, music);
 
-    emit cppPlayingInsertMusic(playingMusic);
+    emit cppPlayingInsertMusic(playingMusicListId);
 }
 
 /*
@@ -95,11 +105,11 @@ void MediaPlayer::playMusic(int table, int music)
         emit cppBuildPlayingTable();
     }
 
-    playingCore = musicList[music];
+    playingMusic = musicList[music];
     player->setSource(musicList[music]->url);
     player->play();
 
-    emit downLrc(playingCore->getBaseName(), playingCore->getLrcUrl());//加载新歌词
+    emit downLrc(playingMusic->getBaseName(), playingMusic->getLrcUrl());//加载新歌词
 }
 
 /*
@@ -115,13 +125,13 @@ void MediaPlayer::playNext(int forward)
     }
     switch (loopType) {
     case 0:
-        aim = playingCore->coreId + forward;
+        aim = playingMusicListId + forward;
         break;
     case 1:
         aim = QRandomGenerator::global()->bounded(max);
         break;
     default:
-        aim = playingCore->coreId;
+        aim = playingMusicListId;
         break;
     }
 
@@ -226,9 +236,8 @@ void MediaPlayer::buildFrequencySpectrum(QAudioBuffer buffer)
 MediaPlayer::MediaPlayer()
 {
     loopType = 0;
-    playingMusic = 0;
-    playingCore = new Music;
-    playingLrc = new LrcData;
+    playingMusic = nullptr;
+    playingLrc = nullptr;
     player = new QMediaPlayer;//播放设备
     audioOutput = new QAudioOutput;//音频输出
     bufferOutput = new QAudioBufferOutput;//缓冲区输出
@@ -240,7 +249,7 @@ MediaPlayer::MediaPlayer()
 
     connect(player, &QMediaPlayer::positionChanged, this, [=](qint64 time){
         updateAudioOutPut();
-        core->selectPlayLrc(time);
+        selectPlayLrc(time);
     });
     //自动播放
 
@@ -250,6 +259,22 @@ MediaPlayer::MediaPlayer()
             playNext(1);
         }
     });
+}
+
+LrcData *MediaPlayer::getPlayingLrc() const
+{
+    return playingLrc;
+}
+
+
+Music *MediaPlayer::getPlayingMusic() const
+{
+    return playingMusic;
+}
+
+QList<LrcData *> MediaPlayer::getLrcList() const
+{
+    return lrcList;
 }
 
 QAudioOutput *MediaPlayer::getAudioOutput() const
@@ -265,11 +290,6 @@ QVector<double> MediaPlayer::getAllSamples() const
 QList<Music *> MediaPlayer::getMusicList() const
 {
     return musicList;
-}
-
-Music *MediaPlayer::getPlayingCore() const
-{
-    return playingCore;
 }
 
 int MediaPlayer::getLoopType() const
@@ -290,8 +310,4 @@ QMediaPlayer *MediaPlayer::getPlayer() const
     return player;
 }
 
-LrcData *MediaPlayer::getPlayingLrc() const
-{
-    return playingLrc;
-}
 

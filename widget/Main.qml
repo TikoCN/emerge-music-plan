@@ -151,6 +151,11 @@ TikoFrameless{
 
     //切换到主页
     function stackMain(){
+        if(MediaPlayer.playingMusic === null){
+            TikoSeit.sendMessage(this, qsTr("请先播放音乐"), 1)
+            return
+        }
+
         if(centerView.currentItem != mainPage){
             centerView.pop(null)
             centerView.pushItem(mainPage)
@@ -169,11 +174,11 @@ TikoFrameless{
 
     //关联
     Connections{
-        target: MediaPlayer
+        target: Core
 
-        function onAddTable(tableId){
-            mainView.addPlayTablePage(tableId)
-            barView.addTable(tableId)
+        function onTableAdd(){
+            mainView.addPlayTablePage(Core.tableList.length - 1)
+            barView.addTable(Core.tableList.length - 1)
         }
     }
 

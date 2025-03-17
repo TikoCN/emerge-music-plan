@@ -40,9 +40,6 @@ void MusicCore::getMusicCore(QList<Music*> musicList)
     HostTime *host = HostTime::getInstance();
 
     host->clearData();
-
-    LrcData *lrc = new LrcData;
-    lrcList.append(lrc);
 }
 
 /*
@@ -71,7 +68,7 @@ void MusicCore::appendTable(QString tableName, bool isDir)
         table->name = tableName.split("/").last();
     }
 
-    emit addTable(table->tableId);
+    emit tableAdd();
 }
 
 /*
@@ -84,19 +81,6 @@ void MusicCore::tableMoveMusic(int orgTableId, int musicId, int aimTalbeId)
     tableList[aimTalbeId]->insertMusic(core);
 }
 
-/*
- * 加载歌词
- */
-void MusicCore::loadLrcList()
-{
-    lrcList = playingCore->getLyricsData();
-    emit cppLrcLoaded(lrcList.size());
-}
-
-QList<LrcData *> MusicCore::getLrcList() const
-{
-    return lrcList;
-}
 
 QList<Music *> MusicCore::getCoreList() const
 {
@@ -111,10 +95,6 @@ void MusicCore::clearDate()
 
     while (!coreList.empty()) {
         delete coreList.takeFirst();
-    }
-
-    while (!lrcList.empty()) {
-        delete lrcList.takeFirst();
     }
 }
 

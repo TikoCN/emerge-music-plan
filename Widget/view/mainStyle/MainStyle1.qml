@@ -161,15 +161,15 @@ Item{
     Connections{
         target:MediaPlayer.player
         function onSourceChanged(){
-            artist.text = MediaPlayer.playingCore.artist
-            title.text = MediaPlayer.playingCore.title
-            cover.source = "image://cover/onLine:" + MediaPlayer.playingCore.coreId.toString()
+            artist.text = MediaPlayer.playingMusic.artist
+            title.text = MediaPlayer.playingMusic.title
+            cover.source = "image://cover/onLine:" + MediaPlayer.playingMusic.coreId.toString()
         }
     }
 
     Component.onCompleted: {
-        artist.text = MediaPlayer.playingCore.artist
-        title.text = MediaPlayer.playingCore.title
-        cover.source = "image://cover/onLine:" + MediaPlayer.playingCore.coreId.toString()
+        artist.text = MediaPlayer.playingMusic.artist
+        title.text = MediaPlayer.playingMusic.title
+        cover.source = "image://cover/onLine:" + MediaPlayer.playingMusic.coreId.toString()
     }
 }

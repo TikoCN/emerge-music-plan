@@ -9,10 +9,10 @@ Item {
     implicitWidth: 100
     clip: true
 
-    property int tableId
-    property int listId
-    property int musicId: 0
-    property var music: Core.musicList[musicLine.musicId]
+    property int tableId: 0
+    property int listId: 0
+    property int musicId: music.coreId
+    property var music
 
     MouseArea{
         onClicked:(mouse)=>{
@@ -51,7 +51,7 @@ Item {
         //封面
         Image{
             id: cover
-            source: "image://cover/file:" + musicLine.coreId.toString()
+            source: "image://cover/file:" + musicLine.musicId.toString()
             sourceSize.height: height
             sourceSize.width: width
             width: 50

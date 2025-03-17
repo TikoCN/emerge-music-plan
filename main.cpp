@@ -47,7 +47,7 @@ int main(int argc, char *argv[])
 
     QObject::connect(hostTime, &HostTime::musicsLoaded, core, &MusicCore::getMusicCore);
     QObject::connect(mediaPlayer, &MediaPlayer::downLrc, onLine, &OnLine::downLrc);
-    QObject::connect(onLine, &OnLine::lrcDowned, core, &MusicCore::loadLrcList);
+    QObject::connect(onLine, &OnLine::lrcDowned, mediaPlayer, &MediaPlayer::loadLrcList);
 
     QQmlApplicationEngine engine;
     QObject::connect(

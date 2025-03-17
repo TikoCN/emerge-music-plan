@@ -2,7 +2,7 @@ import QtQuick.Controls.Basic
 import QtQuick
 import TikoAPI
 import Tiko
-import "../"
+import Widget
 
 Drawer {
     id: playingTable
@@ -10,8 +10,8 @@ Drawer {
     modal: false
 
     Rectangle{
-        color:  Setting.backdropColor
-        anchors.fill:  parent
+        color: Setting.backdropColor
+        anchors.fill: parent
     }
 
     TikoTextLine{
@@ -24,7 +24,7 @@ Drawer {
         Connections{
             target: MediaPlayer.player
             function onSourceChanged(){
-                playingTableText.text = qsTr("正在播放: ") + MediaPlayer.playingCore.title
+                playingTableText.text = qsTr("正在播放: ") + MediaPlayer.playingMusic.title
             }
         }
     }
@@ -47,7 +47,7 @@ Drawer {
                 width: musicList.width - 20
                 tableId: -1
                 listId: music
-                core: MediaPlayer.musicList[music]
+                music: MediaPlayer.musicList[music]
             }
         }
     }
