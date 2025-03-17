@@ -7,22 +7,39 @@
 #include <QAudioDevice>
 #include <QPixmapCache>
 
+void MediaPlayer::selectPlayLrc(qint64 time)
+{
+    QList<LrcData *>lrcList = core->lrcList;
+
+    if(lrcList.size() == 0){
+        return;
+    }
+
+    if(playingLrc->startTime <= time && playingLrc->endTime >= time){
+        emit lrcList[playingLrcId]->update();
+    }
+    else{
+        for(int i=0; i<lrcList.size(); i++){
+            if(lrcList[i]->startTime <= time && lrcList[i]->endTime >= time){
+                playingLrc->id = i;
+                emit playingLrcLineChange();
+                emit lrcList[i]->update();
+                break;
+            }
+        }
+    }
+}
+void MediaPlayer::turnToLrc(int lrcId)
+{
+    if(lrcId >=0 && lrcId < core->lrcList.size()){
+        player->setPosition(core->lrcList[lrcId]->startTime);
+    }
+}
+
 void MediaPlayer::clearData()
 {
-    while (!tableList.empty()) {
-        delete tableList.takeFirst();
-    }
-
-    while (!coreList.empty()) {
-        delete coreList.takeFirst();
-    }
-
     while (!musicList.empty()) {
         delete musicList.takeFirst();
-    }
-
-    while (!lrcList.empty()) {
-        delete lrcList.takeFirst();
     }
 
     allSamples.clear();
@@ -32,95 +49,12 @@ void MediaPlayer::clearData()
 }
 
 /*
- * 获得音乐核心
- */
-void MediaPlayer::getMusicCore(QList<Music*> musicList)
-{
-    QStringList dirs;//本地文件列表
-    QList<QList<Music *>> tableMusic;
-    //生成播放列表和插入音乐
-    for(int i=0; i< musicList.size(); i++){
-        musicList[i]->coreId = coreList.size();
-        coreList.append(musicList[i]);
-
-        QString dir = musicList[i]->getParentDir();
-        int aimTableId = dirs.indexOf(dir);
-        if(aimTableId == -1){
-            dirs.append(dir);
-            aimTableId = dirs.size() - 1;
-            QList<Music *> musics;
-            tableMusic.append(musics);
-        }
-
-        tableMusic[aimTableId].append(musicList[i]);
-    }
-
-    //生成本地列表
-    for(int i=0; i<dirs.size(); i++){
-        appendTable(dirs[i], true);
-        tableList[i]->insertMusic(tableMusic[i]);
-    }
-
-    //清空数据
-    HostTime *host = HostTime::getInstance();
-
-    host->clearData();
-
-    //初始化部分数据
-    playingCore->title = tr("歌曲标题");
-    playingCore->artist = tr("歌手");
-    allSamples.fill(0, 1024);
-
-    LrcData *lrc = new LrcData;
-    lrcList.append(lrc);
-}
-
-/*
- * 新建播放列表
- */
-void MediaPlayer::appendTable(QString tableName, bool isDir)
-{
-    //判断该列表是否已经存在
-    if(!isDir){
-        for(int i=0; i<tableList.size(); i++){
-            if(tableList[i]->name == tableName && !tableList[i]->isDir){
-                return;
-            }
-        }
-    }
-
-    Table* table = new Table;
-    table->name = tableName;
-    table->tableId = tableList.size();
-    table->isDir = isDir;
-    tableList.append(table);
-
-    if(isDir){
-        //设置本地列表参数
-        table->url = tableName;
-        table->name = tableName.split("/").last();
-    }
-
-    emit addTable(table->tableId);
-}
-
-/*
- * 将歌曲移动到
-*/
-void MediaPlayer::tableMoveMusic(int orgTableId, int musicId, int aimTalbeId)
-{
-    Music *core = tableList[orgTableId]->musics[musicId];
-    tableList[orgTableId]->removeMusic(musicId);
-    tableList[aimTalbeId]->insertMusic(core);
-}
-
-/*
  * 将歌词添加到播放下一首
 */
 void MediaPlayer::playingInsertMusic(int coreId)
 {
-    Music *core = coreList[coreId];
-    musicList.insert(playingMusic, core);
+    Music *music = core->coreList[coreId];
+    musicList.insert(playingCore, music);
 
     emit cppPlayingInsertMusic(playingMusic);
 }
@@ -130,9 +64,9 @@ void MediaPlayer::playingInsertMusic(int coreId)
 */
 void MediaPlayer::musicInsertPlayingTable(int coreId)
 {
-    Music *core = coreList[coreId];
+    Music *music = core->coreList[coreId];
 
-    musicList.append(core);
+    musicList.append(music);
 
     emit cppMusicInsertPlayingTable(coreId);
 }
@@ -157,58 +91,15 @@ void MediaPlayer::playMusic(int table, int music)
 {
     if(table != -1){
         musicList.clear();
-        musicList.append(tableList[table]->showMusics);
+        musicList.append(core->tableList[table]->showMusics);
         emit cppBuildPlayingTable();
     }
 
-    playingMusic = music;
     playingCore = musicList[music];
     player->setSource(musicList[music]->url);
     player->play();
 
-    lrcList.clear();//清空遗留歌词
     emit downLrc(playingCore->getBaseName(), playingCore->getLrcUrl());//加载新歌词
-}
-
-/*
- * 加载歌词
- */
-void MediaPlayer::loadLrcList()
-{
-    lrcList = playingCore->getLyricsData();
-    emit cppLrcLoaded(lrcList.size());
-}
-
-void MediaPlayer::selectPlayLrc(qint64 time)
-{
-    if(lrcList.size() == 0){
-        return;
-    }
-
-    int play = playingLrc->id;
-
-    if(playingLrc->startTime <= time && playingLrc->endTime >= time){
-        emit lrcList[play]->update();
-        emit playingLrc->update();
-    }
-    else{
-        for(int i=0; i<lrcList.size(); i++){
-            if(lrcList[i]->startTime <= time && lrcList[i]->endTime >= time){
-                playingLrc->id = i;
-                emit playingLrcLineChange();
-                emit lrcList[i]->update();
-                break;
-            }
-        }
-    }
-
-}
-
-void MediaPlayer::turnToLrc(int lrcId)
-{
-    if(lrcId >=0 && lrcId < lrcList.size()){
-        player->setPosition(lrcList[lrcId]->startTime);
-    }
 }
 
 /*
@@ -224,13 +115,13 @@ void MediaPlayer::playNext(int forward)
     }
     switch (loopType) {
     case 0:
-        aim = playingMusic + forward;
+        aim = playingCore->coreId + forward;
         break;
     case 1:
         aim = QRandomGenerator::global()->bounded(max);
         break;
     default:
-        aim = playingMusic;
+        aim = playingCore->coreId;
         break;
     }
 
@@ -349,7 +240,7 @@ MediaPlayer::MediaPlayer()
 
     connect(player, &QMediaPlayer::positionChanged, this, [=](qint64 time){
         updateAudioOutPut();
-        selectPlayLrc(time);
+        core->selectPlayLrc(time);
     });
     //自动播放
 
@@ -359,11 +250,6 @@ MediaPlayer::MediaPlayer()
             playNext(1);
         }
     });
-
-    //关联网络模块
-    OnLine *onLine = OnLine::getInstance();
-    connect(this, &MediaPlayer::downLrc, onLine, &OnLine::downLrc);
-    connect(onLine, &OnLine::lrcDowned, this, &MediaPlayer::loadLrcList);
 }
 
 QAudioOutput *MediaPlayer::getAudioOutput() const
@@ -376,19 +262,9 @@ QVector<double> MediaPlayer::getAllSamples() const
     return allSamples;
 }
 
-QList<Music *> MediaPlayer::getCoreList() const
-{
-    return coreList;
-}
-
 QList<Music *> MediaPlayer::getMusicList() const
 {
     return musicList;
-}
-
-QList<LrcData *> MediaPlayer::getLrcList() const
-{
-    return lrcList;
 }
 
 Music *MediaPlayer::getPlayingCore() const
@@ -412,11 +288,6 @@ void MediaPlayer::setLoopType(int newLoopType)
 QMediaPlayer *MediaPlayer::getPlayer() const
 {
     return player;
-}
-
-QList<Table *> MediaPlayer::getTableList() const
-{
-    return tableList;
 }
 
 LrcData *MediaPlayer::getPlayingLrc() const

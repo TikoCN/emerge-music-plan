@@ -22,8 +22,8 @@ QPixmap ImageProvider::requestPixmap(const QString &id, QSize *size, const QSize
     QPixmap pix;
     QString type = id.split(":").first();
     int coreId = id.split(":").last().toInt();
-    MediaPlayer *player = MediaPlayer::getInstance();
-    if(coreId < -1 || coreId > player->coreList.size()){
+    MusicCore *core = MusicCore::getInstance();
+    if(coreId < -1 || coreId > core->coreList.size()){
         pix.load(":/image/default.jpg");
     }
     else if(type == "onLine"){//在线加载
@@ -73,29 +73,29 @@ void ImageProvider::buildRoundImage(QPixmap *pix, int radius)
 QPixmap ImageProvider::downOnlineCover(int id)
 {
     OnLine *onLine = OnLine::getInstance();
-    MediaPlayer *player = MediaPlayer::getInstance();
+    MusicCore *core = MusicCore::getInstance();
     QPixmap pix;
 
     //加载附加封面，和独立封面
-    pix = player->coreList[id]->loadCover();
+    pix = core->coreList[id]->loadCover();
 
     if(pix.isNull()){
         //从网络下载封面，并报错到独立封面
-        onLine->downCover(player->coreList[id]->getSearchString(), player->coreList[id]->getCoverUrl());
+        onLine->downCover(core->coreList[id]->getSearchString(), core->coreList[id]->getCoverUrl());
     }
 
     //加载附加封面，和独立封面
-    pix = player->coreList[id]->loadCover();
+    pix = core->coreList[id]->loadCover();
     return pix;
 }
 
 QPixmap ImageProvider::loadFileCover(int id)
 {
-    MediaPlayer *player = MediaPlayer::getInstance();
+    MusicCore *core = MusicCore::getInstance();
 
-    if(player->coreList[id]->cover != NULL){//读取已经加载好的封面
-        return *player->coreList[id]->cover;
+    if(core->coreList[id]->cover != NULL){//读取已经加载好的封面
+        return *core->coreList[id]->cover;
     }
-    return player->coreList[id]->loadCover();
+    return core->coreList[id]->loadCover();
 }
 

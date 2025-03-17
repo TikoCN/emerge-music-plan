@@ -4,15 +4,15 @@ import TikoAPI
 import Tiko
 
 Item {
-    id:root
+    id: musicLine
     implicitHeight: 70
     implicitWidth: 100
     clip: true
 
     property int tableId
     property int listId
-    property int coreId: core.coreId
-    property var core
+    property int musicId: 0
+    property var music: Core.musicList[musicLine.musicId]
 
     MouseArea{
         onClicked:(mouse)=>{
@@ -20,7 +20,7 @@ Item {
                 rightMenu.popup()
             }
             else{
-                root.play()
+                musicLine.play()
             }
         }
         acceptedButtons: Qt.LeftButton | Qt.RightButton
@@ -32,7 +32,7 @@ Item {
         radius: 5
         color: Setting.transparentColor//背景颜色
         opacity:{
-            if(root.listId % 2 === 1){
+            if(musicLine.listId % 2 === 1){
                 opacity = 0.1
             }
             else{
@@ -51,7 +51,7 @@ Item {
         //封面
         Image{
             id: cover
-            source: "image://cover/file:" + root.coreId.toString()
+            source: "image://cover/file:" + musicLine.coreId.toString()
             sourceSize.height: height
             sourceSize.width: width
             width: 50
@@ -65,14 +65,14 @@ Item {
             width: (parent.width - tool.width - cover.width) / 2
 
             TikoTextLine{
-                text: root.core.title
+                text: musicLine.music.title
                 exSize: 3
                 font.bold: true
                 height: 30
                 width: parent.width
             }
             TikoTextLine{
-                text: root.core.artist
+                text: musicLine.music.artist
                 height: 20
                 width: parent.width
             }
@@ -80,7 +80,7 @@ Item {
 
         TikoTextLine{
             id: alumb
-            text: root.core.alumb
+            text: musicLine.music.alumb
             width: coreName.width
             height: 50
         }
@@ -97,12 +97,12 @@ Item {
                 icon.source: "qrc:/image/else.png"
             }
             TikoTextLine{
-                text: root.core.getStringTime()
+                text: musicLine.music.getStringTime()
                 width: CoreData.timeWidth
                 height: 50
             }
             TikoTextLine{
-                text: root.core.lastEdit
+                text: musicLine.music.lastEdit
                 width: CoreData.editTimeWidth
                 height: 50
             }

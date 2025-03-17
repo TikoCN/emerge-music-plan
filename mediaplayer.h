@@ -3,6 +3,7 @@
 
 #include "table.h"
 #include "lrcdata.h"
+#include "musiccore.h"
 #include <QMediaPlayer>
 #include <QAudioBufferOutput>
 #include <QAudioOutput>
@@ -15,25 +16,19 @@ private:
     static MediaPlayer* instance;
     MediaPlayer();
 
-    Q_PROPERTY(QList<Table *> tableList READ getTableList CONSTANT)
-
     Q_PROPERTY(QMediaPlayer *player READ getPlayer CONSTANT)
 
     Q_PROPERTY(int loopType READ getLoopType WRITE setLoopType NOTIFY loopTypeChanged FINAL)
 
     Q_PROPERTY(Music *playingCore READ getPlayingCore CONSTANT)
 
-    Q_PROPERTY(QList<LrcData *> lrcList READ getLrcList CONSTANT)
-
-    Q_PROPERTY(QList<Music *> musicList READ getMusicList CONSTANT)
-
-    Q_PROPERTY(QList<Music *> coreList READ getCoreList CONSTANT)
-
     Q_PROPERTY(QVector<double> allSamples READ getAllSamples CONSTANT)
 
     Q_PROPERTY(QAudioOutput *audioOutput READ getAudioOutput CONSTANT)
 
     Q_PROPERTY(LrcData *playingLrc READ getPlayingLrc CONSTANT)
+
+    Q_PROPERTY(QList<Music *> musicList READ getMusicList CONSTANT)
 
 public:
     static MediaPlayer* getInstance(){
@@ -50,30 +45,17 @@ public:
     QAudioOutput *audioOutput;//音频输出
     QAudioBufferOutput *bufferOutput;//缓冲区输出
 
-    QList<Table *> tableList;//播放列表
-    QList<Music *> coreList;//音乐核心列表
-    QList<LrcData *> lrcList;//歌词
     QList<Music *> musicList;//正在播放列表
     QVector<double> allSamples;//处理之后的音乐样本
 
-    Music *playingCore;//正在播放核心
-    LrcData* playingLrc;//正在播放歌词
-
-    int playingMusic;//正在播放音乐id
+    MusicCore *core;//音乐数据中心
     int loopType;//播放种类
+    int playingMusicId;// 正在播放音乐,列表id
+    int playingLrcId;// 正在播放歌词行,id
 
 public:
-    //获得音乐核心
-    void getMusicCore(QList<Music *>musicList);
-
     //删除以及加载的数据
     Q_INVOKABLE void clearData();
-
-    //新建播放列表
-    Q_INVOKABLE void appendTable(QString tableName, bool isDir = false);
-
-    //将歌曲移动到
-    Q_INVOKABLE void tableMoveMusic(int orgTableId, int musicId, int aimTalbeId);
 
     //更新播放设备
     void updateAudioOutPut();
@@ -87,8 +69,11 @@ public:
     //将歌词添加到播放下一首
     Q_INVOKABLE void playingInsertMusic(int coreId);
 
-    //加载歌词
-    void loadLrcList();
+    //播放下一首
+    Q_INVOKABLE void playNext(int forward);
+
+    //获得时间文本
+    Q_INVOKABLE QString getTimeString();
 
     //选择当前播放歌词
     void selectPlayLrc(qint64 time);
@@ -96,16 +81,8 @@ public:
     //跳转到目标歌词
     Q_INVOKABLE void turnToLrc(int lrcId);
 
-    //播放下一首
-    Q_INVOKABLE void playNext(int forward);
-
-    //获得时间文本
-    Q_INVOKABLE QString getTimeString();
-
     //计算音频
     void buildFrequencySpectrum(QAudioBuffer buffer);
-
-    QList<Table*> getTableList() const;
 
     QMediaPlayer *getPlayer() const;
 
@@ -113,12 +90,6 @@ public:
     void setLoopType(int newLoopType);
 
     Music *getPlayingCore() const;
-
-    QList<LrcData *> getLrcList() const;
-
-    QList<Music *> getMusicList() const;
-
-    QList<Music *> getCoreList() const;
 
     QVector<double> getAllSamples() const;
 
