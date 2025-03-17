@@ -57,12 +57,14 @@ TikoFrameless {
             id: yesEdit
             icon.source: "qrc:/image/yesR.png"
             text: qsTr("确定编辑并保存")
-            onClicked: core.writeDataToFile(lrcShow.text,
-                                            title.input.text,
-                                            artist.input.text,
-                                            alumb.input.text,
-                                            genre.input.text,
-                                            year.input.text)
+            onClicked: core.writeDataToFile(
+                           lrcShow.text,
+                           title.input.text,
+                           artist.input.text,
+                           alumb.input.text,
+                           genre.input.text,
+                           year.input.text
+                           )
         }
     }
 

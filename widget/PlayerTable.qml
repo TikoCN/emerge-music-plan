@@ -245,20 +245,11 @@ Item {
 
     Connections{
         target: Core.tableList[playerTable.tableId]
-        function onRebuildShowMusic(){
-            //重新建立条目
+        function onClearMusic(){
             musicModel.clear()
-            for(let i=0; i<Core.tableList[playerTable.tableId].showMusics.length; i++){
-                musicModel.append({
-                                      musicListId: i,
-                                      table: playerTable.tableId,
-                                      musicCore: Core.tableList[playerTable.tableId].showMusics[i]
-                                  })
-            }
         }
 
-        function onAddMusic(size){
-            musicModel.clear()
+        function onUpdateMusic(){
             for(var i=0; i<size; i++){
                 var music = Core.tableList[playerTable.tableId].showMusics.length - size + i
                 musicModel.append({
@@ -267,7 +258,9 @@ Item {
                                       musicCore: Core.tableList[playerTable.tableId].showMusics[music]
                                   })
             }
+        }
 
+        function onUpdateCover(){
             //调整列表展示信息
             if(Core.tableList[tableId].showMusics.length !== 0){
                 var coorId = Core.tableList[playerTable.tableId].getLastCoreId()

@@ -8,12 +8,11 @@ QList<Music *> Table::getMusics() const
     return musics;
 }
 
-void Table::setMusics(const QList<Music *> &newMusics)
+Table::Table(QList<Music *> musicList, QObject *parent)
+    :QObject(parent)
 {
-    if (musics == newMusics)
-        return;
-    musics = newMusics;
-    emit musicsChanged();
+    insertMusic(musicList);
+    emit updateCover();
 }
 
 void Table::copy(Table* a)
@@ -100,8 +99,9 @@ void Table::sortMusic(int type)
         break;
     }
 
-    //qml重新生成控件
-    emit rebuildShowMusic();
+    // qml重新生成控件
+    emit clearMusic();
+    emit updateMusic(0, showMusics.size());
 }
 
 int Table::getSort()
@@ -119,8 +119,9 @@ void Table::searchMusic(QString search)
         }
     }
 
-    //qml重新生成控件
-    emit rebuildShowMusic();
+    // qml重新生成控件
+    emit clearMusic();
+    emit updateMusic(0, showMusics.size());
 }
 
 int Table::getLastCoreId()
@@ -135,7 +136,7 @@ void Table::insertMusic(Music *core)
 {
     musics.append(core);//插入到数据库
     showMusics.append(core);//符合条件插入显示
-    emit addMusic(1);
+    emit updateMusic(showMusics.size()-1, 1);
 }
 
 void Table::insertMusic(QList<Music *> core)
@@ -147,7 +148,7 @@ void Table::insertMusic(QList<Music *> core)
             showMusics.append(core[i]);//符合条件插入显示
             success++;
     }
-    emit addMusic(success);
+    emit updateMusic(showMusics.size()-success, success);
 }
 
 /*
@@ -172,7 +173,8 @@ void Table::showAllMusic()
     showMusics = musics;
 
     //qml重新生成控件
-    emit rebuildShowMusic();
+    emit clearMusic();
+    emit updateMusic(0, showMusics.size());
 }
 
 QString Table::getName() const
@@ -193,12 +195,5 @@ QList<Music *> Table::getShowMusics() const
     return showMusics;
 }
 
-void Table::setShowMusics(const QList<Music *> &newShowMusics)
-{
-    if (showMusics == newShowMusics)
-        return;
-    showMusics = newShowMusics;
-    emit showMusicsChanged();
-}
 
 

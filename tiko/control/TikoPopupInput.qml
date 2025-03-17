@@ -10,10 +10,12 @@ TikoPopup {
     property string orgText: ""
     property var onAccept: ()=>{}
     property var onCancel: ()=>{}
+    property int textWidth: 200
 
     TikoTextInput{
         id: inputLine
         show.text: text
+        show.width: root.textWidth
         input.text: orgText
         anchors.verticalCenter: parent.verticalCenter
         anchors.verticalCenterOffset: - height / 2 - parent.width / 20

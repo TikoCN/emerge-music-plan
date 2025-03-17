@@ -34,7 +34,7 @@ public:
     void getMusicCore(QList<Music *>musicList);
 
     //新建播放列表
-    Q_INVOKABLE void appendTable(QString tableName, bool isDir = false);
+    Q_INVOKABLE void appendTable(QString tableName, QList<Music *> musicList = QList<Music *>(),  bool isDir = false);
 
     //将歌曲移动到
     Q_INVOKABLE void tableMoveMusic(int orgTableId, int musicId, int aimTalbeId);

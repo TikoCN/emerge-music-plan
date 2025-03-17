@@ -71,10 +71,8 @@ Item {
 
                 TikoPopupInput{
                     id: inputName
-                    x: window.width / 2 - this.width / 2
-                    y: window.height / 2 - this.height
                     text: qsTr("新建列表，请输入列表名")
-                    onAccept: ()=>{MediaPlayer.appendTable(inputText)}
+                    onAccept: ()=>{Core.appendTable(inputText)}
                 }
             }
 
@@ -105,14 +103,6 @@ Item {
                         color: Setting.themeColor
                         opacity: 0.3
                         radius: 10
-                    }
-
-                    TikoMenu{
-                        id: tableMenu
-                        TikoMenuItem{text: qsTr("打开本地文件夹")}
-                        TikoMenuItem{text: qsTr("打开本地文件夹")}
-                        TikoMenuItem{text: qsTr("打开本地文件夹")}
-                        TikoMenuItem{text: qsTr("打开本地文件夹")}
                     }
                 }
 

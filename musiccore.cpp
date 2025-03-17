@@ -4,7 +4,9 @@
 
 MusicCore::MusicCore(QObject *parent)
     : QObject{parent}
-{}
+{
+
+}
 
 /*
  * 获得音乐核心
@@ -32,8 +34,7 @@ void MusicCore::getMusicCore(QList<Music*> musicList)
 
     //生成本地列表
     for(int i=0; i<dirs.size(); i++){
-        appendTable(dirs[i], true);
-        tableList[i]->insertMusic(tableMusic[i]);
+        appendTable(dirs[i], tableMusic[i], true);
     }
 
     //清空数据
@@ -45,7 +46,7 @@ void MusicCore::getMusicCore(QList<Music*> musicList)
 /*
  * 新建播放列表
  */
-void MusicCore::appendTable(QString tableName, bool isDir)
+void MusicCore::appendTable(QString tableName, QList<Music *> musicList, bool isDir)
 {
     //判断该列表是否已经存在
     if(!isDir){
@@ -56,7 +57,7 @@ void MusicCore::appendTable(QString tableName, bool isDir)
         }
     }
 
-    Table* table = new Table;
+    Table* table = new Table(musicList);
     table->name = tableName;
     table->tableId = tableList.size();
     table->isDir = isDir;

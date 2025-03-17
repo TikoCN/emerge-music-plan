@@ -93,7 +93,7 @@ Item {
                 text: qsTr("更多")
                 width: 50
                 height: 50
-                onClicked: rightMenu.open()
+                onClicked: CoreData.openMenuMusic(musicLine)
                 icon.source: "qrc:/image/else.png"
             }
             TikoTextLine{
@@ -107,10 +107,6 @@ Item {
                 height: 50
             }
         }
-    }
-
-    MenuMusic{
-        id: rightMenu
     }
 
     function play(){

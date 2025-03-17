@@ -8,6 +8,7 @@ class Table : public QObject //播放列表
 {
     Q_OBJECT
 public:
+    explicit Table(QList<Music *> musicList, QObject *parent = nullptr);
     enum SORT_TYPE{SORT_TITTLE_ASC, SORT_TITTLE_DESC,
                      SORT_ATRIST_ASC, SORT_ATRIST_DESC,
                      SORT_ALUMB_ASC, SORT_ALUMB_DESC,
@@ -16,8 +17,8 @@ public:
 
     QString name;//列表名
     QString url;//文件夹路径
-    QList<Music *>musics;//音乐库列表
-    QList<Music *>showMusics;//显示音乐列表
+    QList<Music *> musics;//音乐库列表
+    QList<Music *> showMusics;//显示音乐列表
     int tableId;//列表id
     bool isDir;
 
@@ -47,36 +48,28 @@ public:
     //显示所有歌曲
     Q_INVOKABLE void showAllMusic();
 
-    QList<Music *> getShowMusics() const;
-    void setShowMusics(const QList<Music *> &newShowMusics);
-
     QString getName() const;
     void setName(const QString &newName);
 
-    QList<Music *> getMusicList() const;
-    void setMusicList(const QList<Music *> &newMusicList);
-
     QList<Music *> getMusics() const;
-    void setMusics(const QList<Music *> &newMusics);
+
+    QList<Music *> getShowMusics() const;
 
 signals:
-    //插入新条目
-    void addMusic(int);
+    // 更新qml展示列表
+    void updateMusic(int start, int length);
 
-    //重建展示列表
-    void rebuildShowMusic();
+    // 删除数据
+    void clearMusic();
 
-    //更新封面
-    void cppUpdateCover();
+    // 更新封面
+    void updateCover();
 
-    void showMusicsChanged();
     void nameChanged();
-    void musicListChanged();
-    void musicsChanged();
 
 private:
     Q_PROPERTY(QString name READ getName WRITE setName NOTIFY nameChanged FINAL)
-    Q_PROPERTY(QList<Music *> showMusics READ getShowMusics WRITE setShowMusics NOTIFY showMusicsChanged FINAL)
-    Q_PROPERTY(QList<Music *> musics READ getMusics WRITE setMusics NOTIFY musicsChanged FINAL)
+    Q_PROPERTY(QList<Music *> showMusics READ getShowMusics CONSTANT)
+    Q_PROPERTY(QList<Music *> musics READ getMusics CONSTANT)
 };
 #endif // TABLE_H

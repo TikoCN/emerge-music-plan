@@ -3,12 +3,14 @@ import Tiko
 import TikoAPI
 
 TikoMenu{
-    id: rightMenu
+    id: menuMusic
     cascade: true
+    property var musicLine
+    property var music
 
     TikoMenuItem{
         text: qsTr("播放")
-        onTriggered: musicLine.play()
+        onTriggered: menuMusic.musicLine.play()
         icon.source: "qrc:/image/playBlack.png"
     }
 
@@ -26,73 +28,73 @@ TikoMenu{
 
     TikoMenuItem{
         text: qsTr("打开文件夹")
-        onTriggered: musicLine.music.openMusicDir()
+        onTriggered: menuMusic.music.openMusicDir()
         icon.source: "qrc:/image/dir.png"
     }
 
     TikoMenuItem{
         text: qsTr("打开歌词")
-        onTriggered: musicLine.music.openMusicLrc()
+        onTriggered: menuMusic.music.openMusicLrc()
     }
 
     TikoMenuItem{
         text: qsTr("打开封面")
-        onTriggered: musicLine.music.openMusicCover()
+        onTriggered: menuMusic.music.openMusicCover()
     }
 
     TikoMenuSpeacer{}
 
     TikoMenuItem{
         text: qsTr("复制 文件路径")
-        onTriggered: musicLine.music.copyMusicUrl()
+        onTriggered: menuMusic.music.copyMusicUrl()
     }
 
     TikoMenuItem{
         text: qsTr("复制 歌曲信息")
-        onTriggered: musicLine.music.copyMusicData()
+        onTriggered: menuMusic.music.copyMusicData()
     }
 
     TikoMenuSpeacer{}
 
     TikoMenuItem{
         text: qsTr("编辑音乐信息")
-        onTriggered: CoreData.editMusic(root, root.core)
+        onTriggered: CoreData.editMusic(menuMusic, menuMusic.music)
     }
 
     TikoMenu{
         title: qsTr("从网络中下载")
         TikoMenuItem{
             text: qsTr("从 网络中下载 封面")
-            onTriggered: OnLine.downCover(musicLine.music.getSearchString(), musicLine.music.url);
+            onTriggered: OnLine.downCover(menuMusic.music.getSearchString(), menuMusic.music.url);
         }
         TikoMenuItem{
             text: qsTr("从 QQ音乐 下载 封面")
-            onTriggered: OnLine.downCoverFromQQMusic(musicLine.music.getSearchString(), musicLine.music.url);
+            onTriggered: OnLine.downCoverFromQQMusic(menuMusic.music.getSearchString(), menuMusic.music.url);
         }
         TikoMenuItem{
             text: qsTr("从 网易云 下载 封面")
-            onTriggered: OnLine.downCoverFromNetEase(musicLine.music.getSearchString(), musicLine.music.url);
+            onTriggered: OnLine.downCoverFromNetEase(menuMusic.music.getSearchString(), menuMusic.music.url);
         }
         TikoMenuItem{
             text: qsTr("从 Bing搜索 下载 封面")
-            onTriggered: OnLine.downCoverFromBing(musicLine.music.getSearchString(), musicLine.music.url);
+            onTriggered: OnLine.downCoverFromBing(menuMusic.music.getSearchString(), menuMusic.music.url);
         }
         TikoMenuItem{
             text: qsTr("从 Baidu搜索 下载 封面")
-            onTriggered: OnLine.downCoverFromBaidu(musicLine.music.getSearchString(), musicLine.music.url);
+            onTriggered: OnLine.downCoverFromBaidu(menuMusic.music.getSearchString(), menuMusic.music.url);
         }
         TikoMenuSpeacer{}
         TikoMenuItem{
             text: qsTr("从 网络中下载 歌词")
-            onTriggered: OnLine.downLrc(musicLine.music.getSearchString(), musicLine.music.url);
+            onTriggered: OnLine.downLrc(menuMusic.music.getSearchString(), menuMusic.music.url);
         }
         TikoMenuItem{
             text: qsTr("从 QQ音乐 下载 歌词")
-            onTriggered: OnLine.downLrcFromQQMusic(musicLine.music.getSearchString(), musicLine.music.url);
+            onTriggered: OnLine.downLrcFromQQMusic(menuMusic.music.getSearchString(), menuMusic.music.url);
         }
         TikoMenuItem{
             text: qsTr("从 网易云 下载 歌词")
-            onTriggered: OnLine.downLrcFromNetEase(musicLine.music.getSearchString(), musicLine.music.url);
+            onTriggered: OnLine.downLrcFromNetEase(menuMusic.music.getSearchString(), menuMusic.music.url);
         }
     }
 
@@ -101,7 +103,7 @@ TikoMenu{
         Repeater{
             delegate: TikoMenuItem{
                 text: suffix
-                onTriggered: musicLine.music.setSuffix(suffix);
+                onTriggered: menuMusic.music.setSuffix(suffix);
             }
             model: ListModel{
                 ListElement{suffix: "MP3"}
@@ -131,7 +133,7 @@ TikoMenu{
             id: addMenu
             TikoMenuItem {
                 text: Core.tableList[aim].name
-                onTriggered: Core.tableList[aim].insertMusic(musicLine.music)
+                onTriggered: Core.tableList[aim].insertMusic(menuMusic.music)
             }
         }
 
@@ -157,7 +159,7 @@ TikoMenu{
             id: moveMenu
             TikoMenuItem {
                 text: Core.tableList[aim].name
-                onTriggered: Core.tableMoveMusic(musicLine.music.tableId, musicLine.music.listId, aim)
+                onTriggered: Core.tableMoveMusic(menuMusic.music.tableId, menuMusic.music.listId, aim)
             }
         }
 

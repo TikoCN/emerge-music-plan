@@ -14,4 +14,13 @@ QtObject {
             item.show()
         }
     }
+
+    function openMenuMusic(parent){
+        var component = Qt.createComponent("./view/MenuMusic.qml")
+
+        if (component.status === Component.Ready) {
+            var item = component.createObject(parent, {musicLine: parent, music: parent.music})
+            item.open()
+        }
+    }
 }
