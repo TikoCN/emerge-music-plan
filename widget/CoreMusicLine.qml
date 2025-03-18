@@ -17,7 +17,7 @@ Item {
     MouseArea{
         onClicked:(mouse)=>{
             if(mouse.button === Qt.RightButton){
-                rightMenu.popup()
+                CoreData.openMenuMusic(musicLine)
             }
             else{
                 musicLine.play()

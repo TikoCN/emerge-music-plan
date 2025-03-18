@@ -10,7 +10,8 @@ QtObject {
         var component = Qt.createComponent("./view/ToolEditMusic.qml")
 
         if (component.status === Component.Ready) {
-            var item = component.createObject(parent, {core:core})
+            var item = component.createObject(parent)
+            item.build(core, core.getLrcData())
             item.show()
         }
     }

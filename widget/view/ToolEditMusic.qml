@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Layouts
 import QtQuick.Controls
+import Widget
 import TikoAPI
 import Tiko
 
@@ -9,213 +10,89 @@ TikoFrameless {
     title: qsTr("编辑歌词")
     width: 800
     height: 600
-    property var core
 
-    TikoButtonIcon{
-        id: noEdit
-        anchors.top: parent.top
-        anchors.topMargin: 10
-        anchors.right: parent.right
-        anchors.rightMargin: 10
-        icon.source: "qrc:/image/close.png"
-        text: qsTr("关闭")
-        onClicked: toolEditMusic.close()
+    Rectangle{
+        anchors.fill: parent
+        color: TikoSeit.backdropColor
+        topLeftRadius: 10
+        topRightRadius: 10
     }
 
-    RowLayout{
+    Item{
         id: tool
-        x: 10
-        y: 10
-        spacing: 10
-        height: 30
-
-        TikoButtonIcon{
-            id:downMark
-            icon.source:"qrc:/image/downY.png"
-            text:qsTr("重新添加时间戳并跳转下一行")
-            onClicked:{
-                toolEditMusic.timeWork(0)
-                toolEditMusic.cursorNext()
-            }
-        }
-
-        TikoButtonIcon{
-            id: editMark
-            icon.source: "qrc:/image/addR.png"
-            text: qsTr("添加时间戳")
-            onClicked: toolEditMusic.timeWork(1)
-        }
-
-        TikoButtonIcon{
-            id: deleteMark
-            icon.source: "qrc:/image/minR.png"
-            text: qsTr("删除时间戳")
-            onClicked: toolEditMusic.timeWork(2)
-        }
-
-        TikoButtonIcon{
-            id: yesEdit
-            icon.source: "qrc:/image/yesR.png"
-            text: qsTr("确定编辑并保存")
-            onClicked: core.writeDataToFile(
-                           lrcShow.text,
-                           title.input.text,
-                           artist.input.text,
-                           alumb.input.text,
-                           genre.input.text,
-                           year.input.text
-                           )
-        }
-    }
-
-    RowLayout{
-        id: musicData
-        anchors.left: parent.left
-        anchors.leftMargin: 10
-        anchors.top: tool.bottom
-        anchors.topMargin: 10
-        width: parent.width - 20
-        spacing: 10
-
-        property int showW: 30
-        property int itemW: (musicData.width - 50) / 5
-
-        TikoTextInput{
-            id: title
-            show.text: qsTr("标题")
-            show.width: musicData.showW
-            implicitWidth: musicData.itemW
-            input.text: core.title
-        }
-
-        TikoTextInput{
-            id: artist
-            show.text: qsTr("歌手")
-            show.width: musicData.showW
-            implicitWidth: musicData.itemW
-            input.text: core.artist
-        }
-
-        TikoTextInput{
-            id: alumb
-            show.text: qsTr("专辑")
-            show.width: musicData.showW
-            implicitWidth: musicData.itemW
-            input.text: core.alumb
-        }
-
-        TikoTextInput{
-            id: genre
-            show.text: qsTr("流派")
-            show.width: musicData.showW
-            implicitWidth: musicData.itemW
-            input.text: core.genre
-        }
-
-        TikoTextInput{
-            id: year
-            show.text: qsTr("年份")
-            show.width: musicData.showW
-            implicitWidth: musicData.itemW
-            input.text: core.year
-        }
-    }
-
-    ScrollView{
         width: parent.width
-        anchors.top: musicData.bottom
-        anchors.bottom: parent.bottom
-        anchors.left: parent.left
-        anchors.right: parent.right
+        height: 30
         anchors.margins: 10
 
-        ScrollBar.horizontal.visible: false
-        ScrollBar.vertical: TikoBar{}
+        TikoButtonNormal{
+            id: editLrcButton
+            anchors.left: tool.left
+            text: qsTr("编辑歌词")
+            onClickLeft: toolEditMusic.stackEditLrcPage()
+            iconSource: "qrc:/image/editLrc.png"
+        }
 
-        background:Rectangle{
-            color: Setting.transparentColor
+        TikoButtonNormal{
+            anchors.left: editLrcButton.right
+            anchors.leftMargin: 10
+            text: qsTr("编辑音乐")
+            onClickLeft: toolEditMusic.stackEditMusicPage()
+            iconSource: "qrc:/image/editMusic.png"
+        }
+
+        TikoButtonIcon{
+            anchors.right: parent.right
+            icon.source: "qrc:/image/close.png"
+            text: qsTr("关闭")
+            onClicked: toolEditMusic.close()
+        }
+    }
+
+    StackView{
+        id: stackView
+        anchors.top: tool.bottom
+        anchors.left: parent.left
+        anchors.margins: 10
+        width: parent.width - 20
+        height: parent.height - tool.height
+        initialItem: editMusicPage
+
+        Rectangle{
+            anchors.fill: stackView
+            color: TikoSeit.transparentColor
             opacity: 0.05
-            radius: 10
-        }
-
-        TextEdit{
-            id: lrcShow
-            anchors.fill: parent
-            cursorVisible: true
-            inputMethodHints: Qt.ImhPreferLowercase | Qt.ImhNoPredictiveText
-            onCursorVisibleChanged: cursorVisible = true
-            text: core.getLrcData()
-
-            cursorDelegate: Rectangle{
-                height: 10
-                width: 3
-                color: Setting.themeColor
-                opacity: 0.3
-            }
+            topLeftRadius: 10
+            topRightRadius: 10
         }
     }
 
-    //替换当前行的时间戳
-    function timeWork(type){
-        var size = lrcShow.cursorPosition
-        //找到上一个 \n
-        var lrcList = lrcShow.text.split("\n") //行分割
-        var aimLine = 0
-        for(let i =0; i<lrcList.length; i++){
-            //长度超过本行，下一行
-            if(size > lrcList[i].length){
-                size -= lrcList[i].length + 1
-            }
-            else{//找到目标行退出
-                aimLine = i
-                break
-            }
-        }
+    EditMusicPage{
+        id: editMusicPage
+        visible: false
+    }
 
-        var line = lrcList[aimLine]//当前行内容
-        var re = /\[([^\]]*)\]/;//正则表达式
-        var time = "["+MediaPlayer.getTimeString()+"]"
-        var newLine = line
-        switch(type){
-        case 0://替换时间戳
-            newLine = line.replace(re, time)
-            break
-        case 1:
-            newLine = time + line
-            break
-
-        case 2:
-            newLine = line.replace(re, "")
-            if(newLine === "") newLine = " "
-            break
-        }
-        //替换到文本中
-        lrcShow.text = lrcShow.text.replace(line, newLine)
-
-        lrcList = lrcShow.text.split("\n") //行分割
-        var aimPos = 0
-        for(let j=0; j<aimLine; j++){
-            aimPos += lrcList[j].length + 1
-        }
-        lrcShow.cursorPosition = aimPos//光标复位
+    EditLrcPage{
+        id: editLrcPage
+        visible: false
     }
 
 
-    //跳到下一行
-    function cursorNext(){
-        for(var i=lrcShow.cursorPosition; i<lrcShow.text.length; i++){
-            if(lrcShow.text[i] === "\n"){
-                lrcShow.cursorPosition = i+1
-                break
-            }
+    // 切换到编辑音乐页
+    function stackEditMusicPage(){
+        if(stackView.currentItem != editMusicPage){
+            stackView.replace(editMusicPage)
         }
     }
 
-    //获得时间戳的文本表示
-    function getDateString(n){
-        var ms = n % 1000
-        var s = n / 1000 % 60
-        var m = n / 1000 / 60
-        return "[" + m.toString() +":"+ s.toString() +"."+ ms.toString() + "]"
+    // 切换到编辑歌词页
+    function stackEditLrcPage(){
+        if(stackView.currentItem != editLrcPage){
+            stackView.replace(editLrcPage)
+        }
+    }
+
+    function build(music, lrc){
+        editMusicPage.init(music)
+        editLrcPage.init(lrc)
     }
 }

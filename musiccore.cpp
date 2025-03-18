@@ -1,5 +1,4 @@
 #include "musiccore.h"
-#include "setting.h"
 #include "hosttime.h"
 
 MusicCore::MusicCore(QObject *parent)

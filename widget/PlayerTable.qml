@@ -249,24 +249,36 @@ Item {
             musicModel.clear()
         }
 
-        function onUpdateMusic(){
-            for(var i=0; i<size; i++){
-                var music = Core.tableList[playerTable.tableId].showMusics.length - size + i
-                musicModel.append({
-                                      musicListId: music,
-                                      table: playerTable.tableId,
-                                      musicCore: Core.tableList[playerTable.tableId].showMusics[music]
-                                  })
-            }
+        function onUpdateMusic(start, length){
+            playerTable.updateMusic(start, length)
         }
 
         function onUpdateCover(){
-            //调整列表展示信息
-            if(Core.tableList[tableId].showMusics.length !== 0){
-                var coorId = Core.tableList[playerTable.tableId].getLastCoreId()
-                playerTable.showCover = "image://cover/file:" + coorId.toString()
-                playerTable.allMusic = Core.tableList[playerTable.tableId].musics.length
-            }
+            playerTable.updateCover()
+        }
+    }
+
+    Component.onCompleted: {
+        playerTable.updateCover()
+        playerTable.updateMusic(0, Core.tableList[playerTable.tableId].showMusics.length)
+    }
+
+    function updateCover(){
+        //调整列表展示信息
+        if(Core.tableList[tableId].showMusics.length !== 0){
+            var coorId = Core.tableList[playerTable.tableId].getLastCoreId()
+            playerTable.showCover = "image://cover/file:" + coorId.toString()
+            playerTable.allMusic = Core.tableList[playerTable.tableId].musics.length
+        }
+    }
+
+    function updateMusic(start, length){
+        for(var i=start; i<start+length; i++){
+            musicModel.append({
+                                  musicListId: i,
+                                  table: playerTable.tableId,
+                                  musicCore: Core.tableList[playerTable.tableId].showMusics[i]
+                              })
         }
     }
 }

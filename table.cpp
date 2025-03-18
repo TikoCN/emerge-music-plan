@@ -12,7 +12,6 @@ Table::Table(QList<Music *> musicList, QObject *parent)
     :QObject(parent)
 {
     insertMusic(musicList);
-    emit updateCover();
 }
 
 void Table::copy(Table* a)

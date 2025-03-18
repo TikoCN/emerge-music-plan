@@ -1,4 +1,5 @@
 import QtQuick
+import Widget
 import Tiko
 import TikoAPI
 
@@ -147,7 +148,7 @@ TikoMenu{
 
     TikoMenu{
         title: qsTr("移动到")
-        icon.source: "qrc:/image/addR.png"
+        icon.source: "qrc:/image/move.png"
 
         Repeater{
             delegate: moveMenu

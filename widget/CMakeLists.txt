@@ -31,4 +31,6 @@ qt_add_qml_module(WidgetLib
     RESOURCES ui.qrc
     QML_FILES view/MenuMusic.qml
     QML_FILES view/MenuTable.qml
+    QML_FILES view/toolEditMusicPage/EditMusicPage.qml
+    QML_FILES view/toolEditMusicPage/EditLrcPage.qml
 )
