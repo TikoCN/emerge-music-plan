@@ -76,7 +76,7 @@ Item {
             //显示所有歌曲列表
             TikoButtonNormal{
                 Layout.minimumWidth: 70
-                onClickLeft: MediaPlayer.tableList[tableId].showAllMusic()
+                onClickLeft: Core.tableList[playerTable.tableId].showAllMusic()
                 text: qsTr("歌曲") + allMusic.toString()
                 iconSource: "qrc:/image/music.png"
             }
@@ -84,7 +84,7 @@ Item {
             //显示喜爱歌曲列表
             TikoButtonNormal{
                 Layout.minimumWidth: 70
-                onClickLeft: MediaPlayer.tableList[tableId].showLove()
+                onClickLeft: Core.tableList[playerTable.tableId].showLove()
                 text: qsTr("喜爱")
                 iconSource: "qrc:/image/love.png"
             }
@@ -92,66 +92,9 @@ Item {
             //排序
             TikoButtonNormal{
                 Layout.minimumWidth: 70
-                onClickLeft: sortMenu.open()
+                onClickLeft: CoreData.openMenuTableSort(this, playerTable.tableId)
                 text: qsTr("排序")
                 iconSource: "qrc:/image/sort.png"
-
-                TikoMenu{
-                    id: sortMenu
-                    width: parent.width
-                    y: parent.height
-
-                    TikoMenuItem{
-                        text: qsTr("标题升序");
-                        onTriggered: MediaPlayer.tableList[tableId].sortMusic(0);
-                        icon.source: "qrc:/image/asc.png"
-                    }
-                    TikoMenuItem{
-                        text: qsTr("标题降序");
-                        onTriggered: MediaPlayer.tableList[tableId].sortMusic(1);
-                        icon.source: "qrc:/image/desc.png"
-                    }
-                    TikoMenuItem{
-                        text: qsTr("歌手升序");
-                        onTriggered: MediaPlayer.tableList[tableId].sortMusic(2);
-                        icon.source: "qrc:/image/asc.png"
-                    }
-                    TikoMenuItem{
-                        text: qsTr("歌手降序");
-                        onTriggered: MediaPlayer.tableList[tableId].sortMusic(3);
-                        icon.source: "qrc:/image/desc.png"
-                    }
-                    TikoMenuItem{
-                        text: qsTr("专辑升序");
-                        onTriggered: MediaPlayer.tableList[tableId].sortMusic(4);
-                        icon.source: "qrc:/image/asc.png"
-                    }
-                    TikoMenuItem{
-                        text: qsTr("专辑降序");
-                        onTriggered: MediaPlayer.tableList[tableId].sortMusic(5);
-                        icon.source: "qrc:/image/desc.png"
-                    }
-                    TikoMenuItem{
-                        text: qsTr("时长升序");
-                        onTriggered: MediaPlayer.tableList[tableId].sortMusic(6);
-                        icon.source: "qrc:/image/asc.png"
-                    }
-                    TikoMenuItem{
-                        text: qsTr("时长降序");
-                        onTriggered: MediaPlayer.tableList[tableId].sortMusic(7);
-                        icon.source: "qrc:/image/desc.png"
-                    }
-                    TikoMenuItem{
-                        text: qsTr("修改时间升序");
-                        onTriggered: MediaPlayer.tableList[tableId].sortMusic(8);
-                        icon.source: "qrc:/image/asc.png"
-                    }
-                    TikoMenuItem{
-                        text: qsTr("修改时间降序");
-                        onTriggered: MediaPlayer.tableList[tableId].sortMusic(9);
-                        icon.source: "qrc:/image/desc.png"
-                    }
-                }
             }
 
             //搜索

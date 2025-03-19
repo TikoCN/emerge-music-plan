@@ -6,42 +6,35 @@ Item{
     id: editMusicPage
     visible: false
 
-    ColumnLayout{
+    Column{
         id: musicTool
         width: 150
     }
 
-    ColumnLayout{
+    Column{
         id: musicData
         anchors.left: musicTool.right
         width: editMusicPage.width - musicTool.width
         spacing: 10
 
-        property int showW: 30
+        property int showW: 200
 
-        TikoTextInput{
-            id: title
-            show.text: qsTr("标题")
-            show.width: musicData.showW
-        }
+        Repeater{
+            model: ListModel{id: keyModel}
 
-        TikoTextInput{
-            id: artist
-            show.text: qsTr("歌手")
-            show.width: musicData.showW
-        }
-
-        TikoTextInput{
-            id: alumb
-            show.text: qsTr("专辑")
-            show.width: musicData.showW
+            delegate: TikoTextInput{
+                width: musicData.width
+                show.text: key
+                show.width: musicData.showW
+                input.text: value
+            }
         }
     }
 
-
     function init(music){
-        title.input.text = music.title
-        artist.input.text = music.artist
-        alumb.input.text = music.alumb
+        var dict = music.getAllKey()
+        for(var i=0; i<dict.length; i++){
+            keyModel.append({key: dict[i].key, value: dict[i].value})
+        }
     }
 }

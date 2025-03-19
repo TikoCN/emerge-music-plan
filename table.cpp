@@ -12,6 +12,7 @@ Table::Table(QList<Music *> musicList, QObject *parent)
     :QObject(parent)
 {
     insertMusic(musicList);
+    sort = SORT_TITTLE_ASC;
 }
 
 void Table::copy(Table* a)

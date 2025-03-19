@@ -6,6 +6,7 @@ import TikoAPI
 TikoMenu{
     id: menuMusic
     cascade: true
+    onClosed: menuMusic.destroy()
     property var musicLine
     property var music
 
@@ -59,7 +60,7 @@ TikoMenu{
 
     TikoMenuItem{
         text: qsTr("编辑音乐信息")
-        onTriggered: CoreData.editMusic(menuMusic, menuMusic.music)
+        onTriggered: CoreData.editMusic(menuMusic.musicLine, menuMusic.music)
     }
 
     TikoMenu{

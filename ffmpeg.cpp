@@ -688,3 +688,60 @@ QList<AVFrame *> FFmpeg::changeFrame(AVFrame *swrFrm)
     }
     return outFrmList;
 }
+
+bool FFmpeg::getDict(QStringList *keys, QStringList *values, QString url)
+{
+    try{
+        AVFormatContext *inFmt = getInputFormatContext(url);
+        AVDictionaryEntry* entry = nullptr;
+        while ((entry = av_dict_get(inFmt->metadata, "", entry, AV_DICT_IGNORE_SUFFIX))) {
+            QString key(entry->key);
+            QString value(entry->value);
+            keys->append(key);
+            values->append(value);
+        }
+    }
+    catch(QString e){
+        logError(e);
+        return false;
+    }
+    return true;
+}
+
+bool FFmpeg::writeDict(QStringList key, QStringList value, QString inUrl, QString outUrl)
+{
+    try{
+        AVFormatContext *inFmt = getInputFormatContext(inUrl);
+        AVFormatContext *outFmt = getOutFormatContext(outUrl);
+
+        for(int i=0; i<inFmt->nb_streams; i++){
+            AVStream *stream = avformat_new_stream(outFmt, nullptr);
+            avcodec_parameters_copy(stream->codecpar, inFmt->streams[i]->codecpar);
+        }
+
+        for(int i=0; i<key.size(); i++){
+            av_dict_set(&outFmt->metadata, key[i].toUtf8(), value[i].toUtf8(), 1);
+        }
+
+        r = avformat_write_header(outFmt, nullptr);
+        if(r<0){
+            throw QString(outUrl + "写入文件头失败");
+        }
+
+        AVPacket *pkt = av_packet_alloc();
+        while(av_read_frame(inFmt, pkt)){
+            av_interleaved_write_frame(outFmt, pkt);
+            av_packet_unref(pkt);
+        }
+
+        r = av_write_trailer(outFmt);
+        if(r<0){
+            throw QString(outUrl + "写入文件头失败");
+        }
+    }
+    catch(QString e){
+        logError(e);
+        return false;
+    }
+    return true;
+}

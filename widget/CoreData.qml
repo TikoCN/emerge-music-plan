@@ -1,5 +1,6 @@
 pragma Singleton
 import QtQuick
+import Widget
 
 QtObject {
     property double timeWidth: 0.0
@@ -7,7 +8,7 @@ QtObject {
     property double playNumberWidth: 0.0
 
     function editMusic(parent, core){
-        var component = Qt.createComponent("./view/ToolEditMusic.qml")
+        var component = Qt.createComponent("./view/toolEditMusicPage/ToolEditMusic.qml")
 
         if (component.status === Component.Ready) {
             var item = component.createObject(parent)
@@ -17,10 +18,20 @@ QtObject {
     }
 
     function openMenuMusic(parent){
-        var component = Qt.createComponent("./view/MenuMusic.qml")
+        var component = Qt.createComponent("./menu/MenuMusic.qml")
 
         if (component.status === Component.Ready) {
             var item = component.createObject(parent, {musicLine: parent, music: parent.music})
+            item.open()
+        }
+    }
+
+    // 打开列表排序菜单
+    function openMenuTableSort(parent, table){
+        var component = Qt.createComponent("./menu/MenuTableSort.qml")
+
+        if (component.status === Component.Ready) {
+            var item = component.createObject(parent, {table: table})
             item.open()
         }
     }

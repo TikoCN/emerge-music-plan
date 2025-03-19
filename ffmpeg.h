@@ -62,6 +62,12 @@ public:
 
     //加载变化输出帧
     QList<AVFrame *>changeFrame(AVFrame *swrFrm);
+
+    //写入标签
+    bool writeDict(QStringList key, QStringList value, QString inUrl, QString outUrl);
+
+    //得到标签
+    bool getDict(QStringList *keys, QStringList *values, QString url);
 };
 
 #endif // FFMPEG_H

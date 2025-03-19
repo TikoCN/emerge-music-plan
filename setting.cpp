@@ -123,47 +123,6 @@ void Setting::writeData()
     ini->endGroup();
     ini->sync();//写入磁盘
     delete ini;
-
-    QFile dataFile(QDir::currentPath() + "/data.json");
-    QJsonObject writeData;
-    if(dataFile.open(QIODevice::Text | QIODevice::WriteOnly)){
-        //获得音乐核心json
-        QJsonObject coreJson;
-        QStringList nameList;
-        for(int i=0; i<core->coreList.size(); i++){
-            nameList.append(core->coreList[i]->getKey());
-        }
-        coreJson.insert("size", core->coreList.size());
-        coreJson.insert("musicKeyList", nameList.join("||"));
-
-        //获得列表json
-        QJsonObject tableJson;
-        for(int i=0; i<core->tableList.size(); i++){
-            QJsonObject table;
-            table.insert("sort", core->tableList[i]->getSort());
-            table.insert("isDir", core->tableList[i]->isDir);
-            table.insert("url", core->tableList[i]->url);
-            table.insert("name", core->tableList[i]->name);
-            table.insert("musicNumber", core->tableList[i]->musics.size());
-            //插入列表的信息
-            if(!core->tableList[i]->isDir){
-                QStringList coreKey;
-                for(int j=0; j<core->tableList[i]->musics.size(); j++){
-                    coreKey.append(QString::number(core->tableList[i]->musics[j]->coreId));
-                }
-                table.insert("music", coreKey.join("||"));
-            }
-
-            tableJson.insert(QString::number(i), table);
-        }
-        tableJson.insert("size", core->tableList.size());
-
-        writeData.insert("core", coreJson);
-        writeData.insert("table", tableJson);
-        QJsonDocument doc(writeData);
-        dataFile.write(doc.toJson(QJsonDocument::Compact));
-    }
-    dataFile.close();
 }
 
 Setting::Setting()

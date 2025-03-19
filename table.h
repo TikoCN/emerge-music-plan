@@ -9,11 +9,14 @@ class Table : public QObject //播放列表
     Q_OBJECT
 public:
     explicit Table(QList<Music *> musicList, QObject *parent = nullptr);
-    enum SORT_TYPE{SORT_TITTLE_ASC, SORT_TITTLE_DESC,
-                     SORT_ATRIST_ASC, SORT_ATRIST_DESC,
-                     SORT_ALUMB_ASC, SORT_ALUMB_DESC,
-                     SORT_NED_TIME_ASC, SORT_NED_TIME_DESC,
-                     SORT_LAST_EDIT_TIME_ASC, SORT_LAST_EDIT_TIME_DESC}sort;
+    enum SORT_TYPE {
+        SORT_TITTLE_ASC, SORT_TITTLE_DESC,
+        SORT_ATRIST_ASC, SORT_ATRIST_DESC,
+        SORT_ALUMB_ASC, SORT_ALUMB_DESC,
+        SORT_NED_TIME_ASC, SORT_NED_TIME_DESC,
+        SORT_LAST_EDIT_TIME_ASC, SORT_LAST_EDIT_TIME_DESC,
+        SORT_LEVEL_ASC, SORT_LEVEL_DESC
+    } sort;
 
     QString name;//列表名
     QString url;//文件夹路径
@@ -27,7 +30,7 @@ public:
 
     //排序
     Q_INVOKABLE void sortMusic(int type);
-    int getSort();
+    Q_INVOKABLE int getSort();
 
     //搜索
     Q_INVOKABLE void searchMusic(QString search);

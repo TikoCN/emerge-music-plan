@@ -21,16 +21,17 @@ qt_add_qml_module(WidgetLib
     view/PageMain.qml
     view/PageSeit.qml
     view/ToolDeskLrc.qml
-    view/ToolEditMusic.qml
+    view/toolEditMusicPage/ToolEditMusic.qml
     view/ViewBottomBar.qml
     view/ViewLeftBar.qml
     view/ViewMain.qml
     view/ViewPlayingTable.qml
     view/mainStyle/MainStyle1.qml
     view/mainStyle/MainStyle2.qml
+    menu/MenuTableSort.qml
+    menu/MenuMusic.qml
+    menu/MenuTable.qml
+    view/toolEditMusicPage/EditMusicPage.qml
+    view/toolEditMusicPage/EditLrcPage.qml
     RESOURCES ui.qrc
-    QML_FILES view/MenuMusic.qml
-    QML_FILES view/MenuTable.qml
-    QML_FILES view/toolEditMusicPage/EditMusicPage.qml
-    QML_FILES view/toolEditMusicPage/EditLrcPage.qml
 )

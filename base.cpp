@@ -1,10 +1,34 @@
 #include "base.h"
 #include <QFile>
+#include <QDir>
 #include <QTextStream>
 #include <QDesktopServices>
 #include <QUrl>
 #include <QClipboard>
 #include <QGuiApplication>
+
+void Base::replaceFile(QString inUrl, QString outUrl)
+{
+    bool r = false;
+    QFile file(inUrl);
+    if(file.exists()){
+        r = file.remove();
+        if(!r){
+            sendMessage(inUrl + tr("无法删除"), 1);
+        }
+        return;
+    }
+    file.close();
+
+    QFile out(outUrl);
+    if(out.exists()){
+        r = out.rename(inUrl);
+        if(!r){
+            sendMessage(outUrl + tr("重命名"), 1);
+        }
+    }
+    out.close();
+}
 
 QString Base::readFileText(QString url)
 {

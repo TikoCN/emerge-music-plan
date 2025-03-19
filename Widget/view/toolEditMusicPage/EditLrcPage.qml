@@ -9,6 +9,7 @@ Item{
     visible: false
     property real lineStart: 0
     property real wordStart: 0
+    property string lrcUrl: ""
 
     Column {
         id: editLrctool
@@ -19,33 +20,35 @@ Item{
             width: 150
             iconSource: "qrc:/image/lineStart.png"
             text: qsTr("行开始")
-            onClickLeft: editLrcPage.lineStart = MediaPlayer.player.position
+            onClick: editLrcPage.lineStart = MediaPlayer.player.position
         }
 
         TikoButtonNormal{
             width: 150
             iconSource: "qrc:/image/lineEnd.png"
             text: qsTr("行结束")
+            onClick: editLrcPage.hlrcInsertLineTime()
         }
 
         TikoButtonNormal{
             width: 150
             iconSource: "qrc:/image/wordStart.png"
             text: qsTr("词开始")
-            onClickLeft: editLrcPage.wordStart = MediaPlayer.player.position
+            onClick: editLrcPage.wordStart = MediaPlayer.player.position
         }
 
         TikoButtonNormal{
             width: 150
             iconSource: "qrc:/image/wordEnd.png"
             text: qsTr("词结束")
+            onClick: editLrcPage.hlrcInsertWordTime()
         }
 
         TikoButtonNormal{
             width: 150
             iconSource:"qrc:/image/lineReplaceTime.png"
             text:qsTr("修正时间戳")
-            onClickLeft: {
+            onClick: {
                 editLrcPage.timeWork(0)
                 editLrcPage.cursorNext()
             }
@@ -55,34 +58,33 @@ Item{
             width: 150
             iconSource: "qrc:/image/lineAddTime.png"
             text: qsTr("添加时间戳")
-            onClickLeft: editLrcPage.timeWork(1)
+            onClick: editLrcPage.timeWork(1)
         }
 
         TikoButtonNormal{
             width: 150
             iconSource: "qrc:/image/lineDeleteTime.png"
             text: qsTr("删除时间戳")
-            onClickLeft: editLrcPage.timeWork(2)
+            onClick: editLrcPage.timeWork(2)
         }
 
         TikoButtonNormal{
             width: 150
             iconSource: "qrc:/image/yes.png"
             text: qsTr("保存")
-            onClickLeft: core.writeDataToFile(lrcShow.text)
+            onClick: Base.writeFileText(editLrcPage.lrcUrl, lrcShow.text)
         }
     }
 
     ScrollView {
         id: lrcShowSpace
         anchors.left: editLrctool.right
-        width: editLrcPage.width - editLrctool.width
+        width: parent.width - editLrctool.width
+        height: parent.height
         anchors.margins: 10
 
         ScrollBar.horizontal.visible: false
-        ScrollBar.vertical: TikoBar {
-            parent: lrcShowSpace
-        }
+        ScrollBar.vertical: TikoBar {parent: lrcShowSpace}
 
         background: Rectangle{
             color: Setting.transparentColor
@@ -90,51 +92,67 @@ Item{
             radius: 10
         }
 
-        TextEdit{
-            id: lrcShow
-            anchors.fill: parent
-            cursorVisible: true
-            inputMethodHints: Qt.ImhPreferLowercase | Qt.ImhNoPredictiveText
-            onCursorVisibleChanged: lrcShow.cursorVisible = true
-            font.family: Setting.mainFont.family
-            font.pixelSize: Setting.mainFont.pixelSize + lrcShow.exFontSize
+        Item{
+            id: showItem
+            implicitHeight: lrcShow.height
+            width: lrcShowSpace.width
+            TextEdit{
+                id: lrcShow
+                width: showItem.width
+                cursorVisible: true
+                inputMethodHints: Qt.ImhPreferLowercase | Qt.ImhNoPredictiveText
+                onCursorVisibleChanged: lrcShow.cursorVisible = true
+                font.family: Setting.mainFont.family
+                font.pixelSize: Setting.mainFont.pixelSize + lrcShow.exFontSize
 
-            property int exFontSize: 5
+                property int exFontSize: 5
 
-            cursorDelegate: Rectangle{
-                height: 10
-                width: 3
-                color: Setting.themeColor
-                opacity: 0.3
+                cursorDelegate: Rectangle{
+                    height: 10
+                    width: 3
+                    color: Setting.themeColor
+                    opacity: 0.3
+                }
             }
         }
     }
 
-    function init(lrc){
+    function init(lrc, lrcUrl){
         lrcShow.text = lrc
+        editLrcPage.lrcUrl = lrcUrl
     }
 
-    function insertString(input){
-        var pos = lrcShow.cursorPosition
-        var lrc = lrcShow.text.split("\n") //行分割
+    function insertString(pos, input){
+        var lrc = lrcShow.text //行分割
         var text = ""
         for(var i=0; i<lrc.length; i++){
-            text += lrc[i]
-
             if(i === pos){
                 text += input
             }
+            text += lrc[i]
         }
         lrcShow.text = text
-        lrcShow.cursorPosition = pos + input.length
+        var aimPos = pos + input.length + 1
+        if(text.length > aimPos && text[aimPos] === "\n"){
+            aimPos++
+        }
+
+        if(text.length > aimPos){
+            lrcShow.cursorPosition = aimPos
+        }
+        else{
+            lrcShow.cursorPosition = aimPos - 1
+        }
     }
 
     function hlrcInsertLineTime(){
-
+        var time = "["+ editLrcPage.lineStart.toString() +","+ MediaPlayer.player.position.toString() +"]"
+        insertString(lrcShow.cursorPosition, time)
     }
 
     function hlrcInsertWordTime(){
-
+        var time = "("+ editLrcPage.wordStart.toString() +","+ MediaPlayer.player.position.toString() +")"
+        insertString(lrcShow.cursorPosition, time)
     }
 
     //替换当前行的时间戳

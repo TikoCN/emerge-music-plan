@@ -1,9 +1,9 @@
 import QtQuick
 import QtQuick.Layouts
 import QtQuick.Controls
-import Widget
 import TikoAPI
 import Tiko
+import Widget
 
 TikoFrameless {
     id: toolEditMusic
@@ -20,9 +20,11 @@ TikoFrameless {
 
     Item{
         id: tool
-        width: parent.width
-        height: 30
+        width: parent.width - 20
+        height: 50
         anchors.margins: 10
+        anchors.top: parent.top
+        anchors.left: parent.left
 
         TikoButtonNormal{
             id: editLrcButton
@@ -44,7 +46,7 @@ TikoFrameless {
             anchors.right: parent.right
             icon.source: "qrc:/image/close.png"
             text: qsTr("关闭")
-            onClicked: toolEditMusic.close()
+            onClicked: toolEditMusic.destroy()
         }
     }
 
@@ -52,18 +54,9 @@ TikoFrameless {
         id: stackView
         anchors.top: tool.bottom
         anchors.left: parent.left
-        anchors.margins: 10
-        width: parent.width - 20
-        height: parent.height - tool.height
-        initialItem: editMusicPage
-
-        Rectangle{
-            anchors.fill: stackView
-            color: TikoSeit.transparentColor
-            opacity: 0.05
-            topLeftRadius: 10
-            topRightRadius: 10
-        }
+        anchors.margins: 20
+        width: parent.width - 40
+        height: parent.height - tool.height - 40
     }
 
     EditMusicPage{
@@ -74,6 +67,16 @@ TikoFrameless {
     EditLrcPage{
         id: editLrcPage
         visible: false
+    }
+
+    Rectangle{
+        anchors.centerIn: stackView
+        width: parent.width - 20
+        height: parent.height - tool.height - 20
+        color: TikoSeit.transparentColor
+        opacity: 0.05
+        topLeftRadius: 10
+        topRightRadius: 10
     }
 
 
@@ -93,6 +96,7 @@ TikoFrameless {
 
     function build(music, lrc){
         editMusicPage.init(music)
-        editLrcPage.init(lrc)
+        editLrcPage.init(lrc, music.getLrcUrl())
+        stackEditMusicPage()
     }
 }

@@ -19,9 +19,8 @@ public:
         }
     }
 
-
     QList<Table *> tableList;//播放列表
-    QList<Music *> coreList;//音乐核心列表
+    QList<Music *> musicList;//音乐核心列表
 
     QList<Music *> getMusicList() const;
 
@@ -29,6 +28,9 @@ public:
 
     // 清楚数据
     void clearDate();
+
+    // 写入列表,歌曲数据
+    void writeJsonData();
 
     //获得音乐核心
     void getMusicCore(QList<Music *>musicList);

@@ -16,8 +16,8 @@ void MusicCore::getMusicCore(QList<Music*> musicList)
     QList<QList<Music *>> tableMusic;
     //生成播放列表和插入音乐
     for(int i=0; i< musicList.size(); i++){
-        musicList[i]->coreId = coreList.size();
-        coreList.append(musicList[i]);
+        musicList[i]->coreId = this->musicList.size();
+        this->musicList.append(musicList[i]);
 
         QString dir = musicList[i]->getParentDir();
         int aimTableId = dirs.indexOf(dir);
@@ -27,7 +27,6 @@ void MusicCore::getMusicCore(QList<Music*> musicList)
             QList<Music *> musics;
             tableMusic.append(musics);
         }
-
         tableMusic[aimTableId].append(musicList[i]);
     }
 
@@ -93,9 +92,28 @@ void MusicCore::clearDate()
         delete tableList.takeFirst();
     }
 
-    while (!coreList.empty()) {
-        delete coreList.takeFirst();
+    while (!musicList.empty()) {
+        delete musicList.takeFirst();
     }
+}
+
+void MusicCore::writeJsonData()
+{
+    QFile dataFile(QDir::currentPath() + "/data.json");
+    // 打开文件失败，退出读写
+    if(！dataFile.open(QIODevice::Text | QIODevice::WriteOnly)){
+        dataFile.close();
+        return;
+    }
+    QJsonObject writeData;
+    for (int i = 0; i < musicList.size(); ++i) {
+        QJsonObject musicJson;
+    }
+
+    // 执行写入文件
+    QJsonDocument doc(writeData);
+    dataFile.write(doc.toJson(QJsonDocument::Compact));
+    dataFile.close();
 }
 
 QList<Table *> MusicCore::getTableList() const

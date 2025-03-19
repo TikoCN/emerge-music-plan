@@ -16,8 +16,8 @@ qt_add_executable(appmusicPlay
 )
 
 qt_policy(SET QTP0004 NEW)
-add_subdirectory(Tiko)
-add_subdirectory(Widget)
+add_subdirectory(tiko)
+add_subdirectory(widget)
 
 qt_add_qml_module(appmusicPlay
     URI musicPlay
@@ -33,9 +33,9 @@ qt_add_qml_module(appmusicPlay
     music.h music.cpp
     online.h online.cpp
     ffmpeg.h ffmpeg.cpp
-    SOURCES base.h base.cpp
-    SOURCES
-    SOURCES musiccore.h musiccore.cpp
+    base.h base.cpp
+    musiccore.h musiccore.cpp
+    base/keyvaluepair.h base/keyvaluepair.cpp
 )
 
 # link fftw3

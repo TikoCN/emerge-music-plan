@@ -1,5 +1,6 @@
 import QtQuick.Controls.Basic
 import QtQuick
+import Tiko
 
 ScrollBar {
     id: root
@@ -12,7 +13,6 @@ ScrollBar {
 
     background: Rectangle {  // 背景
         id: background
-        anchors.fill: parent
         color: root.active ? TikoSeit.themeColor : TikoSeit.backdropColor
         opacity: 0.3
         radius: 4

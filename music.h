@@ -2,6 +2,7 @@
 #define MUSIC_H
 
 #include "lrcdata.h"
+#include "base/keyvaluepair.h"
 #include <QObject>
 #include <QFileInfo>
 
@@ -24,7 +25,10 @@ public:
     Music();
 
     //将数据写入文件
-    Q_INVOKABLE void writeDataToFile(QString lrc, QString title, QString artist, QString alumb, QString genre, QString year);
+    Q_INVOKABLE void writeDataToFile(QStringList key, QStringList value);
+
+    // 读取所有标签
+    Q_INVOKABLE QList<KeyValuePair *> getAllKey();
 
     //来自文件
     void fromFileInfo(QFileInfo info);
@@ -32,7 +36,7 @@ public:
     //获得封面路径
     QString getCoverUrl();
 
-    QString getLrcUrl();
+    Q_INVOKABLE QString getLrcUrl();
 
     //获得歌词文件路径
     QList<LrcData *> getLyricsData();

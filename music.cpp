@@ -14,26 +14,30 @@ Music::Music() {
     url = "";
 }
 
-void Music::writeDataToFile(QString lrc, QString title, QString artist, QString alumb, QString genre, QString year)
+void Music::writeDataToFile(QStringList key, QStringList value)
 {
-    Base *base = Base::getInstance();
-    QString lrcUrl = getLrcUrl();
-    bool r = base->writeFileText(lrcUrl, lrc);
-    if(r){
-        emit base->sendMessage(lrcUrl + QObject::tr(" 修改歌词文件成功"), 0);
+    QString baseName = getBaseName();
+    QString newUrl = url.replace(baseName, "new"+baseName);
+    FFmpeg ff;
+    if(ff.writeDict(key, value, url, newUrl)){
+        Base::getInstance()->writeFileText(url, newUrl);
     }
     else{
-        emit base->sendMessage(lrcUrl + QObject::tr(" 修改歌词文件失败"), 1);
+        Base::getInstance()->sendMessage(tr("写入歌曲信息失败"), 1);
     }
+}
 
-    ExtraLibrary ex;
-    r = ex.setMedia(url, title, artist, alumb, genre, year);
-    if(r){
-        emit base->sendMessage(url + QObject::tr(" 修改音乐文件属性成功"), 0);
+QList<KeyValuePair *> Music::getAllKey()
+{
+    QList<KeyValuePair *> dict;
+    QStringList key, value;
+    FFmpeg ff;
+    ff.getDict(&key, &value, url);
+    for (int i = 0; i < key.size(); ++i) {
+        KeyValuePair *data = new KeyValuePair(key[i], value[i]);
+        dict.append(data);
     }
-    else{
-        emit base->sendMessage(url + QObject::tr(" 修改音乐文件属性失败"), 1);
-    }
+    return dict;
 }
 
 void Music::fromFileInfo(QFileInfo info)

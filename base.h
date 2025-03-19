@@ -20,6 +20,9 @@ public:
         }
     }
 
+    // 替换文件
+    void replaceFile(QString inUrl, QString outUrl);
+
     //读文件信息
     QString readFileText(QString url);
 
