@@ -1,5 +1,8 @@
 #include "musiccore.h"
 #include "hosttime.h"
+#include <QDir>
+#include <QJsonDocument>
+#include <QJsonObject>
 
 MusicCore::MusicCore(QObject *parent)
     : QObject{parent}
@@ -10,41 +13,23 @@ MusicCore::MusicCore(QObject *parent)
 /*
  * 获得音乐核心
  */
-void MusicCore::getMusicCore(QList<Music*> musicList)
+void MusicCore::getMusicCore(QList<Music *>musicList, QList<Table *> tableList)
 {
-    QStringList dirs;//本地文件列表
-    QList<QList<Music *>> tableMusic;
-    //生成播放列表和插入音乐
-    for(int i=0; i< musicList.size(); i++){
-        musicList[i]->coreId = this->musicList.size();
-        this->musicList.append(musicList[i]);
-
-        QString dir = musicList[i]->getParentDir();
-        int aimTableId = dirs.indexOf(dir);
-        if(aimTableId == -1){
-            dirs.append(dir);
-            aimTableId = dirs.size() - 1;
-            QList<Music *> musics;
-            tableMusic.append(musics);
-        }
-        tableMusic[aimTableId].append(musicList[i]);
-    }
-
-    //生成本地列表
-    for(int i=0; i<dirs.size(); i++){
-        appendTable(dirs[i], tableMusic[i], true);
-    }
+    this->musicList = musicList;
+    this->tableList = tableList;
 
     //清空数据
     HostTime *host = HostTime::getInstance();
 
     host->clearData();
+
+    emit finishInit();
 }
 
 /*
  * 新建播放列表
  */
-void MusicCore::appendTable(QString tableName, QList<Music *> musicList, bool isDir)
+void MusicCore::appendTable(QString tableName, bool isDir)
 {
     //判断该列表是否已经存在
     if(!isDir){
@@ -55,7 +40,7 @@ void MusicCore::appendTable(QString tableName, QList<Music *> musicList, bool is
         }
     }
 
-    Table* table = new Table(musicList);
+    Table* table = new Table();
     table->name = tableName;
     table->tableId = tableList.size();
     table->isDir = isDir;
@@ -81,9 +66,9 @@ void MusicCore::tableMoveMusic(int orgTableId, int musicId, int aimTalbeId)
 }
 
 
-QList<Music *> MusicCore::getCoreList() const
+QList<Music *> MusicCore::getMusicList() const
 {
-    return coreList;
+    return musicList;
 }
 
 void MusicCore::clearDate()
@@ -101,19 +86,68 @@ void MusicCore::writeJsonData()
 {
     QFile dataFile(QDir::currentPath() + "/data.json");
     // 打开文件失败，退出读写
-    if(！dataFile.open(QIODevice::Text | QIODevice::WriteOnly)){
+    if(!dataFile.open(QIODevice::Text | QIODevice::WriteOnly)){
         dataFile.close();
         return;
     }
     QJsonObject writeData;
+
+    // 歌曲信息
+    QJsonObject musicJson;
+    QStringList musicBaseNameList;
+    musicJson.insert("size", musicList.size());
     for (int i = 0; i < musicList.size(); ++i) {
-        QJsonObject musicJson;
+        musicBaseNameList.append(musicList[i]->getBaseName());
     }
+    musicJson.insert("music", musicBaseNameList.join("|"));
+    writeData.insert("music", musicJson);
+
+    // 列表信息
+    QJsonObject tableJosn;
+    for (int i = 0; i < tableList.size(); ++i) {
+        QJsonObject cell;
+        cell.insert("isDir", tableList[i]->isDir);
+        cell.insert("sort", tableList[i]->getSort());
+
+        Table *table = tableList[i];
+        // 生成列表单元数据
+        if (table->isDir) {
+            cell.insert("url", table->url);
+        }
+        else {
+            QStringList musicList;
+            for (int j = 0; j < table->musics.size(); ++j) {
+                musicList.append(QString::number(table->musics[j]->coreId));
+            }
+            cell.insert("music", musicList.join("|"));
+            cell.insert("name", table->name);
+        }
+        // 插入
+        tableJosn.insert(QString::number(i), cell);
+        tableJosn.insert("size", tableList.size());
+    }
+    writeData.insert("table", tableJosn);
 
     // 执行写入文件
     QJsonDocument doc(writeData);
-    dataFile.write(doc.toJson(QJsonDocument::Compact));
+    dataFile.write(doc.toJson(QJsonDocument::Indented));
     dataFile.close();
+}
+
+QJsonObject MusicCore::readJsonData()
+{
+    QFile dataFile(QDir::currentPath() + "/data.json");
+    // 打开文件失败，退出读写
+    if(!dataFile.open(QIODevice::Text | QIODevice::ReadOnly)){
+        dataFile.close();
+        return QJsonObject();
+    }
+
+    // 执行写入文件
+    QJsonDocument doc;
+    doc = doc.fromJson(dataFile.readAll());
+    dataFile.close();
+    return doc.object();
 }
 
 QList<Table *> MusicCore::getTableList() const

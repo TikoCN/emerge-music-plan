@@ -52,6 +52,7 @@ TikoFrameless{
         Setting.windowRect.y = mousePos.y
 
         Setting.writeData()
+        Core.writeJsonData()
     }
 
     StackView{
@@ -179,6 +180,13 @@ TikoFrameless{
         function onTableAdd(){
             mainView.addPlayTablePage(Core.tableList.length - 1)
             barView.addTable(Core.tableList.length - 1)
+        }
+
+        function onFinishInit(){
+            for (var i=0; i < Core.tableList.length; ++i) {
+                mainView.addPlayTablePage(i)
+                barView.addTable(i)
+            }
         }
     }
 

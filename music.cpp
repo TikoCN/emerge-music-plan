@@ -212,7 +212,7 @@ QString Music::getSearchString()
 /*
 加载封面
 */
-QPixmap Music::loadCover()
+QImage Music::loadCover()
 {
     FFmpeg ffmpeg;
 
@@ -227,7 +227,7 @@ QPixmap Music::loadCover()
         }
     }
 
-    return QPixmap::fromImage(img);
+    return img;
 }
 
 /*

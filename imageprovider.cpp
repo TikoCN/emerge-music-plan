@@ -1,60 +1,19 @@
 #include "imageprovider.h"
+#include "musiccore.h"
 #include <QPixmapCache>
-#include "mediaplayer.h"
 #include "online.h"
 #include <QPainter>
 #include <QPainterPath>
 #include <QThread>
 
-ImageProvider::ImageProvider()
-: QQuickImageProvider(QQuickImageProvider::Pixmap)
-{
-    QThread *thread = new QThread;
-    this->moveToThread(thread);
-    thread->start();
-}
-
-/*
- *重写requestPixmap函数
- */
-QPixmap ImageProvider::requestPixmap(const QString &id, QSize *size, const QSize &requestedSize)
-{
-    QPixmap pix;
-    QString type = id.split(":").first();
-    int coreId = id.split(":").last().toInt();
-    MusicCore *core = MusicCore::getInstance();
-    if(coreId < -1 || coreId > core->coreList.size()){
-        pix.load(":/image/default.jpg");
-    }
-    else if(type == "onLine"){//在线加载
-        pix = downOnlineCover(coreId);
-    }
-    else if(type == "file"){//本地加载
-        pix = loadFileCover(coreId);
-    }
-    else if(type == "back"){
-        pix = downOnlineCover(coreId);
-        return pix;
-    }
-
-    //找不封面，设置为默认封面
-    if(pix.isNull()){
-        pix.load(":/image/default.jpg");
-    }
-
-    pix = pix.scaled(requestedSize);
-    buildRoundImage(&pix, 10);
-
-    return pix;
-}
 
 /*
  * 计算圆角图片
  */
-void ImageProvider::buildRoundImage(QPixmap *pix, int radius)
+void ImageResponse::buildRoundImage(QImage *pix, int radius)
 {
     QRect rect = pix->rect();//得到大小
-    QPixmap destImage(rect.size());//目标结果
+    QImage destImage(rect.width(), rect.height(), QImage::Format_ARGB32);//目标结果
     destImage.fill(Qt::transparent);
 
     QPainter painter(&destImage);
@@ -65,37 +24,87 @@ void ImageProvider::buildRoundImage(QPixmap *pix, int radius)
     path.addRoundedRect(rect, radius, radius);
     painter.setClipPath(path);
 
-    painter.drawPixmap(rect, *pix);
+    painter.drawImage(rect, *pix);
 
     *pix = destImage;
 }
 
-QPixmap ImageProvider::downOnlineCover(int id)
+QImage ImageResponse::downOnlineCover(int id)
 {
     OnLine *onLine = OnLine::getInstance();
     MusicCore *core = MusicCore::getInstance();
-    QPixmap pix;
+    QImage pix;
 
     //加载附加封面，和独立封面
-    pix = core->coreList[id]->loadCover();
+    pix = core->musicList[id]->loadCover();
 
     if(pix.isNull()){
         //从网络下载封面，并报错到独立封面
-        onLine->downCover(core->coreList[id]->getSearchString(), core->coreList[id]->getCoverUrl());
+        onLine->downCover(core->musicList[id]->getSearchString(), core->musicList[id]->getCoverUrl());
     }
 
     //加载附加封面，和独立封面
-    pix = core->coreList[id]->loadCover();
+    pix = core->musicList[id]->loadCover();
     return pix;
 }
 
-QPixmap ImageProvider::loadFileCover(int id)
+QImage ImageResponse::loadFileCover(int id)
 {
     MusicCore *core = MusicCore::getInstance();
 
-    if(core->coreList[id]->cover != NULL){//读取已经加载好的封面
-        return *core->coreList[id]->cover;
+    if(core->musicList[id]->cover != NULL){//读取已经加载好的封面
+        return *core->musicList[id]->cover;
     }
-    return core->coreList[id]->loadCover();
+    return core->musicList[id]->loadCover();
 }
 
+
+ImageResponse::ImageResponse(const QString &url, const QSize &requestedSize)
+{
+    setAutoDelete(false);
+    this->url = url;
+    this->requestedSize = requestedSize;
+}
+
+QQuickTextureFactory *ImageResponse::textureFactory() const
+{
+    return QQuickTextureFactory::textureFactoryForImage(img);
+}
+
+void ImageResponse::run()
+{
+    QString type = url.split(":").first();
+    int coreId = url.split(":").last().toInt();
+    MusicCore *core = MusicCore::getInstance();
+
+    if(coreId < -1 || coreId > core->musicList.size()){
+        img.load(":/image/default.jpg");
+    }
+    else if(type == "onLine"){//在线加载
+        img = downOnlineCover(coreId);
+    }
+    else if(type == "file"){//本地加载
+        img = loadFileCover(coreId);
+    }
+    else if(type == "back"){
+        img = downOnlineCover(coreId);
+        emit finished();
+        return;
+    }
+
+    //找不封面，设置为默认封面
+    if(img.isNull()){
+        img.load(":/image/default.jpg");
+    }
+
+    img = img.scaled(requestedSize);
+    buildRoundImage(&img, 10);
+
+    emit finished();
+}
+
+QQuickImageResponse *ImageProvider::requestImageResponse(const QString &id, const QSize &requestedSize) {
+    class ImageResponse *res = new class ImageResponse(id, requestedSize);
+    pool.start(res);
+    return res;
+}

@@ -8,7 +8,7 @@ class Table : public QObject //播放列表
 {
     Q_OBJECT
 public:
-    explicit Table(QList<Music *> musicList, QObject *parent = nullptr);
+    explicit Table(QObject *parent = nullptr);
     enum SORT_TYPE {
         SORT_TITTLE_ASC, SORT_TITTLE_DESC,
         SORT_ATRIST_ASC, SORT_ATRIST_DESC,

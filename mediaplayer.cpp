@@ -63,7 +63,7 @@ void MediaPlayer::clearData()
 */
 void MediaPlayer::playingInsertMusic(int coreId)
 {
-    Music *music = core->coreList[coreId];
+    Music *music = core->musicList[coreId];
     musicList.insert(playingMusicListId, music);
 
     emit cppPlayingInsertMusic(playingMusicListId);
@@ -74,7 +74,7 @@ void MediaPlayer::playingInsertMusic(int coreId)
 */
 void MediaPlayer::musicInsertPlayingTable(int coreId)
 {
-    Music *music = core->coreList[coreId];
+    Music *music = core->musicList[coreId];
 
     musicList.append(music);
 

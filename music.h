@@ -18,7 +18,7 @@ public:
     qint64 endTime;
     qint64 lastEditTime;
     int coreId;
-    QPixmap *cover = NULL;
+    QImage *cover = NULL;
 
 public:
 
@@ -54,7 +54,7 @@ public:
     QString getKey();
 
     //加载封面
-    QPixmap loadCover();
+    QImage loadCover();
 
     //加载封面·
     QImage loadAloneCover();

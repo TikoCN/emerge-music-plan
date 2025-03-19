@@ -24,19 +24,19 @@ public:
 
     QList<Music *> getMusicList() const;
 
-    QList<Music *> getCoreList() const;
-
     // 清楚数据
     void clearDate();
 
     // 写入列表,歌曲数据
-    void writeJsonData();
+    Q_INVOKABLE void writeJsonData();
+
+    QJsonObject readJsonData();
 
     //获得音乐核心
-    void getMusicCore(QList<Music *>musicList);
+    void getMusicCore(QList<Music *>musicList, QList<Table *> tableList);
 
     //新建播放列表
-    Q_INVOKABLE void appendTable(QString tableName, QList<Music *> musicList = QList<Music *>(),  bool isDir = false);
+    Q_INVOKABLE void appendTable(QString tableName, bool isDir = false);
 
     //将歌曲移动到
     Q_INVOKABLE void tableMoveMusic(int orgTableId, int musicId, int aimTalbeId);
@@ -50,11 +50,14 @@ private:
 
     Q_PROPERTY(QList<Table *> tableList READ getTableList CONSTANT)
 
-    Q_PROPERTY(QList<Music *> coreList READ getCoreList CONSTANT)
+    Q_PROPERTY(QList<Music *> musicList READ getMusicList CONSTANT)
 
 signals:
     // 列表增加
     void tableAdd();
+
+    // 数据加载完成
+    void finishInit();
 };
 
 #endif // MUSICCORE_H

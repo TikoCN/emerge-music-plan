@@ -3,9 +3,10 @@
 #include "setting.h"
 #include "mediaplayer.h"
 #include "base.h"
+#include "musiccore.h"
 #include <QPixmap>
 #include <QDir>
-#include <QCoreApplication>
+#include <QGuiApplication>
 
 TaskCell::TaskCell(){
     thread = new QThread(this);
@@ -20,10 +21,11 @@ TaskCell::~TaskCell(){
 /*
  *加载文件夹中的音乐
  */
-void TaskCell::working(){
+void TaskCell::loadMusicCore()
+{
     ExtraLibrary extraLibrary;
-    Setting *seit = Setting::getInstance();
     HostTime *host = HostTime::getInstance();
+    MusicCore *core = MusicCore::getInstance();
 
     while(true){
         QFileInfoList fileList;
@@ -32,7 +34,7 @@ void TaskCell::working(){
             break;
         }
 
-        QList<Music *> cores;
+        QList<Music *> musicList;
 
         for(int i=0; i<fileList.size(); i++){
             QString suffix = fileList[i].suffix();
@@ -42,27 +44,72 @@ void TaskCell::working(){
             }
 
             //加载音乐数据
-            Music *core = new Music;
-            core->fromFileInfo(fileList[i]);
-            extraLibrary.getMedia(core);
-            cores.append(core);
+            Music *music = new Music;
+            music->fromFileInfo(fileList[i]);
+            music->moveToThread(core->thread());
+            extraLibrary.getMedia(music);
+            musicList.append(music);
         }
 
         //一次任务加载完成，返回数据
-        emit musicLoaded(cores);
+        emit loadedMusicCore(musicList);
     }
 
-    emit finishLoad(this);
+    emit finishMusicCore(this);
+}
+
+void TaskCell::loadUserTable()
+{
+    HostTime *host = HostTime::getInstance();
+    QStringList musicNameList = host->musicNameList;
+    QList<Music *> musicList = host->musicList;
+
+    while(true){
+        QStringList musicIdList;
+        int tableId = 0;
+        //向 hosttime 申请任务 FileInfoList 数据
+        if (!host->getUserTableTask(&musicIdList, &tableId)) {
+            break;
+        }
+
+        QList<Music *> aimMusicList;
+        for (int i = 0; i < musicIdList.size(); ++i) {
+            int id = musicIdList[i].toInt();
+            QString baseName = musicNameList[id];
+
+            // 找到目标歌曲
+            for (int j = 0; j < musicList.size(); ++j) {
+                if(musicList[j]->getBaseName() == baseName){
+                    aimMusicList.append(musicList[j]);
+                    break;
+                }
+            }
+        }
+
+
+        //一次任务加载完成，返回数据
+        emit loadedUserTable(musicList, tableId);
+    }
+
+    emit finishUserTable(this);
 }
 
 HostTime::HostTime()
 {
+    thread = new QThread;
+    this->moveToThread(thread);
+    thread->start();
+
     MediaPlayer* play = MediaPlayer::getInstance();
     connect(this, &HostTime::initData, play, &MediaPlayer::clearData);
     connect(play, &MediaPlayer::finishClearData, this, &HostTime::loadMusicFile);
 
     Setting* seit = Setting::getInstance();//获得设置指针
     connect(seit, &Setting::loadMusics, this, &HostTime::buildHostTime);
+}
+
+HostTime::~HostTime()
+{
 }
 
 /*
@@ -78,9 +125,14 @@ void HostTime::buildHostTime()
         TaskCell* cell = new TaskCell;
         taskCellList.append(cell);
 
-        cell->connect(this, &HostTime::startWork, cell, &TaskCell::working);
-        cell->connect(cell, &TaskCell::musicLoaded, this, &HostTime::getMusicCoreList);
-        cell->connect(cell, &TaskCell::finishLoad, this, &HostTime::cellFinishWork);
+        cell->connect(this, &HostTime::startMusicCore, cell, &TaskCell::loadMusicCore);
+        cell->connect(this, &HostTime::startUserTable, cell, &TaskCell::loadUserTable);
+
+        cell->connect(cell, &TaskCell::loadedMusicCore, this, &HostTime::getMusicCoreList);
+        cell->connect(cell, &TaskCell::loadedUserTable, this, &HostTime::getUserTableMusic);
+
+        cell->connect(cell, &TaskCell::finishMusicCore, this, &HostTime::finishMusicCore);
+        cell->connect(cell, &TaskCell::finishUserTable, this, &HostTime::finishUserTable);
     }
 
     emit initData();
@@ -102,7 +154,52 @@ void HostTime::loadMusicFile()
 
     workPos = 0;//重置工作位置
     workNumber = taskCellList.size();//设置工作单元数
-    emit startWork();
+    emit startMusicCore();
+}
+
+void HostTime::loadUserTable()
+{
+    MusicCore *core = MusicCore::getInstance();
+    QJsonObject data = core->readJsonData();
+    QJsonObject music = data.value("music").toObject();
+    QJsonObject table = data.value("table").toObject();
+
+    // 得到旧的音乐对照表
+    musicNameList = music.value("music").toString().split("|");
+
+    int size = table.value("size").toInt();
+    for (int i = 0; i < size; ++i) {
+        QJsonObject tableJson = table.value(QString::number(i)).toObject();
+
+        // 读取本地列表数据, 并排序
+        if (tableJson.value("isDir").toBool()) {
+            for (int j = 0; j < tableList.size(); ++j) {
+                if (tableList[j]->url == tableJson.value("url")) {
+                    tableList[j]->sortMusic(tableJson.value("sort").toInt());
+                    break;
+                }
+            }
+        }
+        else {
+            // 创建列表
+            Table *table = new Table;
+            table->tableId = tableList.size();
+            tableList.append(table);
+            table->name = tableJson.value("name").toString();
+            table->isDir = tableJson.value("isDir").toBool();
+            table->sortMusic(tableJson.value("sort").toInt());
+            table->moveToThread(core->thread());
+
+            // 得到歌曲附录
+            QStringList musicIdList = tableJson.value("music").toString().split("|");
+            tableMusic.append(musicIdList);
+        }
+    }
+
+    workNumber = taskCellList.size();
+    workPos = 0;
+    tableId = dirTableSize;
+    emit startUserTable();
 }
 
 /*
@@ -156,23 +253,107 @@ bool HostTime::getInfoList(QFileInfoList *list)
     return true;
 }
 
+bool HostTime::getUserTableTask(QStringList *musicNameList, int *aim)
+{
+    semaphore->acquire();                      //请求读写
+    QStringList musicIdList;
+    while (true) {
+        // 任务结束
+        if (tableId == tableList.size()) {
+            semaphore->release();
+            return false;
+        }
+
+        musicIdList = tableMusic[tableId - dirTableSize];
+
+        //查看任务是否完成，已经任务队列是否为空
+        if(workPos > musicIdList.size() - 1 || musicIdList.size() <= 0){
+            semaphore->release();
+            tableId++;
+        }
+    }
+
+    int length = 30;
+    int start = workPos;
+    if(workPos + length >= musicIdList.size()){
+        length = musicIdList.size() - workPos;
+    }
+
+    // 返回数据
+    *musicNameList = musicIdList.mid(start, length);
+    *aim = tableId;
+
+    // 移动工作点
+    workPos = start + length;
+    semaphore->release();
+
+    return true;
+}
+
 /*
  *获得加载好的音乐数据
  */
-void HostTime::getMusicCoreList(QList<Music *> coreList)
+void HostTime::getMusicCoreList(QList<Music *> musicList)
 {
-    this->musicKeyList.append(musicKeyList);
-    this->coreList.append(coreList);
+    MusicCore *core = MusicCore::getInstance();
+
+    // 遍历获得的音乐列表
+    for (int i = 0; i < musicList.size(); ++i) {
+        musicList[i]->coreId = this->musicList.size();
+        this->musicList.append(musicList[i]);
+        QString dir = musicList[i]->getParentDir();
+
+        // 寻找是否建立该列表
+        bool isNoFind = true;
+        for (int j = 0; j < tableList.size(); ++j) {
+            if (dir == tableList[j]->url) {
+                tableList[j]->insertMusic(musicList[i]);
+                isNoFind = false;
+                break;
+            }
+        }
+
+        // 没有发现目标列表
+        if (isNoFind) {
+            Table *table = new Table;
+            table->tableId = tableList.size();
+            tableList.append(table);
+            table->name = dir.split("/").last();
+            table->url = dir;
+            table->isDir = true;
+            table->moveToThread(core->thread());
+        }
+    }
+
+    dirTableSize = tableList.size();
 }
 
-void HostTime::cellFinishWork(TaskCell *cell)
+void HostTime::getUserTableMusic(QList<Music *> musicList, int tableId)
+{
+    if (tableId < 0 || tableId >= tableList.size()){
+        return;
+    }
+    // 插入列表
+    tableList[tableId]->insertMusic(musicList);
+}
+
+void HostTime::finishMusicCore(TaskCell *cell)
 {
     //计算当前工作单元数
     workNumber--;
     if(workNumber == 0){
-        QString t = tr("加载音乐文件完成，加载了 ") + QString::number(coreList.size()) + tr(" 个音乐文件");
+        loadUserTable();
+    }
+}
+
+void HostTime::finishUserTable(TaskCell *cell)
+{
+    //计算当前工作单元数
+    workNumber--;
+    if(workNumber == 0){
+        QString t = tr("加载音乐文件完成，加载了 ") + QString::number(musicList.size()) + tr(" 个音乐文件");
         emit Base::getInstance()->sendMessage(t, 0);
-        emit musicsLoaded(coreList);
+        emit musicsLoaded(musicList, tableList);
     }
 }
 
@@ -181,8 +362,7 @@ void HostTime::cellFinishWork(TaskCell *cell)
  */
 void HostTime::clearData()
 {
-    this->coreList.clear();
-    this->musicKeyList.clear();
+    this->musicList.clear();
     this->musicFileList.clear();
 
     //从头删除到尾

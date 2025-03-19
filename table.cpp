@@ -8,10 +8,9 @@ QList<Music *> Table::getMusics() const
     return musics;
 }
 
-Table::Table(QList<Music *> musicList, QObject *parent)
+Table::Table(QObject *parent)
     :QObject(parent)
 {
-    insertMusic(musicList);
     sort = SORT_TITTLE_ASC;
 }
 
@@ -142,12 +141,9 @@ void Table::insertMusic(Music *core)
 void Table::insertMusic(QList<Music *> core)
 {
     musics.append(core);//插入到数据库
+    showMusics.append(core);
 
-    int success = 0;
-    for(int i=0; i<core.size(); i++){
-            showMusics.append(core[i]);//符合条件插入显示
-            success++;
-    }
+    int success = core.size();
     emit updateMusic(showMusics.size()-success, success);
 }
 
