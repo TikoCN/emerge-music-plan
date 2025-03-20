@@ -16,6 +16,7 @@ TaskCell::TaskCell(){
 TaskCell::~TaskCell(){
     thread->quit();
     thread->wait();
+    delete thread;
 }
 
 /*
@@ -66,7 +67,7 @@ void TaskCell::loadUserTable()
 
     while(true){
         QStringList musicIdList;
-        int tableId = 0;
+        int tableId = -1;
         //向 hosttime 申请任务 FileInfoList 数据
         if (!host->getUserTableTask(&musicIdList, &tableId)) {
             break;
@@ -86,9 +87,8 @@ void TaskCell::loadUserTable()
             }
         }
 
-
         //一次任务加载完成，返回数据
-        emit loadedUserTable(musicList, tableId);
+        emit loadedUserTable(aimMusicList, tableId);
     }
 
     emit finishUserTable(this);
@@ -110,6 +110,9 @@ HostTime::HostTime()
 
 HostTime::~HostTime()
 {
+    thread->quit();
+    thread->wait();
+    delete thread;
 }
 
 /*
@@ -268,8 +271,10 @@ bool HostTime::getUserTableTask(QStringList *musicNameList, int *aim)
 
         //查看任务是否完成，已经任务队列是否为空
         if(workPos > musicIdList.size() - 1 || musicIdList.size() <= 0){
-            semaphore->release();
             tableId++;
+        }
+        else{
+            break;
         }
     }
 

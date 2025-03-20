@@ -10,6 +10,32 @@
 #include <QImageReader>
 #include <QPixmap>
 
+bool Music::getIsLove() const
+{
+    return isLove;
+}
+
+void Music::setIsLove(bool newIsLove)
+{
+    if (isLove == newIsLove)
+        return;
+    isLove = newIsLove;
+    emit isLoveChanged();
+}
+
+int Music::getLevel() const
+{
+    return level;
+}
+
+void Music::setLevel(int newLevel)
+{
+    if (level == newLevel)
+        return;
+    level = newLevel;
+    emit levelChanged();
+}
+
 Music::Music() {
     url = "";
 }

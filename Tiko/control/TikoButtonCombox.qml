@@ -2,14 +2,15 @@ import QtQuick
 
 TikoButtonNormal {
     id: tikoComboxButton
-    onClickLeft: tikoPopup.open()
-    property var data: []
+    text: tikoComboxButton.helpText + tikoComboxButton.showText
+    onClick: tikoPopup.open()
+    property var data: ["文本1", "文本2"]
     property int show: 0
+    property string helpText: ""
+    property string showText: tikoComboxButton.data[show]
 
     TikoPopup{
         id: tikoPopup
-        x: 0
-        y: tikoComboxButton.y + tikoComboxButton.height
         width: tikoComboxButton.width
         height: column.height
         padding: 0
@@ -27,8 +28,8 @@ TikoButtonNormal {
                     radius: 0
                     text: tikoComboxButton.data[index]
                     width: tikoComboxButton.width
-                    onClickLeft: {
-                        tikoComboxButton.text = this.text
+                    onClick: {
+                        tikoComboxButton.show = index
                         tikoPopup.close()
                     }
                 }
@@ -36,7 +37,6 @@ TikoButtonNormal {
         }
 
         Component.onCompleted: {
-            tikoComboxButton.text = tikoComboxButton.data[show]
             for(let i=0; i<tikoComboxButton.data.length; i++){
                 listModel.append({index:i})
             }

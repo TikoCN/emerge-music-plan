@@ -72,7 +72,10 @@ Item {
                 TikoPopupInput{
                     id: inputName
                     text: qsTr("新建列表，请输入列表名")
-                    onAccept: ()=>{Core.appendTable(inputText)}
+                    onAccept: {
+                        Core.appendTable(inputName.inputText)
+                        inputName.setNormalText()
+                    }
                 }
             }
 

@@ -10,16 +10,35 @@ Item{
     property real lineStart: 0
     property real wordStart: 0
     property string lrcUrl: ""
+    property int mode: 0
 
     Column {
         id: editLrctool
-        spacing: 10
+        spacing: 6
         width: 150
+
+        TikoButtonCombox{
+            width: 150
+            data: ["0.1", "0.3", "0.5", "1", "2", "3"]
+            show: 3
+            helpText: qsTr("播放速度：")
+            onShowTextChanged: {
+                var rate = Number(showText)
+                MediaPlayer.player.setPlaybackRate(rate)
+            }
+        }
+
+        TikoButtonCombox{
+            width: 150
+            data: [qsTr("逐字模式"), qsTr("逐词模式")]
+            helpText: qsTr("工作模式：")
+            onShowChanged: editLrcPage.mode = show
+        }
 
         TikoButtonNormal{
             width: 150
             iconSource: "qrc:/image/lineStart.png"
-            text: qsTr("行开始")
+            text: qsTr("行开始") + " : " + editLrcPage.lineStart.toString()
             onClick: editLrcPage.lineStart = MediaPlayer.player.position
         }
 
@@ -33,7 +52,7 @@ Item{
         TikoButtonNormal{
             width: 150
             iconSource: "qrc:/image/wordStart.png"
-            text: qsTr("词开始")
+            text: qsTr("词开始") + " : " + editLrcPage.wordStart.toString()
             onClick: editLrcPage.wordStart = MediaPlayer.player.position
         }
 
@@ -42,6 +61,16 @@ Item{
             iconSource: "qrc:/image/wordEnd.png"
             text: qsTr("词结束")
             onClick: editLrcPage.hlrcInsertWordTime()
+        }
+
+        TikoButtonNormal{
+            width: 150
+            iconSource: "qrc:/image/wordEnd.png"
+            text: qsTr("连续词结束")
+            onClick: {
+                editLrcPage.wordStart = MediaPlayer.player.position
+                editLrcPage.hlrcInsertWordTime()
+            }
         }
 
         TikoButtonNormal{
@@ -133,8 +162,23 @@ Item{
         }
         lrcShow.text = text
         var aimPos = pos + input.length + 1
-        if(text.length > aimPos && text[aimPos] === "\n"){
-            aimPos++
+
+        switch (editLrcPage.mode) {
+        case 0:
+            // 字分割，跳过换换行符，和空格
+            while(text.length > aimPos + 1 && (text[aimPos] === "\n" || text[aimPos] === " ")){
+                aimPos++
+            }
+            break
+        case 1:
+            // 词分割，跳过词组，找到空格
+            while(text.length > aimPos + 1 && text[aimPos] !== " "){
+                aimPos++
+            }
+            if(text.length > aimPos + 1 && text[aimPos] === " "){
+                aimPos++
+            }
+            break
         }
 
         if(text.length > aimPos){

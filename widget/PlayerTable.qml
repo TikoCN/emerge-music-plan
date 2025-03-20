@@ -152,7 +152,7 @@ Item {
     }
 
     ScrollView{
-        width: playerTable.width
+        width: playerTable.width - 40
         height: playerTable.height - showView.height - 20
         anchors.top: showView.bottom
         anchors.topMargin: 20
@@ -166,6 +166,7 @@ Item {
 
         ListView{
             id: musicList
+            width: parent.width
             anchors.left: parent.left
             anchors.leftMargin: 5
             anchors.right: parent.right

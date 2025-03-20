@@ -1,21 +1,21 @@
 import QtQuick.Controls.Basic
 
 TikoPopup {
-    id: root
+    id: popupInput
     implicitWidth: 600
     implicitHeight: 400
 
     property string text
     property string inputText: inputLine.input.text
     property string orgText: ""
-    property var onAccept: ()=>{}
-    property var onCancel: ()=>{}
     property int textWidth: 200
+    signal accept
+    signal cancel
 
     TikoTextInput{
         id: inputLine
         show.text: text
-        show.width: root.textWidth
+        show.width: popupInput.textWidth
         input.text: orgText
         anchors.verticalCenter: parent.verticalCenter
         anchors.verticalCenterOffset: - height / 2 - parent.width / 20
@@ -31,8 +31,8 @@ TikoPopup {
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.horizontalCenterOffset: - width / 2 - parent.width / 20
         onClicked: {
-            onAccept()
-            root.close()
+            popupInput.accept()
+            popupInput.close()
         }
     }
 
@@ -44,8 +44,12 @@ TikoPopup {
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.horizontalCenterOffset: width / 2 + parent.width / 20
         onClicked: {
-            onCancel()
-            root.close()
+            popupInput.cancel()
+            popupInput.close()
         }
+    }
+
+    function setNormalText(){
+        inputLine.input.text = ""
     }
 }

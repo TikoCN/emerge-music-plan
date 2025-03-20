@@ -9,7 +9,7 @@ import Widget
 TikoFrameless{
     id: window
     width:Setting.windowRect.width
-    minimumWidth: 800
+    minimumWidth: 1000
     height:Setting.windowRect.height
     minimumHeight: 600
     x:Setting.windowRect.x

@@ -166,6 +166,10 @@ Setting::Setting()
     connect(player->audioOutput, &QAudioOutput::volumeChanged, this, [=](float volume){
         setParameter("volume", volume);
     });
+
+    connect(player->player, &QMediaPlayer::playbackRateChanged, this, [=](float rate){
+        setParameter("playRate", rate);
+    });
 }
 
 bool Setting::getIsGetLrcFromQQMusic() const

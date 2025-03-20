@@ -18,6 +18,8 @@ public:
     qint64 endTime;
     qint64 lastEditTime;
     int coreId;
+    int level;
+    bool isLove;
     QImage *cover = NULL;
 
 public:
@@ -102,6 +104,17 @@ public:
 
     QString getYear() const;
 
+    bool getIsLove() const;
+    void setIsLove(bool newIsLove);
+
+    int getLevel() const;
+    void setLevel(int newLevel);
+
+signals:
+    void isLoveChanged();
+
+    void levelChanged();
+
 private:
     Q_PROPERTY(QString title READ getTitle CONSTANT)
     Q_PROPERTY(QString artist READ getArtist CONSTANT)
@@ -109,6 +122,8 @@ private:
     Q_PROPERTY(QString alumb READ getAlumb CONSTANT)
     Q_PROPERTY(QString lastEdit READ getLastEdit CONSTANT)
     Q_PROPERTY(int coreId READ getCoreId CONSTANT)
+    Q_PROPERTY(bool isLove READ getIsLove WRITE setIsLove NOTIFY isLoveChanged FINAL)
+    Q_PROPERTY(int level READ getLevel WRITE setLevel NOTIFY levelChanged FINAL)
 };
 
 #endif // MUSIC_H
