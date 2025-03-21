@@ -38,28 +38,42 @@ Item {
 
     //纯色底片
     Rectangle{
-        anchors.fill: backCover
+        anchors.fill: pageMain
         color: Setting.transparentColor
     }
     //模糊背景
     Image {
         id: backCover
-        anchors.fill: pageMain
+        width: 100
+        height: 100
         sourceSize.width: backCover.width
         sourceSize.height: backCover.height
         visible: false
     }
     MultiEffect {
+        id: effectCover
         autoPaddingEnabled: true
         source: backCover
-        anchors.fill: backCover
+        width: 1000
+        height: 1000
         blurEnabled: true
-        blurMax: 64
+        blurMax: 50
         blur: 1.0
     }
+    Timer {
+        id: backMove
+        interval: 33
+        repeat: true
+        onTriggered: {
+            var x = Math.floor(Math.random() * 1)
+            var y = Math.floor(Math.random() * 1)
+            console.log(type)
+        }
+    }
+
     //透明成显示
     Rectangle{
-        anchors.fill: backCover
+        anchors.fill: pageMain
         color: Setting.transparentColor
         opacity: 0.3
     }
@@ -130,5 +144,15 @@ Item {
         function onSourceChanged(){
             backCover.source = "image://cover/back:" + MediaPlayer.playingMusic.coreId.toString()
         }
+    }
+
+    function actionStart(){
+        backMove.start()
+        pageMain.show = true
+    }
+
+    function actionEnd() {
+        backMove.stop()
+        pageMain.show = false
     }
 }

@@ -116,7 +116,7 @@ Item{
                 // 清除画布
                 ctx.clearRect(0, 0, width, height);
                 var inList = MediaPlayer.allSamples
-                var w = 10
+                var w = 3
                 var length = width / w
 
                 var mainColor = Qt.rgba(Setting.backdropColor.r, Setting.backdropColor.g, Setting.backdropColor.b, 0.5)
@@ -126,7 +126,7 @@ Item{
                 //上半部分方形
                 for(var i=0; i<length && i<inList.length; i++){
                     ctx.fillRect(i*(w + 3), height,
-                                w, -height * inList[i])
+                                w, -height/3 * inList[i])
                 }
             }
             Component.onCompleted: canvas.requestPaint()

@@ -128,28 +128,16 @@ Item{
         exSize: 8
     }
 
-    CoreLrcLine{
-        id: playingLrc
-        x: title.x
-        width: title.width
-        text: MediaPlayer.playingLrc.text
-        pos: MediaPlayer.playingLrc.pos
-        lrcId: MediaPlayer.playingLrc.id
-        lrcFont: Setting.deskFont
-        isUse: false
-        anchors.top: artist.bottom
-    }
-
     Connections{
         target:MediaPlayer.player
         function onSourceChanged(){
-            artist.text = MediaPlayer.playingCore.artist
-            title.text = MediaPlayer.playingCore.title
+            artist.text = MediaPlayer.playingMusic.artist
+            title.text = MediaPlayer.playingMusic.title
         }
     }
 
     Component.onCompleted: {
-        artist.text = MediaPlayer.playingCore.artist
-        title.text = MediaPlayer.playingCore.title
+        artist.text = MediaPlayer.playingMusic.artist
+        title.text = MediaPlayer.playingMusic.title
     }
 }

@@ -160,14 +160,14 @@ TikoFrameless{
         if(centerView.currentItem != mainPage){
             centerView.pop(null)
             centerView.pushItem(mainPage)
-            mainPage.show = true
+            mainPage.actionStart()
         }
     }
 
     //切换到编辑页
     function stackCenter(){
         if(centerView.currentItem != editPage){
-            mainPage.show = false
+            mainPage.actionEnd()
             centerView.pop(null)
             centerView.pushItem(editPage)
         }
