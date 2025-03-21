@@ -36,19 +36,17 @@ Drawer {
         anchors.top: playingTableText.bottom
         anchors.topMargin: 10
         anchors.horizontalCenter: parent.horizontalCenter
+        clip: true
 
         model: ListModel{
             id: musicModel
         }
 
-        delegate: Component{
-            id: musicDelegate
-            CoreMusicLine{
-                width: musicList.width - 20
-                tableId: -1
-                listId: music
-                music: MediaPlayer.musicList[music]
-            }
+        delegate: CoreMusicLine{
+            width: musicList.width - 20
+            tableId: -1
+            listId: musicListId
+            music: MediaPlayer.musicList[musicListId]
         }
     }
 
@@ -80,7 +78,7 @@ Drawer {
 
     //插入新条目 musicId 音乐的列表id
     function addNewMuiscLine(musicId){
-        musicModel.append({music: musicId})
+        musicModel.append({musicListId: musicId})
     }
 
     //插入新条目 musicId 音乐的列表id

@@ -10,6 +10,7 @@ public:
     qint64 startTime;
     qint64 endTime;
     bool isPlay;
+    QList<QString> helpTextList;
 
 private:
     QList<long long> startList;
@@ -31,15 +32,19 @@ public:
 
     QList<QString> getTextList() const;
 
+    QList<QString> getHelpTextList() const;
+
 private:
     Q_PROPERTY(int id READ getId CONSTANT)
     Q_PROPERTY(qint64 startTime READ getStartTime CONSTANT)
     Q_PROPERTY(QList<long long> startList READ getStartList CONSTANT)
     Q_PROPERTY(QList<long long> endList READ getEndList CONSTANT)
     Q_PROPERTY(QList<QString> textList READ getTextList CONSTANT)
+    Q_PROPERTY(QList<QString> helpTextList READ getHelpTextList CONSTANT)
 
 signals:
     void update();
+    void helpTextListChanged();
 };
 
 #endif // LRCDATA_H

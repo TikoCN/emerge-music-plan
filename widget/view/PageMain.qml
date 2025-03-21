@@ -54,21 +54,79 @@ Item {
         id: effectCover
         autoPaddingEnabled: true
         source: backCover
-        width: 1000
-        height: 1000
+        width: pageMain.width * 5
+        height: pageMain.height * 5
         blurEnabled: true
         blurMax: 50
         blur: 1.0
+
+        property int stepX: getRand()
+        property int stepY: getRand()
+        property bool addX: true
+        property bool addY: true
+
+        function getRand(){
+            return Math.floor(Math.random() * 5 + 2)
+        }
+
+        function move(){
+            var minX = pageMain.width - effectCover.width
+            var minY = pageMain.height - effectCover.height
+            var maxX = 0
+            var maxY = 0
+
+            var moveX = addX ? effectCover.stepX : -effectCover.stepX
+            var moveY = addY ? effectCover.stepY : -effectCover.stepY
+
+            // 计算x方向
+            if (effectCover.x === minX){
+                effectCover.addX = true
+                effectCover.stepX = getRand()
+                moveX = effectCover.stepX
+            }
+            else if (effectCover.x === maxX){
+                effectCover.addX = false
+                effectCover.stepX = getRand()
+                moveX = -effectCover.stepX
+            }
+
+            // 限制位置
+            if (moveX > 0 && effectCover.x + moveX > maxX){
+                moveX = maxX - effectCover.x
+            }
+            else if (moveX < 0 && effectCover.x + moveX < minX){
+                moveX = minX - effectCover.x
+            }
+
+            // 计算y方向
+            if (effectCover.y === minY){
+                effectCover.addY = true
+                effectCover.stepY = getRand()
+                moveY = effectCover.stepY
+            }
+            else if (effectCover.y === maxY){
+                effectCover.addY = false
+                effectCover.stepY = getRand()
+                moveY = -effectCover.stepY
+            }
+
+            // 限制位置
+            if (moveY > 0 && effectCover.y + moveY > maxY){
+                moveY = maxY - effectCover.y
+            }
+            else if (moveY < 0 && effectCover.y + moveY < minY){
+                moveY = minY - effectCover.y
+            }
+
+            effectCover.x += moveX
+            effectCover.y += moveY
+        }
     }
     Timer {
         id: backMove
         interval: 33
         repeat: true
-        onTriggered: {
-            var x = Math.floor(Math.random() * 1)
-            var y = Math.floor(Math.random() * 1)
-            console.log(type)
-        }
+        onTriggered: effectCover.move()
     }
 
     //透明成显示

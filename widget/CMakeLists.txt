@@ -33,5 +33,7 @@ qt_add_qml_module(WidgetLib
     menu/MenuTable.qml
     view/toolEditMusicPage/EditMusicPage.qml
     view/toolEditMusicPage/EditLrcPage.qml
+    centerPage/PageArtist.qml
     RESOURCES ui.qrc
+    QML_FILES centerPage/PageAlumb.qml
 )

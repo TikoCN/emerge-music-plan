@@ -126,6 +126,12 @@ void MediaPlayer::playNext(int forward)
     switch (loopType) {
     case 0:
         aim = playingMusicListId + forward;
+        if(forward == 1 && aim >= max){
+            aim = 0;
+        }
+        else if(forward == -1 && aim < 0){
+            aim = max - 1;
+        }
         break;
     case 1:
         aim = QRandomGenerator::global()->bounded(max);
@@ -133,13 +139,6 @@ void MediaPlayer::playNext(int forward)
     default:
         aim = playingMusicListId;
         break;
-    }
-
-    if(forward == 1 && aim >= max){
-        aim = 0;
-    }
-    else if(aim < 0){
-        aim = max - 1;
     }
 
     playMusic(-1, aim);

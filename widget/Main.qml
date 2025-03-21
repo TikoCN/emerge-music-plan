@@ -96,7 +96,7 @@ TikoFrameless{
 
             //中间内容导航
             ViewMain{
-                id:mainView
+                id: mainView
                 width: parent.width - barView.width - 20
                 height: barView.height
                 anchors.left: barView.right

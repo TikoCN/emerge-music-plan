@@ -3,25 +3,48 @@ import TikoAPI
 import Tiko
 
 Item {
-    id:playerLrcTable
+    id: playerLrcTable
     property bool have: false
 
     MouseArea{
-        id:mouseHover
-        anchors.fill:parent
+        id: mouseHover
+        anchors.fill: parent
         acceptedButtons: Qt.RightButton | Qt.LeftButton
-        hoverEnabled:true
+        hoverEnabled: true
         onClicked: (mouse)=>{
                        if (mouse.button === Qt.RightButton){
+                           var menu = comMenu.createObject(mouseHover)
                            menu.open()
                        }
                    }
 
-        TikoMenu{
-            id: menu
+        Component{
+            id: comMenu
 
-            TikoMenuItem{text: qsTr("字体加大"); icon.source: "qrc:/image/size+.png"; onClicked: Setting.mainLrcFont.pixelSize++}
-            TikoMenuItem{text: qsTr("字体减小"); icon.source: "qrc:/image/size+.png"; onClicked: Setting.mainLrcFont.pixelSize--}
+            TikoMenu{
+                id: menu
+                onClosed: menu.destroy()
+
+                TikoMenuItem{
+                    text: qsTr("字体加大");
+                    icon.source: "qrc:/image/size+.png";
+                    onClicked: Setting.mainLrcFont.pixelSize++
+                }
+                TikoMenuItem{
+                    text: qsTr("字体减小");
+                    icon.source: "qrc:/image/size+.png";
+                    onClicked: Setting.mainLrcFont.pixelSize--
+                }
+                TikoMenuSpeacer{}
+                TikoMenuItem{
+                    text: qsTr("打开歌词")
+                    onClicked: MediaPlayer.playingMusic.openMusicLrc()
+                }
+                TikoMenuItem{
+                    text: qsTr("编辑歌词")
+                    onClicked: CoreData.editMusic(playerLrcTable, MediaPlayer.playingMusic)
+                }
+            }
         }
     }
 

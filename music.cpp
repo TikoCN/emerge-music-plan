@@ -130,8 +130,14 @@ QList<LrcData *> Music::getLyricsData()
             }
 
             //捕获主体
+            QStringList lrcText = line.split("/");
+            // 添加到其他文本
+            for (int i = 1; i < lrcText.size(); ++i) {
+                lrcD->helpTextList.append(lrcText[i]);
+            }
+
             rx.setPattern(R"(\((\d+),(\d+)\)\s*([^(]*))");
-            QRegularExpressionMatchIterator it = rx.globalMatch(line);
+            QRegularExpressionMatchIterator it = rx.globalMatch(lrcText.first());
             while(it.hasNext()){
                 match = it.next();
                 long long start = match.captured(1).toLong();
@@ -150,12 +156,18 @@ QList<LrcData *> Music::getLyricsData()
             match = rx.match(line);
             if(match.capturedTexts().size() == 5){
                 lrcD = new LrcData;
-                lrcList.append(lrcD);
                 lrcD->id = lrcList.size()-1;
                 lrcD->startTime = match.captured(1).toLong() * 60 * 1000 +
                                   match.captured(2).toLong() * 1000 +
                                   match.captured(3).toLong() * 10;
-                lrcTextList.append(match.captured(4));
+                QStringList lrcText = match.captured(4).split("/");
+                // 添加到其他文本
+                for (int i = 1; i < lrcText.size(); ++i) {
+                    lrcD->helpTextList.append(lrcText[i]);
+                }
+
+                lrcTextList.append(lrcText.first());
+                lrcList.append(lrcD);
             }
             else{
                 continue;

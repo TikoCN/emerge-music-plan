@@ -32,17 +32,33 @@ Item {
             TikoButtonNormal{
                 width: parent.width
                 id: mainPageButton
-                text: qsTr("切换到主页")
+                text: qsTr("主页")
                 iconSource: "qrc:/image/main.png"
                 anchors.horizontalCenter: parent.horizontalCenter
                 onClickLeft: window.stackMain()
+            }
+
+            TikoButtonNormal{
+                width: parent.width
+                text: qsTr("专辑")
+                iconSource: "qrc:/image/alumb.png"
+                anchors.horizontalCenter: parent.horizontalCenter
+                onClick: window.stackMain()
+            }
+
+            TikoButtonNormal{
+                width: parent.width
+                text: qsTr("作曲家")
+                iconSource: "qrc:/image/artist.png"
+                anchors.horizontalCenter: parent.horizontalCenter
+                onClick: window.stackMain()
             }
 
             //切换到设置
             TikoButtonNormal{
                 width: parent.width
                 id: seitPageButton
-                text: qsTr("切换到设置")
+                text: qsTr("设置")
                 anchors.horizontalCenter: parent.horizontalCenter
                 onClickLeft:{
                     root.select = this.text

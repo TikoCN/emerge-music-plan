@@ -25,6 +25,11 @@ QList<QString> LrcData::getTextList() const
     return textList;
 }
 
+QList<QString> LrcData::getHelpTextList() const
+{
+    return helpTextList;
+}
+
 LrcData::LrcData(){
     id = 0;
     startTime = 0;

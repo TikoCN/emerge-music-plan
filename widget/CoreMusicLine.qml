@@ -109,7 +109,7 @@ Item {
                         hover: 0
                         cache: true
                         onClicked: musicLine.music.level = level
-                        icon.source: musicLine.music.level >= level ? "qrc:/image/love.png" : "qrc:/image/unlove.png"
+                        icon.source: musicLine.music.level >= level ? "qrc:/image/int.png" : "qrc:/image/unInt.png"
                     }
                     model: ListModel{
                         ListElement{level: 0}

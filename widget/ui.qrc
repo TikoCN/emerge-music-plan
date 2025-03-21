@@ -55,5 +55,10 @@
         <file>image/lineAddTime.png</file>
         <file>image/lineDeleteTime.png</file>
         <file>image/sort.png</file>
+        <file>image/int2.png</file>
+        <file>image/int.png</file>
+        <file>image/unInt.png</file>
+        <file>image/artist.png</file>
+        <file>image/alumb.png</file>
     </qresource>
 </RCC>

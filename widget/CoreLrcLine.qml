@@ -13,21 +13,22 @@ Item {
     property font lrcFont: Setting.mainLrcFont
 
     property var core
-    property string i18n: ""
     property bool isUse: true
     property int lrcId: core.id
     property var startList: core.startList
     property var endList: core.endList
     property var textList: core.textList
+    property var helpTextList: core.helpTextList
+    property bool isPlay: MediaPlayer.playingLrc.id === lrcId
 
     MultiEffect {
         id: effct
         autoPaddingEnabled: true
         source: lrcShow
         anchors.fill: lrcShow
-        blurEnabled: true
-        blurMax: maxFontMetrics.boundingRect.height * 0.8
-        blur: 0.6
+        blurEnabled: !isPlay
+        blurMax: 30
+        blur: 1.0
     }
 
     Canvas{
@@ -90,28 +91,48 @@ Item {
             //计算辅助文本
             ctx.fillStyle = coreLrcLine.normalColor;
 
-            for(i=0; i<i18n.length; i++){
-                //计算字长
-                oneFontMetrics.text = i18n[i]
-                length = oneFontMetrics.advanceWidth + 3
-                //达到长度底部
-                if(startX + length > coreLrcLine.width - 20){//超出长度
-                    startX = 20
-                    startY += maxH
+            for (var j=0; j<helpTextList.length; j++){
+                var text = helpTextList[j]
+                startX = 20
+                startY += maxH
+
+                for(i=0; i<text.length; i++){
+                    //计算字长
+                    oneFontMetrics.text = text[i]
+                    length = oneFontMetrics.advanceWidth + 3
+                    //达到长度底部
+                    if(startX + length > coreLrcLine.width - 20){//超出长度
+                        startX = 20
+                        startY += maxH
+                    }
+                    ctx.fillText(text[i], startX, startY - overF * 3)
+                    startX += length
                 }
-                ctx.fillText(i18n[i], startX, startY - overF * 3)
-                startX += length
             }
         }
     }
 
     onLrcFontChanged: lrcShow.requestPaint()
     onWidthChanged: setHeight()
-    Component.onCompleted: {setHeight()}
+    Component.onCompleted: {
+        setHeight()
+        lrcShow.requestPaint()
+    }
     Connections{
         target: core
         function onUpdate(){
             lrcShow.requestPaint()
+        }
+    }
+
+
+    Connections{
+        target: MediaPlayer
+
+        function onPlayingLrcIdChange(){
+            if(isPlay != (MediaPlayer.playingLrc.id === lrcId)) {
+                isPlay = (MediaPlayer.playingLrc.id === lrcId)
+            }
         }
     }
 
@@ -150,22 +171,28 @@ Item {
             //计算字长
             oneFontMetrics.text = lrc[i]
             length = oneFontMetrics.advanceWidth + 3
-            if(startX + length > coreLrcLine.width){
+            if(startX + length >= coreLrcLine.width - 20){
                 line++
                 startX = 20
             }
             startX += length
         }
 
-        for(i=0; i<coreLrcLine.i18n.length; i++){
-                //计算字长
-                oneFontMetrics.text = coreLrcLine.i18n[i]
-                length = oneFontMetrics.advanceWidth + 3
-                if(startX + length > coreLrcLine.width){
-                    line++
-                    startX = 20
-                }
-                startX += length
+        for (var j=0; j<helpTextList.length; j++){
+            var helpLine = helpTextList[j]
+            startX = 20
+            line++
+
+            for(i=0; i<helpLine.length; i++){
+                    //计算字长
+                    oneFontMetrics.text = helpLine[i]
+                    length = oneFontMetrics.advanceWidth + 3
+                    if(startX + length >=  coreLrcLine.width - 20){
+                        line++
+                        startX = 20
+                    }
+                    startX += length
+            }
         }
 
         coreLrcLine.height = (line + 1.6) * maxFontMetrics.boundingRect.height
