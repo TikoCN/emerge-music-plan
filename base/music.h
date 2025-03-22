@@ -15,7 +15,7 @@ public:
     QString url;
     QString alumb;
     QString lastEdit;
-    qint64 endTime;
+    long long endTime;
     qint64 lastEditTime;
     int coreId;
     int level;
@@ -110,6 +110,8 @@ public:
     int getLevel() const;
     void setLevel(int newLevel);
 
+    long long getEndTime() const;
+
 signals:
     void isLoveChanged();
 
@@ -124,6 +126,7 @@ private:
     Q_PROPERTY(int coreId READ getCoreId CONSTANT)
     Q_PROPERTY(bool isLove READ getIsLove WRITE setIsLove NOTIFY isLoveChanged FINAL)
     Q_PROPERTY(int level READ getLevel WRITE setLevel NOTIFY levelChanged FINAL)
+    Q_PROPERTY(long long endTime READ getEndTime CONSTANT FINAL)
 };
 
 #endif // MUSIC_H

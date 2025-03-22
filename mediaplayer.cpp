@@ -97,16 +97,60 @@ void MediaPlayer::updateAudioOutPut()
 /*
  * 播放音乐
  */
-void MediaPlayer::playMusic(int table, int music)
-{
-    if(table != -1){
-        musicList.clear();
-        musicList.append(core->tableList[table]->showMusics);
-        emit cppBuildPlayingTable();
-    }
 
-    playingMusic = musicList[music];
-    player->setSource(musicList[music]->url);
+//播放音乐
+void MediaPlayer::playTableMusic(int tableId, int musicId){
+    // 清空正在播放列表
+    musicList.clear();
+
+
+    if (tableId < 0 || tableId >= core->tableList.size()) {
+        return;
+    }
+    Table *table = core->tableList[tableId];
+    musicList.append(table->showMusics);
+    emit playListChange();
+
+    playMusic(musicId);
+}
+
+//播放专辑音乐
+void MediaPlayer::playAlumbMusic(int alumbId, int musicId){
+    // 清空正在播放列表
+    musicList.clear();
+
+
+    // if (alumbId < 0 || alumbId >= core->alumbList.size()) {
+    //     return;
+    // }
+    // Alumb *alumb = core->alumbList[alumbId];
+    // musicList.append(alumb->musicList);
+    // emit playListChange();
+
+    // playMusic(musicId);
+}
+
+//播放专辑音乐
+void MediaPlayer::playArtistMusic(int artistId, int musicId){
+    // 清空正在播放列表
+    musicList.clear();
+
+
+    // if (artistId < 0 || artistId >= core->artistList.size()) {
+    //     return;
+    // }
+    // Artist *artist = core->artistList[artistId];
+    // musicList.append(artist->musicList);
+    // emit playListChange();
+
+    // playMusic(musicId);
+}
+
+void MediaPlayer::playMusic(int musicId)
+{
+    playingMusicListId = musicId; //正在播放的列表id
+    playingMusic = musicList[musicId];
+    player->setSource(musicList[musicId]->url);
     player->play();
 
     emit downLrc(playingMusic->getBaseName(), playingMusic->getLrcUrl());//加载新歌词
@@ -126,6 +170,7 @@ void MediaPlayer::playNext(int forward)
     switch (loopType) {
     case 0:
         aim = playingMusicListId + forward;
+
         if(forward == 1 && aim >= max){
             aim = 0;
         }
@@ -141,7 +186,7 @@ void MediaPlayer::playNext(int forward)
         break;
     }
 
-    playMusic(-1, aim);
+    playMusic(aim);
 }
 
 QString MediaPlayer::getTimeString()

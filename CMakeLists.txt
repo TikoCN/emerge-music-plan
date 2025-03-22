@@ -25,17 +25,21 @@ qt_add_qml_module(appmusicPlay
     SOURCES
     mediaplayer.h mediaplayer.cpp
     setting.h setting.cpp
-    hosttime.h hosttime.cpp
-    table.h table.cpp
     extralibrary.h extralibrary.cpp
     imageprovider.h imageprovider.cpp
-    lrcdata.h lrcdata.cpp
-    music.h music.cpp
     online.h online.cpp
     ffmpeg.h ffmpeg.cpp
     base.h base.cpp
     musiccore.h musiccore.cpp
     base/keyvaluepair.h base/keyvaluepair.cpp
+    base/alumb.h base/alumb.cpp
+    base/lrcdata.h base/lrcdata.cpp
+    base/music.h base/music.cpp
+    base/table.h base/table.cpp
+    base/artist.h base/artist.cpp
+    load/taskcenter.h load/taskcenter.cpp
+    load/buildmusic.h load/buildmusic.cpp
+    load/buildusertable.h load/buildusertable.cpp
 )
 
 # link fftw3

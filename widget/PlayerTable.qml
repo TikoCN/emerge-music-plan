@@ -151,7 +151,8 @@ Item {
         }
     }
 
-    ScrollView{
+    ListView{
+        id: musicList
         width: playerTable.width - 40
         height: playerTable.height - showView.height - 20
         anchors.top: showView.bottom
@@ -161,31 +162,22 @@ Item {
         anchors.right: playerTable.right
         anchors.rightMargin: 5
 
-        ScrollBar.horizontal.visible: false
         ScrollBar.vertical: TikoBar{}
+        spacing: 15
+        clip: true
 
-        ListView{
-            id: musicList
-            width: parent.width
-            anchors.left: parent.left
-            anchors.leftMargin: 5
-            anchors.right: parent.right
-            anchors.rightMargin: 5
-            spacing: 15
-            clip: true
+        model: ListModel{
+            id: musicModel
+        }
 
-            model: ListModel{
-                id: musicModel
-            }
-
-            delegate: CoreMusicLine{
-                width: musicList.width - 20
-                tableId: table
-                listId: musicListId
-                music: musicCore
-            }
+        delegate: CoreMusicLine{
+            width: musicList.width - 20
+            tableId: table
+            listId: musicListId
+            music: musicCore
         }
     }
+
 
     Connections{
         target: Core.tableList[playerTable.tableId]

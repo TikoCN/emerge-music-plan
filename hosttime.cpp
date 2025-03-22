@@ -25,7 +25,7 @@ TaskCell::~TaskCell(){
 void TaskCell::loadMusicCore()
 {
     ExtraLibrary extraLibrary;
-    HostTime *host = HostTime::getInstance();
+    TaskCenter *host = TaskCenter::getInstance();
     MusicCore *core = MusicCore::getInstance();
 
     while(true){
@@ -61,7 +61,7 @@ void TaskCell::loadMusicCore()
 
 void TaskCell::loadUserTable()
 {
-    HostTime *host = HostTime::getInstance();
+    TaskCenter *host = TaskCenter::getInstance();
     QStringList musicNameList = host->musicNameList;
     QList<Music *> musicList = host->musicList;
 
@@ -94,21 +94,21 @@ void TaskCell::loadUserTable()
     emit finishUserTable(this);
 }
 
-HostTime::HostTime()
+TaskCenter::TaskCenter()
 {
     thread = new QThread;
     this->moveToThread(thread);
     thread->start();
 
     MediaPlayer* play = MediaPlayer::getInstance();
-    connect(this, &HostTime::initData, play, &MediaPlayer::clearData);
-    connect(play, &MediaPlayer::finishClearData, this, &HostTime::loadMusicFile);
+    connect(this, &TaskCenter::initData, play, &MediaPlayer::clearData);
+    connect(play, &MediaPlayer::finishClearData, this, &TaskCenter::loadMusicFile);
 
     Setting* seit = Setting::getInstance();//获得设置指针
-    connect(seit, &Setting::loadMusics, this, &HostTime::buildHostTime);
+    connect(seit, &Setting::loadMusics, this, &TaskCenter::buildTaskCenter);
 }
 
-HostTime::~HostTime()
+TaskCenter::~TaskCenter()
 {
     thread->quit();
     thread->wait();
@@ -118,7 +118,7 @@ HostTime::~HostTime()
 /*
  *生成加载单元列表
  */
-void HostTime::buildHostTime()
+void TaskCenter::buildTaskCenter()
 {
     //创建信号量
     semaphore = new QSemaphore(1);
@@ -128,14 +128,14 @@ void HostTime::buildHostTime()
         TaskCell* cell = new TaskCell;
         taskCellList.append(cell);
 
-        cell->connect(this, &HostTime::startMusicCore, cell, &TaskCell::loadMusicCore);
-        cell->connect(this, &HostTime::startUserTable, cell, &TaskCell::loadUserTable);
+        cell->connect(this, &TaskCenter::startMusicCore, cell, &TaskCell::loadMusicCore);
+        cell->connect(this, &TaskCenter::startUserTable, cell, &TaskCell::loadUserTable);
 
-        cell->connect(cell, &TaskCell::loadedMusicCore, this, &HostTime::getMusicCoreList);
-        cell->connect(cell, &TaskCell::loadedUserTable, this, &HostTime::getUserTableMusic);
+        cell->connect(cell, &TaskCell::loadedMusicCore, this, &TaskCenter::getMusicCoreList);
+        cell->connect(cell, &TaskCell::loadedUserTable, this, &TaskCenter::getUserTableMusic);
 
-        cell->connect(cell, &TaskCell::finishMusicCore, this, &HostTime::finishMusicCore);
-        cell->connect(cell, &TaskCell::finishUserTable, this, &HostTime::finishUserTable);
+        cell->connect(cell, &TaskCell::finishMusicCore, this, &TaskCenter::finishMusicCore);
+        cell->connect(cell, &TaskCell::finishUserTable, this, &TaskCenter::finishUserTable);
     }
 
     emit initData();
@@ -144,7 +144,7 @@ void HostTime::buildHostTime()
 /*
  *加载音乐文件资源
  */
-void HostTime::loadMusicFile()
+void TaskCenter::loadMusicFile()
 {
     Setting* seit = Setting::getInstance();//获得设置指针
     QStringList dirList = seit->sourceList;
@@ -160,7 +160,7 @@ void HostTime::loadMusicFile()
     emit startMusicCore();
 }
 
-void HostTime::loadUserTable()
+void TaskCenter::loadUserTable()
 {
     MusicCore *core = MusicCore::getInstance();
     QJsonObject data = core->readJsonData();
@@ -208,7 +208,7 @@ void HostTime::loadUserTable()
 /*
  *遍历文件夹得到所有子文件
  */
-QFileInfoList HostTime::getMusicUrl(QString dirPath)
+QFileInfoList TaskCenter::getMusicUrl(QString dirPath)
 {
     if(dirPath.isEmpty()){
         return QFileInfoList();//返回空列表
@@ -235,7 +235,7 @@ QFileInfoList HostTime::getMusicUrl(QString dirPath)
 /*
  * 申请分配文件列表
  */
-bool HostTime::getInfoList(QFileInfoList *list)
+bool TaskCenter::getInfoList(QFileInfoList *list)
 {
     semaphore->acquire();                      //请求读写
     //查看任务是否完成，已经任务队列是否为空
@@ -244,7 +244,7 @@ bool HostTime::getInfoList(QFileInfoList *list)
         return false;
     }
 
-    int length = 30;
+    int length = 10;
     int start = workPos;
     if(workPos + length >= musicFileList.size()){
         length = musicFileList.size() - workPos;
@@ -256,7 +256,7 @@ bool HostTime::getInfoList(QFileInfoList *list)
     return true;
 }
 
-bool HostTime::getUserTableTask(QStringList *musicNameList, int *aim)
+bool TaskCenter::getUserTableTask(QStringList *musicNameList, int *aim)
 {
     semaphore->acquire();                      //请求读写
     QStringList musicIdList;
@@ -298,7 +298,7 @@ bool HostTime::getUserTableTask(QStringList *musicNameList, int *aim)
 /*
  *获得加载好的音乐数据
  */
-void HostTime::getMusicCoreList(QList<Music *> musicList)
+void TaskCenter::getMusicCoreList(QList<Music *> musicList)
 {
     MusicCore *core = MusicCore::getInstance();
 
@@ -333,7 +333,7 @@ void HostTime::getMusicCoreList(QList<Music *> musicList)
     dirTableSize = tableList.size();
 }
 
-void HostTime::getUserTableMusic(QList<Music *> musicList, int tableId)
+void TaskCenter::getUserTableMusic(QList<Music *> musicList, int tableId)
 {
     if (tableId < 0 || tableId >= tableList.size()){
         return;
@@ -342,7 +342,7 @@ void HostTime::getUserTableMusic(QList<Music *> musicList, int tableId)
     tableList[tableId]->insertMusic(musicList);
 }
 
-void HostTime::finishMusicCore(TaskCell *cell)
+void TaskCenter::finishMusicCore(TaskCell *cell)
 {
     //计算当前工作单元数
     workNumber--;
@@ -351,7 +351,7 @@ void HostTime::finishMusicCore(TaskCell *cell)
     }
 }
 
-void HostTime::finishUserTable(TaskCell *cell)
+void TaskCenter::finishUserTable(TaskCell *cell)
 {
     //计算当前工作单元数
     workNumber--;
@@ -365,7 +365,7 @@ void HostTime::finishUserTable(TaskCell *cell)
 /*
  *删除数据
  */
-void HostTime::clearData()
+void TaskCenter::clearData()
 {
     this->musicList.clear();
     this->musicFileList.clear();

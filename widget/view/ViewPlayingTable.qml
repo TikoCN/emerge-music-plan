@@ -54,7 +54,7 @@ Drawer {
     Connections{
         target: MediaPlayer
 
-        function onCppBuildPlayingTable(){
+        function onPlayListChange(){
             playingTable.buildMusicLine()
         }
 

@@ -142,6 +142,6 @@ Item {
     }
 
     function play(){
-        MediaPlayer.playMusic(tableId, listId)
+        MediaPlayer.playTableMusic(tableId, listId)
     }
 }

@@ -110,10 +110,7 @@ ScrollView{
                     }
 
                     //初始化
-                    Component.onCompleted: {
-                        Setting.loadMusicCores()
-                        bulidSoure()
-                    }
+                    Component.onCompleted: bulidSoure()
                 }
             }
         }

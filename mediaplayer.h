@@ -2,7 +2,7 @@
 #define MEDIAPLAYER_H
 
 #include "musiccore.h"
-#include "lrcdata.h"
+#include "base/lrcdata.h"
 #include <QMediaPlayer>
 #include <QAudioBufferOutput>
 #include <QAudioOutput>
@@ -64,7 +64,15 @@ public:
     void updateAudioOutPut();
 
     //播放音乐
-    Q_INVOKABLE void playMusic(int table, int music);
+    Q_INVOKABLE void playTableMusic(int tableId, int musicId);
+
+    //播放专辑音乐
+    Q_INVOKABLE void playAlumbMusic(int alumbId, int musicId);
+
+    //播放专辑音乐
+    Q_INVOKABLE void playArtistMusic(int artistId, int musicId);
+
+    void playMusic(int musicId);
 
     //加载歌词
     void loadLrcList();
@@ -116,7 +124,7 @@ signals:
     void finishClearData();
 
     //重建播放列表
-    void cppBuildPlayingTable();
+    void playListChange();
 
     //将歌曲添加到正在播放
     void cppMusicInsertPlayingTable(int coreId);

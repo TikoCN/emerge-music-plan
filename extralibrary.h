@@ -1,6 +1,6 @@
 #ifndef EXTRALIBRARY_H
 #define EXTRALIBRARY_H
-#include "music.h"
+#include "base/music.h"
 #include <QAudioBuffer>
 #include <QObject>
 

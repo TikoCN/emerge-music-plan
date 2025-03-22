@@ -4,6 +4,7 @@ import QtQuick.Controls
 import QtQml
 import TikoAPI
 import Tiko
+import Widget
 
 Item {
     id: mainView
@@ -50,6 +51,21 @@ Item {
         width: parent.width
         height: parent.height - closeButton.height
         initialItem: seitPage
+
+        PageSeit {
+            id: seitPage
+            visible: false
+        }
+
+        PageAlumb {
+            id: alumbPage
+            visible: false
+        }
+
+        PageArtist {
+            id: artistPage
+            visible: false
+        }
     }
 
     //切换到列表
@@ -63,6 +79,19 @@ Item {
     function turnToSeit(){
         if(stackView.currentItem != seitPage){
             stackView.replace(seitPage)
+        }
+    }
+
+    function turnToArtist(){
+        if(stackView.currentItem != artistPage){
+            stackView.replace(artistPage)
+        }
+    }
+
+    function turnToAlumb(){
+        if(stackView.currentItem != alumbPage){
+            alumbPage.build()
+            stackView.replace(alumbPage)
         }
     }
 

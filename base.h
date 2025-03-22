@@ -27,7 +27,7 @@ public:
     QString readFileText(QString url);
 
     //写文件信息
-    bool writeFileText(QString url, QString data);
+    Q_INVOKABLE bool writeFileText(QString url, QString data);
 
     //打开文件
     void deskOpenFile(QString url, bool local);

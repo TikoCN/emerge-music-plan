@@ -1,5 +1,5 @@
 #include "musiccore.h"
-#include "hosttime.h"
+#include "load/taskcenter.h"
 #include <QDir>
 #include <QJsonDocument>
 #include <QJsonObject>
@@ -13,17 +13,18 @@ MusicCore::MusicCore(QObject *parent)
 /*
  * 获得音乐核心
  */
-void MusicCore::getMusicCore(QList<Music *>musicList, QList<Table *> tableList)
+void MusicCore::getMusicCore(QList<Music *>musicList, QList<Table *> tableList, QList<QList<Artist *>> artistLineList, QList<QList<Alumb *>> alumbLineList)
 {
     this->musicList = musicList;
     this->tableList = tableList;
-
-    //清空数据
-    HostTime *host = HostTime::getInstance();
-
-    host->clearData();
+    this->alumbLineList = alumbLineList;
+    this->artistLineList = artistLineList;
 
     emit finishInit();
+
+    //清空数据
+    TaskCenter *host = TaskCenter::getInstance();
+    host->clearData();
 }
 
 /*
@@ -65,6 +66,16 @@ void MusicCore::tableMoveMusic(int orgTableId, int musicId, int aimTalbeId)
     tableList[aimTalbeId]->insertMusic(core);
 }
 
+
+QList<QList<Alumb *> > MusicCore::getAlumbLineList() const
+{
+    return alumbLineList;
+}
+
+QList<QList<Artist *> > MusicCore::getArtistLineList() const
+{
+    return artistLineList;
+}
 
 QList<Music *> MusicCore::getMusicList() const
 {

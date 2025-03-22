@@ -36,6 +36,11 @@ void Music::setLevel(int newLevel)
     emit levelChanged();
 }
 
+long long Music::getEndTime() const
+{
+    return endTime;
+}
+
 Music::Music() {
     url = "";
 }

@@ -1,7 +1,7 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include "setting.h"
-#include "hosttime.h"
+#include "load/taskcenter.h"
 #include "mediaplayer.h"
 #include "imageprovider.h"
 #include "online.h"
@@ -11,7 +11,7 @@
 #include <QIcon>
 
 Setting* Setting::instance = nullptr;
-HostTime* HostTime::instance = nullptr;
+TaskCenter* TaskCenter::instance = nullptr;
 MediaPlayer* MediaPlayer::instance = nullptr;
 OnLine* OnLine::instance = nullptr;
 Base* Base::instance = nullptr;
@@ -26,7 +26,7 @@ int main(int argc, char *argv[])
     OnLine::buildInstance();
     MediaPlayer::buildInstance();
     Setting::buildInstance();
-    HostTime::buildInstance();
+    TaskCenter::buildInstance();
     Base::buildInstance();
     MusicCore::buildInstance();
 
@@ -34,7 +34,7 @@ int main(int argc, char *argv[])
     Setting* seit = Setting::getInstance();
     MusicCore* core = MusicCore::getInstance();
     MediaPlayer* mediaPlayer = MediaPlayer::getInstance();
-    HostTime* hostTime = HostTime::getInstance();
+    TaskCenter* center = TaskCenter::getInstance();
     OnLine* onLine = OnLine::getInstance();
     Base* base = Base::getInstance();
     mediaPlayer->core = core;
@@ -45,9 +45,12 @@ int main(int argc, char *argv[])
     qmlRegisterSingletonInstance("TikoAPI", 1, 0, "Base", base);
     qmlRegisterSingletonInstance("TikoAPI", 1, 0, "Core", core);
 
-    QObject::connect(hostTime, &HostTime::musicsLoaded, core, &MusicCore::getMusicCore);
+    QObject::connect(center, &TaskCenter::musicsLoaded, core, &MusicCore::getMusicCore);
     QObject::connect(mediaPlayer, &MediaPlayer::downLrc, onLine, &OnLine::downLrc);
     QObject::connect(onLine, &OnLine::lrcDowned, mediaPlayer, &MediaPlayer::loadLrcList);
+
+    // 开始加载
+    seit->loadMusicCores();
 
     QQmlApplicationEngine engine;
     QObject::connect(

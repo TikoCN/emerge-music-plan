@@ -1,42 +1,16 @@
-#ifndef HOSTTIME_H
-#define HOSTTIME_H
+#ifndef TASKCENTER_H
+#define TASKCENTER_H
 
-#include "base/music.h"
-#include "base/table.h"
-#include "base/alumb.h"
-#include "base/artist.h"
-#include <QList>
+#include <QObject>
 #include <QFileInfoList>
-#include <QThread>
-#include <QSemaphore>
-#include <QRegularExpression>
-
-class TaskCell : public QObject
-{
-    Q_OBJECT
-private:
-    QThread* thread;
-public:
-    TaskCell();
-    ~TaskCell();
-
-    // 加载音乐核心数据
-    void loadMusicCore();
-
-    // 加载用户列表
-    void loadUserTable();
-
-signals:
-    //音乐核心完成
-    void loadedMusicCore(QList<Music *>);
-
-    //音乐核心完成
-    void loadedUserTable(QList<Music *>, int);
-
-    //完成任务
-    void finishMusicCore(TaskCell* cell);
-    void finishUserTable(TaskCell* cell);
-};
+#include <QThreadPool>
+#include "buildusertable.h"
+#include "buildmusic.h"
+#include "base/table.h"
+#include "base/music.h"
+#include "base/artist.h"
+#include "base/alumb.h"
+#include "QSemaphore"
 
 class TaskCenter : public QObject
 {
@@ -67,11 +41,12 @@ public:
     QFileInfoList musicFileList;               // 所有文件列表
     QStringList musicNameList;                 // 旧音乐名列表
     QList<QStringList> tableMusic;              // 列表歌曲名单
-    QList<TaskCell *> taskCellList;            // 任务计算单元
+    QList<BuildMusic *> buildMusicList;            // 任务计算单元
+    QList<BuildUserTable *> buildUserTableList;            // 任务计算单元
     QList<Music *> musicList;                   // 计算好的音乐核心
     QList<Table *> tableList;                  // 播放列表
-    QList<Artist *> artistList;                // 歌手列表
-    QList<Alumb *> alumbList;                  // 专辑列表
+    QList<QList<Artist *>> artistLineList;                // 歌手列表
+    QList<QList<Alumb *>> alumbLineList;                  // 专辑列表
 
 public slots:
     //生成加载单元列表
@@ -81,20 +56,24 @@ public slots:
     void loadMusicFile();
     void loadUserTable();
 
+    void insertArtist(Music *music);
+    void insertAlumb(Music *music);
+
     //遍历文件夹得到所有子文件
-    QFileInfoList getMusicUrl(QString dirPath);
+    void filterFileInfo(QStringList dirPath);
+    void filterFileInfo(QFileInfoList dir);
 
     // 获得加载的任务
     bool getInfoList(QFileInfoList *list);
     bool getUserTableTask(QStringList *musicNameList, int *aim);
 
     // 获得加载好的音乐数据
-    void getMusicCoreList(QList<Music *> musicList);
+    void getMusicCoreList(QList<Music *> musicList, QList<QList<Music *>> tableMusicList);
     void getUserTableMusic(QList<Music *> musicList, int tableId);
 
     //子线程完成任务
-    void finishMusicCore(TaskCell* cell);
-    void finishUserTable(TaskCell* cell);
+    void finishMusicCore();
+    void finishUserTable();
 
     //删除数据
     void clearData();
@@ -106,7 +85,7 @@ signals:
     void musicListBuild(QFileInfoList);
 
     //音乐文件加载完成
-    void musicsLoaded(QList<Music *>, QList<Table *>);
+    void musicsLoaded(QList<Music *>, QList<Table *>, QList<QList<Artist *>>, QList<QList<Alumb *>>);
 
     //开始工作
     void startMusicCore();
@@ -116,4 +95,5 @@ signals:
     void initData();
 };
 
-#endif // HOSTTIME_H
+
+#endif // TASKCENTER_H

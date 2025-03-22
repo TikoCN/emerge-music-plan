@@ -7,8 +7,7 @@ import Tiko
 
 Item {
     id: root
-    clip: true
-    property string select: qsTr("切换到设置")
+    property string showText: ""
 
     //左侧导航
     ScrollView{
@@ -35,15 +34,36 @@ Item {
                 text: qsTr("主页")
                 iconSource: "qrc:/image/main.png"
                 anchors.horizontalCenter: parent.horizontalCenter
-                onClickLeft: window.stackMain()
+                onClickLeft: {
+                    root.showText = text
+                    window.stackMain()
+                }
+
+                Rectangle {
+                    color: Setting.themeColor
+                    opacity: 0.3
+                    visible: root.showText === parent.text
+                    anchors.fill: parent
+                }
             }
 
             TikoButtonNormal{
+                id: artistButton
                 width: parent.width
                 text: qsTr("专辑")
                 iconSource: "qrc:/image/alumb.png"
                 anchors.horizontalCenter: parent.horizontalCenter
-                onClick: window.stackMain()
+                onClick: {
+                    root.showText = text
+                    mainView.turnToAlumb()
+                }
+
+                Rectangle {
+                    color: Setting.themeColor
+                    opacity: 0.3
+                    visible: root.showText === parent.text
+                    anchors.fill: parent
+                }
             }
 
             TikoButtonNormal{
@@ -51,7 +71,17 @@ Item {
                 text: qsTr("作曲家")
                 iconSource: "qrc:/image/artist.png"
                 anchors.horizontalCenter: parent.horizontalCenter
-                onClick: window.stackMain()
+                onClick: {
+                    root.showText = text
+                    mainView.turnToArtist()
+                }
+
+                Rectangle {
+                    color: Setting.themeColor
+                    opacity: 0.3
+                    visible: root.showText === parent.text
+                    anchors.fill: parent
+                }
             }
 
             //切换到设置
@@ -61,18 +91,16 @@ Item {
                 text: qsTr("设置")
                 anchors.horizontalCenter: parent.horizontalCenter
                 onClickLeft:{
-                    root.select = this.text
+                    root.showText = text
                     mainView.turnToSeit();
                 }
                 iconSource: "qrc:/image/seit.png"
 
-                //按钮选中边框边框
-                Rectangle{
-                    visible: parent.text === root.select
-                    anchors.fill: parent
+                Rectangle {
                     color: Setting.themeColor
                     opacity: 0.3
-                    radius: 10
+                    visible: root.showText === parent.text
+                    anchors.fill: parent
                 }
             }
 
@@ -110,18 +138,16 @@ Item {
                     iconHeight: 30
                     cache: false
                     onClickLeft: {
-                        root.select = this.text
+                        root.showText = text
                         mainView.stackTable(i)
                     }
                     onClickRight: tableMenu.open()
 
-                    //按钮选中边框边框
-                    Rectangle{
-                        visible: parent.text === root.select
-                        anchors.fill: parent
+                    Rectangle {
                         color: Setting.themeColor
                         opacity: 0.3
-                        radius: 10
+                        visible: root.showText === parent.text
+                        anchors.fill: parent
                     }
                 }
 
