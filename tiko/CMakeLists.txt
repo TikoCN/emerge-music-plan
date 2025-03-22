@@ -39,4 +39,5 @@ qt_add_qml_module(TikoLib
     combox/TikoSelectColor.qml
     combox/TikoSelectFont.qml
     RESOURCES icon.qrc
+    QML_FILES TikoImageAuto.qml
 )

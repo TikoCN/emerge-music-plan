@@ -6,23 +6,15 @@ Button {
     id: button
     implicitWidth: textRect.boundingRect.width * 4
     implicitHeight: 32
-    property color color: TikoSeit.themeColor
+    property color backColor: TikoSeit.transparentColor
+    property color textColor: TikoSeit.backdropColor
     property int radius: 3
 
     background: Rectangle{
         id: back
         radius: button.radius
-        color: "#00000000"
-        border.color: button.color
-        border.width: 1.5
+        color: button.backColor
         opacity: 0.3
-    }
-
-    Rectangle{
-        anchors.fill: parent
-        radius: button.radius
-        color: button.color
-        opacity: 0.05
     }
 
     contentItem: TikoTextLine{
@@ -31,9 +23,7 @@ Button {
         text: button.text
         horizontalAlignment: Text.AlignHCenter
         verticalAlignment: Text.AlignVCenter
-        color: button.color
-        opacity: 0.5
-        font.bold: true
+        color: button.textColor
     }
 
     TextMetrics{

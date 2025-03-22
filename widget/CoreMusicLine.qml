@@ -9,7 +9,11 @@ Item {
     implicitWidth: 100
     clip: true
 
-    property int tableId: 0
+    property int tableId: -1
+    property int alumbLineId: -1
+    property int alumbListId: -1
+    property int artistLineId: -1
+    property int artistListId: -1
     property int listId: 0
     property int musicId: music.coreId
     property var music
@@ -49,15 +53,12 @@ Item {
         spacing: 6
 
         //封面
-        Image{
+        TikoImageAuto {
             id: cover
-            source: "image://cover/file:" + musicLine.musicId.toString()
-            sourceSize.height: height
-            sourceSize.width: width
             width: 50
             height: 50
-            cache: true
-            asynchronous: true
+            normalUrl: "qrc:/image/music.png"
+            loadUrl: "image://cover/file:" + musicLine.musicId.toString()
         }
 
         Column{
@@ -142,6 +143,14 @@ Item {
     }
 
     function play(){
-        MediaPlayer.playTableMusic(tableId, listId)
+        if (tableId !== -1) {
+            MediaPlayer.playTableMusic(tableId, listId)
+        }
+        else if (alumbLineId !== -1 && alumbListId !== -1) {
+            MediaPlayer.playAlumbMusic(alumbLineId, alumbListId, listId)
+        }
+        else if (artistLineId !== -1 && artistListId !== -1) {
+            MediaPlayer.playArtistMusic(artistLineId, artistListId, listId)
+        }
     }
 }

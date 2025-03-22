@@ -4,161 +4,164 @@ import Tiko
 import TikoAPI
 import Widget
 
-
 Item {
     id: alumbPage
 
-    Item{
-        id: alumbList
-        visible: false
-        ListView {
-            id: alumbLineList
-            anchors.left: parent.left
-            anchors.top: parent.top
-            anchors.margins: 30
-            width: parent.width - 60
-            height: parent.height - 60
-            ScrollBar.vertical: TikoBar{}
+    StackView {
+        id: alumbListShow
+        initialItem: alumbLineShow
+        anchors.fill: parent
 
-            model: ListModel{
-                id: alumbModel
-            }
+        Item{
+            id: alumbLineShow
+            visible: false
 
-            delegate: Item {
-                width: alumbList.width
-                height: alumbLineText.height + alumbShow.height
+            ListView {
+                id: alumbLineList
+                anchors.left: parent.left
+                anchors.top: parent.top
+                anchors.margins: 30
+                width: parent.width - 60
+                height: parent.height - 60
+                ScrollBar.vertical: TikoBar{}
 
-                TikoTextLine {
-                    id: alumbLineText
-                    text: lineText
-                    width: parent.width
-                    exSize: 10
-                    color: TikoSeit.themeColor
-                    opacity: 0.9
+                model: ListModel{
+                    id: alumbModel
                 }
 
-                Grid {
-                    id: alumbShow
-                    width: parent.width
-                    columns: parent.width / (150 + 20)
-                    spacing: 20
-                    height: (leng / columns + 1) * ((150 + 20))
-                    anchors.top: alumbLineText.bottom
-                    anchors.margins: 10
+                delegate: Item {
+                    width: alumbLineShow.width
+                    height: alumbLineText.height + alumbShow.height
 
-                    Repeater{
-                        model: alumbDataList
+                    TikoTextLine {
+                        id: alumbLineText
+                        text: lineText
+                        width: parent.width
+                        exSize: 10
+                        color: TikoSeit.themeColor
+                        opacity: 0.9
+                    }
 
-                        delegate: Item{
-                            width: 150
-                            height: alumbCover.height + textLine.height + 10
+                    Grid {
+                        id: alumbShow
+                        width: parent.width
+                        columns: parent.width / (150 + 20)
+                        spacing: 20
+                        height: (leng / columns + 1) * ((150 + 20))
+                        anchors.top: alumbLineText.bottom
+                        anchors.margins: 10
 
-                            Image {
-                                id: alumbCover
-                                width: parent.width
-                                height: 150
-                                source: "image://cover/file:" +  musicId.toString()
-                                sourceSize.height: height
-                                sourceSize.width: width
-                                cache: false
-                                asynchronous: true
-                            }
+                        Repeater{
+                            model: alumbDataList
 
-                            TikoTextLine {
-                                id: textLine
-                                anchors.top: alumbCover.bottom
-                                anchors.topMargin: 10
-                                width: parent.width
-                                text: alumb.name
-                            }
+                            delegate: Item{
+                                width: 150
+                                height: alumbCover.height + textLine.height + 10
 
-                            MouseArea {
-                                anchors.fill: alumbCover
-                                onClicked: alumbPage.openAlumbData(alumb)
+                                TikoImageAuto {
+                                    id: alumbCover
+                                    width: parent.width
+                                    height: 150
+                                    normalUrl: "qrc:/image/alumb.png"
+                                    loadUrl: "image://cover/file:" +  musicId.toString()
+                                }
+
+                                TikoTextLine {
+                                    id: textLine
+                                    anchors.top: alumbCover.bottom
+                                    anchors.topMargin: 10
+                                    width: parent.width
+                                    text: alumb.name
+                                }
+
+                                MouseArea {
+                                    anchors.fill: alumbCover
+                                    onClicked: alumbPage.openAlumbData(alumb)
+                                }
                             }
                         }
                     }
                 }
             }
         }
-    }
 
-    Item{
-        id: alumbDataShow
-        visible: false
-        TikoButtonIcon{
-            y: -10
-            icon.source: "qrc:/image/back.png"
-            onClicked: alumbListShow.replace(alumbList)
-        }
+        Item{
+            id: alumbDataShow
+            visible: false
 
-        // 专辑信息背景
-        Rectangle {
-            id: alumbDataBack
-            anchors.left: parent.left
-            anchors.top: parent.top
-            anchors.margins: 20
-            width: parent.width - 60
-            height: 270
-            color: TikoSeit.backdropColor
-            radius: 15
-        }
-
-        Image {
-            id: alumbDataCover
-            width: 250
-            height: 250
-            sourceSize.width: width
-            sourceSize.height: height
-            anchors.left: parent.left
-            anchors.top: parent.top
-            anchors.margins: 30
-        }
-
-        TikoTextLine {
-            id: alumbText
-            width: parent.width - alumbDataCover.width - 60
-            anchors.left: alumbDataCover.right
-            anchors.leftMargin: 30
-            anchors.top: alumbDataCover.top
-            exSize: 20
-        }
-
-        TikoTextLine {
-            id: alumbHelp
-            width: parent.width - alumbDataCover.width
-            anchors.top: alumbText.bottom
-            anchors.topMargin: 10
-            anchors.left: alumbText.left
-            exSize: 5
-            opacity: 0.5
-        }
-
-        // 音乐列表
-        ListView {
-            id: musicList
-            anchors.top: alumbDataCover.bottom
-            anchors.left: parent.left
-            anchors.margins: 30
-            width: parent.width - 60
-            height: parent.height - alumbDataBack.height - 40
-
-            model: ListModel {
-                id: alumbMusicList
+            TikoButtonIcon{
+                y: -10
+                icon.source: "qrc:/image/back.png"
+                onClicked: openAlumbLineList()
             }
 
-            delegate: CoreMusicLine {
-                width: musicList.width
-                listId: musicListId
-                music: musicCore
+            // 专辑信息背景
+            Rectangle {
+                id: alumbDataBack
+                anchors.left: parent.left
+                anchors.top: parent.top
+                anchors.margins: 20
+                width: parent.width - 60
+                height: 270
+                color: TikoSeit.backdropColor
+                radius: 15
+            }
+
+            Image {
+                id: alumbDataCover
+                width: 250
+                height: 250
+                sourceSize.width: width
+                sourceSize.height: height
+                anchors.left: parent.left
+                anchors.top: parent.top
+                anchors.margins: 30
+            }
+
+            TikoTextLine {
+                id: alumbText
+                width: parent.width - alumbDataCover.width - 60
+                anchors.left: alumbDataCover.right
+                anchors.leftMargin: 30
+                anchors.top: alumbDataCover.top
+                exSize: 20
+            }
+
+            TikoTextLine {
+                id: alumbHelp
+                width: parent.width - alumbDataCover.width
+                anchors.top: alumbText.bottom
+                anchors.topMargin: 10
+                anchors.left: alumbText.left
+                exSize: 5
+                opacity: 0.5
+            }
+
+            // 音乐列表
+            ListView {
+                id: musicList
+                anchors.top: alumbDataCover.bottom
+                anchors.left: parent.left
+                anchors.margins: 30
+                width: parent.width - 60
+                height: parent.height - alumbDataBack.height - 40
+
+                model: ListModel {
+                    id: alumbMusicList
+                }
+
+                delegate: CoreMusicLine {
+                    width: musicList.width
+                    listId: musicListId
+                    music: musicCore
+                }
             }
         }
     }
 
-    StackView {
-        id: alumbListShow
-        initialItem: alumbList
-        anchors.fill: parent
+    function openAlumbLineList () {
+        alumbListShow.replace(alumbLineShow)
+        build()
     }
 
     function openAlumbData (alumb) {
@@ -174,11 +177,12 @@ Item {
             allTime = alumb.musicList[i].endTime
         }
         alumbText.text = alumb.name
-        alumbHelp.text = alumb.musicList.length.toString()+" "+qsTr("首歌曲") +"-"+ allTime.toString()+" "+qsTr("歌曲长度")
+        alumbHelp.text = alumb.musicList.length.toString()+" "+qsTr("首歌曲") +"-"+
+                Base.timeToString(allTime)+" "+qsTr("歌曲长度")
     }
 
     function build () {
-        alumbModel.clear();
+        alumbModel.clear()
         var list = Core.alumbLineList
         var all = 0
         var alumbDataList = []
@@ -202,3 +206,4 @@ Item {
         }
     }
 }
+

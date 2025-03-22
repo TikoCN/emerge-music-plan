@@ -11,13 +11,19 @@ Item {
     Item{
         id: artistList
         visible: false
+
+        Rectangle{
+            anchors.fill: parent
+            color: "red"
+        }
+
         ListView {
             id: artistLineList
-            anchors.left: parent.left
-            anchors.top: parent.top
+            anchors.left: artistList.left
+            anchors.top: artistList.top
             anchors.margins: 30
-            width: parent.width - 60
-            height: parent.height - 60
+            width: artistList.width - 60
+            height: artistList.height - 60
             ScrollBar.vertical: TikoBar{}
 
             model: ListModel{
@@ -74,7 +80,7 @@ Item {
 
                             MouseArea {
                                 anchors.fill: artistCover
-                                onClicked: artistPage.openartistData(artist)
+                                onClicked: artistPage.openartistData(artist, listId, lineId)
                             }
                         }
                     }
@@ -149,6 +155,8 @@ Item {
 
             delegate: CoreMusicLine {
                 width: musicList.width
+                alumbListId: modelAlumbListId
+                alumbLineId: modelAlumbLineId
                 listId: musicListId
                 music: musicCore
             }
@@ -161,16 +169,18 @@ Item {
         anchors.fill: parent
     }
 
-    function openartistData (artist) {
+    function openartistData (artist, alumbListId, alumbLineId) {
         artistListShow.replace(artistDataShow)
 
         var allTime = 0
         artistDataCover.source = "image://cover/file:" +  artist.musicList[0].coreId.toString()
         for (var i=0; i<artist.musicList.length; i++) {
             artistMusicList.append({
-                                      musicListId: i,
-                                      musicCore: artist.musicList[i]
-                                  })
+                                       musicListId: i,
+                                       musicCore: artist.musicList[i],
+                                       modelAlumbListId: alumbListId,
+                                       modelAlumbLineId: alumbLineId
+                                   })
             allTime = artist.musicList[i].endTime
         }
         artistText.text = artist.name

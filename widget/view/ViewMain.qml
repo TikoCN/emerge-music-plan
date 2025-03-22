@@ -51,21 +51,21 @@ Item {
         width: parent.width
         height: parent.height - closeButton.height
         initialItem: seitPage
+    }
 
-        PageSeit {
-            id: seitPage
-            visible: false
-        }
+    PageSeit {
+        id: seitPage
+        visible: false
+    }
 
-        PageAlumb {
-            id: alumbPage
-            visible: false
-        }
+    PageAlumb {
+        id: alumbPage
+        visible: false
+    }
 
-        PageArtist {
-            id: artistPage
-            visible: false
-        }
+    PageArtist {
+        id: artistPage
+        visible: false
     }
 
     //切换到列表
@@ -85,13 +85,14 @@ Item {
     function turnToArtist(){
         if(stackView.currentItem != artistPage){
             stackView.replace(artistPage)
+            artistPage.build()
         }
     }
 
     function turnToAlumb(){
         if(stackView.currentItem != alumbPage){
-            alumbPage.build()
             stackView.replace(alumbPage)
+            alumbPage.build()
         }
     }
 

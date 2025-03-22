@@ -29,6 +29,9 @@ public:
     //写文件信息
     Q_INVOKABLE bool writeFileText(QString url, QString data);
 
+    // 时间戳转文本
+    Q_INVOKABLE QString timeToString(long long time);
+
     //打开文件
     void deskOpenFile(QString url, bool local);
 

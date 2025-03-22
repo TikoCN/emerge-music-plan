@@ -115,35 +115,45 @@ void MediaPlayer::playTableMusic(int tableId, int musicId){
 }
 
 //播放专辑音乐
-void MediaPlayer::playAlumbMusic(int alumbId, int musicId){
+void MediaPlayer::playAlumbMusic(int lineId, int listId, int musicId){
     // 清空正在播放列表
     musicList.clear();
 
 
-    // if (alumbId < 0 || alumbId >= core->alumbList.size()) {
-    //     return;
-    // }
-    // Alumb *alumb = core->alumbList[alumbId];
-    // musicList.append(alumb->musicList);
-    // emit playListChange();
+    if (lineId < 0 || lineId >= core->alumbLineList.size()) {
+        return;
+    }
 
-    // playMusic(musicId);
+    if (listId < 0 || listId >= core->alumbLineList[lineId].size()) {
+        return;
+    }
+
+    Alumb *alumb = core->alumbLineList[lineId][listId];
+    musicList.append(alumb->musicList);
+    emit playListChange();
+
+    playMusic(musicId);
 }
 
 //播放专辑音乐
-void MediaPlayer::playArtistMusic(int artistId, int musicId){
+void MediaPlayer::playArtistMusic(int lineId, int listId, int musicId){
     // 清空正在播放列表
     musicList.clear();
 
 
-    // if (artistId < 0 || artistId >= core->artistList.size()) {
-    //     return;
-    // }
-    // Artist *artist = core->artistList[artistId];
-    // musicList.append(artist->musicList);
-    // emit playListChange();
+    if (lineId < 0 || lineId >= core->artistLineList.size()) {
+        return;
+    }
 
-    // playMusic(musicId);
+    if (listId < 0 || listId >= core->artistLineList[lineId].size()) {
+        return;
+    }
+
+    Artist *artist = core->artistLineList[lineId][listId];
+    musicList.append(artist->musicList);
+    emit playListChange();
+
+    playMusic(musicId);
 }
 
 void MediaPlayer::playMusic(int musicId)

@@ -64,6 +64,14 @@ bool Base::writeFileText(QString url, QString data)
     return true;
 }
 
+QString Base::timeToString(long long time)
+{
+    QDateTime dataTime;
+    dataTime.setMSecsSinceEpoch(time);
+    dataTime = dataTime.toUTC();
+    return dataTime.toString("hh:mm:ss");
+}
+
 void Base::deskOpenFile(QString url, bool local)
 {
     //检验本地文件

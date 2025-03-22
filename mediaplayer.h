@@ -67,10 +67,10 @@ public:
     Q_INVOKABLE void playTableMusic(int tableId, int musicId);
 
     //播放专辑音乐
-    Q_INVOKABLE void playAlumbMusic(int alumbId, int musicId);
+    Q_INVOKABLE void playAlumbMusic(int lineId, int listId, int musicId);
 
     //播放专辑音乐
-    Q_INVOKABLE void playArtistMusic(int artistId, int musicId);
+    Q_INVOKABLE void playArtistMusic(int lineId, int listId, int musicId);
 
     void playMusic(int musicId);
 

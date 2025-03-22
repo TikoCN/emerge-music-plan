@@ -37,22 +37,32 @@ Item {
             anchors.top: tableCover.top
             text: Core.tableList[tableId].name
             width: parent.width - tableCover.width
-            height: tableCover.height - playButton.height
             exSize: 20
             font.bold: true
-            horizontalAlignment: Text.AlignHCenter
+        }
+
+        // 列表信息
+        TikoTextLine{
+            id: tableHelp
+            anchors.left: tableName.left
+            anchors.top: tableName.bottom
+            anchors.topMargin: 10
+            text: Core.tableList[tableId].name
+            width: parent.width - tableCover.width
+            exSize: 5
         }
 
         //播放列表
         TikoButtonBorder{
             id: playButton
-            anchors.left: tableName.left
+            anchors.left: tableHelp.left
             anchors.bottom: tableCover.bottom
             text: qsTr("播放")
             icon.source: "qrc:/image/play.png"
             width: 100
             onClicked: MediaPlayer.playMusic(tableId, 0)
-
+            backColor: TikoSeit.themeColor
+            textColor: TikoSeit.transparentColor
         }
 
         //批量操作
@@ -202,9 +212,16 @@ Item {
     function updateCover(){
         //调整列表展示信息
         if(Core.tableList[tableId].showMusics.length !== 0){
-            var coorId = Core.tableList[playerTable.tableId].getLastCoreId()
+            var table = Core.tableList[playerTable.tableId]
+            var coorId = table.getLastCoreId()
             playerTable.showCover = "image://cover/file:" + coorId.toString()
-            playerTable.allMusic = Core.tableList[playerTable.tableId].musics.length
+            playerTable.allMusic = table.musics.length
+            var allTime = 0
+            for (var i=0; i<table.musics.length; i++) {
+                allTime += table.musics[i].endTime
+            }
+            tableHelp.text = table.musics.length.toString()+" "+qsTr("首歌曲") +"-"+
+                    Base.timeToString(allTime)+" "+qsTr("歌曲长度")
         }
     }
 
