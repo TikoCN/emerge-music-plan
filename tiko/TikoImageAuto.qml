@@ -35,7 +35,7 @@ Image{
 
     Timer {
         id: loadImag
-        interval: 1000
+        interval: 500
         onTriggered: {
             if (image.visible) {
                 image.cache = false

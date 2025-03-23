@@ -11,9 +11,12 @@ Item {
 
     //左侧导航
     ScrollView{
-        anchors.fill: parent
         ScrollBar.vertical.visible: false
         ScrollBar.horizontal.visible: false
+        height: parent.height
+        anchors.right: parent.right
+        anchors.margins: 10
+        width: parent.width - 10
 
         background: Rectangle{
             width: parent.width
@@ -40,10 +43,11 @@ Item {
                 }
 
                 Rectangle {
-                    color: Setting.themeColor
-                    opacity: 0.3
+                    color: TikoSeit.transparentColor
+                    opacity: 0.2
                     visible: root.showText === parent.text
                     anchors.fill: parent
+                    radius: 15
                 }
             }
 
@@ -59,10 +63,11 @@ Item {
                 }
 
                 Rectangle {
-                    color: Setting.themeColor
-                    opacity: 0.3
+                    color: TikoSeit.transparentColor
+                    opacity: 0.2
                     visible: root.showText === parent.text
                     anchors.fill: parent
+                    radius: 15
                 }
             }
 
@@ -77,10 +82,11 @@ Item {
                 }
 
                 Rectangle {
-                    color: Setting.themeColor
-                    opacity: 0.3
+                    color: TikoSeit.transparentColor
+                    opacity: 0.2
                     visible: root.showText === parent.text
                     anchors.fill: parent
+                    radius: 15
                 }
             }
 
@@ -97,10 +103,11 @@ Item {
                 iconSource: "qrc:/image/seit.png"
 
                 Rectangle {
-                    color: Setting.themeColor
-                    opacity: 0.3
+                    color: TikoSeit.transparentColor
+                    opacity: 0.2
                     visible: root.showText === parent.text
                     anchors.fill: parent
+                    radius: 15
                 }
             }
 
@@ -144,10 +151,11 @@ Item {
                     onClickRight: tableMenu.open()
 
                     Rectangle {
-                        color: Setting.themeColor
-                        opacity: 0.3
+                        color: TikoSeit.transparentColor
+                        opacity: 0.2
                         visible: root.showText === parent.text
                         anchors.fill: parent
+                        radius: 15
                     }
                 }
 

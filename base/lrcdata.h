@@ -7,8 +7,8 @@ class LrcData : public QObject
     Q_OBJECT
 public:
     int id;
-    qint64 startTime;
-    qint64 endTime;
+    long long startTime;
+    long long endTime;
     bool isPlay;
     QList<QString> helpTextList;
 
@@ -28,19 +28,24 @@ public:
 
     QList<long long> getEndList() const;
 
-    qint64 getStartTime() const;
-
     QList<QString> getTextList() const;
 
     QList<QString> getHelpTextList() const;
 
+    long long getStartTime() const;
+
+    long long getEndTime() const;
+
 private:
     Q_PROPERTY(int id READ getId CONSTANT)
-    Q_PROPERTY(qint64 startTime READ getStartTime CONSTANT)
     Q_PROPERTY(QList<long long> startList READ getStartList CONSTANT)
     Q_PROPERTY(QList<long long> endList READ getEndList CONSTANT)
     Q_PROPERTY(QList<QString> textList READ getTextList CONSTANT)
     Q_PROPERTY(QList<QString> helpTextList READ getHelpTextList CONSTANT)
+
+    Q_PROPERTY(long long startTime READ getStartTime CONSTANT FINAL)
+
+    Q_PROPERTY(long long endTime READ getEndTime CONSTANT FINAL)
 
 signals:
     void update();

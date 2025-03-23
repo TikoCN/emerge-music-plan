@@ -16,17 +16,14 @@ Item {
         height: childrenRect.height
 
         //列表封面
-        Image{
+        TikoImageAuto {
             id: tableCover
             anchors.left: parent.left
             anchors.leftMargin: 10
-            source: playerTable.showCover
-            sourceSize.width: width
-            sourceSize.height: height
+            normalUrl: "qrc:/image/default.jpg"
+            loadUrl: playerTable.showCover
             width: 200
             height: 200
-            cache: false
-            asynchronous: true
         }
 
         //列表名字

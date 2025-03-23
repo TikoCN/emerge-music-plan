@@ -15,11 +15,6 @@ QList<long long> LrcData::getEndList() const
     return endList;
 }
 
-qint64 LrcData::getStartTime() const
-{
-    return startTime;
-}
-
 QList<QString> LrcData::getTextList() const
 {
     return textList;
@@ -28,6 +23,16 @@ QList<QString> LrcData::getTextList() const
 QList<QString> LrcData::getHelpTextList() const
 {
     return helpTextList;
+}
+
+long long LrcData::getStartTime() const
+{
+    return startTime;
+}
+
+long long LrcData::getEndTime() const
+{
+    return endTime;
 }
 
 LrcData::LrcData(){

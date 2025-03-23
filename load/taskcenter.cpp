@@ -180,41 +180,48 @@ void TaskCenter::loadUserTable()
 
 void TaskCenter::insertArtist(Music *music)
 {
-    bool isNoFind = true;
-    for (int i = 0; i < artistLineList.size(); ++i) {
-        QList<Artist *> artistList = artistLineList[i];
+    for (int k = 0; k < music->artistList.size(); ++k) {
+        QString artistName = music->artistList[k];
 
-        if (artistList.first()->name[0] != music->artist[0]) {
-            continue;
-        }
+        bool isNoFind = true;
+        for (int i = 0; i < artistLineList.size(); ++i) {
+            QList<Artist *> artistList = artistLineList[i];
 
-        for (int j = 0; j < artistList.size(); ++j) {
-            if (artistList[j]->name == music->artist) {
+            if (artistList.first()->name[0] != artistName[0]) {
+                continue;
+            }
+
+            // 遍历行
+            for (int j = 0; j < artistList.size(); ++j) {
+                // 遍历作者列表
+                if (artistList[j]->name == artistName) {
+                    isNoFind = false;
+                    artistList[j]->musicList.append(music);
+                    break;
+                }
+            }
+
+            if (isNoFind) {
                 isNoFind = false;
-                artistList[j]->musicList.append(music);
-                break;
+                Artist *artist = new Artist(artistName);
+                artist->musicList.append(music);
+                artist->id = artistLineList.size();
+                artist->moveToThread(MusicCore::getInstance()->thread());
+
+                artistLineList[i].append(artist);
             }
         }
 
         if (isNoFind) {
-            Artist *artist = new Artist(music->artist);
+            Artist *artist = new Artist(artistName);
             artist->musicList.append(music);
             artist->id = artistLineList.size();
             artist->moveToThread(MusicCore::getInstance()->thread());
+            QList<Artist *> artistList;
 
-            artistLineList[i].append(artist);
+            artistList.append(artist);
+            artistLineList.append(artistList);
         }
-    }
-
-    if (isNoFind) {
-        Artist *artist = new Artist(music->artist);
-        artist->musicList.append(music);
-        artist->id = artistLineList.size();
-        artist->moveToThread(MusicCore::getInstance()->thread());
-        QList<Artist *> artistList;
-
-        artistList.append(artist);
-        artistLineList.append(artistList);
     }
 }
 
@@ -375,6 +382,15 @@ void TaskCenter::finishUserTable()
     if(workNumber == 0){
         QString t = tr("加载音乐文件完成，加载了 ") + QString::number(musicList.size()) + tr(" 个音乐文件");
         emit Base::getInstance()->sendMessage(t, 0);
+
+        std::sort(artistLineList.begin(), artistLineList.end(), [this](QList<Artist *> a, QList<Artist *> b){
+            return a[0]->name[0] < b[0]->name[0];
+        });
+
+        std::sort(alumbLineList.begin(), alumbLineList.end(), [this](QList<Alumb *> a, QList<Alumb *> b){
+            return a[0]->name[0] < b[0]->name[0];
+        });
+
         emit musicsLoaded(musicList, tableList, artistLineList, alumbLineList);
     }
 }

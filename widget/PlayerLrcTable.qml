@@ -51,6 +51,9 @@ Item {
     ListView{
         id:lrcList
         anchors.fill:parent
+        highlightRangeMode: ListView.StrictlyEnforceRange
+        preferredHighlightBegin: 0
+        preferredHighlightEnd: 0
 
         delegate: CoreLrcLine{
             width: lrcList.width
@@ -84,7 +87,6 @@ Item {
             var playLine = MediaPlayer.playingLrc.id
 
             lrcList.currentIndex = playLine
-            lrcList.positionViewAtIndex(playLine, ListView.Beginning)
         }
     }
 

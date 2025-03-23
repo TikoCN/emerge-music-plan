@@ -50,13 +50,13 @@ void Table::sortMusic(int type)
         break;
     case SORT_ATRIST_ASC:
         std::sort(showMusics.begin(), showMusics.end(), [this](Music *a, Music *b){
-            bool isRight = a->artist > b->artist;
+            bool isRight = a->artistList[0] > b->artistList[0];
             return isRight;
         });
         break;
     case SORT_ATRIST_DESC:
         std::sort(showMusics.begin(), showMusics.end(), [this](Music *a, Music *b){
-            bool isRight = a->artist < b->artist;
+            bool isRight = a->artistList[0] < b->artistList[0];
             return isRight;
         });
         break;

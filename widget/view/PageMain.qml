@@ -8,6 +8,7 @@ Item {
     id: pageMain
     property bool show: false
     property int type: 1
+
     onShowChanged: {
         if(!pageMain.show){
             loaderStyle.source = ""
@@ -197,6 +198,13 @@ Item {
         onClicked: window.stackCenter()
     }
 
+    NumberAnimation on y {
+        id: insertAnimation
+        from: height / 2
+        to: 0
+        duration: 300
+    }
+
     Connections{
         target:MediaPlayer.player
         function onSourceChanged(){
@@ -205,6 +213,7 @@ Item {
     }
 
     function actionStart(){
+        insertAnimation.start()
         backMove.start()
         pageMain.show = true
     }
@@ -213,4 +222,5 @@ Item {
         backMove.stop()
         pageMain.show = false
     }
+
 }

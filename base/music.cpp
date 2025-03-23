@@ -236,14 +236,14 @@ QString Music::getStringTime()
  */
 QString Music::getKey()
 {
-    return title +"-&&-"+ artist;
+    return title +"-&&-"+ artistList.join(";");
 }
 
 QString Music::getSearchString()
 {
     QString search;
-    if(!title.isNull() || !artist.isNull()){
-        search = title + artist;
+    if(!title.isNull() || artistList.size()){
+        search = title + artistList.join(" ");
     }
     else{
         search = getBaseName();
@@ -298,7 +298,7 @@ QImage Music::loadAloneCover()
 */
 bool Music::isSearch(QString aim)
 {
-    if(title.contains(aim) || artist.contains(aim) || alumb.contains(aim)){
+    if(title.contains(aim) || artistList.contains(aim) || alumb.contains(aim)){
         return true;
     }
     return false;
@@ -315,7 +315,7 @@ QString Music::getLrcData()
 void Music::copyMusicData()
 {
     QString data = QObject::tr("标题") +":"+ title +" "
-                   +QObject::tr("歌手") +":"+ artist +" "
+                   +QObject::tr("歌手") +":"+ artistList.join(";") +" "
                    +QObject::tr("专辑") +":"+ alumb;
     Base::getInstance()->copyString(data);
 }
@@ -396,7 +396,7 @@ QString Music::getTitle() const
 
 QString Music::getArtist() const
 {
-    return artist;
+    return artistList.join(";");
 }
 
 QString Music::getUrl() const

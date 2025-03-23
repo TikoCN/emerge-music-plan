@@ -11,7 +11,7 @@ class Music : public QObject
     Q_OBJECT
 public:
     QString title;
-    QString artist;
+    QStringList artistList;
     QString url;
     QString alumb;
     QString lastEdit;

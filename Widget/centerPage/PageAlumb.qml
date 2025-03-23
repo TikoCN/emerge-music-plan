@@ -16,14 +16,51 @@ Item {
             id: alumbLineShow
             visible: false
 
+            // 跳转按钮列表
+            ListView {
+                id: alumbTurnButtonList
+                orientation: ListView.Horizontal
+                currentIndex: alumbLineList.currentIndex
+                width: parent.width - 60
+                anchors.left: parent.left
+                anchors.margins: 30
+                spacing: 10
+                highlightRangeMode: ListView.StrictlyEnforceRange
+                preferredHighlightBegin: width / 4
+                preferredHighlightEnd: width / 4
+
+                model: ListModel {
+                    id: alumbTurnButtonModel
+                }
+
+                delegate: TikoTextLine {
+                    text: lineText
+                    height: 40
+                    opacity: ListView.isCurrentItem ? 1 : 0.3
+                    exSize: ListView.isCurrentItem ? 5 : 3
+
+                    MouseArea {
+                        anchors.fill: parent
+                        onClicked: {
+                            alumbLineList.currentIndex = lineId
+                            alumbLineList.positionViewAtIndex(lineId, ListView.SnapPosition)
+                        }
+                    }
+                }
+            }
+
             ListView {
                 id: alumbLineList
                 anchors.left: parent.left
-                anchors.top: parent.top
+                anchors.top: alumbTurnButtonList.bottom
                 anchors.margins: 30
                 width: parent.width - 60
-                height: parent.height - 60
+                height: parent.height - alumbTurnButtonList.height - 60
                 ScrollBar.vertical: TikoBar{}
+                highlightRangeMode: ListView.StrictlyEnforceRange
+                preferredHighlightBegin: 0
+                preferredHighlightEnd: 0
+                clip: true
 
                 model: ListModel{
                     id: alumbModel
@@ -39,7 +76,7 @@ Item {
                         width: parent.width
                         exSize: 10
                         color: TikoSeit.themeColor
-                        opacity: 0.9
+                        opacity: parent.ListView.isCurrentItem ? 1 : 0.3
                     }
 
                     Grid {
@@ -145,6 +182,7 @@ Item {
                 anchors.margins: 30
                 width: parent.width - 60
                 height: parent.height - alumbDataBack.height - 40
+                clip: true
 
                 model: ListModel {
                     id: alumbMusicList
@@ -169,6 +207,7 @@ Item {
 
         var allTime = 0
         alumbDataCover.source = "image://cover/file:" +  alumb.musicList[0].coreId.toString()
+        alumbMusicList.clear()
         for (var i=0; i<alumb.musicList.length; i++) {
             alumbMusicList.append({
                                       musicListId: i,
@@ -203,6 +242,10 @@ Item {
                                   alumbDataList: alumbDataList,
                                   leng: list[i].length
                               })
+            alumbTurnButtonModel.append({
+                                           lineText: list[i][0].name[0],
+                                           lineId: i
+                                       })
         }
     }
 }

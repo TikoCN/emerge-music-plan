@@ -44,15 +44,21 @@ void ExtraLibrary::getMedia(Music* core)
     }
     TagLib::Tag* t = f.tag();
 
+    QString value;
     //读取信息
     core->title = QString::fromStdString(t->title().toCString(1));
     if(core->title == "" || QString(core->title).replace(" ", "") == ""){
         core->title = core->getBaseName();
     }
-    core->artist = QString::fromStdString(t->artist().toCString(1));
-    if(core->artist == "" || QString(core->artist).replace(" ", "") == ""){
-        core->artist = QObject::tr("未知歌手");
+
+    value = QString::fromStdString(t->artist().toCString(1));
+    if(value == "" || QString(value).replace(" ", "") == ""){
+        core->artistList.append(QObject::tr("未知歌手"));
     }
+    else {
+        core->artistList = value.split(";");
+    }
+
     core->alumb = QString::fromStdString(t->album().toCString(1));
     if(core->alumb == "" || QString(core->alumb).replace(" ", "") == ""){
         core->alumb = core->title;
