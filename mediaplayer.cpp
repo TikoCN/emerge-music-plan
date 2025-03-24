@@ -99,15 +99,15 @@ void MediaPlayer::updateAudioOutPut()
  */
 
 //播放音乐
-void MediaPlayer::playTableMusic(int tableId, int musicId){
+void MediaPlayer::playTableMusic(Table *table, int musicId){
     // 清空正在播放列表
     musicList.clear();
 
 
-    if (tableId < 0 || tableId >= core->tableList.size()) {
+    if (table == nullptr) {
         return;
     }
-    Table *table = core->tableList[tableId];
+
     musicList.append(table->showMusics);
     emit playListChange();
 
@@ -115,20 +115,15 @@ void MediaPlayer::playTableMusic(int tableId, int musicId){
 }
 
 //播放专辑音乐
-void MediaPlayer::playAlumbMusic(int lineId, int listId, int musicId){
+void MediaPlayer::playAlumbMusic(Alumb *alumb, int musicId){
     // 清空正在播放列表
     musicList.clear();
 
 
-    if (lineId < 0 || lineId >= core->alumbLineList.size()) {
+    if (alumb == nullptr) {
         return;
     }
 
-    if (listId < 0 || listId >= core->alumbLineList[lineId].size()) {
-        return;
-    }
-
-    Alumb *alumb = core->alumbLineList[lineId][listId];
     musicList.append(alumb->musicList);
     emit playListChange();
 
@@ -136,20 +131,14 @@ void MediaPlayer::playAlumbMusic(int lineId, int listId, int musicId){
 }
 
 //播放专辑音乐
-void MediaPlayer::playArtistMusic(int lineId, int listId, int musicId){
+void MediaPlayer::playArtistMusic(Artist *artist, int musicId){
     // 清空正在播放列表
     musicList.clear();
 
-
-    if (lineId < 0 || lineId >= core->artistLineList.size()) {
+    if (artist == nullptr) {
         return;
     }
 
-    if (listId < 0 || listId >= core->artistLineList[lineId].size()) {
-        return;
-    }
-
-    Artist *artist = core->artistLineList[lineId][listId];
     musicList.append(artist->musicList);
     emit playListChange();
 

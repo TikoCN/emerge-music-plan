@@ -73,6 +73,16 @@ Item {
         visible: false
     }
 
+    PlayerAlumb {
+        id: alumbPlayer
+        visible: false
+    }
+
+    PlayerArtist {
+        id: artistPlayer
+        visible: false
+    }
+
     //切换到列表
     function stackTable(page){
         if(stackView.currentItem !== mainView.tableList[page]){
@@ -93,9 +103,23 @@ Item {
         }
     }
 
+    function turnToArtistPlayer(artist){
+        artistPlayer.openArtistData(artist)
+        if(stackView.currentItem != artistPlayer){
+            stackView.replace(artistPlayer)
+        }
+    }
+
     function turnToAlumb(){
         if(stackView.currentItem != alumbPage){
             stackView.replace(alumbPage)
+        }
+    }
+
+    function turnToAlumbPlayer(alumb){
+        alumbPlayer.openAlumbData(alumb)
+        if(stackView.currentItem != alumbPlayer){
+            stackView.replace(alumbPlayer)
         }
     }
 
@@ -118,6 +142,12 @@ Item {
         mainView.tableList = []
 
         turnToSeit()
+    }
+
+    function buildData(){
+        artistPage.build()
+        alumbPage.build()
+        mainPage.buildRand()
     }
 
     function turnToMain(){

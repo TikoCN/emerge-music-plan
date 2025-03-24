@@ -180,12 +180,11 @@ Item {
 
         delegate: CoreMusicLine{
             width: musicList.width - 20
-            tableId: table
+            table: Core.tableList[tableData]
             listId: musicListId
             music: musicCore
         }
     }
-
 
     Connections{
         target: Core.tableList[playerTable.tableId]
@@ -227,7 +226,7 @@ Item {
         for(var i=start; i<start+length; i++){
             musicModel.append({
                                   musicListId: i,
-                                  table: playerTable.tableId,
+                                  tableData: playerTable.tableId,
                                   musicCore: Core.tableList[playerTable.tableId].showMusics[i]
                               })
         }

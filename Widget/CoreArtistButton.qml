@@ -28,6 +28,6 @@ Item{
 
     MouseArea {
         anchors.fill: artistCover
-        onClicked: mainView.openartistData(artist)
+        onClicked: mainView.turnToArtistPlayer(artist)
     }
 }

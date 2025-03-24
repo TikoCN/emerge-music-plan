@@ -75,7 +75,7 @@ Item {
             Grid {
                 id: artistShow
                 width: parent.width
-                columns: artistDataList.length * 160 / width
+                columns: width / 160
                 columnSpacing: 9
                 rowSpacing: 10
                 anchors.top: artistLineText.bottom
@@ -125,15 +125,6 @@ Item {
                                             lineText: list[i][0].name[0],
                                             lineId: i
                                         })
-        }
-    }
-
-    //关联
-    Connections{
-        target: Core
-
-        function onFinishInit(){
-            build()
         }
     }
 }

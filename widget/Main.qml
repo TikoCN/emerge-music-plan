@@ -278,6 +278,7 @@ TikoFrameless{
         }
 
         function onFinishInit(){
+            mainView.buildData()
             for (var i=0; i < Core.tableList.length; ++i) {
                 mainView.addPlayTablePage(i)
                 barView.addTable(i)

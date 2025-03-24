@@ -64,15 +64,15 @@ public:
     void updateAudioOutPut();
 
     //播放音乐
-    Q_INVOKABLE void playTableMusic(int tableId, int musicId);
+    Q_INVOKABLE void playTableMusic(Table *table, int musicId);
 
     //播放专辑音乐
-    Q_INVOKABLE void playAlumbMusic(int lineId, int listId, int musicId);
+    Q_INVOKABLE void playAlumbMusic(Alumb *alumb, int musicId);
 
     //播放专辑音乐
-    Q_INVOKABLE void playArtistMusic(int lineId, int listId, int musicId);
+    Q_INVOKABLE void playArtistMusic(Artist* artist, int musicId);
 
-    void playMusic(int musicId);
+    Q_INVOKABLE void playMusic(int musicId);
 
     //加载歌词
     void loadLrcList();

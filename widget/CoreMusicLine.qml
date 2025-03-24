@@ -9,12 +9,11 @@ Item {
     implicitWidth: 100
     clip: true
 
-    property int tableId: -1
-    property int alumbLineId: -1
-    property int alumbListId: -1
-    property int artistLineId: -1
-    property int artistListId: -1
+    property var table
+    property var alumb
+    property var artist
     property int listId: 0
+    property int type: 0
     property int musicId: music.coreId
     property var music
 
@@ -28,7 +27,7 @@ Item {
             }
         }
         acceptedButtons: Qt.LeftButton | Qt.RightButton
-        anchors.fill:parent
+        anchors.fill: parent
     }
 
     Rectangle{
@@ -80,7 +79,6 @@ Item {
         }
 
         TikoTextLine{
-            id: alumb
             text: musicLine.music.alumb
             width: coreName.width
             height: 50
@@ -143,14 +141,19 @@ Item {
     }
 
     function play(){
-        if (tableId !== -1) {
-            MediaPlayer.playTableMusic(tableId, listId)
-        }
-        else if (alumbLineId !== -1 && alumbListId !== -1) {
-            MediaPlayer.playAlumbMusic(alumbLineId, alumbListId, listId)
-        }
-        else if (artistLineId !== -1 && artistListId !== -1) {
-            MediaPlayer.playArtistMusic(artistLineId, artistListId, listId)
+        switch(type){
+        case -1:
+            MediaPlayer.playMusic(table, listId)
+            break
+        case 0:
+            MediaPlayer.playTableMusic(table, listId)
+            break
+        case 1:
+            MediaPlayer.playAlumbMusic(alumb, listId)
+            break
+        case 2:
+            MediaPlayer.playArtistMusic(artist, listId)
+            break
         }
     }
 }

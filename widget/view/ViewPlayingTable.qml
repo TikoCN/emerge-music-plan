@@ -44,7 +44,7 @@ Drawer {
 
         delegate: CoreMusicLine{
             width: musicList.width - 20
-            tableId: -1
+            type: -1
             listId: musicListId
             music: MediaPlayer.musicList[musicListId]
         }
