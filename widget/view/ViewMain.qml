@@ -90,14 +90,12 @@ Item {
     function turnToArtist(){
         if(stackView.currentItem != artistPage){
             stackView.replace(artistPage)
-            artistPage.build()
         }
     }
 
     function turnToAlumb(){
         if(stackView.currentItem != alumbPage){
             stackView.replace(alumbPage)
-            alumbPage.build()
         }
     }
 

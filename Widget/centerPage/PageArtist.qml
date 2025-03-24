@@ -7,192 +7,88 @@ import Widget
 Item {
     id: artistPage
 
-    StackView {
-        id: artistListShow
-        initialItem: artistLineShow
-        anchors.fill: parent
+    // 跳转按钮列表
+    ListView {
+        id: artistTurnButtonList
+        orientation: ListView.Horizontal
+        currentIndex: artistLineList.currentIndex
+        width: parent.width - 60
+        anchors.left: parent.left
+        anchors.margins: 30
+        spacing: 10
+        highlightRangeMode: ListView.StrictlyEnforceRange
+        preferredHighlightBegin: width / 4
+        preferredHighlightEnd: width / 4
 
-        Item{
-            id: artistLineShow
-            visible: false
-
-            ListView {
-                id: artistTurnButtonList
-                orientation: ListView.Horizontal
-                currentIndex: artistLineList.currentIndex
-                width: parent.width - 60
-                anchors.left: parent.left
-                anchors.margins: 30
-                spacing: 10
-                highlightRangeMode: ListView.StrictlyEnforceRange
-                preferredHighlightBegin: 0
-                preferredHighlightEnd: 0
-
-                model: ListModel {
-                    id: artistTurnButtonModel
-                }
-
-                delegate: TikoTextLine {
-                    text: lineText
-                    height: 40
-                    opacity: ListView.isCurrentItem ? 1 : 0.3
-                    exSize: 3
-
-                    MouseArea {
-                        anchors.fill: parent
-                        onClicked: artistLineShow.turnToLine(lineId)
-                    }
-                }
-            }
-
-            ListView {
-                id: artistLineList
-                anchors.left: parent.left
-                anchors.top: artistTurnButtonList.bottom
-                anchors.margins: 30
-                width: parent.width - 60
-                height: parent.height - artistTurnButtonList.height - 60
-                highlightRangeMode: ListView.StrictlyEnforceRange
-                preferredHighlightBegin: 0
-                preferredHighlightEnd: 0
-
-                ScrollBar.vertical: TikoBarV{}
-                clip: true
-
-                model: ListModel{
-                    id: artistModel
-                }
-
-                delegate: Item {
-                    width: artistLineShow.width
-                    height: artistLineText.height + artistShow.height
-
-                    TikoTextLine {
-                        id: artistLineText
-                        text: lineText
-                        width: parent.width
-                        exSize: 10
-                        color: TikoSeit.themeColor
-                        opacity: parent.ListView.isCurrentItem ? 1 : 0.3
-                    }
-
-                    Grid {
-                        id: artistShow
-                        width: parent.width
-                        columns: parent.width / (150 + 20)
-                        spacing: 20
-                        height: (leng / columns + 1) * ((150 + 20))
-                        anchors.top: artistLineText.bottom
-                        anchors.margins: 10
-
-                        Repeater{
-                            model: artistDataList
-
-                            delegate: Item{
-                                width: 150
-                                height: artistCover.height + textLine.height + 10
-
-                                TikoImageAuto {
-                                    id: artistCover
-                                    width: parent.width
-                                    height: 150
-                                    normalUrl: "qrc:/image/artist.png"
-                                    loadUrl: "image://cover/file:" +  musicId.toString()
-                                }
-
-                                TikoTextLine {
-                                    id: textLine
-                                    anchors.top: artistCover.bottom
-                                    anchors.topMargin: 10
-                                    width: parent.width
-                                    text: artist.name
-                                }
-
-                                MouseArea {
-                                    anchors.fill: artistCover
-                                    onClicked: artistPage.openartistData(artist)
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
-            function turnToLine(lineId) {
-                artistLineList.currentIndex = lineId
-            }
+        model: ListModel {
+            id: artistTurnButtonModel
         }
 
-        Item{
-            id: artistDataShow
-            visible: false
+        delegate: TikoTextLine {
+            text: lineText
+            height: 40
+            opacity: ListView.isCurrentItem ? 1 : 0.3
+            exSize: ListView.isCurrentItem ? 5 : 3
 
-            TikoButtonIcon{
-                y: -10
-                icon.source: "qrc:/image/back.png"
-                onClicked: openartistLineList()
-            }
-
-            // 专辑信息背景
-            Rectangle {
-                id: artistDataBack
-                anchors.left: parent.left
-                anchors.top: parent.top
-                anchors.margins: 20
-                width: parent.width - 60
-                height: 270
-                color: TikoSeit.backdropColor
-                radius: 15
-            }
-
-            Image {
-                id: artistDataCover
-                width: 250
-                height: 250
-                sourceSize.width: width
-                sourceSize.height: height
-                anchors.left: parent.left
-                anchors.top: parent.top
-                anchors.margins: 30
-            }
-
-            TikoTextLine {
-                id: artistText
-                width: parent.width - artistDataCover.width - 60
-                anchors.left: artistDataCover.right
-                anchors.leftMargin: 30
-                anchors.top: artistDataCover.top
-                exSize: 20
-            }
-
-            TikoTextLine {
-                id: artistHelp
-                width: parent.width - artistDataCover.width
-                anchors.top: artistText.bottom
-                anchors.topMargin: 10
-                anchors.left: artistText.left
-                exSize: 5
-                opacity: 0.5
-            }
-
-            // 音乐列表
-            ListView {
-                id: musicList
-                anchors.top: artistDataCover.bottom
-                anchors.left: parent.left
-                anchors.margins: 30
-                width: parent.width - 60
-                height: parent.height - artistDataBack.height - 40
-                clip: true
-
-                model: ListModel {
-                    id: artistMusicList
+            MouseArea {
+                anchors.fill: parent
+                onClicked: {
+                    artistLineList.currentIndex = lineId
+                    artistLineList.positionViewAtIndex(lineId, ListView.SnapPosition)
                 }
+            }
+        }
+    }
 
-                delegate: CoreMusicLine {
-                    width: musicList.width
-                    listId: musicListId
-                    music: musicCore
+    ListView {
+        id: artistLineList
+        anchors.left: parent.left
+        anchors.top: artistTurnButtonList.bottom
+        anchors.margins: 30
+        width: parent.width - 60
+        height: parent.height - artistTurnButtonList.height - 60
+        ScrollBar.vertical: TikoBarV{}
+        highlightRangeMode: ListView.StrictlyEnforceRange
+        preferredHighlightBegin: 0
+        preferredHighlightEnd: 0
+        clip: true
+
+        model: ListModel{
+            id: artistModel
+        }
+
+        delegate: Item {
+            id: artistLine
+            width: artistLineList.width
+            height: artistLineText.height + artistShow.height + 10
+            property int lineId: artistLineId
+
+            TikoTextLine {
+                id: artistLineText
+                text: lineText
+                width: parent.width
+                exSize: 10
+                color: TikoSeit.themeColor
+                opacity: parent.ListView.isCurrentItem ? 1 : 0.3
+            }
+
+            Grid {
+                id: artistShow
+                width: parent.width
+                columns: artistDataList.length * 160 / width
+                columnSpacing: 9
+                rowSpacing: 10
+                anchors.top: artistLineText.bottom
+                anchors.margins: 10
+                flow: Grid.LeftToRight
+
+                Repeater{
+                    model: artistDataList
+
+                    delegate: CoreArtistButton {
+                        id: artistButton
+                        artist: artistData
+                    }
                 }
             }
         }
@@ -203,37 +99,18 @@ Item {
         build()
     }
 
-    function openartistData (artist) {
-        artistListShow.replace(artistDataShow)
-
-        var allTime = 0
-        artistDataCover.source = "image://cover/file:" +  artist.musicList[0].coreId.toString()
-        artistMusicList.clear()
-        for (var i=0; i<artist.musicList.length; i++) {
-            artistMusicList.append({
-                                      musicListId: i,
-                                      musicCore: artist.musicList[i]
-                                  })
-            allTime = artist.musicList[i].endTime
-        }
-        artistText.text = artist.name
-        artistHelp.text = artist.musicList.length.toString()+" "+qsTr("首歌曲") +"-"+
-                Base.timeToString(allTime)+" "+qsTr("歌曲长度")
-    }
-
     function build () {
         artistModel.clear()
         var list = Core.artistLineList
         var all = 0
-        var artistDataList = []
         for (var i=0; i<list.length; i++) {
-            artistDataList = []
+            var artistDataList = []
             for (var j=0; j<list[i].length; j++) {
                 var musicId = list[i][j].musicList[0].coreId
                 artistDataList.push({
                                        lineId: i,
                                        listId: j,
-                                       artist: list[i][j],
+                                       artistData: list[i][j],
                                        musicId: musicId
                                    })
             }
@@ -241,12 +118,23 @@ Item {
             artistModel.append({
                                   lineText: list[i][0].name[0],
                                   artistDataList: artistDataList,
-                                  leng: list[i].length
+                                  leng: list[i].length,
+                                  artistLineId: i
                               })
             artistTurnButtonModel.append({
-                                           lineText: list[i][0].name[0],
-                                           lineId: i
-                                       })
+                                            lineText: list[i][0].name[0],
+                                            lineId: i
+                                        })
+        }
+    }
+
+    //关联
+    Connections{
+        target: Core
+
+        function onFinishInit(){
+            build()
         }
     }
 }
+

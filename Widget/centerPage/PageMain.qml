@@ -3,8 +3,8 @@ import QtQuick
 import Widget
 
 ListView {
+   id: mainPage
 
-   id:
    ListView {
        orientation: ListView.Horizontal
 

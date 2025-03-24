@@ -58,8 +58,10 @@ Item {
         }
 
         delegate: Item {
+            id: alumbLine
             width: alumbLineList.width
-            height: alumbLineText.height + alumbShow.height
+            height: alumbLineText.height + alumbShow.height + 10
+            property int lineId: alumbLineId
 
             TikoTextLine {
                 id: alumbLineText
@@ -73,25 +75,24 @@ Item {
             Grid {
                 id: alumbShow
                 width: parent.width
-                columns: parent.width / (150 + 20)
-                spacing: 20
-                height: (leng / columns + 1) * ((150 + 20))
+                columns: alumbDataList.length * 160 / width
+                columnSpacing: 9
+                rowSpacing: 10
                 anchors.top: alumbLineText.bottom
                 anchors.margins: 10
+                flow: Grid.LeftToRight
 
                 Repeater{
-                    model: ListModel {
-                        id: alumbListModel
-                    }
+                    model: alumbDataList
 
                     delegate: CoreAlumbButton {
+                        id: alumbButton
                         alumb: alumbData
                     }
                 }
             }
         }
     }
-
 
     function openAlumbLineList () {
         alumbListShow.replace(alumbLineShow)
@@ -102,9 +103,8 @@ Item {
         alumbModel.clear()
         var list = Core.alumbLineList
         var all = 0
-        var alumbDataList = []
         for (var i=0; i<list.length; i++) {
-            alumbDataList = []
+            var alumbDataList = []
             for (var j=0; j<list[i].length; j++) {
                 var musicId = list[i][j].musicList[0].coreId
                 alumbDataList.push({
@@ -118,12 +118,22 @@ Item {
             alumbModel.append({
                                   lineText: list[i][0].name[0],
                                   alumbDataList: alumbDataList,
-                                  leng: list[i].length
+                                  leng: list[i].length,
+                                  alumbLineId: i
                               })
             alumbTurnButtonModel.append({
                                             lineText: list[i][0].name[0],
                                             lineId: i
                                         })
+        }
+    }
+
+    //关联
+    Connections{
+        target: Core
+
+        function onFinishInit(){
+            build()
         }
     }
 }

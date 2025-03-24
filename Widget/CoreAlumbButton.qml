@@ -28,6 +28,6 @@ Item{
 
     MouseArea {
         anchors.fill: alumbCover
-        onClicked: alumbPage.openAlumbData(alumb)
+        onClicked: mainView.openAlumbData(alumb)
     }
 }

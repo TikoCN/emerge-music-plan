@@ -38,6 +38,8 @@ public:
     //剪切板
     void copyString(QString data);
 
+    int getChinesePinyingId(QString string);
+
 signals:
     void sendMessage(QString msg, int type);
 };
