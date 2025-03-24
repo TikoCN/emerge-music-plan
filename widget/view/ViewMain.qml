@@ -68,6 +68,11 @@ Item {
         visible: false
     }
 
+    PageMain {
+        id: mainPage
+        visible: false
+    }
+
     //切换到列表
     function stackTable(page){
         if(stackView.currentItem !== mainView.tableList[page]){
@@ -97,7 +102,7 @@ Item {
     }
 
     function addPlayTablePage(table){
-        var component = Qt.createComponent("../PlayerTable.qml")
+        var component = Qt.createComponent("../player/PlayerTable.qml")
 
         if (component.status === Component.Ready) {
             var playTable = component.createObject(stackView, {tableId: table, visible: false})
@@ -115,5 +120,11 @@ Item {
         mainView.tableList = []
 
         turnToSeit()
+    }
+
+    function turnToMain(){
+        if(stackView.currentItem != mainPage){
+            stackView.replace(mainPage)
+        }
     }
 }

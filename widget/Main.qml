@@ -45,7 +45,7 @@ TikoFrameless{
 
     Component.onDestruction:{
         //写入配置
-        var mousePos = centerView.mapToGlobal(0, 0)
+        var mousePos = editPage.mapToGlobal(0, 0)
         Setting.windowRect.width = window.width
         Setting.windowRect.height = window.height
         Setting.windowRect.x = mousePos.x
@@ -55,64 +55,149 @@ TikoFrameless{
         Core.writeJsonData()
     }
 
-    StackView{
-        id: centerView
-        anchors.fill: parent
+    PageMusicPlay {
+        id: musicPlayPage
+        width: parent.width
+        height: parent.height
+        y: parent.height
+    }
 
-        PageMain{
-            id:mainPage
-            visible: false
-        }
+    Item{
+        id: editPage
+        width: parent.width
+        height: parent.height
 
-        Item{
-            id: editPage
-            visible: false
+        //圆角背景
+        Rectangle{
+            id: editPageBack
+            width: parent.width
+            height: parent.height
+            topLeftRadius: 10
+            topRightRadius: 10
+            color: Setting.backdropColor
 
-            //圆角背景
             Rectangle{
-                width: parent.width
-                height: parent.height
+                anchors.fill: parent
+                border.color: Setting.transparentColor
                 topLeftRadius: 10
                 topRightRadius: 10
-                color: Setting.backdropColor
-
-                Rectangle{
-                    anchors.fill: parent
-                    border.color: Setting.transparentColor
-                    topLeftRadius: 10
-                    topRightRadius: 10
-                    border.width: 0.5
-                    opacity: 0.3
-                }
-            }
-
-            ViewLeftBar{
-                id: barView
-                height: parent.height - bottomView.height - 10
-                width: 200
-                x: 10
-                y: 10
-            }
-
-            //中间内容导航
-            ViewMain{
-                id: mainView
-                width: parent.width - barView.width - 20
-                height: barView.height
-                anchors.left: barView.right
-                y: 10
-            }
-
-            //底部导航
-            ViewBottomBar{
-                id: bottomView
-                height: 90
-                width: parent.width
-                anchors.top: mainView.bottom
+                border.width: 0.5
+                opacity: 0.3
             }
         }
 
-        initialItem: editPage
+        ViewLeftBar{
+            id: barView
+            height: parent.height - bottomView.height - 10
+            width: 200
+            x: 10
+            y: 10
+        }
+
+        //中间内容导航
+        ViewMain{
+            id: mainView
+            width: parent.width - barView.width - 20
+            height: barView.height
+            anchors.left: barView.right
+            y: 10
+        }
+
+        //底部导航
+        ViewBottomBar{
+            id: bottomView
+            height: 90
+            width: parent.width
+            y: 10 + barView.height
+        }
+    }
+
+    SequentialAnimation {
+        id: trunToMusicPlayAnimation
+
+        ParallelAnimation{
+            NumberAnimation {
+                targets: [mainView, barView]
+                property: "y"
+                from: 10
+                to: -mainView.height
+                duration: 500
+                easing.type: Easing.InOutQuad
+            }
+
+            NumberAnimation {
+                target: bottomView
+                property: "y"
+                from: 10 + barView.height
+                to: editPage.height
+                duration: 500
+                easing.type: Easing.InOutQuad
+            }
+        }
+
+        ParallelAnimation {
+            NumberAnimation {
+                target: editPageBack
+                property: "y"
+                from: 0
+                to: -editPage.height
+                duration: 500
+                easing.type: Easing.InOutQuad
+            }
+
+            NumberAnimation {
+                target: musicPlayPage
+                property: "y"
+                from: musicPlayPage.height
+                to: 0
+                duration: 500
+                easing.type: Easing.InOutQuad
+            }
+        }
+    }
+
+    SequentialAnimation {
+        id: trunToMainAnimation
+
+        ParallelAnimation {
+            NumberAnimation {
+                target: editPageBack
+                property: "y"
+                from: -editPage.height
+                to: 0
+                duration: 500
+                easing.type: Easing.InOutQuad
+            }
+
+            NumberAnimation {
+                target: musicPlayPage
+                property: "y"
+                from: 0
+                to: musicPlayPage.height
+                duration: 500
+                easing.type: Easing.InOutQuad
+            }
+        }
+
+        ParallelAnimation{
+            NumberAnimation {
+                targets: [mainView, barView]
+                property: "y"
+                from: -mainView.height
+                to: 10
+                duration: 500
+                easing.type: Easing.InOutQuad
+            }
+
+            NumberAnimation {
+                target: bottomView
+                property: "y"
+                from: editPage.height
+                to: 10 + barView.height
+                duration: 500
+                easing.type: Easing.InOutQuad
+            }
+        }
     }
 
     ViewPlayingTable {
@@ -151,25 +236,35 @@ TikoFrameless{
     }
 
     //切换到主页
-    function stackMain(){
+    function stackMusicPaly(){
         if(MediaPlayer.playingMusic === null){
             TikoSeit.sendMessage(this, qsTr("请先播放音乐"), 1)
             return
         }
 
-        if(centerView.currentItem != mainPage){
-            centerView.pop(null)
-            centerView.pushItem(mainPage)
-            mainPage.actionStart()
-        }
+        musicPlayPage.actionStart()
+        trunToMusicPlayAnimation.start()
     }
 
     //切换到编辑页
     function stackCenter(){
-        if(centerView.currentItem != editPage){
-            mainPage.actionEnd()
-            centerView.pop(null)
-            centerView.pushItem(editPage)
+        musicPlayPage.actionEnd()
+        trunToMainAnimation.start()
+    }
+
+    //清理数据
+    function clearData(){
+        barView.clearData()
+        playingTable.clearData();
+        mainView.clearData()
+    }
+
+    //关联
+    Connections{
+        target: Base
+
+        function onSendMessage(text, type){
+            TikoSeit.sendMessage(window, text, type)
         }
     }
 
@@ -188,21 +283,5 @@ TikoFrameless{
                 barView.addTable(i)
             }
         }
-    }
-
-    //关联
-    Connections{
-        target: Base
-
-        function onSendMessage(text, type){
-            TikoSeit.sendMessage(window, text, type)
-        }
-    }
-
-    //清理数据
-    function clearData(){
-        barView.clearData()
-        playingTable.clearData();
-        mainView.clearData()
     }
 }

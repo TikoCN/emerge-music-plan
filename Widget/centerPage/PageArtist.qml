@@ -56,9 +56,7 @@ Item {
                 preferredHighlightBegin: 0
                 preferredHighlightEnd: 0
 
-                ScrollBar.vertical: TikoBar{
-                    id: artistLineListBar
-                }
+                ScrollBar.vertical: TikoBarV{}
                 clip: true
 
                 model: ListModel{

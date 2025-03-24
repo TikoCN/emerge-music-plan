@@ -4,6 +4,7 @@ import QtQuick.Controls.Basic
 import QtQml
 import TikoAPI
 import Tiko
+import Widget
 
 Item {
     //背景
@@ -27,6 +28,13 @@ Item {
             sourceSize.width: width
             sourceSize.height: height
             source: "qrc:/image/cover.png"
+
+            MouseArea {
+                anchors.fill: parent
+                onClicked: {
+                    window.stackMusicPaly()
+                }
+            }
         }
 
         TikoTextLine{
@@ -166,7 +174,7 @@ Item {
                 width: 35
                 padding: 10
 
-                contentItem: TikoVSlider{
+                contentItem: TikoSliderV{
                     from: 0
                     to: 100
                     value: MediaPlayer.audioOutput.volume * 100
@@ -223,7 +231,7 @@ Item {
         }
     }
 
-    TikoHSlider{
+    TikoSliderH{
         id: playPos
         width: parent.width
         height: 10

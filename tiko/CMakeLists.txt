@@ -13,31 +13,31 @@ qt_add_qml_module(TikoLib
     VERSION 1.0
     QML_FILES
     TikoSeit.qml
-    TikoTextLine.qml
     TikoFrameless.qml
     TikoWidget.qml
-    control/TikoBar.qml
-    control/TikoButtonBorder.qml
-    control/TikoButtonNormal.qml
-    control/TikoButtonBase.qml
-    control/TikoButtonCombox.qml
-    control/TikoTextInput.qml
-    control/TikoMenu.qml
-    control/TikoMenuItem.qml
-    control/TikoMenuSpeacer.qml
-    control/TikoLittleMessage.qml
-    control/TikoProgressBar.qml
-    control/TikoProgressRing.qml
-    control/TikoPopup.qml
-    control/TikoPopupInput.qml
-    control/TikoPopupMessage.qml
-    control/TikoHSlider.qml
-    control/TikoVSlider.qml
-    control/TikoButtonSwitch.qml
-    control/TikoButtonIcon.qml
-    combox/TikoRightVessel.qml
-    combox/TikoSelectColor.qml
-    combox/TikoSelectFont.qml
+    bar/TikoBarV.qml
+    button/TikoButtonBorder.qml
+    button/TikoButtonNormal.qml
+    button/TikoButtonBase.qml
+    button/TikoButtonCombox.qml
+    button/TikoButtonSwitch.qml
+    button/TikoButtonIcon.qml
+    text/TikoTextInput.qml
+    text/TikoTextLine.qml
+    menu/TikoMenu.qml
+    menu/TikoMenuItem.qml
+    menu/TikoMenuSpeacer.qml
+    message/TikoMessageLittle.qml
+    progress/TikoProgressBar.qml
+    progress/TikoProgressRing.qml
+    popup/TikoPopup.qml
+    popup/TikoPopupInput.qml
+    popup/TikoPopupMessage.qml
+    slider/TikoSliderH.qml
+    slider/TikoSliderV.qml
+    vessel/TikoRightVessel.qml
+    select/TikoSelectColor.qml
+    select/TikoSelectFont.qml
     RESOURCES icon.qrc
     QML_FILES TikoImageAuto.qml
 )

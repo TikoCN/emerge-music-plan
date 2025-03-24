@@ -39,7 +39,7 @@ Item {
                 anchors.horizontalCenter: parent.horizontalCenter
                 onClickLeft: {
                     root.showText = text
-                    window.stackMain()
+                    mainView.turnToMain()
                 }
 
                 Rectangle {

@@ -14,26 +14,33 @@ qt_add_qml_module(WidgetLib
     QML_FILES
     Main.qml
     CoreData.qml
-    CoreLrcLine.qml
     CoreMusicLine.qml
-    PlayerLrcTable.qml
-    PlayerTable.qml
-    view/PageMain.qml
-    view/PageSeit.qml
-    view/ToolDeskLrc.qml
-    view/toolEditMusicPage/ToolEditMusic.qml
+    player/PlayerLrcTable.qml
+    player/PlayerTable.qml
+    ToolDeskLrc.qml
     view/ViewBottomBar.qml
     view/ViewLeftBar.qml
     view/ViewMain.qml
     view/ViewPlayingTable.qml
-    view/mainStyle/MainStyle1.qml
-    view/mainStyle/MainStyle2.qml
+    playMusicShow/PlayStyle1.qml
+    playMusicShow/PlayStyle2.qml
+    playMusicShow/PageMusicPlay.qml
     menu/MenuTableSort.qml
     menu/MenuMusic.qml
     menu/MenuTable.qml
-    view/toolEditMusicPage/EditMusicPage.qml
-    view/toolEditMusicPage/EditLrcPage.qml
+    toolEditMusicPage/EditPageMusic.qml
+    toolEditMusicPage/EditPageLrc.qml
+    toolEditMusicPage/ToolEditMusic.qml
     centerPage/PageArtist.qml
+    centerPage/PageAlumb.qml
+    centerPage/PageSeit.qml
+    lrcLine/DrawLrcLine.qml
+    lrcLine/DrawLoadLine.qml
+    lrcLine/CoreLrcLine.qml
     RESOURCES ui.qrc
-    QML_FILES centerPage/PageAlumb.qml
+    QML_FILES centerPage/PageMain.qml
+    QML_FILES CoreAlumbButton.qml
+    QML_FILES player/PlayerAlumb.qml
+    QML_FILES player/PlayerArtist.qml
+    QML_FILES CoreArtistButton.qml
 )
