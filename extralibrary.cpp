@@ -8,6 +8,7 @@
 
 #include <QPainter>
 #include <QPainterPath>
+#include <QRegularExpression>
 
 /*
 *设置文件参数
@@ -52,11 +53,13 @@ void ExtraLibrary::getMedia(Music* core)
     }
 
     value = QString::fromStdString(t->artist().toCString(1));
-    if(value == "" || QString(value).replace(" ", "") == ""){
+    if(value == "" || value.replace(" ", "") == ""){
         core->artistList.append(QObject::tr("未知歌手"));
     }
     else {
-        core->artistList = value.split(";");
+        QRegularExpression rx;
+        rx.setPattern(R"([;\/\,])");
+        core->artistList = value.split(rx);
     }
 
     core->alumb = QString::fromStdString(t->album().toCString(1));

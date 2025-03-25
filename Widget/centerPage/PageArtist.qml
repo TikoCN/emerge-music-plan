@@ -48,9 +48,6 @@ Item {
         width: parent.width - 60
         height: parent.height - artistTurnButtonList.height - 60
         ScrollBar.vertical: TikoBarV{}
-        highlightRangeMode: ListView.StrictlyEnforceRange
-        preferredHighlightBegin: 0
-        preferredHighlightEnd: 0
         clip: true
 
         model: ListModel{
@@ -116,13 +113,13 @@ Item {
             }
 
             artistModel.append({
-                                  lineText: list[i][0].name[0],
+                                  lineText: list[i][0].lineKey,
                                   artistDataList: artistDataList,
                                   leng: list[i].length,
                                   artistLineId: i
                               })
             artistTurnButtonModel.append({
-                                            lineText: list[i][0].name[0],
+                                            lineText: list[i][0].lineKey,
                                             lineId: i
                                         })
         }

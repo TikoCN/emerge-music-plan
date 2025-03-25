@@ -12,6 +12,7 @@ public:
 
     QList<Music *> musicList; // 音乐列表
     QString name;
+    QString lineKey;
     int id;
 
     QString getName() const;
@@ -20,10 +21,12 @@ public:
 
     int getId() const;
 
+    QString getLineKey() const;
+
 private:
     Q_PROPERTY(QString name READ getName CONSTANT)
     Q_PROPERTY(QList<Music *> musicList READ getMusicList CONSTANT)
     Q_PROPERTY(int id READ getId CONSTANT FINAL)
+    Q_PROPERTY(QString lineKey READ getLineKey CONSTANT FINAL)
 };
-
 #endif // ALUMB_H

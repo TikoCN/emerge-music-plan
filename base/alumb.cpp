@@ -6,6 +6,11 @@ Alumb::Alumb(QString name)
 
 }
 
+QString Alumb::getLineKey() const
+{
+    return lineKey;
+}
+
 int Alumb::getId() const
 {
     return id;

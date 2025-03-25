@@ -127,6 +127,12 @@ void TaskCenter::loadMusicFile()
 
     //得到所有音乐文件
     filterFileInfo(seit->sourceList);
+    chinesePinyin = Base::getInstance()->getChineseToPinyinJson();
+    artistLineList.fill(QList<Artist *>(), 26);
+    alumbLineList.fill(QList<Alumb *>(), 26);
+    for (char i = 'A'; i <= 'Z'; ++i) {
+        keyList.append(QString(i));
+    }
 
     workPos = 0;//重置工作位置
     workNumber = buildMusicList.size();//设置工作单元数
@@ -176,94 +182,6 @@ void TaskCenter::loadUserTable()
     workPos = 0;
     tableId = dirTableSize;
     emit startUserTable();
-}
-
-void TaskCenter::insertArtist(Music *music)
-{
-    for (int k = 0; k < music->artistList.size(); ++k) {
-        QString artistName = music->artistList[k];
-
-        bool isNoFind = true;
-        for (int i = 0; i < artistLineList.size(); ++i) {
-            QList<Artist *> artistList = artistLineList[i];
-
-            if (artistList.first()->name[0] != artistName[0]) {
-                continue;
-            }
-
-            // 遍历行
-            for (int j = 0; j < artistList.size(); ++j) {
-                // 遍历作者列表
-                if (artistList[j]->name == artistName) {
-                    isNoFind = false;
-                    artistList[j]->musicList.append(music);
-                    break;
-                }
-            }
-
-            if (isNoFind) {
-                isNoFind = false;
-                Artist *artist = new Artist(artistName);
-                artist->musicList.append(music);
-                artist->id = artistLineList.size();
-                artist->moveToThread(MusicCore::getInstance()->thread());
-
-                artistLineList[i].append(artist);
-            }
-        }
-
-        if (isNoFind) {
-            Artist *artist = new Artist(artistName);
-            artist->musicList.append(music);
-            artist->id = artistLineList.size();
-            artist->moveToThread(MusicCore::getInstance()->thread());
-            QList<Artist *> artistList;
-
-            artistList.append(artist);
-            artistLineList.append(artistList);
-        }
-    }
-}
-
-void TaskCenter::insertAlumb(Music *music)
-{
-    bool isNoFind = true;
-    for (int i = 0; i < alumbLineList.size(); ++i) {
-        QList<Alumb *> alumbList = alumbLineList[i];
-
-        if (alumbList.first()->name[0] != music->alumb[0]) {
-            continue;
-        }
-
-        for (int j = 0; j < alumbList.size(); ++j) {
-            if (alumbList[j]->name == music->alumb) {
-                isNoFind = false;
-                alumbList[j]->musicList.append(music);
-                break;
-            }
-        }
-
-        if (isNoFind) {
-            isNoFind = false;
-            Alumb *alumb = new Alumb(music->alumb);
-            alumb->musicList.append(music);
-            alumb->id = artistLineList.size();
-            alumb->moveToThread(MusicCore::getInstance()->thread());
-
-            alumbLineList[i].append(alumb);
-        }
-    }
-
-    if (isNoFind) {
-        Alumb *alumb = new Alumb(music->alumb);
-        alumb->musicList.append(music);
-        alumb->id = artistLineList.size();
-        alumb->moveToThread(MusicCore::getInstance()->thread());
-        QList<Alumb *> alumbList;
-
-        alumbList.append(alumb);
-        alumbLineList.append(alumbList);
-    }
 }
 
 /*
@@ -357,6 +275,129 @@ void TaskCenter::getMusicCoreList(QList<Music *> musicList, QList<QList<Music *>
     dirTableSize = tableList.size();
 }
 
+int TaskCenter::getEnglishId(QString name)
+{
+    for (int i = 0; i < chinesePinyin.size(); ++i) {
+        if (chinesePinyin[i].indexOf(name[0]) != -1) {
+            return i;
+        }
+    }
+    return -1;
+}
+
+void TaskCenter::insertArtist(Music *music)
+{
+    for (int k = 0; k < music->artistList.size(); ++k) {
+        QString artistName = music->artistList[k];
+
+        int aimLine = getEnglishId(artistName);
+        // 遍历所有列表
+        bool isNoFind = true;
+
+        if(aimLine == -1) {
+            for (int i = 26; i < artistLineList.size(); ++i) {
+                if (artistLineList[i].first()->lineKey != artistName[0]) {
+                    continue;
+                }
+                else {
+                    aimLine = i;
+                    break;
+                }
+            }
+        }
+
+        if (aimLine == -1) {
+            QList<Artist *> list;
+            artistLineList.append(list);
+            aimLine = artistLineList.size() - 1;
+        }
+
+        // 目标行
+        QList<Artist *> artistList = artistLineList[aimLine];
+
+        // 遍历行
+        for (int j = 0; j < artistList.size(); ++j) {
+            // 遍历作者列表
+            if (artistList[j]->name == artistName) {
+                isNoFind = false;
+                artistList[j]->musicList.append(music);
+                break;
+            }
+        }
+
+        // 不存在,新建
+        if (isNoFind) {
+            Artist *artist = new Artist(artistName);
+            if(aimLine < 26) {
+                artist->lineKey = keyList[aimLine];
+            }
+            else {
+                artist->lineKey = artistName[0];
+            }
+            artist->musicList.append(music);
+            artist->id = artistLineList.size();
+            artist->moveToThread(MusicCore::getInstance()->thread());
+
+            artistLineList[aimLine].append(artist);
+        }
+    }
+}
+
+void TaskCenter::insertAlumb(Music *music)
+{
+    QString alumbName = music->alumb;
+    int aimLine = getEnglishId(alumbName);
+    // 遍历所有列表
+    bool isNoFind = true;
+
+    if(aimLine == -1) {
+        for (int i = 26; i < alumbLineList.size(); ++i) {
+            if (alumbLineList[i].first()->lineKey != alumbName[0]) {
+                continue;
+            }
+            else {
+                aimLine = i;
+                break;
+            }
+        }
+    }
+
+    if (aimLine == -1) {
+        QList<Alumb *> list;
+        alumbLineList.append(list);
+        aimLine = alumbLineList.size() - 1;
+    }
+
+    // 目标行
+    QList<Alumb *> alumbList = alumbLineList[aimLine];
+
+    // 遍历行
+    for (int j = 0; j < alumbList.size(); ++j) {
+        // 遍历作者列表
+        if (alumbList[j]->name == alumbName) {
+            isNoFind = false;
+            alumbList[j]->musicList.append(music);
+            break;
+        }
+    }
+
+    // 不存在,新建
+    if (isNoFind) {
+        Alumb *alumb = new Alumb(alumbName);
+        if(aimLine < 26) {
+            alumb->lineKey = keyList[aimLine];
+        }
+        else {
+            alumb->lineKey = alumbName[0];
+        }
+        alumb->musicList.append(music);
+        alumb->id = alumbLineList.size();
+        alumb->moveToThread(MusicCore::getInstance()->thread());
+
+        alumbLineList[aimLine].append(alumb);
+    }
+}
+
 void TaskCenter::getUserTableMusic(QList<Music *> musicList, int tableId)
 {
     if (tableId < 0 || tableId >= tableList.size()){
@@ -383,12 +424,28 @@ void TaskCenter::finishUserTable()
         QString t = tr("加载音乐文件完成，加载了 ") + QString::number(musicList.size()) + tr(" 个音乐文件");
         emit Base::getInstance()->sendMessage(t, 0);
 
+        QList<QList<Artist *>> artistNewList;
+        for (int i = 0; i < artistLineList.length(); ++i) {
+            if(artistLineList[i].size() > 0) {
+                artistNewList.append(artistLineList[i]);
+            }
+        }
+        artistLineList = artistNewList;
+
+        QList<QList<Alumb *>> alumbNewList;
+        for (int i = 0; i < alumbLineList.length(); ++i) {
+            if(alumbLineList[i].size() > 0) {
+                alumbNewList.append(alumbLineList[i]);
+            }
+        }
+        alumbLineList = alumbNewList;
+
         std::sort(artistLineList.begin(), artistLineList.end(), [this](QList<Artist *> a, QList<Artist *> b){
-            return a[0]->name[0] < b[0]->name[0];
+            return a[0]->lineKey < b[0]->lineKey;
         });
 
         std::sort(alumbLineList.begin(), alumbLineList.end(), [this](QList<Alumb *> a, QList<Alumb *> b){
-            return a[0]->name[0] < b[0]->name[0];
+            return a[0]->lineKey < b[0]->lineKey;
         });
 
         emit musicsLoaded(musicList, tableList, artistLineList, alumbLineList);
@@ -406,6 +463,8 @@ void TaskCenter::clearData()
     this->tableMusic.clear();
     this->alumbLineList.clear();
     this->artistLineList.clear();
+    this->chinesePinyin.clear();
+    this->keyList.clear();
 
     //从头删除到尾
     while (!buildMusicList.empty()) {

@@ -37,10 +37,11 @@ qt_add_qml_module(WidgetLib
     lrcLine/DrawLrcLine.qml
     lrcLine/DrawLoadLine.qml
     lrcLine/CoreLrcLine.qml
+    centerPage/PageMain.qml
+    CoreAlumbButton.qml
+    player/PlayerAlumb.qml
+    player/PlayerArtist.qml
+    CoreArtistButton.qml
+    lrcLine/DrawLrcFixHeight.qml
     RESOURCES ui.qrc
-    QML_FILES centerPage/PageMain.qml
-    QML_FILES CoreAlumbButton.qml
-    QML_FILES player/PlayerAlumb.qml
-    QML_FILES player/PlayerArtist.qml
-    QML_FILES CoreArtistButton.qml
 )

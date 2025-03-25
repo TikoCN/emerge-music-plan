@@ -6,6 +6,11 @@ Artist::Artist(QString name)
 
 }
 
+QString Artist::getLineKey() const
+{
+    return lineKey;
+}
+
 int Artist::getId() const
 {
     return id;

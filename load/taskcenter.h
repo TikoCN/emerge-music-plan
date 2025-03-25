@@ -40,6 +40,7 @@ public:
 
     QFileInfoList musicFileList;               // 所有文件列表
     QStringList musicNameList;                 // 旧音乐名列表
+    QStringList keyList;                       // 字母对照表
     QList<QStringList> tableMusic;              // 列表歌曲名单
     QList<BuildMusic *> buildMusicList;            // 任务计算单元
     QList<BuildUserTable *> buildUserTableList;            // 任务计算单元
@@ -47,6 +48,7 @@ public:
     QList<Table *> tableList;                  // 播放列表
     QList<QList<Artist *>> artistLineList;                // 歌手列表
     QList<QList<Alumb *>> alumbLineList;                  // 专辑列表
+    QList<QStringList> chinesePinyin;           // 中文拼音对照表
 
 public slots:
     //生成加载单元列表
@@ -56,6 +58,7 @@ public slots:
     void loadMusicFile();
     void loadUserTable();
 
+    int getEnglishId(QString name);
     void insertArtist(Music *music);
     void insertAlumb(Music *music);
 

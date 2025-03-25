@@ -38,7 +38,7 @@ public:
     //剪切板
     void copyString(QString data);
 
-    int getChinesePinyingId(QString string);
+    QList<QStringList> getChineseToPinyinJson();
 
 signals:
     void sendMessage(QString msg, int type);

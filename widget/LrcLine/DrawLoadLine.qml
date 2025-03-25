@@ -4,7 +4,7 @@ import QtQuick.Effects
 import TikoAPI
 import Tiko
 
-Item {
+Canvas {
     id: drawLoadLine
     height: 0
 
@@ -16,66 +16,61 @@ Item {
     property double r: lrcFont.pixelSize / 2
     property font lrcFont: Setting.mainLrcFont
 
-    Canvas{
-        id: lrcShow
-        anchors.fill: drawLoadLine
-        visible: true
-        onPaint: {
-            var ctx = lrcShow.getContext("2d")
-            var width = lrcShow.width
-            var height = lrcShow.height
-            // 清除画布
-            var r = drawLoadLine.r
-            var centerY = height / 2
-            var space = 10
-            var boreder = 20
-            ctx.clearRect(0, 0, width, height);
+    onPaint: {
+        var ctx = drawLoadLine.getContext("2d")
+        var width = drawLoadLine.width
+        var height = drawLoadLine.height
+        // 清除画布
+        var r = drawLoadLine.r
+        var centerY = height / 2
+        var space = 10
+        var boreder = 20
+        ctx.clearRect(0, 0, width, height);
 
-            // 渐变色
-            var overF = (MediaPlayer.player.position - core.startTime)/(core.endTime - core.startTime)
-            overF = overF || 0
-            overF = overF > 1 || 1
-            var gradient = ctx.createLinearGradient(boreder, centerY - r, boreder + (space + 2*r)*3 + 2*r, centerY - r);
+        // 渐变色
+        var overF = (MediaPlayer.player.position - core.startTime)/(core.endTime - core.startTime)
+        overF = overF || 0
+        overF = overF > 1 || 1
+        var gradient = ctx.createLinearGradient(boreder, centerY - r, boreder + (space + 2*r)*3 + 2*r, centerY - r);
 
-            // 添加颜色停止点
-            gradient.addColorStop(0, drawLoadLine.playingColor);
-            gradient.addColorStop(overF, drawLoadLine.playingColor);
-            gradient.addColorStop(overF, drawLoadLine.normalColor);
-            gradient.addColorStop(1, drawLoadLine.normalColor)
+        // 添加颜色停止点
+        gradient.addColorStop(0, drawLoadLine.playingColor);
+        gradient.addColorStop(overF, drawLoadLine.playingColor);
+        gradient.addColorStop(overF, drawLoadLine.normalColor);
+        gradient.addColorStop(1, drawLoadLine.normalColor)
 
-            ctx.beginPath()
-            for(var i=0; i<3; i++){
-                var startX = boreder + (space + 2 * r) * i
-                ctx.ellipse(startX, centerY - r, 2 * r, 2 * r)
-            }
-            ctx.fillStyle = gradient
-            ctx.fill()
+        ctx.beginPath()
+        for(var i=0; i<3; i++){
+            var startX = boreder + (space + 2 * r) * i
+            ctx.ellipse(startX, centerY - r, 2 * r, 2 * r)
         }
+        ctx.fillStyle = gradient
+        ctx.fill()
     }
 
     // 呼吸动画
     SequentialAnimation {
-           running: isDraw
-           loops: Animation.Infinite
+        running: isDraw
+        loops: Animation.Infinite
 
-           NumberAnimation {
-               target: drawLoadLine
-               properties: "r"
-               from: lrcFont.pixelSize / 2
-               to: lrcFont.pixelSize / 2 + 2
-               duration: 1000
-               easing.type: Easing.InQuint
-           }
+        NumberAnimation {
+            target: drawLoadLine
+            properties: "r"
+            from: lrcFont.pixelSize / 2
+            to: lrcFont.pixelSize / 2 + 2
+            duration: 1000
+            easing.type: Easing.InQuint
+        }
 
-           NumberAnimation {
-               target: drawLoadLine
-               properties: "r"
-               from: lrcFont.pixelSize / 2 + 2
-               to: lrcFont.pixelSize / 2
-               duration: 1000
-               easing.type: Easing.OutQuint
-           }
-       }
+        NumberAnimation {
+            target: drawLoadLine
+            properties: "r"
+            from: lrcFont.pixelSize / 2 + 2
+            to: lrcFont.pixelSize / 2
+            duration: 1000
+            easing.type: Easing.OutQuint
+        }
+    }
 
     // 展示动画
     NumberAnimation on height {
@@ -98,7 +93,7 @@ Item {
     Connections{
         target: core
         function onUpdate(){
-            lrcShow.requestPaint()
+            drawLoadLine.requestPaint()
         }
     }
 

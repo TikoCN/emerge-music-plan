@@ -2,7 +2,7 @@ import QtQuick
 import QtQuick.Layouts
 import TikoAPI
 import Tiko
-import "../"
+import Widget
 
 Window{
     id: deskLrcTool
@@ -13,7 +13,9 @@ Window{
     flags: Qt.Window | Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint
     title: qsTr("桌面歌词")
     width: lenth.boundingRect.width * 2
-    height: tool.height + playingLine.height + playedLine.height + 60
+    height: tool.height + playingLine.height + 30
+
+    property var playLrc
 
     Component.onDestruction: {
         var mousePos = deskLrcToolArea.mapToGlobal(0, 0)
@@ -107,24 +109,13 @@ Window{
             font.bold: true
         }
 
-        CoreLrcLine{
+        DrawLrcFixHeight {
             id: playingLine
             anchors.top: tool.bottom
             anchors.topMargin: 10
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.leftMargin: 20
-            width: parent.width - 40
-            isUse: false
-        }
-
-        CoreLrcLine{
-            id: playedLine
-            anchors.top: playingLine.bottom
-            anchors.topMargin: 20
-            anchors.leftMargin: 20
-            anchors.horizontalCenter: parent.horizontalCenter
-            width: parent.width - 40
-            isUse: false
+            height: Setting.mainLrcFont.pixelSize * 4
         }
     }
 }

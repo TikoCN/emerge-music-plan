@@ -19,7 +19,6 @@ Item {
     property var textList: core.textList
     property var helpTextList: core.helpTextList
     property bool isPlay: MediaPlayer.playingLrc.id === lrcId
-    property bool isUse: true
 
     MultiEffect {
         id: effct

@@ -48,9 +48,6 @@ Item {
         width: parent.width - 60
         height: parent.height - alumbTurnButtonList.height - 60
         ScrollBar.vertical: TikoBarV{}
-        highlightRangeMode: ListView.StrictlyEnforceRange
-        preferredHighlightBegin: 0
-        preferredHighlightEnd: 0
         clip: true
 
         model: ListModel{
@@ -116,13 +113,13 @@ Item {
             }
 
             alumbModel.append({
-                                  lineText: list[i][0].name[0],
+                                  lineText: list[i][0].lineKey,
                                   alumbDataList: alumbDataList,
                                   leng: list[i].length,
                                   alumbLineId: i
                               })
             alumbTurnButtonModel.append({
-                                            lineText: list[i][0].name[0],
+                                            lineText: list[i][0].lineKey,
                                             lineId: i
                                         })
         }

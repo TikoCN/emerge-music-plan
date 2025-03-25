@@ -161,7 +161,7 @@ QList<LrcData *> Music::getLyricsData()
             match = rx.match(line);
             if(match.capturedTexts().size() == 5){
                 lrcD = new LrcData;
-                lrcD->id = lrcList.size()-1;
+                lrcD->id = lrcList.size();
                 lrcD->startTime = match.captured(1).toLong() * 60 * 1000 +
                                   match.captured(2).toLong() * 1000 +
                                   match.captured(3).toLong() * 10;

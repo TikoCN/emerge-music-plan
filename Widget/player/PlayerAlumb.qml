@@ -87,7 +87,7 @@ Item{
                                       musicListId: i,
                                       musicCore: alumb.musicList[i]
                                   })
-            allTime = alumb.musicList[i].endTime
+            allTime += alumb.musicList[i].endTime
         }
         alumbText.text = alumb.name
         alumbHelp.text = alumb.musicList.length.toString()+" "+qsTr("首歌曲") +"-"+

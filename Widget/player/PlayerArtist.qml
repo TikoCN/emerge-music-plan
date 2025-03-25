@@ -88,7 +88,7 @@ Item{
                                        musicListId: i,
                                        musicCore: artist.musicList[i]
                                    })
-            allTime = artist.musicList[i].endTime
+            allTime += artist.musicList[i].endTime
         }
         artistText.text = artist.name
         artistHelp.text = artist.musicList.length.toString()+" "+qsTr("首歌曲") +"-"+
