@@ -49,6 +49,19 @@ void LrcData::append(long long start, long long end, QString text)
     textList.append(text);
 }
 
+void LrcData::copy(LrcData *aim)
+{
+    this->id = aim->id;
+    if(aim->textList.size() > 0 || aim->helpTextList.size() > 0){
+        this->helpTextList = aim->helpTextList;
+        this->textList = aim->textList;
+        this->endList = aim->endList;
+        this->startList = aim->startList;
+        this->endTime = aim->endTime;
+        this->startTime = aim->startTime;
+    }
+}
+
 
 
 

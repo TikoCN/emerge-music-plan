@@ -1,6 +1,7 @@
 pragma Singleton
 import QtQuick
 import Widget
+import TikoAPI
 
 QtObject {
     property double timeWidth: 0.0

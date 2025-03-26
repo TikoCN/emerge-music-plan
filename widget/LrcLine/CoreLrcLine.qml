@@ -25,7 +25,6 @@ Item {
            width: coreLrcLine.width
            id: drawLrcLine
            core: coreLrcLine.core
-           isUse: coreLrcLine.isUse
        }
    }
 

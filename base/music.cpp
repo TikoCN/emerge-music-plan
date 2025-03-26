@@ -164,7 +164,7 @@ QList<LrcData *> Music::getLyricsData()
                 lrcD->id = lrcList.size();
                 lrcD->startTime = match.captured(1).toLong() * 60 * 1000 +
                                   match.captured(2).toLong() * 1000 +
-                                  match.captured(3).toLong() * 10;
+                                  match.captured(3).toLong();
                 QStringList lrcText = match.captured(4).split("/");
                 // 添加到其他文本
                 for (int i = 1; i < lrcText.size(); ++i) {
@@ -189,6 +189,7 @@ QList<LrcData *> Music::getLyricsData()
             else{
                 end = lrcList[i+1]->startTime;
             }
+
             lrcList[i]->endTime = end;
             int length = lrcTextList[i].size() == 0 ? 1 : lrcTextList[i].size();
             int wordTime = (end - start) / length;

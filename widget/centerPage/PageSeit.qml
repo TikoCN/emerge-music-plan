@@ -152,6 +152,15 @@ ScrollView{
                         Setting.transparentColor = selectedColor
                     }
                 }
+
+                TikoSelectColor{
+                    width: parent.itemWidth
+                    text: qsTr("桌面歌词颜色")
+                    selectedColor: Setting.deskLrcColor
+                    onSelectedColorChanged: {
+                        Setting.deskLrcColor = selectedColor
+                    }
+                }
             }
         }
 

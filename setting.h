@@ -48,6 +48,8 @@ private:
 
     Q_PROPERTY(bool isGetLrcFromQQMusic READ getIsGetLrcFromQQMusic WRITE setIsGetLrcFromQQMusic NOTIFY isGetLrcFromQQMusicChanged FINAL)
 
+    Q_PROPERTY(QColor deskLrcColor READ getDeskLrcColor WRITE setDeskLrcColor NOTIFY deskLrcColorChanged FINAL)
+
 public:
     static Setting* getInstance(){
         return instance;
@@ -74,6 +76,7 @@ public:
     QColor themeColor;//主题颜色
     QColor transparentColor;//透明层颜色
     QColor backdropColor;//背景颜色
+    QColor deskLrcColor; //桌面歌词颜色
 
     QPoint lrcTopPoint;//桌面歌词位置
     QRectF windowRect;//主界面
@@ -148,6 +151,9 @@ public:
     bool getIsGetLrcFromQQMusic() const;
     void setIsGetLrcFromQQMusic(bool newIsGetLrcFromQQMusic);
 
+    QColor getDeskLrcColor() const;
+    void setDeskLrcColor(const QColor &newDeskLrcColor);
+
 signals:
     //加载资源
     void loadMusics();
@@ -169,5 +175,6 @@ signals:
     void isGetLrcFromNetEaseChanged();
     void isGetCoverFromQQMusicChanged();
     void isGetLrcFromQQMusicChanged();
+    void deskLrcColorChanged();
 };
 #endif // SETTING_H

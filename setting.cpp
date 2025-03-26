@@ -40,6 +40,7 @@ bool Setting::getParameterList()
     transparentColor = QColor::fromString(ini->value("transparentColor").toString());
     backdropColor = QColor::fromString(ini->value("backdropColor").toString());
     themeColor = QColor::fromString(ini->value("themeColor").toString());
+    deskLrcColor = QColor::fromString(ini->value("deskLrcColor").toString());
 
     deskFont.fromString(ini->value("deskFont").toString());
     mainFont.fromString(ini->value("mainFont").toString());
@@ -86,7 +87,6 @@ void Setting::setParameter(QString key, T value)
 void Setting::writeData()
 {
     MediaPlayer* player = MediaPlayer::getInstance();
-    MusicCore* core = MusicCore::getInstance();
     QSettings *ini = new QSettings(QDir::currentPath() + "/setting.ini", QSettings::IniFormat);
     ini->beginGroup("seit");
 
@@ -105,6 +105,7 @@ void Setting::writeData()
     ini->setValue("themeColor", themeColor.name());
     ini->setValue("transparentColor", transparentColor.name());
     ini->setValue("backdropColor", backdropColor.name());
+    ini->setValue("deskLrcColor", deskLrcColor.name());
 
     ini->setValue("mainFont", mainFont.toString());
     ini->setValue("mainLrcFont", mainLrcFont.toString());
@@ -141,14 +142,15 @@ Setting::Setting()
         themeColor = Qt::red;
         transparentColor = Qt::black;
         backdropColor = Qt::white;
+        deskLrcColor = Qt::red;
 
         mainFont.setFamily("Microsoft YaHei");
         mainFont.setPixelSize(12);
         mainLrcFont.setFamily("Microsoft YaHei");
-        mainLrcFont.setPixelSize(12);
+        mainLrcFont.setPixelSize(18);
         mainLrcFont.setBold(1);
         deskFont.setFamily("Microsoft YaHei");
-        deskFont.setPixelSize(15);
+        deskFont.setPixelSize(20);
         deskFont.setBold(1);
 
         QRectF screen = QGuiApplication::primaryScreen()->geometry();
@@ -399,6 +401,21 @@ void Setting::setThemeColor(const QColor &newthemeColor)
     emit themeColorChanged();
     //写入设置文件
     setParameter("themeColor", themeColor);
+}
+
+QColor Setting::getDeskLrcColor() const
+{
+    return deskLrcColor;
+}
+
+void Setting::setDeskLrcColor(const QColor &newDeskLrcColor)
+{
+    if (deskLrcColor == newDeskLrcColor)
+        return;
+    deskLrcColor = newDeskLrcColor;
+    emit deskLrcColorChanged();
+    //写入设置文件
+    setParameter("deskLrcColor", deskLrcColor);
 }
 
 int Setting::getMaxThreadNumber() const

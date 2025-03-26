@@ -9,7 +9,17 @@
  */
 void MediaPlayer::loadLrcList()
 {
+    emit clearLrc();
+
+    // 清空以往资源
+    while (!lrcList.empty()) {
+        delete lrcList.takeFirst();
+    }
+
     lrcList = playingMusic->getLyricsData();
+    if (lrcList.size() > 0) {
+        playingLrc->copy(lrcList.first());
+    }
     emit lrcLoaded();
 }
 
@@ -19,15 +29,18 @@ void MediaPlayer::selectPlayLrc(qint64 time)
         return;
     }
 
-    if(playingLrc != nullptr &&
-        playingLrc->startTime <= time && playingLrc->endTime >= time){
+    if(playingLrc->startTime <= time && playingLrc->endTime >= time){
         emit playingLrc->update();
+
+        if (playingLrc->id >=0 && playingLrc->id < lrcList.size()) {
+            emit lrcList[playingLrc->id]->update();
+        }
     }
     else{
         for(int i=0; i<lrcList.size(); i++){
             if(lrcList[i]->startTime <= time && lrcList[i]->endTime >= time){
                 //改变 qml
-                playingLrc = lrcList[i];
+                playingLrc->copy(lrcList[i]);
                 emit lrcList[i]->update();
                 emit playingLrcIdChange();
                 break;
@@ -94,9 +107,6 @@ void MediaPlayer::updateAudioOutPut()
     delete nowOut;
 }
 
-/*
- * 播放音乐
- */
 
 //播放音乐
 void MediaPlayer::playTableMusic(Table *table, int musicId){
@@ -117,8 +127,8 @@ void MediaPlayer::playTableMusic(Table *table, int musicId){
 //播放专辑音乐
 void MediaPlayer::playAlumbMusic(Alumb *alumb, int musicId){
     // 清空正在播放列表
+    emit clearLrc();
     musicList.clear();
-
 
     if (alumb == nullptr) {
         return;
@@ -284,6 +294,9 @@ MediaPlayer::MediaPlayer()
     player = new QMediaPlayer;//播放设备
     audioOutput = new QAudioOutput;//音频输出
     bufferOutput = new QAudioBufferOutput;//缓冲区输出
+
+    playingLrc = new LrcData;
+    playingLrc->append(0, 1, tr("这是行歌词"));
 
     player->setAudioOutput(audioOutput);
     player->setAudioBufferOutput(bufferOutput);

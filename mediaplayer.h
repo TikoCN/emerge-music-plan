@@ -138,6 +138,9 @@ signals:
     //歌词加载完成
     void lrcLoaded();
 
+    // 清空歌词界面
+    void clearLrc();
+
     void loopTypeChanged();
 
     void playingLrcIdChange();

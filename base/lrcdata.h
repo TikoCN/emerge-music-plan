@@ -22,6 +22,8 @@ public:
 
     void append(long long start, long long end, QString text);
 
+    void copy(LrcData *aim);
+
     int getId() const;
 
     QList<long long> getStartList() const;

@@ -12,7 +12,7 @@ Window{
     color:"#00000000"
     flags: Qt.Window | Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint
     title: qsTr("桌面歌词")
-    width: lenth.boundingRect.width * 2
+    width: playingLine.width > 600 ? playingLine.width+40 : 640
     height: tool.height + playingLine.height + 30
 
     property var playLrc
@@ -41,6 +41,7 @@ Window{
             anchors.topMargin: 10
             anchors.horizontalCenter: parent.horizontalCenter
             visible: deskLrcToolArea.containsMouse ? true : false
+            width: 400
             height: 40
 
             TikoButtonIcon{
@@ -96,7 +97,7 @@ Window{
 
             TikoButtonIcon{
                 icon.source: "qrc:/image/close.png"
-                onClicked: deskLrcTool.close()
+                onClicked: deskLrcTool.destroy()
                 text: qsTr("隐藏歌词")
             }
         }
@@ -116,6 +117,8 @@ Window{
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.leftMargin: 20
             height: Setting.mainLrcFont.pixelSize * 4
+            fontFamily: Setting.deskFont.family
+            fontPixelSize: Setting.deskFont.pixelSize
         }
     }
 }

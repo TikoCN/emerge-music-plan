@@ -89,11 +89,14 @@ Item {
 
             lrcList.currentIndex = playLine
         }
+
+        function onClearLrc(){
+            lrcDataList.clear()
+        }
     }
 
     //插入歌词
     function buildLrcList(){
-        lrcDataList.clear()
         for(var i=0; i<MediaPlayer.lrcList.length; i++){
             lrcDataList.append({lrc:i})
         }
