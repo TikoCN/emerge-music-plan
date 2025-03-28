@@ -9,7 +9,7 @@ Item {
     id: playerTable
     property int tableId//歌曲标题
     property int allMusic:  0
-    property string showCover: "qrc:/image/default.jpg"
+    property string showCover: "qrc:/image/default.png"
 
     Item{
         id: showView
@@ -21,7 +21,7 @@ Item {
             id: tableCover
             anchors.left: parent.left
             anchors.leftMargin: 10
-            normalUrl: "qrc:/image/default.jpg"
+            normalUrl: "qrc:/image/default.png"
             loadUrl: playerTable.showCover
             width: 200
             height: 200

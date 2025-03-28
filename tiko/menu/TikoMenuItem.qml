@@ -1,12 +1,16 @@
 import QtQuick
 import QtQuick.Controls.Basic
 import Tiko
+import QtQuick.Effects
 
 MenuItem {
     id: root
     font.family: TikoSeit.fontFamily
     font.pixelSize: TikoSeit.fontPixelSize
     implicitHeight: 35
+
+    property color autoColor: TikoSeit.transparentColor
+    property bool useAutoColor: true
 
     //背景
     background: Rectangle{
@@ -23,6 +27,14 @@ MenuItem {
             width: parent.height
             anchors.verticalCenter: parent.verticalCenter
             source: root.icon.source
+            visible: false
+        }
+        MultiEffect {
+            id: iconShow
+            anchors.fill: icon
+            source: icon
+            colorization: useAutoColor ? 1 : 0
+            colorizationColor: autoColor
         }
         TikoTextLine{
             text: root.text

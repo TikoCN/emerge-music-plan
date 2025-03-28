@@ -109,7 +109,7 @@ void ImageResponse::run()
 
     //找不封面，设置为默认封面
     if(img.isNull()){
-        img.load(":/image/default.jpg");
+        img.load(":/image/default.png");
     }
 
     emit finished();

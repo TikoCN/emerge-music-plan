@@ -1,5 +1,6 @@
 import QtQuick.Controls.Basic
 import QtQuick
+import QtQuick.Effects
 import Tiko
 
 TikoButtonBase {
@@ -25,6 +26,8 @@ TikoButtonBase {
     property string iconSource: ""
     property string text: "button"
     property TikoTextLine autoText: textShow
+    property bool useAutoColor: true
+    property color autoColor: TikoSeit.transparentColor
 
     //背景颜色
     Rectangle{
@@ -67,6 +70,14 @@ TikoButtonBase {
         width: button.iconWidth
         height: button.iconHeight
         cache: button.cache
+
+        MultiEffect {
+            id: iconShow
+            anchors.fill: iconImg
+            source: iconImg
+            colorization: useAutoColor ? 1 : 0
+            colorizationColor: autoColor
+        }
     }
 
     //显示文本
