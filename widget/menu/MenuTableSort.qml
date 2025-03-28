@@ -1,5 +1,5 @@
 import Tiko
-import TikoAPI
+import ControlAPI
 import QtQuick
 
 TikoMenu{

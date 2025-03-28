@@ -1,5 +1,6 @@
 import QtQuick.Controls.Basic
 import QtQuick
+import Tiko
 
 Button {
     id: uiButton
@@ -18,9 +19,12 @@ Button {
     property double hover: 0.3
     property double normal: 0
     property bool cache: false
+    property double borderSize: 0
 
     background: Rectangle{
         color: TikoSeit.transparentColor//背景颜色
+        border.color: TikoSeit.backdropColor
+        border.width: borderSize
         radius: uiButton.radius
         opacity: {
             return uiButton.hovered ? uiButton.hover :  uiButton.normal

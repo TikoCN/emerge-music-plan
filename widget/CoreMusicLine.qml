@@ -1,6 +1,6 @@
 import QtQuick
 import QtQuick.Layouts
-import TikoAPI
+import ControlAPI
 import Tiko
 
 Item {
@@ -143,7 +143,7 @@ Item {
     function play(){
         switch(type){
         case -1:
-            MediaPlayer.playMusic(table, listId)
+            MediaPlayer.playMusicListId(table, listId)
             break
         case 0:
             MediaPlayer.playTableMusic(table, listId)

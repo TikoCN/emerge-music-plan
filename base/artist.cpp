@@ -1,4 +1,5 @@
 #include "artist.h"
+#include "base.h"
 
 Artist::Artist(QString name)
     : name(name)
@@ -9,6 +10,17 @@ Artist::Artist(QString name)
 QString Artist::getLineKey() const
 {
     return lineKey;
+}
+
+QString Artist::getStringTime()
+{
+    long long time = 0;
+    for (int i = 0; i < musicList.size(); ++i) {
+        time += musicList[i]->endTime;
+    }
+
+    // 转换标准时间
+    return Base::getInstance()->timeToString(time);
 }
 
 int Artist::getId() const

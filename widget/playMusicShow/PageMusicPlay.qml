@@ -1,6 +1,6 @@
 import QtQuick
 import QtQuick.Effects
-import TikoAPI
+import ControlAPI
 import Tiko
 import Widget
 

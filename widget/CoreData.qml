@@ -1,7 +1,7 @@
 pragma Singleton
 import QtQuick
 import Widget
-import TikoAPI
+import ControlAPI
 
 QtObject {
     property double timeWidth: 0.0
@@ -24,6 +24,24 @@ QtObject {
 
         if (component.status === Component.Ready) {
             var item = component.createObject(parent, {musicLine: parent, music: parent.music})
+            item.open()
+        }
+    }
+
+    function openMenuArtist(artistButton, artist){
+        var component = Qt.createComponent("menu/MenuArtist.qml")
+
+        if (component.status === Component.Ready) {
+            var item = component.createObject(artistButton, {artist: artist})
+            item.open()
+        }
+    }
+
+    function openMenualumb(alumbButton, alumb){
+        var component = Qt.createComponent("menu/MenuAlumb.qml")
+
+        if (component.status === Component.Ready) {
+            var item = component.createObject(alumbButton, {alumb: alumb})
             item.open()
         }
     }

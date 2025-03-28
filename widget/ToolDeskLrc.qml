@@ -1,6 +1,6 @@
 import QtQuick
 import QtQuick.Layouts
-import TikoAPI
+import ControlAPI
 import Tiko
 import Widget
 

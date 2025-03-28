@@ -1,7 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import Tiko
-import TikoAPI
+import ControlAPI
 import Widget
 
 Item {
@@ -57,7 +57,7 @@ Item {
         delegate: Item {
             id: artistLine
             width: artistLineList.width
-            height: artistLineText.height + artistShow.height + 10
+            height: childrenRect.height
             property int lineId: artistLineId
 
             TikoTextLine {
@@ -91,37 +91,41 @@ Item {
         }
     }
 
-    function openartistLineList () {
-        artistListShow.replace(artistLineShow)
-        build()
-    }
-
     function build () {
         artistModel.clear()
-        var list = Core.artistLineList
+        var list = Core.artistList
         var all = 0
+        var artistDataList = []
+        var lineKey = ""
+        var length = 0
+        var line = 0
         for (var i=0; i<list.length; i++) {
-            var artistDataList = []
-            for (var j=0; j<list[i].length; j++) {
-                var musicId = list[i][j].musicList[0].coreId
-                artistDataList.push({
-                                       lineId: i,
-                                       listId: j,
-                                       artistData: list[i][j],
-                                       musicId: musicId
-                                   })
+
+            if (lineKey !== list[i].lineKey) {
+                if (artistDataList.length > 0) {
+                    artistModel.append({
+                                          lineText: list[i].lineKey,
+                                          artistDataList: artistDataList,
+                                          leng: length,
+                                          artistLineId: line
+                                      })
+                    artistTurnButtonModel.append({
+                                                    lineText: list[i].lineKey,
+                                                    lineId: line
+                                                })
+                    length = 0
+                    line++
+                }
+                lineKey = list[i].lineKey
+                artistDataList = []
             }
 
-            artistModel.append({
-                                  lineText: list[i][0].lineKey,
-                                  artistDataList: artistDataList,
-                                  leng: list[i].length,
-                                  artistLineId: i
-                              })
-            artistTurnButtonModel.append({
-                                            lineText: list[i][0].lineKey,
-                                            lineId: i
-                                        })
+            artistDataList.push({
+                                   lineId: i,
+                                   artistData: list[i],
+                                   musicId: list[i].musicList[0].coreId
+                               })
+            length++
         }
     }
 }

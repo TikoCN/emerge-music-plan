@@ -1,5 +1,5 @@
 import QtQuick
-import TikoAPI
+import ControlAPI   
 import Tiko
 import Widget
 

@@ -2,7 +2,7 @@ import QtQuick
 import QtQuick.Window
 import QtQuick.Controls
 import QtQml
-import TikoAPI
+import ControlAPI
 import Tiko
 import Widget
 

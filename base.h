@@ -38,6 +38,9 @@ public:
     //剪切板
     void copyString(QString data);
 
+    // 得到 cout 个 大于 min 小于 max 不重复的随机数
+    QList<int> getRandNumber(int min, int max, int count);
+
     QList<QStringList> getChineseToPinyinJson();
 
 signals:

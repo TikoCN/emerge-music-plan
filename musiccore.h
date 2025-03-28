@@ -23,8 +23,8 @@ public:
 
     QList<Table *> tableList;       // 播放列表
     QList<Music *> musicList;       // 音乐核心列表
-    QList<QList<Alumb *>> alumbLineList;      // 专辑列表
-    QList<QList<Artist *>> artistLineList;     // 歌手列表
+    QList<Alumb *> alumbList;      // 专辑列表
+    QList<Artist *> artistList;     // 歌手列表
 
     QList<Music *> getMusicList() const;
 
@@ -34,10 +34,14 @@ public:
     // 写入列表,歌曲数据
     Q_INVOKABLE void writeJsonData();
 
+    Q_INVOKABLE QList<Alumb *> getAlumbRandList();
+    Q_INVOKABLE QList<Artist *> getArtistRandList();
+    Q_INVOKABLE QList<Music *> getMusicRandList();
+
     QJsonObject readJsonData();
 
     //获得音乐核心
-    void getMusicCore(QList<Music *>musicList, QList<Table *> tableList, QList<QList<Artist *>> artistLineList, QList<QList<Alumb *>> alumbLineList);
+    void getMusicCore(QList<Music *>musicList, QList<Table *> tableList, QList<Artist *> artistList, QList<Alumb *> alumbList);
 
     //新建播放列表
     Q_INVOKABLE void appendTable(QString tableName, bool isDir = false);
@@ -45,12 +49,15 @@ public:
     //将歌曲移动到
     Q_INVOKABLE void tableMoveMusic(int orgTableId, int musicId, int aimTalbeId);
 
-
     QList<Table *> getTableList() const;
 
     QList<QList<Alumb *> > getAlumbLineList() const;
 
     QList<QList<Artist *> > getArtistLineList() const;
+
+    QList<Alumb *> getAlumbList() const;
+
+    QList<Artist *> getArtistList() const;
 
 private:
     static MusicCore* instance;
@@ -60,9 +67,9 @@ private:
 
     Q_PROPERTY(QList<Music *> musicList READ getMusicList CONSTANT)
 
-    Q_PROPERTY(QList<QList<Alumb *> > alumbLineList READ getAlumbLineList CONSTANT FINAL)
+    Q_PROPERTY(QList<Alumb *> alumbList READ getAlumbList CONSTANT FINAL)
 
-    Q_PROPERTY(QList<QList<Artist *> > artistLineList READ getArtistLineList CONSTANT FINAL)
+    Q_PROPERTY(QList<Artist *> artistList READ getArtistList CONSTANT FINAL)
 
 signals:
     // 列表增加

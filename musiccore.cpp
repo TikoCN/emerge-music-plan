@@ -1,4 +1,5 @@
 #include "musiccore.h"
+#include "base.h"
 #include "load/taskcenter.h"
 #include <QDir>
 #include <QJsonDocument>
@@ -13,12 +14,12 @@ MusicCore::MusicCore(QObject *parent)
 /*
  * 获得音乐核心
  */
-void MusicCore::getMusicCore(QList<Music *>musicList, QList<Table *> tableList, QList<QList<Artist *>> artistLineList, QList<QList<Alumb *>> alumbLineList)
+void MusicCore::getMusicCore(QList<Music *>musicList, QList<Table *> tableList, QList<Artist *> artistList, QList<Alumb *> alumbList)
 {
     this->musicList = musicList;
     this->tableList = tableList;
-    this->alumbLineList = alumbLineList;
-    this->artistLineList = artistLineList;
+    this->alumbList = alumbList;
+    this->artistList = artistList;
 
     emit finishInit();
 
@@ -66,15 +67,14 @@ void MusicCore::tableMoveMusic(int orgTableId, int musicId, int aimTalbeId)
     tableList[aimTalbeId]->insertMusic(core);
 }
 
-
-QList<QList<Alumb *> > MusicCore::getAlumbLineList() const
+QList<Alumb *> MusicCore::getAlumbList() const
 {
-    return alumbLineList;
+    return alumbList;
 }
 
-QList<QList<Artist *> > MusicCore::getArtistLineList() const
+QList<Artist *> MusicCore::getArtistList() const
 {
-    return artistLineList;
+    return artistList;
 }
 
 QList<Music *> MusicCore::getMusicList() const
@@ -143,6 +143,54 @@ void MusicCore::writeJsonData()
     QJsonDocument doc(writeData);
     dataFile.write(doc.toJson(QJsonDocument::Indented));
     dataFile.close();
+}
+
+QList<Alumb *> MusicCore::getAlumbRandList()
+{
+    if(alumbList.size() < 15){
+        return alumbList;
+    }
+
+    QList<Alumb *> list;
+    QList<int> aimList = Base::getInstance()->getRandNumber(0, alumbList.size(), 15);
+    for (int i : aimList) {
+        if (i < alumbList.size()) {
+            list.append(alumbList[i]);
+        }
+    }
+    return list;
+}
+
+QList<Artist *> MusicCore::getArtistRandList()
+{
+    if(artistList.size() < 15){
+        return artistList;
+    }
+
+    QList<Artist *> list;
+    QList<int> aimList = Base::getInstance()->getRandNumber(0, artistList.size(), 15);
+    for (int i : aimList) {
+        if (i < artistList.size()) {
+            list.append(artistList[i]);
+        }
+    }
+    return list;
+}
+
+QList<Music *> MusicCore::getMusicRandList()
+{
+    if(musicList.size() < 15){
+        return musicList;
+    }
+
+    QList<Music *> list;
+    QList<int> aimList = Base::getInstance()->getRandNumber(0, musicList.size(), 15);
+    for (int i : aimList) {
+        if (i < musicList.size()) {
+            list.append(musicList[i]);
+        }
+    }
+    return list;
 }
 
 QJsonObject MusicCore::readJsonData()

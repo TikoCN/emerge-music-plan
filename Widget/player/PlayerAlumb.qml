@@ -1,6 +1,6 @@
 import QtQuick
 import Tiko
-import TikoAPI
+import ControlAPI   
 import Widget
 
 Item{
@@ -90,8 +90,8 @@ Item{
             allTime += alumb.musicList[i].endTime
         }
         alumbText.text = alumb.name
-        alumbHelp.text = alumb.musicList.length.toString()+" "+qsTr("首歌曲") +"-"+
-                Base.timeToString(allTime)+" "+qsTr("歌曲长度")
+        alumbHelp.text = alumb.musicList.length.toString()+" "+qsTr("首歌曲") +"-"
+                +alumb.getStringTime()+" "+qsTr("歌曲长度")
         alumbDataShow.alumb = alumb
     }
 }

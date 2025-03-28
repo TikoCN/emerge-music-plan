@@ -1,7 +1,7 @@
 import QtQuick
 import Widget
 import Tiko
-import TikoAPI
+import ControlAPI
 
 TikoMenu{
     id: menuMusic

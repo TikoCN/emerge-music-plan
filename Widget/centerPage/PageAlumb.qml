@@ -1,7 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import Tiko
-import TikoAPI
+import ControlAPI
 import Widget
 
 Item {
@@ -91,37 +91,41 @@ Item {
         }
     }
 
-    function openAlumbLineList () {
-        alumbListShow.replace(alumbLineShow)
-        build()
-    }
-
     function build () {
         alumbModel.clear()
-        var list = Core.alumbLineList
+        var list = Core.alumbList
         var all = 0
+        var alumbDataList = []
+        var lineKey = ""
+        var length = 0
+        var line = 0
         for (var i=0; i<list.length; i++) {
-            var alumbDataList = []
-            for (var j=0; j<list[i].length; j++) {
-                var musicId = list[i][j].musicList[0].coreId
-                alumbDataList.push({
-                                       lineId: i,
-                                       listId: j,
-                                       alumbData: list[i][j],
-                                       musicId: musicId
-                                   })
+
+            if (lineKey !== list[i].lineKey) {
+                if (alumbDataList.length > 0){
+                    alumbModel.append({
+                                          lineText: lineKey,
+                                          alumbDataList: alumbDataList,
+                                          leng: length,
+                                          alumbLineId: line
+                                      })
+                    alumbTurnButtonModel.append({
+                                                    lineText: lineKey,
+                                                    lineId: line
+                                                })
+                    length = 0
+                    line++
+                }
+                lineKey = list[i].lineKey
+                alumbDataList = []
             }
 
-            alumbModel.append({
-                                  lineText: list[i][0].lineKey,
-                                  alumbDataList: alumbDataList,
-                                  leng: list[i].length,
-                                  alumbLineId: i
-                              })
-            alumbTurnButtonModel.append({
-                                            lineText: list[i][0].lineKey,
-                                            lineId: i
-                                        })
+            alumbDataList.push({
+                                   lineId: i,
+                                   alumbData: list[i],
+                                   musicId: list[i].musicList[0].coreId
+                               })
+            length++
         }
     }
 }

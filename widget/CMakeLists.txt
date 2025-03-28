@@ -44,4 +44,7 @@ qt_add_qml_module(WidgetLib
     CoreArtistButton.qml
     lrcLine/DrawLrcFixHeight.qml
     RESOURCES ui.qrc
+    QML_FILES core/CoreMusicButton.qml
+    QML_FILES menu/MenuAlumb.qml
+    QML_FILES menu/MenuArtist.qml
 )

@@ -22,6 +22,9 @@ public:
 
     QString getLineKey() const;
 
+    // 得到歌手歌曲总时间
+    Q_INVOKABLE QString getStringTime();
+
 private:
     Q_PROPERTY(QList<Music *> musicList READ getMusicList CONSTANT FINAL)
     Q_PROPERTY(QString name READ getName CONSTANT FINAL)

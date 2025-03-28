@@ -20,11 +20,14 @@ public:
     //计算圆角图片
     void buildRoundImage(QImage *pix, int radius);
 
-    //加载网络类型
-    QImage downOnlineCover(int id);
+    // 加载网络封面
+    void downOnlineCover(int musicId);
 
-    //加载本地封面
-    QImage loadFileCover(int id);
+    // 加载本地封面
+    void loadFileCover(int musicId);
+
+    // 加载本地封面，裁剪版
+    void loadFileClipCover(int musicId);
 
 private:
     QImage img;

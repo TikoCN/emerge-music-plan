@@ -2,7 +2,7 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Dialogs
 import QtQuick.Layouts
-import TikoAPI
+import ControlAPI
 import Tiko
 
 ScrollView{

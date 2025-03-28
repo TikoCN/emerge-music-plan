@@ -3,3 +3,4 @@ CMakeLists.txt.user
 *.user
 *.f0f0bda
 build/
+*.autosave

@@ -20,7 +20,6 @@ public:
     int coreId;
     int level;
     bool isLove;
-    QImage *cover = NULL;
 
 public:
 

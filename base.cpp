@@ -8,6 +8,7 @@
 #include <QGuiApplication>
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QRandomGenerator>
 
 void Base::replaceFile(QString inUrl, QString outUrl)
 {
@@ -88,6 +89,21 @@ void Base::copyString(QString data)
 {
     QClipboard* copy = QGuiApplication::clipboard();
     copy->setText(data);
+}
+
+QList<int> Base::getRandNumber(int min, int max, int count)
+{
+    QSet<int> randSet;
+
+    if (max - min < count) {
+        return QList<int> ();
+    }
+    while (randSet.size() < count) {
+        int n = QRandomGenerator::global()->bounded(max - min) + min;
+        randSet.insert(n);
+    }
+
+    return randSet.values();
 }
 
 QList<QStringList> Base::getChineseToPinyinJson()

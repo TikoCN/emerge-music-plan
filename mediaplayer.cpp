@@ -121,7 +121,7 @@ void MediaPlayer::playTableMusic(Table *table, int musicId){
     musicList.append(table->showMusics);
     emit playListChange();
 
-    playMusic(musicId);
+    playMusicListId(musicId);
 }
 
 //播放专辑音乐
@@ -137,7 +137,7 @@ void MediaPlayer::playAlumbMusic(Alumb *alumb, int musicId){
     musicList.append(alumb->musicList);
     emit playListChange();
 
-    playMusic(musicId);
+    playMusicListId(musicId);
 }
 
 //播放专辑音乐
@@ -152,14 +152,29 @@ void MediaPlayer::playArtistMusic(Artist *artist, int musicId){
     musicList.append(artist->musicList);
     emit playListChange();
 
-    playMusic(musicId);
+    playMusicListId(musicId);
 }
 
-void MediaPlayer::playMusic(int musicId)
+void MediaPlayer::playMusicListId(int musicId)
 {
-    playingMusicListId = musicId; //正在播放的列表id
+    playingMusicListId = musicId;
     playingMusic = musicList[musicId];
     player->setSource(musicList[musicId]->url);
+    player->play();
+
+    emit downLrc(playingMusic->getBaseName(), playingMusic->getLrcUrl());//加载新歌词
+}
+
+void MediaPlayer::appendPlayMusic(Music *music)
+{
+    if(music == nullptr){
+        return;
+    }
+
+    musicList.append(music);
+    playingMusicListId = musicList.size() - 1; //正在播放的列表id
+    playingMusic = music;
+    player->setSource(music->url);
     player->play();
 
     emit downLrc(playingMusic->getBaseName(), playingMusic->getLrcUrl());//加载新歌词
@@ -195,7 +210,7 @@ void MediaPlayer::playNext(int forward)
         break;
     }
 
-    playMusic(aim);
+    playMusicListId(aim);
 }
 
 QString MediaPlayer::getTimeString()

@@ -128,8 +128,6 @@ void TaskCenter::loadMusicFile()
     //得到所有音乐文件
     filterFileInfo(seit->sourceList);
     chinesePinyin = Base::getInstance()->getChineseToPinyinJson();
-    artistLineList.fill(QList<Artist *>(), 26);
-    alumbLineList.fill(QList<Alumb *>(), 26);
     for (char i = 'A'; i <= 'Z'; ++i) {
         keyList.append(QString(i));
     }
@@ -290,55 +288,29 @@ void TaskCenter::insertArtist(Music *music)
     for (int k = 0; k < music->artistList.size(); ++k) {
         QString artistName = music->artistList[k];
 
-        int aimLine = getEnglishId(artistName);
-        // 遍历所有列表
         bool isNoFind = true;
-
-        if(aimLine == -1) {
-            for (int i = 26; i < artistLineList.size(); ++i) {
-                if (artistLineList[i].first()->lineKey != artistName[0]) {
-                    continue;
-                }
-                else {
-                    aimLine = i;
-                    break;
-                }
-            }
-        }
-
-        if (aimLine == -1) {
-            QList<Artist *> list;
-            artistLineList.append(list);
-            aimLine = artistLineList.size() - 1;
-        }
-
-        // 目标行
-        QList<Artist *> artistList = artistLineList[aimLine];
-
-        // 遍历行
-        for (int j = 0; j < artistList.size(); ++j) {
-            // 遍历作者列表
-            if (artistList[j]->name == artistName) {
+        for (int i = 0; i < artistList.size(); ++i) {
+            if(artistList[i]->name == artistName) {
+                artistList[i]->musicList.append(music);
                 isNoFind = false;
-                artistList[j]->musicList.append(music);
                 break;
             }
         }
 
-        // 不存在,新建
         if (isNoFind) {
             Artist *artist = new Artist(artistName);
-            if(aimLine < 26) {
-                artist->lineKey = keyList[aimLine];
+            artist->id = artistList.size();
+            int aimLineKey = getEnglishId(artist->name);
+            // 设置行关键字
+            if (aimLineKey == -1) {
+                artist->lineKey = artist->name[0];
             }
             else {
-                artist->lineKey = artistName[0];
+                artist->lineKey = keyList[aimLineKey];
             }
-            artist->musicList.append(music);
-            artist->id = artistLineList.size();
-            artist->moveToThread(MusicCore::getInstance()->thread());
 
-            artistLineList[aimLine].append(artist);
+            artist->musicList.append(music);
+            artistList.append(artist);
         }
     }
 }
@@ -346,55 +318,38 @@ void TaskCenter::insertArtist(Music *music)
 void TaskCenter::insertAlumb(Music *music)
 {
     QString alumbName = music->alumb;
-    int aimLine = getEnglishId(alumbName);
-    // 遍历所有列表
+
     bool isNoFind = true;
-
-    if(aimLine == -1) {
-        for (int i = 26; i < alumbLineList.size(); ++i) {
-            if (alumbLineList[i].first()->lineKey != alumbName[0]) {
-                continue;
+    for (int i = 0; i < alumbList.size(); ++i) {
+        if(alumbList[i]->name == alumbName) {
+            alumbList[i]->musicList.append(music);
+            // 在专辑中添加歌手
+            for (int j = 0; j < music->artistList.size(); ++j) {
+                alumbList[i]->artistSet.insert(music->artistList[j]);
             }
-            else {
-                aimLine = i;
-                break;
-            }
-        }
-    }
-
-    if (aimLine == -1) {
-        QList<Alumb *> list;
-        alumbLineList.append(list);
-        aimLine = alumbLineList.size() - 1;
-    }
-
-    // 目标行
-    QList<Alumb *> alumbList = alumbLineList[aimLine];
-
-    // 遍历行
-    for (int j = 0; j < alumbList.size(); ++j) {
-        // 遍历作者列表
-        if (alumbList[j]->name == alumbName) {
             isNoFind = false;
-            alumbList[j]->musicList.append(music);
             break;
         }
     }
 
-    // 不存在,新建
     if (isNoFind) {
         Alumb *alumb = new Alumb(alumbName);
-        if(aimLine < 26) {
-            alumb->lineKey = keyList[aimLine];
+        alumb->id = alumbList.size();
+        int aimLineKey = getEnglishId(alumb->name);
+        // 设置行关键字
+        if (aimLineKey == -1) {
+            alumb->lineKey = alumb->name[0];
         }
         else {
-            alumb->lineKey = alumbName[0];
+            alumb->lineKey = keyList[aimLineKey];
         }
-        alumb->musicList.append(music);
-        alumb->id = alumbLineList.size();
-        alumb->moveToThread(MusicCore::getInstance()->thread());
 
-        alumbLineList[aimLine].append(alumb);
+        alumb->musicList.append(music);
+        // 在专辑中添加歌手
+        for (int j = 0; j < music->artistList.size(); ++j) {
+            alumb->artistSet.insert(music->artistList[j]);
+        }
+        alumbList.append(alumb);
     }
 }
 
@@ -424,31 +379,15 @@ void TaskCenter::finishUserTable()
         QString t = tr("加载音乐文件完成，加载了 ") + QString::number(musicList.size()) + tr(" 个音乐文件");
         emit Base::getInstance()->sendMessage(t, 0);
 
-        QList<QList<Artist *>> artistNewList;
-        for (int i = 0; i < artistLineList.length(); ++i) {
-            if(artistLineList[i].size() > 0) {
-                artistNewList.append(artistLineList[i]);
-            }
-        }
-        artistLineList = artistNewList;
-
-        QList<QList<Alumb *>> alumbNewList;
-        for (int i = 0; i < alumbLineList.length(); ++i) {
-            if(alumbLineList[i].size() > 0) {
-                alumbNewList.append(alumbLineList[i]);
-            }
-        }
-        alumbLineList = alumbNewList;
-
-        std::sort(artistLineList.begin(), artistLineList.end(), [this](QList<Artist *> a, QList<Artist *> b){
-            return a[0]->lineKey < b[0]->lineKey;
+        std::sort(artistList.begin(), artistList.end(), [](Artist *a, Artist *b)->bool{
+            return a->lineKey < b->lineKey;
         });
 
-        std::sort(alumbLineList.begin(), alumbLineList.end(), [this](QList<Alumb *> a, QList<Alumb *> b){
-            return a[0]->lineKey < b[0]->lineKey;
+        std::sort(alumbList.begin(), alumbList.end(), [](Alumb *a, Alumb *b)->bool{
+            return a->lineKey < b->lineKey;
         });
 
-        emit musicsLoaded(musicList, tableList, artistLineList, alumbLineList);
+        emit musicsLoaded(musicList, tableList, artistList, alumbList);
     }
 }
 
@@ -461,8 +400,8 @@ void TaskCenter::clearData()
     this->musicFileList.clear();
     this->musicNameList.clear();
     this->tableMusic.clear();
-    this->alumbLineList.clear();
-    this->artistLineList.clear();
+    this->alumbList.clear();
+    this->artistList.clear();
     this->chinesePinyin.clear();
     this->keyList.clear();
 

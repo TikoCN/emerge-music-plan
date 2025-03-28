@@ -96,6 +96,18 @@ void Table::sortMusic(int type)
             return isRight;
         });
         break;
+    case SORT_LEVEL_ASC:
+        std::sort(showMusics.begin(), showMusics.end(), [this](Music *a, Music *b){
+            bool isRight = a->level > b->level;
+            return isRight;
+        });
+        break;
+    case SORT_LEVEL_DESC:
+        std::sort(showMusics.begin(), showMusics.end(), [this](Music *a, Music *b){
+            bool isRight = a->level < b->level;
+            return isRight;
+        });
+        break;
     }
 
     // qml重新生成控件

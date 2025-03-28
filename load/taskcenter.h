@@ -46,8 +46,8 @@ public:
     QList<BuildUserTable *> buildUserTableList;            // 任务计算单元
     QList<Music *> musicList;                   // 计算好的音乐核心
     QList<Table *> tableList;                  // 播放列表
-    QList<QList<Artist *>> artistLineList;                // 歌手列表
-    QList<QList<Alumb *>> alumbLineList;                  // 专辑列表
+    QList<Artist *> artistList;                // 歌手列表
+    QList<Alumb *> alumbList;                  // 专辑列表
     QList<QStringList> chinesePinyin;           // 中文拼音对照表
 
 public slots:
@@ -88,7 +88,7 @@ signals:
     void musicListBuild(QFileInfoList);
 
     //音乐文件加载完成
-    void musicsLoaded(QList<Music *>, QList<Table *>, QList<QList<Artist *>>, QList<QList<Alumb *>>);
+    void musicsLoaded(QList<Music *>, QList<Table *>, QList<Artist *>, QList<Alumb *>);
 
     //开始工作
     void startMusicCore();

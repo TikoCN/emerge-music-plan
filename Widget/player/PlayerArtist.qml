@@ -1,7 +1,7 @@
 import QtQuick
 import Tiko
 import Widget
-import TikoAPI
+import ControlAPI   
 
 Item{
     id: artistDataShow
@@ -91,8 +91,8 @@ Item{
             allTime += artist.musicList[i].endTime
         }
         artistText.text = artist.name
-        artistHelp.text = artist.musicList.length.toString()+" "+qsTr("首歌曲") +"-"+
-                Base.timeToString(allTime)+" "+qsTr("歌曲长度")
+        artistHelp.text = artist.musicList.length.toString()+" "+qsTr("首歌曲") +"-"
+               +artist.getStringTime()+" "+qsTr("歌曲长度")
         artistDataShow.artist = artist
     }
 }

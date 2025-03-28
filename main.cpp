@@ -39,11 +39,25 @@ int main(int argc, char *argv[])
     Base* base = Base::getInstance();
     mediaPlayer->core = core;
 
-    qmlRegisterSingletonInstance("TikoAPI", 1, 0, "Setting", seit);
-    qmlRegisterSingletonInstance("TikoAPI", 1, 0, "MediaPlayer", mediaPlayer);
-    qmlRegisterSingletonInstance("TikoAPI", 1, 0, "OnLine", onLine);
-    qmlRegisterSingletonInstance("TikoAPI", 1, 0, "Base", base);
-    qmlRegisterSingletonInstance("TikoAPI", 1, 0, "Core", core);
+    // 注册单例
+    qmlRegisterSingletonInstance("ControlAPI", 1, 0, "Setting", seit);
+    qmlRegisterSingletonInstance("ControlAPI", 1, 0, "MediaPlayer", mediaPlayer);
+    qmlRegisterSingletonInstance("ControlAPI", 1, 0, "OnLine", onLine);
+    qmlRegisterSingletonInstance("ControlAPI", 1, 0, "Base", base);
+    qmlRegisterSingletonInstance("ControlAPI", 1, 0, "Core", core);
+
+    qmlRegisterType<Setting>("ControlAPI", 1, 0, "SettingOBJ");
+    qmlRegisterType<MediaPlayer>("ControlAPI", 1, 0, "MediaPlayerOBJ");
+    qmlRegisterType<OnLine>("ControlAPI", 1, 0, "OnLineOBJ");
+    qmlRegisterType<Base>("ControlAPI", 1, 0, "BaseOBJ");
+    qmlRegisterType<MusicCore>("ControlAPI", 1, 0, "MusicCoreOBJ");
+
+    // 注册数据类
+    qmlRegisterType<Music>("DataCore", 1, 0, "MusicData");
+    qmlRegisterType<Table>("DataCore", 1, 0, "TableData");
+    qmlRegisterType<LrcData>("DataCore", 1, 0, "LrcData");
+    qmlRegisterType<Artist>("DataCore", 1, 0, "ArtistData");
+    qmlRegisterType<Alumb>("DataCore", 1, 0, "AlumbData");
 
     QObject::connect(center, &TaskCenter::musicsLoaded, core, &MusicCore::getMusicCore);
     QObject::connect(mediaPlayer, &MediaPlayer::downLrc, onLine, &OnLine::downLrc);

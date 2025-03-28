@@ -29,35 +29,48 @@ void ImageResponse::buildRoundImage(QImage *pix, int radius)
     *pix = destImage;
 }
 
-QImage ImageResponse::downOnlineCover(int id)
+void ImageResponse::downOnlineCover(int id)
 {
     OnLine *onLine = OnLine::getInstance();
     MusicCore *core = MusicCore::getInstance();
-    QImage pix;
+    if(id < 0 || id >core->musicList.size()){
+        return;
+    }
 
     //加载附加封面，和独立封面
-    pix = core->musicList[id]->loadCover();
+    img = core->musicList[id]->loadCover();
 
-    if(pix.isNull()){
-        //从网络下载封面，并报错到独立封面
+    if(img.isNull()){
+        //从网络下载封面，并写入到独立文件
         onLine->downCover(core->musicList[id]->getSearchString(), core->musicList[id]->getCoverUrl());
     }
 
-    //加载附加封面，和独立封面
-    pix = core->musicList[id]->loadCover();
-    return pix;
+    // 检测加载附加封面，和独立封面
+    img = core->musicList[id]->loadCover();
+    img = img.scaled(requestedSize, Qt::IgnoreAspectRatio);
+    buildRoundImage(&img, 10);
 }
 
-QImage ImageResponse::loadFileCover(int id)
+void ImageResponse::loadFileCover(int id)
 {
     MusicCore *core = MusicCore::getInstance();
-
-    if(core->musicList[id]->cover != NULL){//读取已经加载好的封面
-        return *core->musicList[id]->cover;
+    if(id < 0 || id >core->musicList.size()){
+        return;
     }
-    return core->musicList[id]->loadCover();
+    img = core->musicList[id]->loadCover();
+    img = img.scaled(requestedSize, Qt::IgnoreAspectRatio);
+    buildRoundImage(&img, 10);
 }
 
+void ImageResponse::loadFileClipCover(int id)
+{
+    MusicCore *core = MusicCore::getInstance();
+    if(id < 0 || id >core->musicList.size()){
+        return;
+    }
+    img = core->musicList[id]->loadCover();
+    img = img.scaled(requestedSize, Qt::KeepAspectRatioByExpanding);
+}
 
 ImageResponse::ImageResponse(const QString &url, const QSize &requestedSize)
 {
@@ -74,31 +87,30 @@ QQuickTextureFactory *ImageResponse::textureFactory() const
 void ImageResponse::run()
 {
     QString type = url.split(":").first();
-    int coreId = url.split(":").last().toInt();
-    MusicCore *core = MusicCore::getInstance();
+    int id = url.split(":").last().toInt();
 
-    if(coreId < -1 || coreId > core->musicList.size()){
-        img.load(":/image/default.jpg");
-    }
-    else if(type == "onLine"){//在线加载
-        img = downOnlineCover(coreId);
-    }
-    else if(type == "file"){//本地加载
-        img = loadFileCover(coreId);
-    }
-    else if(type == "back"){
-        img = downOnlineCover(coreId);
-        emit finished();
-        return;
+    QStringList typeList = {"file", "fileClip", "back", "onLine"};
+    switch (typeList.indexOf(type)) {
+    case 0:
+        loadFileCover(id);
+        break;
+    case 1:
+        loadFileClipCover(id);
+        break;
+    case 2:
+        downOnlineCover(id);
+        break;
+    case 3:
+        downOnlineCover(id);
+        break;
+    default:
+        break;
     }
 
     //找不封面，设置为默认封面
     if(img.isNull()){
         img.load(":/image/default.jpg");
     }
-
-    img = img.scaled(requestedSize);
-    buildRoundImage(&img, 10);
 
     emit finished();
 }
