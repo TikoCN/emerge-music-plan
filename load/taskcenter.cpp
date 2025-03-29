@@ -377,7 +377,7 @@ void TaskCenter::finishUserTable()
     workNumber--;
     if(workNumber == 0){
         QString t = tr("加载音乐文件完成，加载了 ") + QString::number(musicList.size()) + tr(" 个音乐文件");
-        emit Base::getInstance()->sendMessage(t, 0);
+        Base::getInstance()->sendMessage(t, 0);
 
         std::sort(artistList.begin(), artistList.end(), [](Artist *a, Artist *b)->bool{
             return a->lineKey < b->lineKey;

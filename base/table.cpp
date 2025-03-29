@@ -14,6 +14,11 @@ Table::Table(QObject *parent)
     sort = SORT_TITTLE_ASC;
 }
 
+bool Table::getIsDir() const
+{
+    return isDir;
+}
+
 void Table::copy(Table* a)
 {
     name = a->name;

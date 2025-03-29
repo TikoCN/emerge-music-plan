@@ -207,11 +207,6 @@ TikoFrameless{
         y:10
     }
 
-    //对话框
-    TikoPopupMessage{
-        id: popupMessage
-    }
-
     //计算长度
     TextMetrics{
         text: qsTr("00:00")
@@ -263,7 +258,7 @@ TikoFrameless{
     Connections{
         target: Base
 
-        function onSendMessage(text, type){
+        function onMessage(text, type){
             TikoSeit.sendMessage(window, text, type)
         }
     }

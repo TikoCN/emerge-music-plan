@@ -20,7 +20,10 @@ MenuItem {
     }
 
     //内容
-    contentItem: Item{
+    contentItem: Rectangle {
+        color: "#00000000"
+        opacity: root.enabled ? 1 : 0.4
+
         Image {
             id: icon
             height: parent.height

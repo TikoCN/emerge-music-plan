@@ -49,6 +49,12 @@ public:
     //将歌曲移动到
     Q_INVOKABLE void tableMoveMusic(int orgTableId, int musicId, int aimTalbeId);
 
+    // 将歌曲插入类别
+    Q_INVOKABLE void tableInsertMusic(int tableId, Music *music);
+    Q_INVOKABLE void tableInsertMusic(int tableId, QList<Music *> musicList);
+    Q_INVOKABLE void tableInsertMusic(int tableId, Artist *artist);
+    Q_INVOKABLE void tableInsertMusic(int tableId, Alumb *alumb);
+
     QList<Table *> getTableList() const;
 
     QList<QList<Alumb *> > getAlumbLineList() const;

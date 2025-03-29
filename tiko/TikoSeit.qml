@@ -1,6 +1,7 @@
 pragma Singleton
 import QtQuick
 import QtQuick.Controls
+import Tiko
 
 QtObject {
     property color themeColor: "lightBlue"
@@ -10,13 +11,17 @@ QtObject {
     property string fontFamily: "Times"
     property double messageY: 30
 
+
     //发送消息
     function sendMessage(parent, msg, type){
-        var component = Qt.createComponent("./control/TikoLittleMessage.qml")
+        var component = Qt.createComponent("message/TikoMessageLittle.qml")
 
         if (component.status === Component.Ready) {
             var littleMessage = component.createObject(parent, {message: msg, type:type})
             littleMessage.show()
+        }
+        else {
+            console.log(component.errorString())
         }
     }
 }

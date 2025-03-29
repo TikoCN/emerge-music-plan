@@ -144,6 +144,7 @@ Item {
                     iconWidth: 30
                     iconHeight: 30
                     cache: false
+                    useAutoColor: false
                     onClickLeft: {
                         root.showText = text
                         mainView.stackTable(i)

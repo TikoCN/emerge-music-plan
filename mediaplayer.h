@@ -64,26 +64,25 @@ public:
     void updateAudioOutPut();
 
     //播放音乐
-    Q_INVOKABLE void playTableMusic(Table *table, int musicId);
-
-    //播放专辑音乐
-    Q_INVOKABLE void playAlumbMusic(Alumb *alumb, int musicId);
-
-    //播放专辑音乐
-    Q_INVOKABLE void playArtistMusic(Artist* artist, int musicId);
-
-    Q_INVOKABLE void playMusicListId(int musicId);
-
-    Q_INVOKABLE void appendPlayMusic(Music *music);
+    Q_INVOKABLE void playMusic(Table *table, int musicId = 0);
+    Q_INVOKABLE void playMusic(Alumb *alumb, int musicId = 0);
+    Q_INVOKABLE void playMusic(Artist* artist, int musicId = 0);
+    Q_INVOKABLE void playMusic(int musicId);
 
     //加载歌词
     void loadLrcList();
 
-    //将歌曲添加到正在播放
-    Q_INVOKABLE void musicInsertPlayingTable(int coreId);
+    // 播放列表插入歌曲
+    Q_INVOKABLE void insertMusic(Music *music);
+    Q_INVOKABLE void insertMusic(QList<Music *> musicList);
+    Q_INVOKABLE void insertMusic(Alumb *alumb);
+    Q_INVOKABLE void insertMusic(Artist *artist);
 
-    //将歌词添加到播放下一首
-    Q_INVOKABLE void playingInsertMusic(int coreId);
+    // 播放列表插入歌曲
+    Q_INVOKABLE void appendMusic(Music *music);
+    Q_INVOKABLE void appendMusic(QList<Music *> musicList);
+    Q_INVOKABLE void appendMusic(Alumb *alumb);
+    Q_INVOKABLE void appendMusic(Artist *artist);
 
     //播放下一首
     Q_INVOKABLE void playNext(int forward);
@@ -126,13 +125,10 @@ signals:
     void finishClearData();
 
     //重建播放列表
-    void playListChange();
+    void buildMusicList();
 
-    //将歌曲添加到正在播放
-    void cppMusicInsertPlayingTable(int coreId);
-
-    //将歌词添加到播放下一首
-    void cppPlayingInsertMusic(int musicId);
+    //将歌曲添加到播放播放列表
+    void musicAppend(int, int);
 
     //绘制音频波形
     void cppDrawLine(QVector<double>);

@@ -54,7 +54,7 @@ void Music::writeDataToFile(QStringList key, QStringList value)
         Base::getInstance()->writeFileText(url, newUrl);
     }
     else{
-        emit Base::getInstance()->sendMessage(tr("写入歌曲信息失败"), 1);
+       Base::getInstance()->sendMessage(tr("写入歌曲信息失败"), 1);
     }
 }
 

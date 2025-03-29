@@ -54,16 +54,16 @@ Drawer {
     Connections{
         target: MediaPlayer
 
-        function onPlayListChange(){
+        function onBuildMusicList(){
             playingTable.buildMusicLine()
         }
 
-        function onCppMusicInsertPlayingTable(){
+        function onMusicAppend(start, length){
             playingTable.addNewMuiscLine(MediaPlayer.musicList.length - 1)
         }
 
-        function onCppPlayingInsertMusic(musicId){
-            playingTable.insertNewMuiscLine(musicId)
+        function onClearData(){
+            clearData()
         }
     }
 
@@ -71,27 +71,13 @@ Drawer {
     function buildMusicLine(){
         musicModel.clear()
 
-        for(var i=0; i<MediaPlayer.musicList.length; i++){
-            addNewMuiscLine(i)
-        }
+        appendMusic(0, MediaPlayer.musicList.length)
     }
 
     //插入新条目 musicId 音乐的列表id
-    function addNewMuiscLine(musicId){
-        musicModel.append({musicListId: musicId})
-    }
-
-    //插入新条目 musicId 音乐的列表id
-    function insertNewMuiscLine(musicId){
-        //删除插入条目后的数据
-        var length = musicModel.count
-        var update = length - musicId
-        if(update > 0){
-            musicModel.remove(musicId, update)
-        }
-
-        for(var i=musicId; i<MediaPlayer.musicList.length; i++){
-            addNewMuiscLine(i)
+    function appendMusic(start, length){
+        for (var i = start; i<length; i++) {
+            musicModel.append({musicListId: i})
         }
     }
 

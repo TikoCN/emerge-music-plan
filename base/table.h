@@ -58,6 +58,8 @@ public:
 
     QList<Music *> getShowMusics() const;
 
+    bool getIsDir() const;
+
 signals:
     // 更新qml展示列表
     void updateMusic(int start, int length);
@@ -74,5 +76,6 @@ private:
     Q_PROPERTY(QString name READ getName WRITE setName NOTIFY nameChanged FINAL)
     Q_PROPERTY(QList<Music *> showMusics READ getShowMusics CONSTANT)
     Q_PROPERTY(QList<Music *> musics READ getMusics CONSTANT)
+    Q_PROPERTY(bool isDir READ getIsDir CONSTANT FINAL)
 };
 #endif // TABLE_H

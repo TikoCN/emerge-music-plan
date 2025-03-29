@@ -43,8 +43,10 @@ public:
 
     QList<QStringList> getChineseToPinyinJson();
 
-signals:
     void sendMessage(QString msg, int type);
+
+signals:
+    void message(QString msg, int type);
 };
 
 #endif // BASE_H

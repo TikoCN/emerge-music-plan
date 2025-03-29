@@ -10,21 +10,25 @@ TikoMenu{
     onClosed: menuMusic.destroy()
 
     property MusicData music
+    property int type: 0
 
     TikoMenuItem{
         text: qsTr("播放")
-        onTriggered: menuMusic.musicLine.play()
+        onTriggered: {
+            MediaPlayer.appendPlayMusic(music)
+            MediaPlayer.playMusicListId(MediaPlayer.musicList.length - 1)
+        }
         icon.source: "qrc:/image/play.png"
     }
 
     TikoMenuItem{
         text: qsTr("下一首播放")
-        onTriggered: MediaPlayer.playingInsertMusic(music.coreId)
+        onTriggered: MediaPlayer.appendMusic(music)
     }
 
     TikoMenuItem{
-        text: qsTr("添加到播放")
-        onTriggered: MediaPlayer.musicInsertPlayingTable(music.coreId)
+        text: qsTr("添加到播放队列")
+        onTriggered: MediaPlayer.insertMusic(music)
     }
 
     TikoMenuSpeacer{}
@@ -137,6 +141,7 @@ TikoMenu{
             TikoMenuItem {
                 text: Core.tableList[aim].name
                 onTriggered: Core.tableList[aim].insertMusic(music)
+                enabled: Core.tableList[aim].isDir
             }
         }
 
@@ -151,6 +156,7 @@ TikoMenu{
     TikoMenu{
         title: qsTr("移动到")
         icon.source: "qrc:/image/move.png"
+        enabled: type === 0
 
         Repeater{
             delegate: moveMenu
@@ -163,6 +169,7 @@ TikoMenu{
             TikoMenuItem {
                 text: Core.tableList[aim].name
                 onTriggered: Core.tableMoveMusic(music, aim)
+                enabled: !Core.tableList[aim].isDir
             }
         }
 

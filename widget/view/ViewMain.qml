@@ -155,4 +155,13 @@ Item {
             stackView.replace(mainPage)
         }
     }
+
+    Component.onCompleted: {
+        CoreData.mainTurnSeit.connect(turnToSeit)
+        CoreData.mainTurnMain.connect(turnToMain)
+        CoreData.mainTurnAlumbPage.connect(turnToAlumb)
+        CoreData.mainTurnAlumbPlayer.connect(turnToAlumbPlayer)
+        CoreData.mainTurnArtistPage.connect(turnToArtist)
+        CoreData.mainTurnArtistPlayer.connect(turnToArtistPlayer)
+    }
 }

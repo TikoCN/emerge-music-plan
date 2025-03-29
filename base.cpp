@@ -38,12 +38,12 @@ QString Base::readFileText(QString url)
     QString data = "";
     QFile file(url);
     if(!file.exists()){
-        emit sendMessage(url + tr(" 文件不存在"),1);
+        sendMessage(url + tr(" 文件不存在"),1);
         return data;
     }
 
     if(!file.open(QIODevice::Text |QIODevice::ReadOnly)){
-        emit sendMessage(url + tr(" 打开文件失败"),1);
+        sendMessage(url + tr(" 打开文件失败"),1);
         return data;
     }
 
@@ -57,7 +57,7 @@ bool Base::writeFileText(QString url, QString data)
 {
     QFile file(url);
     if(!file.open(QIODevice::Text |QIODevice::WriteOnly)){
-        emit sendMessage(url + tr(" 打开文件失败"),1);
+        sendMessage(url + tr(" 打开文件失败"),1);
         return false;
     }
 
@@ -127,4 +127,9 @@ QList<QStringList> Base::getChineseToPinyinJson()
     }
 
     return list;
+}
+
+void Base::sendMessage(QString msg, int type)
+{
+    emit message(msg, type);
 }

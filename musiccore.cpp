@@ -67,6 +67,47 @@ void MusicCore::tableMoveMusic(int orgTableId, int musicId, int aimTalbeId)
     tableList[aimTalbeId]->insertMusic(core);
 }
 
+void MusicCore::tableInsertMusic(int tableId, Music *music)
+{
+    if (tableId < 0 || tableId >= tableList.size() || music == nullptr) {
+        QString msg = tr("列表") +" "+ QString::number(tableId) +" "+ tr("插入歌曲失败");
+        Base::getInstance()->sendMessage(msg, 0);
+        return;
+    }
+    tableList[tableId]->insertMusic(music);
+}
+
+void MusicCore::tableInsertMusic(int tableId, QList<Music *> musicList)
+{
+    if (tableId < 0 || tableId >= tableList.size()) {
+        QString msg = tr("列表") +" "+ QString::number(tableId) +" "+ tr("插入歌曲失败");
+        Base::getInstance()->sendMessage(msg, 0);
+        return;
+    }
+
+    tableList[tableId]->insertMusic(musicList);
+}
+
+void MusicCore::tableInsertMusic(int tableId, Artist *artist)
+{
+    if (tableId < 0 || tableId >= tableList.size() || artist == nullptr) {
+        QString msg = tr("列表") +" "+ QString::number(tableId) +" "+ tr("插入歌曲失败");
+        Base::getInstance()->sendMessage(msg, 0);
+        return;
+    }
+    tableList[tableId]->insertMusic(artist->musicList);
+}
+
+void MusicCore::tableInsertMusic(int tableId, Alumb *alumb)
+{
+    if (tableId < 0 || tableId >= tableList.size() || alumb == nullptr) {
+        QString msg = tr("列表") +" "+ QString::number(tableId) +" "+ tr("插入歌曲失败");
+        Base::getInstance()->sendMessage(msg, 0);
+        return;
+    }
+    tableList[tableId]->insertMusic(alumb->musicList);
+}
+
 QList<Alumb *> MusicCore::getAlumbList() const
 {
     return alumbList;

@@ -1,5 +1,6 @@
 #include "mediaplayer.h"
 #include "extralibrary.h"
+#include "base.h"
 #include <QRandomGenerator>
 #include <QAudioDevice>
 #include <QPixmapCache>
@@ -21,6 +22,88 @@ void MediaPlayer::loadLrcList()
         playingLrc->copy(lrcList.first());
     }
     emit lrcLoaded();
+}
+
+void MediaPlayer::insertMusic(Music *music)
+{
+    if (music == nullptr) {
+        Base::getInstance()->sendMessage(tr("插入歌曲失败"), 1);
+        return;
+    }
+
+    musicList.insert(playingMusicListId, music);
+    emit buildMusicList();
+}
+
+void MediaPlayer::insertMusic(Alumb *alumb)
+{
+    if(alumb == nullptr){
+        Base::getInstance()->sendMessage(tr("插入专辑列表失败"), 1);
+        return;
+    }
+    insertMusic(alumb->musicList);
+}
+
+void MediaPlayer::insertMusic(Artist *artist)
+{
+    if(artist == nullptr){
+        Base::getInstance()->sendMessage(tr("插入作曲家列表失败"), 1);
+        return;
+    }
+    insertMusic(artist->musicList);
+}
+
+void MediaPlayer::insertMusic(QList<Music *> musicList)
+{
+    if (musicList.isEmpty()) {
+        Base::getInstance()->sendMessage(tr("插入歌曲失败"), 1);
+        return;
+    }
+
+    for (int i = 0; i < musicList.size(); ++i) {
+        musicList.insert(playingMusicListId, musicList[i]);
+    }
+    emit buildMusicList();
+}
+
+void MediaPlayer::appendMusic(Music *music)
+{
+    if (music == nullptr) {
+        return;
+    }
+
+    int start = musicList.size();
+    musicList.append(music);
+    emit musicAppend(start, 1);
+}
+
+void MediaPlayer::appendMusic(Alumb *alumb)
+{
+    if(alumb == nullptr){
+        Base::getInstance()->sendMessage(tr("插入专辑列表失败"), 1);
+        return;
+    }
+    appendMusic(alumb->musicList);
+}
+
+void MediaPlayer::appendMusic(Artist *artist)
+{
+    if(artist == nullptr){
+        Base::getInstance()->sendMessage(tr("插入作曲家列表失败"), 1);
+        return;
+    }
+    appendMusic(artist->musicList);
+}
+
+void MediaPlayer::appendMusic(QList<Music *> musicList)
+{
+    if (musicList.isEmpty()) {
+        return;
+    }
+
+    int start = this->musicList.size();
+    this->musicList.append(musicList);
+    emit musicAppend(start, musicList.size());
 }
 
 void MediaPlayer::selectPlayLrc(qint64 time)
@@ -71,29 +154,6 @@ void MediaPlayer::clearData()
     emit finishClearData();
 }
 
-/*
- * 将歌词添加到播放下一首
-*/
-void MediaPlayer::playingInsertMusic(int coreId)
-{
-    Music *music = core->musicList[coreId];
-    musicList.insert(playingMusicListId, music);
-
-    emit cppPlayingInsertMusic(playingMusicListId);
-}
-
-/*
- * 将歌曲插入播放列表
-*/
-void MediaPlayer::musicInsertPlayingTable(int coreId)
-{
-    Music *music = core->musicList[coreId];
-
-    musicList.append(music);
-
-    emit cppMusicInsertPlayingTable(coreId);
-}
-
 void MediaPlayer::updateAudioOutPut()
 {
     QAudioOutput* nowOut = new QAudioOutput;
@@ -109,7 +169,7 @@ void MediaPlayer::updateAudioOutPut()
 
 
 //播放音乐
-void MediaPlayer::playTableMusic(Table *table, int musicId){
+void MediaPlayer::playMusic(Table *table, int musicId){
     // 清空正在播放列表
     musicList.clear();
 
@@ -119,13 +179,13 @@ void MediaPlayer::playTableMusic(Table *table, int musicId){
     }
 
     musicList.append(table->showMusics);
-    emit playListChange();
+    emit buildMusicList();
 
-    playMusicListId(musicId);
+    playMusic(musicId);
 }
 
 //播放专辑音乐
-void MediaPlayer::playAlumbMusic(Alumb *alumb, int musicId){
+void MediaPlayer::playMusic(Alumb *alumb, int musicId){
     // 清空正在播放列表
     emit clearLrc();
     musicList.clear();
@@ -135,13 +195,13 @@ void MediaPlayer::playAlumbMusic(Alumb *alumb, int musicId){
     }
 
     musicList.append(alumb->musicList);
-    emit playListChange();
+    emit buildMusicList();
 
-    playMusicListId(musicId);
+    playMusic(musicId);
 }
 
 //播放专辑音乐
-void MediaPlayer::playArtistMusic(Artist *artist, int musicId){
+void MediaPlayer::playMusic(Artist *artist, int musicId){
     // 清空正在播放列表
     musicList.clear();
 
@@ -150,31 +210,16 @@ void MediaPlayer::playArtistMusic(Artist *artist, int musicId){
     }
 
     musicList.append(artist->musicList);
-    emit playListChange();
+    emit buildMusicList();
 
-    playMusicListId(musicId);
+    playMusic(musicId);
 }
 
-void MediaPlayer::playMusicListId(int musicId)
+void MediaPlayer::playMusic(int musicId)
 {
     playingMusicListId = musicId;
     playingMusic = musicList[musicId];
     player->setSource(musicList[musicId]->url);
-    player->play();
-
-    emit downLrc(playingMusic->getBaseName(), playingMusic->getLrcUrl());//加载新歌词
-}
-
-void MediaPlayer::appendPlayMusic(Music *music)
-{
-    if(music == nullptr){
-        return;
-    }
-
-    musicList.append(music);
-    playingMusicListId = musicList.size() - 1; //正在播放的列表id
-    playingMusic = music;
-    player->setSource(music->url);
     player->play();
 
     emit downLrc(playingMusic->getBaseName(), playingMusic->getLrcUrl());//加载新歌词
@@ -210,7 +255,7 @@ void MediaPlayer::playNext(int forward)
         break;
     }
 
-    playMusicListId(aim);
+    playMusic(aim);
 }
 
 QString MediaPlayer::getTimeString()
