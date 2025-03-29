@@ -116,28 +116,12 @@ void Table::sortMusic(int type)
     }
 
     // qml重新生成控件
-    emit clearMusic();
-    emit updateMusic(0, showMusics.size());
+    emit buildShow();
 }
 
 int Table::getSort()
 {
     return static_cast<int>(sort);
-}
-
-void Table::searchMusic(QString search)
-{
-    //清空并重建
-    showMusics.clear();
-    for(int i=0; i<musics.size(); i++){
-        if(musics[i]->isSearch(search)){
-            showMusics.append(musics[i]);
-        }
-    }
-
-    // qml重新生成控件
-    emit clearMusic();
-    emit updateMusic(0, showMusics.size());
 }
 
 int Table::getLastCoreId()
@@ -148,20 +132,20 @@ int Table::getLastCoreId()
 /*
  * 插入新音乐核心
 */
-void Table::insertMusic(Music *core)
+void Table::appendMusic(Music *core)
 {
     musics.append(core);//插入到数据库
     showMusics.append(core);//符合条件插入显示
-    emit updateMusic(showMusics.size()-1, 1);
+    emit musicAppend(showMusics.size()-1, 1);
 }
 
-void Table::insertMusic(QList<Music *> core)
+void Table::appendMusic(QList<Music *> core)
 {
     musics.append(core);//插入到数据库
     showMusics.append(core);
 
     int success = core.size();
-    emit updateMusic(showMusics.size()-success, success);
+    emit musicAppend(showMusics.size()-success, success);
 }
 
 /*
@@ -185,9 +169,33 @@ void Table::showAllMusic()
     showMusics.clear();
     showMusics = musics;
 
-    //qml重新生成控件
-    emit clearMusic();
-    emit updateMusic(0, showMusics.size());
+    emit buildShow();
+}
+
+void Table::showLoveMusic()
+{
+    showMusics.clear();
+
+    for (int i = 0; i < musics.size(); ++i) {
+        if(musics[i]->isLove){
+            showMusics.append(musics[i]);
+        }
+    }
+
+    emit buildShow();
+}
+
+void Table::showSearchMusic(QString search)
+{
+    //清空并重建
+    showMusics.clear();
+    for(int i=0; i<musics.size(); i++){
+        if(musics[i]->isSearch(search)){
+            showMusics.append(musics[i]);
+        }
+    }
+
+    emit buildShow();
 }
 
 QString Table::getName() const

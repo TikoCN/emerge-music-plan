@@ -359,7 +359,7 @@ void TaskCenter::getUserTableMusic(QList<Music *> musicList, int tableId)
         return;
     }
     // 插入列表
-    tableList[tableId]->insertMusic(musicList);
+    tableList[tableId]->appendMusic(musicList);
 }
 
 void TaskCenter::finishMusicCore()

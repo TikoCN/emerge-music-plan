@@ -64,7 +64,7 @@ void MusicCore::tableMoveMusic(int orgTableId, int musicId, int aimTalbeId)
 {
     Music *core = tableList[orgTableId]->musics[musicId];
     tableList[orgTableId]->removeMusic(musicId);
-    tableList[aimTalbeId]->insertMusic(core);
+    tableList[aimTalbeId]->appendMusic(core);
 }
 
 void MusicCore::tableInsertMusic(int tableId, Music *music)
@@ -74,7 +74,7 @@ void MusicCore::tableInsertMusic(int tableId, Music *music)
         Base::getInstance()->sendMessage(msg, 0);
         return;
     }
-    tableList[tableId]->insertMusic(music);
+    tableList[tableId]->appendMusic(music);
 }
 
 void MusicCore::tableInsertMusic(int tableId, QList<Music *> musicList)
@@ -85,7 +85,7 @@ void MusicCore::tableInsertMusic(int tableId, QList<Music *> musicList)
         return;
     }
 
-    tableList[tableId]->insertMusic(musicList);
+    tableList[tableId]->appendMusic(musicList);
 }
 
 void MusicCore::tableInsertMusic(int tableId, Artist *artist)
@@ -95,7 +95,7 @@ void MusicCore::tableInsertMusic(int tableId, Artist *artist)
         Base::getInstance()->sendMessage(msg, 0);
         return;
     }
-    tableList[tableId]->insertMusic(artist->musicList);
+    tableList[tableId]->appendMusic(artist->musicList);
 }
 
 void MusicCore::tableInsertMusic(int tableId, Alumb *alumb)
@@ -105,7 +105,7 @@ void MusicCore::tableInsertMusic(int tableId, Alumb *alumb)
         Base::getInstance()->sendMessage(msg, 0);
         return;
     }
-    tableList[tableId]->insertMusic(alumb->musicList);
+    tableList[tableId]->appendMusic(alumb->musicList);
 }
 
 QList<Alumb *> MusicCore::getAlumbList() const

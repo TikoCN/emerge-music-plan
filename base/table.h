@@ -32,15 +32,12 @@ public:
     Q_INVOKABLE void sortMusic(int type);
     Q_INVOKABLE int getSort();
 
-    //搜索
-    Q_INVOKABLE void searchMusic(QString search);
-
     //得到最后id
     Q_INVOKABLE int getLastCoreId();
 
     //插入新音乐核心
-    Q_INVOKABLE void insertMusic(Music *core);
-    Q_INVOKABLE void insertMusic(QList<Music *> core);
+    Q_INVOKABLE void appendMusic(Music *core);
+    Q_INVOKABLE void appendMusic(QList<Music *> core);
 
     //移除音乐核心
     Q_INVOKABLE void removeMusic(int listId);
@@ -50,6 +47,8 @@ public:
 
     //显示所有歌曲
     Q_INVOKABLE void showAllMusic();
+    Q_INVOKABLE void showLoveMusic();
+    Q_INVOKABLE void showSearchMusic(QString search);
 
     QString getName() const;
     void setName(const QString &newName);
@@ -62,10 +61,10 @@ public:
 
 signals:
     // 更新qml展示列表
-    void updateMusic(int start, int length);
+    void buildShow();
 
-    // 删除数据
-    void clearMusic();
+    // 插入了新歌曲
+    void musicAppend(int start, int length);
 
     // 更新封面
     void updateCover();

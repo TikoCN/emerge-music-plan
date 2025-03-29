@@ -108,7 +108,7 @@ Item {
                                 cache: true
                                 onClicked: music.level = level
                                 icon.source: music.level >= level ? "qrc:/image/int.png" : "qrc:/image/unInt.png"
-                                useAutoColor: !music.level >= level
+                                useAutoColor: !(music.level >= level)
                             }
                             model: ListModel{
                                 ListElement{level: 0}

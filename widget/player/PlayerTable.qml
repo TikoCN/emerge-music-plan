@@ -4,10 +4,12 @@ import QtQuick.Layouts
 import ControlAPI   
 import Tiko
 import Widget
+import DataCore
 
 Item {
     id: playerTable
-    property int tableId//歌曲标题
+    property int tableId
+    property TableData table: Core.tableList[tableId]
     property int allMusic:  0
     property string showCover: "qrc:/image/default.png"
 
@@ -33,7 +35,7 @@ Item {
             anchors.left: tableCover.right
             anchors.leftMargin: 10
             anchors.top: tableCover.top
-            text: Core.tableList[tableId].name
+            text: table.name
             width: parent.width - tableCover.width
             exSize: 20
             font.bold: true
@@ -45,7 +47,7 @@ Item {
             anchors.left: tableName.left
             anchors.top: tableName.bottom
             anchors.topMargin: 10
-            text: Core.tableList[tableId].name
+            text: table.name
             width: parent.width - tableCover.width
             exSize: 5
         }
@@ -84,7 +86,7 @@ Item {
             //显示所有歌曲列表
             TikoButtonNormal{
                 Layout.minimumWidth: 70
-                onClickLeft: Core.tableList[playerTable.tableId].showAllMusic()
+                onClickLeft: table.showAllMusic()
                 text: qsTr("歌曲") + allMusic.toString()
                 iconSource: "qrc:/image/music.png"
             }
@@ -92,7 +94,7 @@ Item {
             //显示喜爱歌曲列表
             TikoButtonNormal{
                 Layout.minimumWidth: 70
-                onClickLeft: Core.tableList[playerTable.tableId].showLove()
+                onClickLeft: table.showLoveMusic()
                 text: qsTr("喜爱")
                 iconSource: "qrc:/image/love.png"
             }
@@ -140,7 +142,10 @@ Item {
                 id: inputText
                 Layout.maximumWidth: 0
                 show.text: qsTr("搜索")
-                input.onEditingFinished: closeWidthAnimation.start()
+                input.onEditingFinished: {
+                    table.showSearchMusic(input.text)
+                    closeWidthAnimation.start()
+                }
                 visible: false
 
                 PropertyAnimation{
@@ -180,20 +185,21 @@ Item {
 
         delegate: CoreMusicLine{
             width: musicList.width - 20
-            table: Core.tableList[tableData]
+            table: playerTable.table
             listId: musicListId
             music: musicCore
         }
     }
 
     Connections{
-        target: Core.tableList[playerTable.tableId]
-        function onClearMusic(){
+        target: table
+        function onBuildShow(){
             musicModel.clear()
+            playerTable.updateMusic(0, table.showMusics.length)
         }
 
-        function onUpdateMusic(start, length){
-            playerTable.updateMusic(start, length)
+        function onMusicAppend(start, length){
+            playerTable.appendMusic(start, length)
         }
 
         function onUpdateCover(){
@@ -203,13 +209,12 @@ Item {
 
     Component.onCompleted: {
         playerTable.updateCover()
-        playerTable.updateMusic(0, Core.tableList[playerTable.tableId].showMusics.length)
+        playerTable.appendMusic(0, table.showMusics.length)
     }
 
     function updateCover(){
         //调整列表展示信息
-        if(Core.tableList[tableId].showMusics.length !== 0){
-            var table = Core.tableList[playerTable.tableId]
+        if(table.showMusics.length !== 0){
             var coorId = table.getLastCoreId()
             playerTable.showCover = "image://cover/file:" + coorId.toString()
             playerTable.allMusic = table.musics.length
@@ -222,12 +227,11 @@ Item {
         }
     }
 
-    function updateMusic(start, length){
+    function appendMusic(start, length){
         for(var i=start; i<start+length; i++){
             musicModel.append({
                                   musicListId: i,
-                                  tableData: playerTable.tableId,
-                                  musicCore: Core.tableList[playerTable.tableId].showMusics[i]
+                                  musicCore: table.showMusics[i]
                               })
         }
     }
