@@ -1,5 +1,8 @@
+cmake_minimum_required(VERSION 3.16)
 add_library(Tiko)
 project(TikoLib VERSION 0.1 LANGUAGES CXX)
+
+find_package(Qt6 REQUIRED COMPONENTS Quick)
 
 set(CMAKE_AUTORCC true)
 set_source_files_properties(TikoSeit.qml

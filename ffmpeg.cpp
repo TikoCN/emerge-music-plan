@@ -442,7 +442,7 @@ QString FFmpeg::getOutUrl(QString inUrl)
 /*
  * 对输入文件进行转码
  */
-bool FFmpeg::transformCodec(QString url, Suffix aim)
+ bool FFmpeg::transformCodec(QString url, Suffix aim)
 {
     suffix = aim;
     QString inUrl = url;
@@ -714,8 +714,20 @@ bool FFmpeg::getDict(QStringList *keys, QStringList *values, QString url)
 bool FFmpeg::writeDict(QStringList key, QStringList value, QString inUrl, QString outUrl)
 {
     try{
+        if (key.size() != value.size()) {
+            throw QString("写入标签数据长度错误");
+        }
+
         AVFormatContext *inFmt = getInputFormatContext(inUrl);
         AVFormatContext *outFmt = getOutFormatContext(outUrl);
+
+        // 打开输出文件
+        if (!(outFmt->oformat->flags & AVFMT_NOFILE)) {
+            r = avio_open(&outFmt->pb, outUrl.toUtf8(), AVIO_FLAG_WRITE);
+            if (r < 0) {
+                throw QString(outUrl + "输出文件打开失败");
+            }
+        }
 
         for(int i=0; i<inFmt->nb_streams; i++){
             AVStream *stream = avformat_new_stream(outFmt, nullptr);
@@ -736,7 +748,7 @@ bool FFmpeg::writeDict(QStringList key, QStringList value, QString inUrl, QStrin
         }
 
         AVPacket *pkt = av_packet_alloc();
-        while(av_read_frame(inFmt, pkt)){
+        while(av_read_frame(inFmt, pkt) >= 0){
             av_interleaved_write_frame(outFmt, pkt);
             av_packet_unref(pkt);
         }

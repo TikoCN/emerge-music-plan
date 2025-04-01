@@ -3,7 +3,6 @@ project(musicPlay VERSION 0.1 LANGUAGES CXX)
 set(CMAKE_TOOLCHAIN_FILE "C:/vcpkg/scripts/buildsystems/vcpkg.cmake")
 set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(QT_QML_IMPORT_PATH "${CMAKE_CURRENT_SOURCE_DIR}" CACHE STRING "QML import path" FORCE)
 
 find_package(Qt6 REQUIRED COMPONENTS Quick)
 find_package(Qt6 REQUIRED COMPONENTS Multimedia)
@@ -17,7 +16,7 @@ qt_add_executable(appmusicPlay
 
 qt_policy(SET QTP0004 NEW)
 add_subdirectory(tiko)
-add_subdirectory(widget)
+add_subdirectory(ups)
 
 qt_add_qml_module(appmusicPlay
     URI musicPlay

@@ -1,7 +1,6 @@
 #include "music.h"
 #include "ffmpeg.h"
 #include "base.h"
-#include "extralibrary.h"
 #include "lrcdata.h"
 #include <QDesktopServices>
 #include <QJsonObject>
@@ -434,23 +433,27 @@ void Music::setSuffix(QString type)
 
 void Music::writeLove()
 {
+    Base *base = Base::getInstance();
     QStringList keyList;
     QStringList valueList;
     keyList.append("love");
     valueList.append(QString::number(isLove ? 1 : 0));
     QString newUrl = url;
     newUrl.replace(getBaseName(), getBaseName() + "new");
+
     FFmpeg ff;
     if(ff.writeDict(keyList, valueList, url, newUrl)){
-        Base::getInstance()->sendMessage(url + tr("更新喜爱成功"), 1);
+        base->renameFile(newUrl, url);
+        base->sendMessage(url + tr("更新喜爱成功"), 0);
     }
     else {
-        Base::getInstance()->sendMessage(url + tr("更新喜爱失败"), 0);
+        base->sendMessage(url + tr("更新喜爱失败"), 1);
     }
 }
 
 void Music::writeLevel()
 {
+    Base *base = Base::getInstance();
     QStringList keyList;
     QStringList valueList;
     keyList.append("level");
@@ -460,10 +463,11 @@ void Music::writeLevel()
 
     FFmpeg ff;
     if(ff.writeDict(keyList, valueList, url, newUrl)){
-        Base::getInstance()->sendMessage(url + tr("更新评级成功"), 1);
+        base->renameFile(newUrl, url);
+        base->sendMessage(url + tr("更新评级成功"), 0);
     }
     else {
-        Base::getInstance()->sendMessage(url + tr("更新评级失败"), 0);
+        base->sendMessage(url + tr("更新评级失败"), 1);
     }
 }
 

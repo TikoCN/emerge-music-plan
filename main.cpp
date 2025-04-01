@@ -67,7 +67,7 @@ int main(int argc, char *argv[])
         &app,
         []() { QCoreApplication::exit(-1); },
         Qt::QueuedConnection);
-    engine.loadFromModule("Widget", "Main");
+    engine.loadFromModule("Ups", "Main");
     engine.addImageProvider("cover", new ImageProvider);
 
     return app.exec();

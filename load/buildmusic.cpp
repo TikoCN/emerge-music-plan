@@ -51,7 +51,7 @@ void BuildMusic::loadMusicCore()
             Music *music = new Music;
             music->fromFileInfo(fileList[i]);
             music->moveToThread(core->thread());
-            extraLibrary.getMedia(music);
+            music->readMedia();
             musicList.append(music);
 
             // 插入列表

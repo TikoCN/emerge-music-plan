@@ -133,3 +133,17 @@ void Base::sendMessage(QString msg, int type)
 {
     emit message(msg, type);
 }
+
+void Base::renameFile(QString oldUrl, QString newUrl)
+{
+    if(!QFile::exists(oldUrl)){
+        return;
+    }
+
+    // 移除以及存在文件
+    if (QFile::exists(newUrl)) {
+        QFile::remove(newUrl);
+    }
+
+    QFile::rename(oldUrl, newUrl);
+}
