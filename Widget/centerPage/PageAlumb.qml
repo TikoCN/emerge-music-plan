@@ -1,7 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import Tiko
-import ControlAPI
+import MediaerAPI
 import Widget
 
 Item {

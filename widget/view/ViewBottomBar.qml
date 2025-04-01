@@ -2,7 +2,7 @@ import QtQuick
 import QtQuick.Window
 import QtQuick.Controls.Basic
 import QtQml
-import ControlAPI   
+import MediaerAPI   
 import Tiko
 import Widget
 
@@ -144,6 +144,7 @@ Item {
             icon.source: MediaPlayer.player.playing ? "qrc:/image/stop.png" : "qrc:/image/play.png"
             onClicked: MediaPlayer.player.playing ? MediaPlayer.player.pause() : MediaPlayer.player.play()
             text: MediaPlayer.player.playing ? qsTr("暂停") : qsTr("播放")
+            autoColor: Setting.backdropColor
         }
 
         //下一首

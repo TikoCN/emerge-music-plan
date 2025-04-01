@@ -1,6 +1,6 @@
 import QtQuick.Controls.Basic
 import QtQuick
-import ControlAPI   
+import MediaerAPI   
 import Tiko
 import Widget
 

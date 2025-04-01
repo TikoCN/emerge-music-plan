@@ -1,7 +1,7 @@
 pragma Singleton
 import QtQuick
 import Widget
-import ControlAPI
+import MediaerAPI
 import Tiko
 import DataCore
 
@@ -23,6 +23,10 @@ QtObject {
             var item = component.createObject(parent)
             item.build(core, core.getLrcData())
             item.show()
+        }
+        else {
+            TikoSeit.sendMessage(parent, component.errorString(), 1)
+            console.log(component.errorString())
         }
     }
 

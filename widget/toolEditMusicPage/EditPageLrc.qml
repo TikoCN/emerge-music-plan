@@ -1,9 +1,8 @@
-pragma Singleton
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import Tiko
-import ControlAPI   
+import MediaerAPI
 
 Item{
     id: editLrcPage
@@ -36,73 +35,106 @@ Item{
             onShowChanged: editLrcPage.mode = show
         }
 
-        TikoButtonNormal{
+        TikoButtonNormal {
             width: 150
-            iconSource: "qrc:/image/lineStart.png"
-            text: qsTr("行开始") + " : " + editLrcPage.lineStart.toString()
-            onClick: editLrcPage.lineStart = MediaPlayer.player.position
+            text: qsTr("HLRC模式")
+            onClick: hlrcMode.visible = !hlrcMode.visible
         }
 
-        TikoButtonNormal{
+        Column {
+            id: hlrcMode
             width: 150
-            iconSource: "qrc:/image/lineEnd.png"
-            text: qsTr("行结束")
-            onClick: editLrcPage.hlrcInsertLineTime()
-        }
+            spacing: 6
+            leftPadding: 10
 
-        TikoButtonNormal{
-            width: 150
-            iconSource: "qrc:/image/wordStart.png"
-            text: qsTr("词开始") + " : " + editLrcPage.wordStart.toString()
-            onClick: editLrcPage.wordStart = MediaPlayer.player.position
-        }
+            TikoButtonNormal{
+                width: 150
+                iconSource: "qrc:/image/lineStart.png"
+                text: qsTr("行开始") + " : " + editLrcPage.lineStart.toString()
+                onClick: editLrcPage.lineStart = MediaPlayer.player.position
+            }
 
-        TikoButtonNormal{
-            width: 150
-            iconSource: "qrc:/image/wordEnd.png"
-            text: qsTr("词结束")
-            onClick: editLrcPage.hlrcInsertWordTime()
-        }
+            TikoButtonNormal{
+                width: 150
+                iconSource: "qrc:/image/lineEnd.png"
+                text: qsTr("行结束")
+                onClick: editLrcPage.hlrcInsertLineTime()
+            }
 
-        TikoButtonNormal{
-            width: 150
-            iconSource: "qrc:/image/wordEnd.png"
-            text: qsTr("连续词结束")
-            onClick: {
-                editLrcPage.wordStart = MediaPlayer.player.position
-                editLrcPage.hlrcInsertWordTime()
+            TikoButtonNormal{
+                width: 150
+                iconSource: "qrc:/image/wordStart.png"
+                text: qsTr("词开始") + " : " + editLrcPage.wordStart.toString()
+                onClick: editLrcPage.wordStart = MediaPlayer.player.position
+            }
+
+            TikoButtonNormal{
+                width: 150
+                iconSource: "qrc:/image/wordEnd.png"
+                text: qsTr("词结束")
+                onClick: editLrcPage.hlrcInsertWordTime()
+            }
+
+            TikoButtonNormal{
+                width: 150
+                iconSource: "qrc:/image/wordEnd.png"
+                text: qsTr("连续词结束")
+                onClick: {
+                    editLrcPage.wordStart = MediaPlayer.player.position
+                    editLrcPage.hlrcInsertWordTime()
+                }
+            }
+
+            TikoButtonNormal{
+                width: 150
+                iconSource: "qrc:/image/yes.png"
+                text: qsTr("保存.hlrc")
+                onClick: Base.writeFileText(editLrcPage.getBaseUrl + ".hlrc", lrcShow.text)
             }
         }
 
-        TikoButtonNormal{
+        TikoButtonNormal {
             width: 150
-            iconSource:"qrc:/image/lineReplaceTime.png"
-            text:qsTr("修正时间戳")
-            onClick: {
-                editLrcPage.timeWork(0)
-                editLrcPage.cursorNext()
+            text: qsTr("LRC模式")
+            onClick: lrcMode.visible = !lrcMode.visible
+        }
+
+        Column {
+            id: lrcMode
+            width: 150
+            spacing: 6
+            leftPadding: 10
+
+            TikoButtonNormal{
+                width: 150
+                iconSource:"qrc:/image/lineReplaceTime.png"
+                text:qsTr("修正时间戳")
+                onClick: {
+                    editLrcPage.timeWork(0)
+                    editLrcPage.cursorNext()
+                }
             }
-        }
 
-        TikoButtonNormal{
-            width: 150
-            iconSource: "qrc:/image/lineAddTime.png"
-            text: qsTr("添加时间戳")
-            onClick: editLrcPage.timeWork(1)
-        }
+            TikoButtonNormal{
+                width: 150
+                iconSource: "qrc:/image/lineAddTime.png"
+                text: qsTr("添加时间戳")
+                onClick: editLrcPage.timeWork(1)
+            }
 
-        TikoButtonNormal{
-            width: 150
-            iconSource: "qrc:/image/lineDeleteTime.png"
-            text: qsTr("删除时间戳")
-            onClick: editLrcPage.timeWork(2)
-        }
+            TikoButtonNormal{
+                width: 150
+                iconSource: "qrc:/image/lineDeleteTime.png"
+                text: qsTr("删除时间戳")
+                onClick: editLrcPage.timeWork(2)
+            }
 
-        TikoButtonNormal{
-            width: 150
-            iconSource: "qrc:/image/yes.png"
-            text: qsTr("保存")
-            onClick: Base.writeFileText(editLrcPage.lrcUrl, lrcShow.text)
+            TikoButtonNormal{
+                width: 150
+                iconSource: "qrc:/image/yes.png"
+                text: qsTr("保存.lrc")
+                onClick: Base.writeFileText(editLrcPage.getBaseUrl + ".lrc", lrcShow.text)
+            }
         }
     }
 

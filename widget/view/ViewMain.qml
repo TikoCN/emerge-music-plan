@@ -2,7 +2,7 @@ import QtQuick
 import QtQuick.Window
 import QtQuick.Controls
 import QtQml
-import ControlAPI   
+import MediaerAPI   
 import Tiko
 import Widget
 

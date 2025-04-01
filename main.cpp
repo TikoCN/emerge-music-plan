@@ -40,11 +40,11 @@ int main(int argc, char *argv[])
     mediaPlayer->core = core;
 
     // 注册单例
-    qmlRegisterSingletonInstance<Setting>("ControlAPI", 1, 0, "Setting", seit);
-    qmlRegisterSingletonInstance<MediaPlayer>("ControlAPI", 1, 0, "MediaPlayer", mediaPlayer);
-    qmlRegisterSingletonInstance<OnLine>("ControlAPI", 1, 0, "OnLine", onLine);
-    qmlRegisterSingletonInstance<Base>("ControlAPI", 1, 0, "Base", base);
-    qmlRegisterSingletonInstance<MusicCore>("ControlAPI", 1, 0, "Core", core);
+    qmlRegisterSingletonInstance<Setting>("MediaerAPI", 1, 0, "Setting", seit);
+    qmlRegisterSingletonInstance<MediaPlayer>("MediaerAPI", 1, 0, "MediaPlayer", mediaPlayer);
+    qmlRegisterSingletonInstance<OnLine>("MediaerAPI", 1, 0, "OnLine", onLine);
+    qmlRegisterSingletonInstance<Base>("MediaerAPI", 1, 0, "Base", base);
+    qmlRegisterSingletonInstance<MusicCore>("MediaerAPI", 1, 0, "Core", core);
 
     // 注册数据类
     qmlRegisterType<Music *>("DataCore", 1, 0, "MusicData");

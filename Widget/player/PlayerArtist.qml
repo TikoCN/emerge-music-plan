@@ -1,7 +1,7 @@
 import QtQuick
 import Tiko
 import Widget
-import ControlAPI   
+import MediaerAPI   
 
 Item{
     id: artistDataShow

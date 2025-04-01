@@ -1,5 +1,5 @@
 import Tiko
-import ControlAPI
+import MediaerAPI
 import QtQuick
 
 TikoMenu{

@@ -1,7 +1,7 @@
 import QtQuick
 import Widget
 import Tiko
-import ControlAPI
+import MediaerAPI
 
 Item{
     id: style

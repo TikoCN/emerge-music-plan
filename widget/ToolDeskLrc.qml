@@ -1,6 +1,6 @@
 import QtQuick
 import QtQuick.Layouts
-import ControlAPI
+import MediaerAPI
 import Tiko
 import Widget
 

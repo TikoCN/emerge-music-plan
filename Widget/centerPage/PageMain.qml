@@ -2,7 +2,7 @@ import QtQuick.Controls
 import QtQuick
 import Widget
 import Tiko
-import ControlAPI
+import MediaerAPI
 
 ScrollView {
     id: mainPage

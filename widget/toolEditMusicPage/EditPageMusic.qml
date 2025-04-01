@@ -1,11 +1,9 @@
-pragma Singleton
 import QtQuick
 import QtQuick.Layouts
 import Tiko
 
 Item{
     id: editMusicPage
-    visible: false
 
     Column{
         id: musicTool

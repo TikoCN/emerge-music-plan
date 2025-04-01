@@ -1,7 +1,7 @@
 import QtQuick
 import Tiko
 import DataCore
-import ControlAPI
+import MediaerAPI
 
 Item{
     id: alumbButton

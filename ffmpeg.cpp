@@ -700,6 +700,9 @@ bool FFmpeg::getDict(QStringList *keys, QStringList *values, QString url)
             keys->append(key);
             values->append(value);
         }
+        // 插入其他数据
+        keys->append("endTime");
+        values->append(QString::number(inFmt->duration));
     }
     catch(QString e){
         logError(e);
@@ -719,6 +722,10 @@ bool FFmpeg::writeDict(QStringList key, QStringList value, QString inUrl, QStrin
             avcodec_parameters_copy(stream->codecpar, inFmt->streams[i]->codecpar);
         }
 
+        // 复制标签
+        av_dict_copy(&outFmt->metadata, inFmt->metadata, 1);
+
+        // 写入新的标签
         for(int i=0; i<key.size(); i++){
             av_dict_set(&outFmt->metadata, key[i].toUtf8(), value[i].toUtf8(), 1);
         }

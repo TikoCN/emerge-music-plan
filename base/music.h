@@ -21,12 +21,13 @@ public:
     int level;
     bool isLove;
 
-public:
-
     Music();
 
     //将数据写入文件
     Q_INVOKABLE void writeDataToFile(QStringList key, QStringList value);
+
+    // 读取元数据
+    void readMedia();
 
     // 读取所有标签
     Q_INVOKABLE QList<KeyValuePair *> getAllKey();
@@ -47,6 +48,9 @@ public:
 
     //获得文件基础名字
     QString getBaseName();
+
+    //获得文件基础路径
+    Q_INVOKABLE QString getBaseUrl();
 
     //获得时长
     Q_INVOKABLE QString getStringTime();
@@ -86,6 +90,12 @@ public:
 
     //格式转换
     Q_INVOKABLE void setSuffix(QString type);
+
+    // 写入喜爱
+    void writeLove();
+
+    // 写入评级
+    void writeLevel();
 
     QString getTitle() const;
 
