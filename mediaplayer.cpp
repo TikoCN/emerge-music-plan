@@ -1,9 +1,10 @@
+#include "fftw3.h"
 #include "mediaplayer.h"
-#include "extralibrary.h"
 #include "base.h"
 #include <QRandomGenerator>
 #include <QAudioDevice>
 #include <QPixmapCache>
+#include <QAudioBuffer>
 
 /*
  * 加载歌词
@@ -35,13 +36,13 @@ void MediaPlayer::insertMusic(Music *music)
     emit buildMusicList();
 }
 
-void MediaPlayer::insertMusic(Alumb *alumb)
+void MediaPlayer::insertMusic(Album *album)
 {
-    if(alumb == nullptr){
+    if(album == nullptr){
         Base::getInstance()->sendMessage(tr("插入专辑列表失败"), 1);
         return;
     }
-    insertMusic(alumb->musicList);
+    insertMusic(album->musicList);
 }
 
 void MediaPlayer::insertMusic(Artist *artist)
@@ -77,13 +78,13 @@ void MediaPlayer::appendMusic(Music *music)
     emit musicAppend(start, 1);
 }
 
-void MediaPlayer::appendMusic(Alumb *alumb)
+void MediaPlayer::appendMusic(Album *album)
 {
-    if(alumb == nullptr){
+    if(album == nullptr){
         Base::getInstance()->sendMessage(tr("插入专辑列表失败"), 1);
         return;
     }
-    appendMusic(alumb->musicList);
+    appendMusic(album->musicList);
 }
 
 void MediaPlayer::appendMusic(Artist *artist)
@@ -185,16 +186,16 @@ void MediaPlayer::playMusic(Table *table, int musicId){
 }
 
 //播放专辑音乐
-void MediaPlayer::playMusic(Alumb *alumb, int musicId){
+void MediaPlayer::playMusic(Album *album, int musicId){
     // 清空正在播放列表
     emit clearLrc();
     musicList.clear();
 
-    if (alumb == nullptr) {
+    if (album == nullptr) {
         return;
     }
 
-    musicList.append(alumb->musicList);
+    musicList.append(album->musicList);
     emit buildMusicList();
 
     playMusic(musicId);
@@ -284,9 +285,34 @@ void MediaPlayer::buildFrequencySpectrum(QAudioBuffer buffer)
                 data[i] += samples[i*alone+j]/alone;
             }
         }
+
         //计算傅里叶变换
-        ExtraLibrary ex;
-        data = ex.useFftw3(data, all);
+        QVector<double>out(all);
+        // 创建一个FFTW计划
+        fftw_complex *in_ptr = reinterpret_cast<fftw_complex*>(fftw_malloc(sizeof(fftw_complex) * all));
+        fftw_complex *out_ptr = reinterpret_cast<fftw_complex*>(fftw_malloc(sizeof(fftw_complex) * all));
+
+        // 将std::vector数据复制到fftw_complex数组中
+        for (int i = 0; i < all; ++i) {
+            in_ptr[i][0] = data[i];
+            in_ptr[i][1] = 0.0;
+        }
+
+        // 创建计划并计算DFT
+        fftw_plan plan = fftw_plan_dft_1d(all, in_ptr, out_ptr, FFTW_FORWARD, FFTW_ESTIMATE);
+        fftw_execute(plan);
+
+        // 将结果从fftw_complex数组复制回std::vector
+        for (int i = 0; i < all; ++i)
+        {
+            out[i] = sqrt(out_ptr[i][0]*out_ptr[i][0]+out_ptr[i][1]*out_ptr[i][1]);
+        }
+
+        // 清理
+        fftw_destroy_plan(plan);
+        fftw_free(in_ptr);
+        fftw_free(out_ptr);
+        data = out;
 
         //归一化
         double maxHeight = 0.0, minHeight = 0.0;

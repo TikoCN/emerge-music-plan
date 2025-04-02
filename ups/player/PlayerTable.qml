@@ -195,7 +195,7 @@ Item {
         target: table
         function onBuildShow(){
             musicModel.clear()
-            playerTable.updateMusic(0, table.showMusics.length)
+            playerTable.appendMusic(0, table.showMusics.length)
         }
 
         function onMusicAppend(start, length){

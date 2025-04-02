@@ -134,16 +134,39 @@ void Base::sendMessage(QString msg, int type)
     emit message(msg, type);
 }
 
-void Base::renameFile(QString oldUrl, QString newUrl)
+bool Base::renameFile(QString oldUrl, QString newUrl)
 {
-    if(!QFile::exists(oldUrl)){
-        return;
-    }
+    try{
+        QFile oldFile(oldUrl);
+        QFile newFile(newUrl);
 
-    // 移除以及存在文件
-    if (QFile::exists(newUrl)) {
-        QFile::remove(newUrl);
-    }
+        if(!oldFile.exists()){
+            throw QString(oldUrl + tr("文件不存在"));
+        }
 
-    QFile::rename(oldUrl, newUrl);
+        if (!oldFile.setPermissions(QFile::WriteOther)) {
+            throw QString(oldUrl + "获取权限失败," + oldFile.errorString());
+        }
+
+        // 移除以及存在文件
+        if (newFile.exists()) {
+
+            if (!newFile.setPermissions(QFile::WriteOther)) {
+                throw QString(newUrl + "获取权限失败," + newFile.errorString());
+            }
+
+            if(!newFile.remove()){
+                throw QString(newUrl + tr("文件已经存在且无法删除,") + newFile.errorString());
+            }
+        }
+
+        if(!oldFile.rename(oldUrl, newUrl)){
+            throw QString(oldUrl + tr("重命名失败,") + oldFile.errorString());
+        }
+    }
+    catch(QString e){
+        qDebug()<<e;
+        return false;
+    }
+    return true;
 }

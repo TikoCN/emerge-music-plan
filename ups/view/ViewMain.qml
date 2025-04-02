@@ -58,8 +58,8 @@ Item {
         visible: false
     }
 
-    PageAlumb {
-        id: alumbPage
+    PageAlbum {
+        id: albumPage
         visible: false
     }
 
@@ -73,8 +73,8 @@ Item {
         visible: false
     }
 
-    PlayerAlumb {
-        id: alumbPlayer
+    PlayerAlbum {
+        id: albumPlayer
         visible: false
     }
 
@@ -110,16 +110,16 @@ Item {
         }
     }
 
-    function turnToAlumb(){
-        if(stackView.currentItem != alumbPage){
-            stackView.replace(alumbPage)
+    function turnToAlbum(){
+        if(stackView.currentItem != albumPage){
+            stackView.replace(albumPage)
         }
     }
 
-    function turnToAlumbPlayer(alumb){
-        alumbPlayer.openAlumbData(alumb)
-        if(stackView.currentItem != alumbPlayer){
-            stackView.replace(alumbPlayer)
+    function turnToAlbumPlayer(album){
+        albumPlayer.openAlbumData(album)
+        if(stackView.currentItem != albumPlayer){
+            stackView.replace(albumPlayer)
         }
     }
 
@@ -146,7 +146,7 @@ Item {
 
     function buildData(){
         artistPage.build()
-        alumbPage.build()
+        albumPage.build()
         mainPage.buildRand()
     }
 
@@ -159,8 +159,8 @@ Item {
     Component.onCompleted: {
         CoreData.mainTurnSeit.connect(turnToSeit)
         CoreData.mainTurnMain.connect(turnToMain)
-        CoreData.mainTurnAlumbPage.connect(turnToAlumb)
-        CoreData.mainTurnAlumbPlayer.connect(turnToAlumbPlayer)
+        CoreData.mainTurnAlbumPage.connect(turnToAlbum)
+        CoreData.mainTurnAlbumPlayer.connect(turnToAlbumPlayer)
         CoreData.mainTurnArtistPage.connect(turnToArtist)
         CoreData.mainTurnArtistPlayer.connect(turnToArtistPlayer)
     }

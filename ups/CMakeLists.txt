@@ -36,19 +36,19 @@ qt_add_qml_module(UpsLib
     toolEditMusicPage/EditPageLrc.qml
     toolEditMusicPage/ToolEditMusic.qml
     centerPage/PageArtist.qml
-    centerPage/PageAlumb.qml
+    centerPage/PageAlbum.qml
     centerPage/PageSeit.qml
     lrcLine/DrawLrcLine.qml
     lrcLine/DrawLoadLine.qml
     lrcLine/CoreLrcLine.qml
+    lrcLine/DrawLrcFixHeight.qml
     centerPage/PageMain.qml
-    CoreAlumbButton.qml
-    player/PlayerAlumb.qml
+    CoreAlbumButton.qml
+    player/PlayerAlbum.qml
     player/PlayerArtist.qml
     CoreArtistButton.qml
-    lrcLine/DrawLrcFixHeight.qml
     QML_FILES core/CoreMusicButton.qml
-    QML_FILES menu/MenuAlumb.qml
+    QML_FILES menu/MenuAlbum.qml
     QML_FILES menu/MenuArtist.qml
     RESOURCES ui.qrc
 )

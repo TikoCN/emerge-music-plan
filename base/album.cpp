@@ -1,18 +1,18 @@
-#include "alumb.h"
+#include "album.h"
 #include "base.h"
 
-Alumb::Alumb(QString name)
+Album::Album(QString name)
     : name(name)
 {
 
 }
 
-QString Alumb::getLineKey() const
+QString Album::getLineKey() const
 {
     return lineKey;
 }
 
-QString Alumb::getStringTime()
+QString Album::getStringTime()
 {
     long long time = 0;
     for (int i = 0; i < musicList.size(); ++i) {
@@ -23,22 +23,22 @@ QString Alumb::getStringTime()
     return Base::getInstance()->timeToString(time);
 }
 
-QString Alumb::getArtist()
+QString Album::getArtist()
 {
     return ((QStringList)artistSet.values()).join(";");
 }
 
-int Alumb::getId() const
+int Album::getId() const
 {
     return id;
 }
 
-QList<Music *> Alumb::getMusicList() const
+QList<Music *> Album::getMusicList() const
 {
     return musicList;
 }
 
-QString Alumb::getName() const
+QString Album::getName() const
 {
     return name;
 }

@@ -11,7 +11,7 @@ Item {
     clip: true
 
     property var table
-    property var alumb
+    property var album
     property var artist
     property int listId: 0
     property int type: 0
@@ -67,7 +67,7 @@ Item {
             }
 
             TikoTextLine{
-                text: musicLine.music.alumb
+                text: musicLine.music.album
                 width: coreName.width
                 height: 50
             }
@@ -167,7 +167,7 @@ Item {
             MediaPlayer.playMusic(table, listId)
             break
         case 1:
-            MediaPlayer.playMusic(alumb, listId)
+            MediaPlayer.playMusic(album, listId)
             break
         case 2:
             MediaPlayer.playMusic(artist, listId)

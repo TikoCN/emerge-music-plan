@@ -55,11 +55,11 @@ Item {
                 id: artistButton
                 width: parent.width
                 text: qsTr("专辑")
-                iconSource: "qrc:/image/alumb.png"
+                iconSource: "qrc:/image/album.png"
                 anchors.horizontalCenter: parent.horizontalCenter
                 onClick: {
                     root.showText = text
-                    mainView.turnToAlumb()
+                    mainView.turnToAlbum()
                 }
 
                 Rectangle {

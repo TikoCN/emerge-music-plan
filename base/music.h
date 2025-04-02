@@ -13,7 +13,7 @@ public:
     QString title;
     QStringList artistList;
     QString url;
-    QString alumb;
+    QString album;
     QString lastEdit;
     long long endTime;
     qint64 lastEditTime;
@@ -103,7 +103,7 @@ public:
 
     QString getUrl() const;
 
-    QString getAlumb() const;
+    QString getAlbum() const;
 
     QString getLastEdit() const;
 
@@ -130,7 +130,7 @@ private:
     Q_PROPERTY(QString title READ getTitle CONSTANT)
     Q_PROPERTY(QString artist READ getArtist CONSTANT)
     Q_PROPERTY(QString url READ getUrl CONSTANT)
-    Q_PROPERTY(QString alumb READ getAlumb CONSTANT)
+    Q_PROPERTY(QString album READ getAlbum CONSTANT)
     Q_PROPERTY(QString lastEdit READ getLastEdit CONSTANT)
     Q_PROPERTY(int coreId READ getCoreId CONSTANT)
     Q_PROPERTY(bool isLove READ getIsLove WRITE setIsLove NOTIFY isLoveChanged FINAL)

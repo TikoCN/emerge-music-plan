@@ -14,11 +14,11 @@ MusicCore::MusicCore(QObject *parent)
 /*
  * 获得音乐核心
  */
-void MusicCore::getMusicCore(QList<Music *>musicList, QList<Table *> tableList, QList<Artist *> artistList, QList<Alumb *> alumbList)
+void MusicCore::getMusicCore(QList<Music *>musicList, QList<Table *> tableList, QList<Artist *> artistList, QList<Album *> albumList)
 {
     this->musicList = musicList;
     this->tableList = tableList;
-    this->alumbList = alumbList;
+    this->albumList = albumList;
     this->artistList = artistList;
 
     emit finishInit();
@@ -98,19 +98,19 @@ void MusicCore::tableInsertMusic(int tableId, Artist *artist)
     tableList[tableId]->appendMusic(artist->musicList);
 }
 
-void MusicCore::tableInsertMusic(int tableId, Alumb *alumb)
+void MusicCore::tableInsertMusic(int tableId, Album *album)
 {
-    if (tableId < 0 || tableId >= tableList.size() || alumb == nullptr) {
+    if (tableId < 0 || tableId >= tableList.size() || album == nullptr) {
         QString msg = tr("列表") +" "+ QString::number(tableId) +" "+ tr("插入歌曲失败");
         Base::getInstance()->sendMessage(msg, 0);
         return;
     }
-    tableList[tableId]->appendMusic(alumb->musicList);
+    tableList[tableId]->appendMusic(album->musicList);
 }
 
-QList<Alumb *> MusicCore::getAlumbList() const
+QList<Album *> MusicCore::getAlbumList() const
 {
-    return alumbList;
+    return albumList;
 }
 
 QList<Artist *> MusicCore::getArtistList() const
@@ -186,17 +186,17 @@ void MusicCore::writeJsonData()
     dataFile.close();
 }
 
-QList<Alumb *> MusicCore::getAlumbRandList()
+QList<Album *> MusicCore::getAlbumRandList()
 {
-    if(alumbList.size() < 15){
-        return alumbList;
+    if(albumList.size() < 15){
+        return albumList;
     }
 
-    QList<Alumb *> list;
-    QList<int> aimList = Base::getInstance()->getRandNumber(0, alumbList.size(), 15);
+    QList<Album *> list;
+    QList<int> aimList = Base::getInstance()->getRandNumber(0, albumList.size(), 15);
     for (int i : aimList) {
-        if (i < alumbList.size()) {
-            list.append(alumbList[i]);
+        if (i < albumList.size()) {
+            list.append(albumList[i]);
         }
     }
     return list;

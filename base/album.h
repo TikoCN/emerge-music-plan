@@ -1,14 +1,14 @@
-#ifndef ALUMB_H
-#define ALUMB_H
+#ifndef ALBUM_H
+#define ALBUM_H
 
 #include <QObject>
 #include "music.h"
 
-class Alumb : public QObject
+class Album : public QObject
 {
     Q_OBJECT
 public:
-    explicit Alumb(QString name);
+    explicit Album(QString name);
 
     QList<Music *> musicList; // 音乐列表
     QString name;
@@ -36,4 +36,4 @@ private:
     Q_PROPERTY(int id READ getId CONSTANT FINAL)
     Q_PROPERTY(QString lineKey READ getLineKey CONSTANT FINAL)
 };
-#endif // ALUMB_H
+#endif // ALBUM_H

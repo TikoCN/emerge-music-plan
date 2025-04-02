@@ -67,13 +67,13 @@ void Table::sortMusic(int type)
         break;
     case SORT_ALUMB_ASC:
         std::sort(showMusics.begin(), showMusics.end(), [this](Music *a, Music *b){
-            bool isRight = a->alumb > b->alumb;
+            bool isRight = a->album > b->album;
             return isRight;
         });
         break;
     case SORT_ALUMB_DESC:
         std::sort(showMusics.begin(), showMusics.end(), [this](Music *a, Music *b){
-            bool isRight = a->alumb < b->alumb;
+            bool isRight = a->album < b->album;
             return isRight;
         });
         break;

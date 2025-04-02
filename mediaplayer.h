@@ -65,7 +65,7 @@ public:
 
     //播放音乐
     Q_INVOKABLE void playMusic(Table *table, int musicId = 0);
-    Q_INVOKABLE void playMusic(Alumb *alumb, int musicId = 0);
+    Q_INVOKABLE void playMusic(Album *album, int musicId = 0);
     Q_INVOKABLE void playMusic(Artist* artist, int musicId = 0);
     Q_INVOKABLE void playMusic(int musicId);
 
@@ -75,13 +75,13 @@ public:
     // 播放列表插入歌曲
     Q_INVOKABLE void insertMusic(Music *music);
     Q_INVOKABLE void insertMusic(QList<Music *> musicList);
-    Q_INVOKABLE void insertMusic(Alumb *alumb);
+    Q_INVOKABLE void insertMusic(Album *album);
     Q_INVOKABLE void insertMusic(Artist *artist);
 
     // 播放列表插入歌曲
     Q_INVOKABLE void appendMusic(Music *music);
     Q_INVOKABLE void appendMusic(QList<Music *> musicList);
-    Q_INVOKABLE void appendMusic(Alumb *alumb);
+    Q_INVOKABLE void appendMusic(Album *album);
     Q_INVOKABLE void appendMusic(Artist *artist);
 
     //播放下一首

@@ -9,7 +9,7 @@
 #include "base/table.h"
 #include "base/music.h"
 #include "base/artist.h"
-#include "base/alumb.h"
+#include "base/album.h"
 #include "QSemaphore"
 
 class TaskCenter : public QObject
@@ -47,7 +47,7 @@ public:
     QList<Music *> musicList;                   // 计算好的音乐核心
     QList<Table *> tableList;                  // 播放列表
     QList<Artist *> artistList;                // 歌手列表
-    QList<Alumb *> alumbList;                  // 专辑列表
+    QList<Album *> albumList;                  // 专辑列表
     QList<QStringList> chinesePinyin;           // 中文拼音对照表
 
 public slots:
@@ -60,7 +60,7 @@ public slots:
 
     int getEnglishId(QString name);
     void insertArtist(Music *music);
-    void insertAlumb(Music *music);
+    void insertAlbum(Music *music);
 
     //遍历文件夹得到所有子文件
     void filterFileInfo(QStringList dirPath);
@@ -88,7 +88,7 @@ signals:
     void musicListBuild(QFileInfoList);
 
     //音乐文件加载完成
-    void musicsLoaded(QList<Music *>, QList<Table *>, QList<Artist *>, QList<Alumb *>);
+    void musicsLoaded(QList<Music *>, QList<Table *>, QList<Artist *>, QList<Album *>);
 
     //开始工作
     void startMusicCore();

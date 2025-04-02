@@ -266,7 +266,7 @@ void TaskCenter::getMusicCoreList(QList<Music *> musicList, QList<QList<Music *>
         music->coreId = this->musicList.size();
         this->musicList.append(music);
 
-        insertAlumb(music);
+        insertAlbum(music);
         insertArtist(music);
     }
 
@@ -315,17 +315,17 @@ void TaskCenter::insertArtist(Music *music)
     }
 }
 
-void TaskCenter::insertAlumb(Music *music)
+void TaskCenter::insertAlbum(Music *music)
 {
-    QString alumbName = music->alumb;
+    QString albumName = music->album;
 
     bool isNoFind = true;
-    for (int i = 0; i < alumbList.size(); ++i) {
-        if(alumbList[i]->name == alumbName) {
-            alumbList[i]->musicList.append(music);
+    for (int i = 0; i < albumList.size(); ++i) {
+        if(albumList[i]->name == albumName) {
+            albumList[i]->musicList.append(music);
             // 在专辑中添加歌手
             for (int j = 0; j < music->artistList.size(); ++j) {
-                alumbList[i]->artistSet.insert(music->artistList[j]);
+                albumList[i]->artistSet.insert(music->artistList[j]);
             }
             isNoFind = false;
             break;
@@ -333,23 +333,23 @@ void TaskCenter::insertAlumb(Music *music)
     }
 
     if (isNoFind) {
-        Alumb *alumb = new Alumb(alumbName);
-        alumb->id = alumbList.size();
-        int aimLineKey = getEnglishId(alumb->name);
+        Album *album = new Album(albumName);
+        album->id = albumList.size();
+        int aimLineKey = getEnglishId(album->name);
         // 设置行关键字
         if (aimLineKey == -1) {
-            alumb->lineKey = alumb->name[0];
+            album->lineKey = album->name[0];
         }
         else {
-            alumb->lineKey = keyList[aimLineKey];
+            album->lineKey = keyList[aimLineKey];
         }
 
-        alumb->musicList.append(music);
+        album->musicList.append(music);
         // 在专辑中添加歌手
         for (int j = 0; j < music->artistList.size(); ++j) {
-            alumb->artistSet.insert(music->artistList[j]);
+            album->artistSet.insert(music->artistList[j]);
         }
-        alumbList.append(alumb);
+        albumList.append(album);
     }
 }
 
@@ -383,11 +383,11 @@ void TaskCenter::finishUserTable()
             return a->lineKey < b->lineKey;
         });
 
-        std::sort(alumbList.begin(), alumbList.end(), [](Alumb *a, Alumb *b)->bool{
+        std::sort(albumList.begin(), albumList.end(), [](Album *a, Album *b)->bool{
             return a->lineKey < b->lineKey;
         });
 
-        emit musicsLoaded(musicList, tableList, artistList, alumbList);
+        emit musicsLoaded(musicList, tableList, artistList, albumList);
     }
 }
 
@@ -400,7 +400,7 @@ void TaskCenter::clearData()
     this->musicFileList.clear();
     this->musicNameList.clear();
     this->tableMusic.clear();
-    this->alumbList.clear();
+    this->albumList.clear();
     this->artistList.clear();
     this->chinesePinyin.clear();
     this->keyList.clear();

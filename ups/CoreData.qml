@@ -11,8 +11,8 @@ QtObject {
     property double playNumberWidth: 0.0
     signal mainTurnSeit()
     signal mainTurnMain()
-    signal mainTurnAlumbPage()
-    signal mainTurnAlumbPlayer(AlumbData alumb)
+    signal mainTurnAlbumPage()
+    signal mainTurnAlbumPlayer(AlbumData album)
     signal mainTurnArtistPage()
     signal mainTurnArtistPlayer(ArtistData artist)
 
@@ -56,11 +56,11 @@ QtObject {
         }
     }
 
-    function openMenuAlumb(parent, alumb){
-        var component = Qt.createComponent("menu/MenuAlumb.qml")
+    function openMenuAlbum(parent, album){
+        var component = Qt.createComponent("menu/MenuAlbum.qml")
 
         if (component.status === Component.Ready) {
-            var item = component.createObject(parent, {alumb: alumb})
+            var item = component.createObject(parent, {album: album})
             item.open()
         }
         else {

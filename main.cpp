@@ -51,7 +51,7 @@ int main(int argc, char *argv[])
     qmlRegisterType<Table *>("DataCore", 1, 0, "TableData");
     qmlRegisterType<LrcData *>("DataCore", 1, 0, "LrcData");
     qmlRegisterType<Artist *>("DataCore", 1, 0, "ArtistData");
-    qmlRegisterType<Alumb *>("DataCore", 1, 0, "AlumbData");
+    qmlRegisterType<Album *>("DataCore", 1, 0, "AlbumData");
 
     QObject::connect(center, &TaskCenter::musicsLoaded, core, &MusicCore::getMusicCore);
     QObject::connect(mediaPlayer, &MediaPlayer::downLrc, onLine, &OnLine::downLrc);

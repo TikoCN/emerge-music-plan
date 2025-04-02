@@ -2,44 +2,6 @@
 #include <QImage>
 #include <QFile>
 
-FFmpeg::~FFmpeg()
-{
-    //关闭输入输出上下文
-    while(fmtCtxList.size() > 0){
-        //如果打开，关闭输出文件
-        if (fmtCtxList.last()->oformat != nullptr && !(fmtCtxList.last()->oformat->flags & AVFMT_NOFILE)) {
-            avio_closep(&fmtCtxList.last()->pb);
-        }
-        avformat_free_context(fmtCtxList.last());
-
-        fmtCtxList.removeLast();
-    }
-
-    //释放数据包指针
-    while(pktList.size() > 0){
-        av_packet_unref(pktList.last());
-        av_packet_free(&pktList.last());
-        pktList.removeLast();
-    }
-    while(frmList.size() > 0){
-        av_frame_unref(frmList.last());
-        av_frame_free(&frmList.last());
-        frmList.removeLast();
-    }
-
-    //编解码器指针列表
-    while(codeCtxList.size() > 0){
-        avcodec_free_context(&codeCtxList.last());
-        codeCtxList.removeLast();
-    }
-
-    //释放重采样列表
-    while(swrList.size() > 0){
-        swr_free(&swrList.last());
-        swrList.removeLast();
-    }
-}
-
 QString FFmpeg::suffixToString(Suffix s)
 {
     switch (s) {
@@ -66,7 +28,6 @@ AVFormatContext *FFmpeg::getOutFormatContext(QString url)
         throw QString(url + "output file open fail");
     }
 
-    fmtCtxList.append(fmtCtx);
     return fmtCtx;
 }
 
@@ -88,7 +49,6 @@ AVFormatContext *FFmpeg::getInputFormatContext(QString url)
         throw QString(url + "no stream find");
     }
 
-    fmtCtxList.append(fmtCtx);
     return fmtCtx;
 }
 
@@ -120,8 +80,6 @@ AVCodecContext *FFmpeg::getDecodecContext(AVCodecID id, AVCodecParameters *para)
         throw QString(name + " decodecContext and encodec open fail");
     }
 
-    //插入队列并返回
-    codeCtxList.append(codecCtx);
     return codecCtx;
 }
 
@@ -225,17 +183,17 @@ AVCodecContext *FFmpeg::getEncodecContext(AVCodecID id, AVCodecParameters *para,
         throw QString(QString::fromUtf8(codec->name) + " encodecContext and codec open fail");
     }
 
-    //插入队列并返回
-    codeCtxList.append(codecCtx);
     return codecCtx;
 }
 
-int FFmpeg::getAVPacket()
+AVPacket *FFmpeg::getAVPacket()
 {
     AVPacket *pkt = nullptr;
     pkt = av_packet_alloc();
-    pktList.append(pkt);
-    return pktList.size() - 1;
+    if (pkt == nullptr) {
+        throw QString("分配AVPacket数据包失败");
+    }
+    return pkt;
 }
 
 SwrContext *FFmpeg::getSwrContext(AVCodecContext *out, AVCodecContext *in)
@@ -249,17 +207,20 @@ SwrContext *FFmpeg::getSwrContext(AVCodecContext *out, AVCodecContext *in)
                         in->sample_fmt,
                         in->sample_rate,
                         0, nullptr);
-
-    swrList.append(swr);
+    if (swr == nullptr) {
+        throw QString("分配SwrContext重采样失败");
+    }
     return swr;
 }
 
-int FFmpeg::getAVFrame()
+AVFrame *FFmpeg::getAVFrame()
 {
     AVFrame *frm = nullptr;
     frm = av_frame_alloc();
-    frmList.append(frm);
-    return frmList.size() - 1;
+    if (frm == nullptr) {
+        throw QString("分配AVFrame数据帧失败");
+    }
+    return frm;
 }
 
 /*
@@ -276,14 +237,14 @@ void FFmpeg::logError(QString text){
  */
 QImage FFmpeg::getInlayCover(QString url)
 {
-
+    //从文件中读取封面
+    AVFormatContext *fmtCtx = nullptr;
     QImage img;
     try{
-        //从文件中读取封面
-        AVFormatContext *fmt_ctx = getInputFormatContext(url);
+        fmtCtx = getInputFormatContext(url);
 
-        for (unsigned int i = 0; i < fmt_ctx->nb_streams; i++){
-            AVStream *stream = fmt_ctx->streams[i];
+        for (unsigned int i = 0; i < fmtCtx->nb_streams; i++){
+            AVStream *stream = fmtCtx->streams[i];
             if (stream->codecpar->codec_type == AVMEDIA_TYPE_VIDEO && stream->disposition & AV_DISPOSITION_ATTACHED_PIC){
                 AVPacket pkt = stream->attached_pic;
                 //使用QImage读取完整图片数据
@@ -295,6 +256,7 @@ QImage FFmpeg::getInlayCover(QString url)
         logError(e);
     }
 
+    if (fmtCtx != nullptr) avformat_close_input(&fmtCtx);
     return img;
 }
 
@@ -303,6 +265,11 @@ QImage FFmpeg::getInlayCover(QString url)
  */
 void FFmpeg::setInlayCover(QString musicUrl, QString coverUrl)
 {
+    AVFormatContext *inFmtCtx = nullptr;
+    AVFormatContext *outFmtCtx = nullptr;
+    AVStream *inStream = nullptr;
+    AVStream *outStream = nullptr;
+    AVPacket *inPkt = nullptr;
     try{
         QString outUrl = musicUrl;
         //设置内嵌封面之后的路径
@@ -325,11 +292,9 @@ void FFmpeg::setInlayCover(QString musicUrl, QString coverUrl)
         QByteArray data = cover.readAll();
         cover.close();
 
-        AVFormatContext *inFmtCtx = getInputFormatContext(musicUrl);
-        AVFormatContext *outFmtCtx = getOutFormatContext(outUrl);
-        AVStream *inStream = nullptr;
-        AVStream *outStream = nullptr;
-        int inPak = getAVPacket();
+        // 分配 输入，输出上下文
+        inFmtCtx = getInputFormatContext(musicUrl);
+        outFmtCtx = getOutFormatContext(outUrl);
 
         int aimStream = -1;
         for(int i=0; i<inFmtCtx->nb_streams; i++){
@@ -365,25 +330,25 @@ void FFmpeg::setInlayCover(QString musicUrl, QString coverUrl)
             throw QString(outUrl + " write header fail");
         }
 
-        pktList[inPak] = av_packet_alloc();
-        while(av_read_frame(inFmtCtx, pktList[inPak]) >= 0){
-            if(pktList[inPak]->stream_index == aimStream){
+        inPkt = getAVPacket();
+        while(av_read_frame(inFmtCtx, inPkt) >= 0){
+            if(inPkt->stream_index == aimStream){
                 //放弃旧数据
                 continue;
             }
-            av_interleaved_write_frame(outFmtCtx, pktList[inPak]);
+            av_interleaved_write_frame(outFmtCtx, inPkt);
         }
 
         //写入封面包
-        av_packet_unref(pktList[inPak]);
-        av_new_packet(pktList[inPak], data.size());
+        av_packet_unref(inPkt);
+        av_new_packet(inPkt, data.size());
 
         //拷贝数据包
-        memcpy(pktList[inPak]->data, data.data(), data.size());
-        pktList[inPak]->stream_index = aimStream;
-        pktList[inPak]->pts = 0;
-        pktList[inPak]->duration = inFmtCtx->duration;
-        av_interleaved_write_frame(outFmtCtx, pktList[inPak]);
+        memcpy(inPkt->data, data.data(), data.size());
+        inPkt->stream_index = aimStream;
+        inPkt->pts = 0;
+        inPkt->duration = inFmtCtx->duration;
+        av_interleaved_write_frame(outFmtCtx, inPkt);
 
         //写入文件尾
         r = av_write_trailer(outFmtCtx);
@@ -393,8 +358,21 @@ void FFmpeg::setInlayCover(QString musicUrl, QString coverUrl)
     }
     catch(QString e){
         logError(e + "inlay cover write fail");
-        return;
     }
+    if (inPkt != nullptr) {
+        av_packet_unref(inPkt);
+        av_packet_free(&inPkt);
+    }
+
+    //关闭输出上下文
+    if (outFmtCtx != nullptr) {
+        //如果打开，关闭输出文件
+        if (outFmtCtx->oformat != nullptr && !(outFmtCtx->oformat->flags & AVFMT_NOFILE)) {
+            avio_closep(&outFmtCtx->pb);
+        }
+        avformat_free_context(outFmtCtx);
+    }
+    if(inFmtCtx != nullptr) avformat_close_input(&inFmtCtx);
 }
 
 /*
@@ -448,17 +426,18 @@ QString FFmpeg::getOutUrl(QString inUrl)
     QString inUrl = url;
     QString outUrl = getOutUrl(url);
 
+    AVFormatContext *inFmtCtx = nullptr;//输入上下文
+    AVFormatContext *outFmtCtx = nullptr;//输出上下文
+    QVector<SwrContext *>reSwrList;//重采样列表
+    QVector<AVCodecContext *>deList;//解码器列表
+    QVector<AVCodecContext *>enList;//编码器列表
+    AVPacket *inPkt, *outPkt = nullptr;
+    AVFrame *inFrm, *swrFrm = nullptr;
+    bool work = true;
     try{
-        AVFormatContext *inFmtCtx = getInputFormatContext(inUrl);//输入上下文
-        AVFormatContext *outFmtCtx = getOutFormatContext(outUrl);//输出上下文
-        QVector<SwrContext *>reSwrList;//重采样列表
-        QVector<AVCodecContext *>deList;//解码器列表
-        QVector<AVCodecContext *>enList;//编码器列表
+        inFmtCtx = getInputFormatContext(inUrl);//输入上下文
+        outFmtCtx = getOutFormatContext(outUrl);//输出上下文
         QVector<int>indexList;//流转换列表
-        int inFrm = getAVFrame();
-        int swrFrm = getAVFrame();
-        int inPkt = getAVPacket();
-        int outPkt = getAVPacket();
 
         //分配字长
         deList.fill(nullptr, inFmtCtx->nb_streams);
@@ -527,21 +506,24 @@ QString FFmpeg::getOutUrl(QString inUrl)
 
         //读取数据设置循环解码
         int64_t pts = 0;
-        while(av_read_frame(inFmtCtx, pktList[inPkt]) >= 0){
-            int index = pktList[inPkt]->stream_index;
+        inPkt = getAVPacket();
+        outPkt = getAVPacket();
+        inFrm = getAVFrame();
+        while(av_read_frame(inFmtCtx, inPkt) >= 0){
+            int index = inPkt->stream_index;
             //判断是否保留，不是则跳过
             if(indexList[index] == -1){
-                av_packet_unref(pktList[inPkt]);//释放输入
+                av_packet_unref(inPkt);//释放输入
                 continue;
             }
 
             //并非音频流，直接写入
             if(inFmtCtx->streams[index]->codecpar->codec_type != AVMEDIA_TYPE_AUDIO){
-                r = av_interleaved_write_frame(outFmtCtx, pktList[inPkt]);
+                r = av_interleaved_write_frame(outFmtCtx, inPkt);
                 if(r<0){
                     logError("write frame fail");
                 }
-                av_packet_unref(pktList[inPkt]);//释放输入
+                av_packet_unref(inPkt);//释放输入
                 continue;
             }
 
@@ -550,24 +532,24 @@ QString FFmpeg::getOutUrl(QString inUrl)
             SwrContext *swr = reSwrList[index];
             AVCodecContext *encodeCtx = enList[index];
             //解码数据
-            r = avcodec_send_packet(decodeCtx, pktList[inPkt]);
+            r = avcodec_send_packet(decodeCtx, inPkt);
             if(r<0){
                 logError("send packet fail");
             }
 
             //获得解码之后的数据
-            while(avcodec_receive_frame(decodeCtx, frmList[inFrm]) >= 0){
-                frmList[swrFrm]->sample_rate = encodeCtx->sample_rate;
-                frmList[swrFrm]->format = encodeCtx->sample_fmt;
-                frmList[swrFrm]->ch_layout = encodeCtx->ch_layout;
+            while(avcodec_receive_frame(decodeCtx, inFrm) >= 0){
+                swrFrm->sample_rate = encodeCtx->sample_rate;
+                swrFrm->format = encodeCtx->sample_fmt;
+                swrFrm->ch_layout = encodeCtx->ch_layout;
 
                 //重采样
-                r = swr_convert_frame(swr, frmList[swrFrm], frmList[inFrm]);
+                r = swr_convert_frame(swr, swrFrm, inFrm);
                 if(r<0){
                     logError("swr fail");
                 }
 
-                QList<AVFrame *>outFrmList = changeFrame(frmList[swrFrm]);
+                QList<AVFrame *>outFrmList = changeFrame(swrFrm);
                 for(int i=0; i<outFrmList.size(); i++){
                     //设置帧样本大小
                     //encodeCtx->frame_size = outFrmList[i]->nb_samples;
@@ -580,20 +562,20 @@ QString FFmpeg::getOutUrl(QString inUrl)
                         continue;
                     }
 
-                    while(avcodec_receive_packet(encodeCtx, pktList[outPkt]) >= 0){
-                        r = av_interleaved_write_frame(outFmtCtx, pktList[outPkt]);
+                    while(avcodec_receive_packet(encodeCtx, outPkt) >= 0){
+                        r = av_interleaved_write_frame(outFmtCtx, outPkt);
                         if(r<0){
                             logError("write frame fail");
                         }
-                        av_packet_unref(pktList[outPkt]);
+                        av_packet_unref(outPkt);
                     }
                     av_frame_unref(outFrmList[i]);
                     av_frame_free(&outFrmList[i]);
-                    av_frame_unref(frmList[swrFrm]);
+                    av_frame_unref(swrFrm);
                 }
-                av_frame_unref(frmList[inFrm]);
+                av_frame_unref(inFrm);
             }
-            av_packet_unref(pktList[inPkt]);
+            av_packet_unref(inPkt);
         }
 
         //刷新编码器缓冲区
@@ -602,15 +584,14 @@ QString FFmpeg::getOutUrl(QString inUrl)
                 continue;
             }
 
-            pktList[outPkt] = av_packet_alloc();
             avcodec_send_frame(enList[i], NULL);
-            while (avcodec_receive_packet(enList[i], pktList[outPkt]) >= 0) {
-                r = av_interleaved_write_frame(outFmtCtx, pktList[outPkt]);
+            while (avcodec_receive_packet(enList[i], outPkt) >= 0) {
+                r = av_interleaved_write_frame(outFmtCtx, outPkt);
                 if (r < 0) {
                     logError("write frame fail");
                 }
             }
-            av_packet_unref(pktList[outPkt]);
+            av_packet_unref(outPkt);
         }
 
         //写入文件尾
@@ -620,10 +601,48 @@ QString FFmpeg::getOutUrl(QString inUrl)
         }
     } catch(QString e){
         logError(e + " transform code fail");
-        return false;
+        work = false;
     }
 
-    return true;
+    if (inPkt != nullptr) {
+        av_packet_unref(inPkt);
+        av_packet_free(&inPkt);
+    }
+    if (outPkt != nullptr) {
+        av_packet_unref(outPkt);
+        av_packet_free(&outPkt);
+    }
+    if (inFrm != nullptr) {
+        av_frame_unref(inFrm);
+        av_frame_free(&inFrm);
+    }
+    if (swrFrm != nullptr) {
+        av_frame_unref(swrFrm);
+        av_frame_free(&swrFrm);
+    }
+
+    //关闭输出上下文
+    if (outFmtCtx != nullptr) {
+        //如果打开，关闭输出文件
+        if (outFmtCtx->oformat != nullptr && !(outFmtCtx->oformat->flags & AVFMT_NOFILE)) {
+            avio_closep(&outFmtCtx->pb);
+        }
+        avformat_free_context(outFmtCtx);
+    }
+    if(inFmtCtx != nullptr) avformat_close_input(&inFmtCtx);
+
+    while (reSwrList.size() > 0) {
+        SwrContext *swr = reSwrList.takeLast();
+        swr_free(&swr);
+    }
+    while (deList.size() > 0) {
+        avcodec_close(deList.takeLast());
+    }
+    while (enList.size() > 0) {
+        avcodec_close(enList.takeLast());
+    }
+
+    return work;
 }
 
 /*
@@ -691,8 +710,10 @@ QList<AVFrame *> FFmpeg::changeFrame(AVFrame *swrFrm)
 
 bool FFmpeg::getDict(QStringList *keys, QStringList *values, QString url)
 {
+    AVFormatContext *inFmt = nullptr;
+    bool work = true;
     try{
-        AVFormatContext *inFmt = getInputFormatContext(url);
+        inFmt = getInputFormatContext(url);
         AVDictionaryEntry* entry = nullptr;
         while ((entry = av_dict_get(inFmt->metadata, "", entry, AV_DICT_IGNORE_SUFFIX))) {
             QString key(entry->key);
@@ -706,20 +727,34 @@ bool FFmpeg::getDict(QStringList *keys, QStringList *values, QString url)
     }
     catch(QString e){
         logError(e);
-        return false;
+        work = false;
     }
-    return true;
+    if(inFmt != nullptr) avformat_close_input(&inFmt);
+    return work;
 }
 
 bool FFmpeg::writeDict(QStringList key, QStringList value, QString inUrl, QString outUrl)
 {
+    AVFormatContext *inFmt = nullptr;
+    AVFormatContext *outFmt = nullptr;
+    AVPacket *pkt = nullptr;
+    bool work = true;
     try{
         if (key.size() != value.size()) {
             throw QString("写入标签数据长度错误");
         }
 
-        AVFormatContext *inFmt = getInputFormatContext(inUrl);
-        AVFormatContext *outFmt = getOutFormatContext(outUrl);
+        inFmt = getInputFormatContext(inUrl);
+        outFmt = getOutFormatContext(outUrl);
+
+        for(int i=0; i<inFmt->nb_streams; i++){
+            AVStream *stream = avformat_new_stream(outFmt, nullptr);
+            if (!stream) {
+                throw QString("无法创建输出流");
+            }
+            avcodec_parameters_copy(stream->codecpar, inFmt->streams[i]->codecpar);
+            stream->time_base = inFmt->streams[i]->time_base;
+        }
 
         // 打开输出文件
         if (!(outFmt->oformat->flags & AVFMT_NOFILE)) {
@@ -729,17 +764,12 @@ bool FFmpeg::writeDict(QStringList key, QStringList value, QString inUrl, QStrin
             }
         }
 
-        for(int i=0; i<inFmt->nb_streams; i++){
-            AVStream *stream = avformat_new_stream(outFmt, nullptr);
-            avcodec_parameters_copy(stream->codecpar, inFmt->streams[i]->codecpar);
-        }
-
         // 复制标签
         av_dict_copy(&outFmt->metadata, inFmt->metadata, 1);
 
         // 写入新的标签
         for(int i=0; i<key.size(); i++){
-            av_dict_set(&outFmt->metadata, key[i].toUtf8(), value[i].toUtf8(), 1);
+            av_dict_set(&outFmt->metadata, key[i].toUtf8(), value[i].toUtf8(), AV_DICT_DONT_OVERWRITE);
         }
 
         r = avformat_write_header(outFmt, nullptr);
@@ -747,20 +777,32 @@ bool FFmpeg::writeDict(QStringList key, QStringList value, QString inUrl, QStrin
             throw QString(outUrl + "写入文件头失败");
         }
 
-        AVPacket *pkt = av_packet_alloc();
+        pkt = getAVPacket();
         while(av_read_frame(inFmt, pkt) >= 0){
             av_interleaved_write_frame(outFmt, pkt);
             av_packet_unref(pkt);
         }
+        av_packet_free(&pkt);
 
         r = av_write_trailer(outFmt);
         if(r<0){
-            throw QString(outUrl + "写入文件头失败");
+            throw QString(outUrl + "写入文件尾失败");
         }
     }
     catch(QString e){
         logError(e);
-        return false;
+        work = false;
     }
-    return true;
+
+    if (pkt != nullptr) av_packet_free(&pkt);
+    //关闭输出上下文
+    if (outFmt != nullptr) {
+        //如果打开，关闭输出文件
+        if (outFmt->oformat != nullptr && !(outFmt->oformat->flags & AVFMT_NOFILE)) {
+            avio_closep(&outFmt->pb);
+        }
+        avformat_free_context(outFmt);
+    }
+    if(inFmt != nullptr) avformat_close_input(&inFmt);
+    return work;
 }

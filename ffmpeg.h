@@ -12,12 +12,6 @@ extern "C" {
 class FFmpeg : public QObject
 {
 public:
-    ~FFmpeg();
-    QList<AVFormatContext *>fmtCtxList;//输入输出上下文lieb
-    QList<AVPacket *>pktList;//数据包指针
-    QList<AVCodecContext *>codeCtxList;//编解码器指针列表
-    QList<SwrContext *>swrList;//重采样指针列表
-    QList<AVFrame *>frmList;//数据指针列表
     int r = 0;
 
     enum Suffix{MP3, FLAC, AAC, WMA, PCM16, PCM32, ALAC}suffix;
@@ -37,13 +31,13 @@ public:
     AVCodecContext *getEncodecContext(AVCodecID id, AVCodecParameters *para, bool defult);
 
     //生成数据包
-    int getAVPacket();
+    AVPacket *getAVPacket();
 
     //生成重采样指针
     SwrContext *getSwrContext(AVCodecContext *out, AVCodecContext *in);
 
     //生成数据指针
-    int getAVFrame();
+    AVFrame *getAVFrame();
 
     //打印错误
     void logError(QString text);

@@ -46,7 +46,7 @@ public:
     void sendMessage(QString msg, int type);
 
     // 重命名文件
-    void renameFile(QString oldUrl, QString newUrl);
+    bool renameFile(QString oldUrl, QString newUrl);
 
 signals:
     void message(QString msg, int type);

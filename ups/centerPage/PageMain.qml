@@ -36,7 +36,7 @@ ScrollView {
                 anchors.top: randMusicText.bottom
                 anchors.topMargin: 6
                 width: parent.width
-                height: mainPage.height * 0.3
+                height: TikoSeit.fontPixelSize * 6 + 200
                 orientation: ListView.Horizontal
                 spacing: mainPage.height * 0.1
 
@@ -46,18 +46,17 @@ ScrollView {
 
                 delegate: CoreMusicButton {
                     music: musicData
-                    width: height
-                    height: mainPage.height * 0.3
+                    sizeR: 200
                 }
             }
         }
 
         Item {
             width: showColumn.width
-            height: alumbRandText.height + alumbRandList.height
+            height: albumRandText.height + albumRandList.height
 
             TikoTextLine {
-                id: alumbRandText
+                id: albumRandText
                 exSize: 9
                 opacity: 0.7
                 width: parent.width
@@ -65,8 +64,8 @@ ScrollView {
             }
 
             ListView {
-                id: alumbRandList
-                anchors.top: alumbRandText.bottom
+                id: albumRandList
+                anchors.top: albumRandText.bottom
                 anchors.topMargin: 6
                 height: 150 + TikoSeit.fontPixelSize * 6
                 width: parent.width
@@ -74,11 +73,11 @@ ScrollView {
                 spacing: 10
 
                 model: ListModel{
-                    id: alumbRandModel
+                    id: albumRandModel
                 }
 
-                delegate: CoreAlumbButton {
-                    alumb: alumbData
+                delegate: CoreAlbumButton {
+                    album: albumData
                 }
             }
         }
@@ -118,9 +117,9 @@ ScrollView {
 
     function buildRand() {
 
-        var alumbList = Core.getAlumbRandList()
-        for (var i in alumbList) {
-            alumbRandModel.append({alumbData: alumbList[i]})
+        var albumList = Core.getAlbumRandList()
+        for (var i in albumList) {
+            albumRandModel.append({albumData: albumList[i]})
         }
 
         var artistList = Core.getArtistRandList()

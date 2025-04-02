@@ -6,9 +6,11 @@ import Ups
 
 Item {
     id: musicButton
-
+    width: sizeR + 10
+    height: sizeR + title.height + artist.height + 30
     property MusicData music: null
     property int type: 0
+    property int sizeR: 100
 
     Rectangle {
         anchors.fill: parent
@@ -29,7 +31,6 @@ Item {
             window.stackMusicPaly()
         }
 
-
         TikoImageAuto {
             id: musicCover
             normalUrl: "qrc:/image/exe.png"
@@ -37,8 +38,8 @@ Item {
             anchors.top: parent.top
             anchors.left: parent.left
             anchors.margins: 5
-            width: parent.width - 10
-            height: parent.height - 10
+            width: sizeR
+            height: sizeR
         }
 
         // 播放按钮
@@ -76,6 +77,25 @@ Item {
             borderSize: 1.5
             autoColor: Setting.backdropColor
             onClicked: CoreData.openMenuMusic(this, music, 1)
+        }
+
+        TikoTextLine {
+            id: title
+            text: music.title
+            width: parent.width
+            anchors.top: musicCover.bottom
+            anchors.left: parent.left
+            anchors.margins: 10
+        }
+
+        TikoTextLine {
+            id: artist
+            text: music.artist
+            width: parent.width
+            opacity: 0.7
+            anchors.top: title.bottom
+            anchors.left: parent.left
+            anchors.margins: 10
         }
     }
 }

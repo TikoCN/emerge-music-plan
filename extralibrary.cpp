@@ -76,7 +76,7 @@ void ExtraLibrary::getMedia(Music* core)
 QVector<double> ExtraLibrary::useFftw3(QVector<double> in, int N)
 {
     QVector<double>out(N);
-    // 创建一个FFTW计划（plan），它指定了如何计算DFT
+    // 创建一个FFTW计划
     fftw_complex *in_ptr = reinterpret_cast<fftw_complex*>(fftw_malloc(sizeof(fftw_complex) * N));
     fftw_complex *out_ptr = reinterpret_cast<fftw_complex*>(fftw_malloc(sizeof(fftw_complex) * N));
 

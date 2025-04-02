@@ -6,22 +6,22 @@ import Ups
 TikoMenu {
     id: artistMenu
     onClosed: destroy()
-    property AlumbData alumb
+    property AlbumData album
 
     TikoMenuItem {
         text: qsTr("播放")
-        onClicked: MediaPlayer.playMusic(alumb)
+        onClicked: MediaPlayer.playMusic(album)
         icon.source: "qrc:/image/play.png"
     }
 
     TikoMenuItem {
         text: qsTr("添加到播放队列")
-        onClicked: MediaPlayer.appendMusic(alumb)
+        onClicked: MediaPlayer.appendMusic(album)
     }
 
     TikoMenuItem {
         text: qsTr("添加到正在下一首播放")
-        onClicked: MediaPlayer.insertMusic(alumb)
+        onClicked: MediaPlayer.insertMusic(album)
     }
 
     TikoMenuSpeacer{}
@@ -40,7 +40,7 @@ TikoMenu {
             id: addMenu
             TikoMenuItem {
                 text: Core.tableList[aim].name
-                onTriggered: Core.tableInsertMusic(aim, alumb)
+                onTriggered: Core.tableInsertMusic(aim, album)
                 enabled: !Core.tableList[aim].isDir
             }
         }
@@ -61,7 +61,7 @@ TikoMenu {
 
     TikoMenuItem {
         text: qsTr("显示专辑")
-        onClicked: CoreData.mainTurnAlumbPlayer(alumb)
+        onClicked: CoreData.mainTurnAlbumPlayer(album)
     }
 
     TikoMenuItem {

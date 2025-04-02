@@ -8,7 +8,7 @@ find_package(Qt6 REQUIRED COMPONENTS Quick)
 find_package(Qt6 REQUIRED COMPONENTS Multimedia)
 find_package(Qt6 REQUIRED COMPONENTS Network)
 
-qt_standard_project_setup(REQUIRES 6.5)
+qt_standard_project_setup(REQUIRES 6.8)
 
 qt_add_executable(appmusicPlay
     main.cpp
@@ -24,14 +24,13 @@ qt_add_qml_module(appmusicPlay
     SOURCES
     mediaplayer.h mediaplayer.cpp
     setting.h setting.cpp
-    extralibrary.h extralibrary.cpp
     imageprovider.h imageprovider.cpp
     online.h online.cpp
     ffmpeg.h ffmpeg.cpp
     base.h base.cpp
     musiccore.h musiccore.cpp
     base/keyvaluepair.h base/keyvaluepair.cpp
-    base/alumb.h base/alumb.cpp
+    base/album.h base/album.cpp
     base/lrcdata.h base/lrcdata.cpp
     base/music.h base/music.cpp
     base/table.h base/table.cpp

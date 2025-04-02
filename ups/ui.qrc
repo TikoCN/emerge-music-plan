@@ -1,7 +1,7 @@
 <RCC>
     <qresource prefix="/">
         <file>image/default.png</file>
-        <file>image/alumb.png</file>
+        <file>image/album.png</file>
         <file>image/more.png</file>
         <file>image/unInt.png</file>
         <file>image/int.png</file>

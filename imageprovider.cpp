@@ -47,6 +47,8 @@ void ImageResponse::downOnlineCover(int id)
 
     // 检测加载附加封面，和独立封面
     img = core->musicList[id]->loadCover();
+
+    if (img.isNull()) img.load(":/image/default.png");
     img = img.scaled(requestedSize, Qt::IgnoreAspectRatio);
     buildRoundImage(&img, 10);
 }
@@ -58,6 +60,8 @@ void ImageResponse::loadFileCover(int id)
         return;
     }
     img = core->musicList[id]->loadCover();
+
+    if (img.isNull()) img.load(":/image/default.png");
     img = img.scaled(requestedSize, Qt::IgnoreAspectRatio);
     buildRoundImage(&img, 10);
 }
@@ -69,6 +73,8 @@ void ImageResponse::loadFileClipCover(int id)
         return;
     }
     img = core->musicList[id]->loadCover();
+
+    if (img.isNull()) img.load(":/image/default.png");
     img = img.scaled(requestedSize, Qt::KeepAspectRatioByExpanding);
 }
 
@@ -105,11 +111,6 @@ void ImageResponse::run()
         break;
     default:
         break;
-    }
-
-    //找不封面，设置为默认封面
-    if(img.isNull()){
-        img.load(":/image/default.png");
     }
 
     emit finished();

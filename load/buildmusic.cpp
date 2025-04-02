@@ -2,7 +2,6 @@
 #include "buildmusic.h"
 #include "load/taskcenter.h"
 #include "musiccore.h"
-#include "extralibrary.h"
 
 BuildMusic::BuildMusic(){
     thread = new QThread(this);
@@ -20,7 +19,6 @@ BuildMusic::~BuildMusic(){
  */
 void BuildMusic::loadMusicCore()
 {
-    ExtraLibrary extraLibrary;
     TaskCenter *center = TaskCenter::getInstance();
     MusicCore *core = MusicCore::getInstance();
 

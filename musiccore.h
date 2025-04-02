@@ -4,7 +4,7 @@
 #include <QObject>
 #include "base/music.h"
 #include "base/table.h"
-#include "base/alumb.h"
+#include "base/album.h"
 #include "base/artist.h"
 
 class MusicCore : public QObject
@@ -23,7 +23,7 @@ public:
 
     QList<Table *> tableList;       // 播放列表
     QList<Music *> musicList;       // 音乐核心列表
-    QList<Alumb *> alumbList;      // 专辑列表
+    QList<Album *> albumList;      // 专辑列表
     QList<Artist *> artistList;     // 歌手列表
 
     QList<Music *> getMusicList() const;
@@ -34,14 +34,14 @@ public:
     // 写入列表,歌曲数据
     Q_INVOKABLE void writeJsonData();
 
-    Q_INVOKABLE QList<Alumb *> getAlumbRandList();
+    Q_INVOKABLE QList<Album *> getAlbumRandList();
     Q_INVOKABLE QList<Artist *> getArtistRandList();
     Q_INVOKABLE QList<Music *> getMusicRandList();
 
     QJsonObject readJsonData();
 
     //获得音乐核心
-    void getMusicCore(QList<Music *>musicList, QList<Table *> tableList, QList<Artist *> artistList, QList<Alumb *> alumbList);
+    void getMusicCore(QList<Music *>musicList, QList<Table *> tableList, QList<Artist *> artistList, QList<Album *> albumList);
 
     //新建播放列表
     Q_INVOKABLE void appendTable(QString tableName, bool isDir = false);
@@ -53,15 +53,15 @@ public:
     Q_INVOKABLE void tableInsertMusic(int tableId, Music *music);
     Q_INVOKABLE void tableInsertMusic(int tableId, QList<Music *> musicList);
     Q_INVOKABLE void tableInsertMusic(int tableId, Artist *artist);
-    Q_INVOKABLE void tableInsertMusic(int tableId, Alumb *alumb);
+    Q_INVOKABLE void tableInsertMusic(int tableId, Album *album);
 
     QList<Table *> getTableList() const;
 
-    QList<QList<Alumb *> > getAlumbLineList() const;
+    QList<QList<Album *> > getAlbumLineList() const;
 
     QList<QList<Artist *> > getArtistLineList() const;
 
-    QList<Alumb *> getAlumbList() const;
+    QList<Album *> getAlbumList() const;
 
     QList<Artist *> getArtistList() const;
 
@@ -73,7 +73,7 @@ private:
 
     Q_PROPERTY(QList<Music *> musicList READ getMusicList CONSTANT)
 
-    Q_PROPERTY(QList<Alumb *> alumbList READ getAlumbList CONSTANT FINAL)
+    Q_PROPERTY(QList<Album *> albumList READ getAlbumList CONSTANT FINAL)
 
     Q_PROPERTY(QList<Artist *> artistList READ getArtistList CONSTANT FINAL)
 

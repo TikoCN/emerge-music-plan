@@ -4,18 +4,18 @@ import MediaerAPI
 import Ups
 
 Item{
-    id: alumbDataShow
-    property var alumb
+    id: albumDataShow
+    property var album
 
     TikoButtonIcon{
         y: -10
         icon.source: "qrc:/image/back.png"
-        onClicked: mainView.turnToAlumb()
+        onClicked: mainView.turnToAlbum()
     }
 
     // 专辑信息背景
     Rectangle {
-        id: alumbDataBack
+        id: albumDataBack
         anchors.left: parent.left
         anchors.top: parent.top
         anchors.margins: 20
@@ -26,7 +26,7 @@ Item{
     }
 
     Image {
-        id: alumbDataCover
+        id: albumDataCover
         width: 250
         height: 250
         sourceSize.width: width
@@ -37,20 +37,20 @@ Item{
     }
 
     TikoTextLine {
-        id: alumbText
-        width: parent.width - alumbDataCover.width - 60
-        anchors.left: alumbDataCover.right
+        id: albumText
+        width: parent.width - albumDataCover.width - 60
+        anchors.left: albumDataCover.right
         anchors.leftMargin: 30
-        anchors.top: alumbDataCover.top
+        anchors.top: albumDataCover.top
         exSize: 20
     }
 
     TikoTextLine {
-        id: alumbHelp
-        width: parent.width - alumbDataCover.width
-        anchors.top: alumbText.bottom
+        id: albumHelp
+        width: parent.width - albumDataCover.width
+        anchors.top: albumText.bottom
         anchors.topMargin: 10
-        anchors.left: alumbText.left
+        anchors.left: albumText.left
         exSize: 5
         opacity: 0.5
     }
@@ -58,40 +58,40 @@ Item{
     // 音乐列表
     ListView {
         id: musicList
-        anchors.top: alumbDataCover.bottom
+        anchors.top: albumDataCover.bottom
         anchors.left: parent.left
         anchors.margins: 30
         width: parent.width - 60
-        height: parent.height - alumbDataBack.height - 40
+        height: parent.height - albumDataBack.height - 40
         clip: true
 
         model: ListModel {
-            id: alumbMusicList
+            id: albumMusicList
         }
 
         delegate: CoreMusicLine {
             width: musicList.width
             listId: musicListId
             music: musicCore
-            alumb: alumbDataShow.alumb
+            album: albumDataShow.album
             type: 1
         }
     }
 
-    function openAlumbData (alumb) {
+    function openAlbumData (album) {
         var allTime = 0
-        alumbDataCover.source = "image://cover/file:" +  alumb.musicList[0].coreId.toString()
-        alumbMusicList.clear()
-        for (var i=0; i<alumb.musicList.length; i++) {
-            alumbMusicList.append({
+        albumDataCover.source = "image://cover/file:" +  album.musicList[0].coreId.toString()
+        albumMusicList.clear()
+        for (var i=0; i<album.musicList.length; i++) {
+            albumMusicList.append({
                                       musicListId: i,
-                                      musicCore: alumb.musicList[i]
+                                      musicCore: album.musicList[i]
                                   })
-            allTime += alumb.musicList[i].endTime
+            allTime += album.musicList[i].endTime
         }
-        alumbText.text = alumb.name
-        alumbHelp.text = alumb.musicList.length.toString()+" "+qsTr("首歌曲") +"-"
-                +alumb.getStringTime()+" "+qsTr("歌曲长度")
-        alumbDataShow.alumb = alumb
+        albumText.text = album.name
+        albumHelp.text = album.musicList.length.toString()+" "+qsTr("首歌曲") +"-"
+                +album.getStringTime()+" "+qsTr("歌曲长度")
+        albumDataShow.album = album
     }
 }

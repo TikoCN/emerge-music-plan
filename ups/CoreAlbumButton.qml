@@ -4,12 +4,12 @@ import DataCore
 import MediaerAPI
 
 Item{
-    id: alumbButton
+    id: albumButton
     width: 160
     height: showItem.height + 10
 
-    property AlumbData alumb
-    property int coverId: alumb.musicList[0].coreId
+    property AlbumData album
+    property int coverId: album.musicList[0].coreId
 
     // 整体背景
     Rectangle {
@@ -22,7 +22,7 @@ Item{
     MouseArea {
         id: mouse
         anchors.fill: parent
-        onClicked: CoreData.mainTurnAlumbPlayer(alumb)
+        onClicked: CoreData.mainTurnAlbumPlayer(album)
         hoverEnabled: true
 
         Item {
@@ -33,24 +33,24 @@ Item{
             width: parent.width - 10
 
             TikoImageAuto {
-                id: alumbCover
+                id: albumCover
                 width: parent.width
                 height: parent.width
-                normalUrl: "qrc:/image/alumb.png"
-                loadUrl: "image://cover/file:" + alumbButton.coverId.toString()
+                normalUrl: "qrc:/image/album.png"
+                loadUrl: "image://cover/file:" + albumButton.coverId.toString()
             }
 
             // 播放按钮
             TikoButtonIcon {
-                width: alumbCover.width * 0.2
+                width: albumCover.width * 0.2
                 height: width
                 radius: width / 2
                 icon.source: "qrc:/image/play.png"
                 icon.width: width / 2
                 icon.height: height / 2
-                anchors.bottom: alumbCover.bottom
-                anchors.left: alumbCover.left
-                anchors.margins: alumbCover.width * 0.05
+                anchors.bottom: albumCover.bottom
+                anchors.left: albumCover.left
+                anchors.margins: albumCover.width * 0.05
                 visible: mouse.containsMouse
                 normal: 0.5
                 hover: 1
@@ -60,30 +60,30 @@ Item{
 
             // 菜单按钮
             TikoButtonIcon {
-                width: alumbCover.width * 0.2
+                width: albumCover.width * 0.2
                 height: width
                 radius: width / 2
                 icon.source: "qrc:/image/more.png"
                 icon.width: width / 2
                 icon.height: height / 2
-                anchors.top: alumbCover.top
-                anchors.right: alumbCover.right
-                anchors.margins: alumbCover.width * 0.05
+                anchors.top: albumCover.top
+                anchors.right: albumCover.right
+                anchors.margins: albumCover.width * 0.05
                 visible: mouse.containsMouse
                 normal: 0.5
                 hover: 1
                 borderSize: 1.5
                 autoColor: Setting.backdropColor
-                onClicked: CoreData.openMenuAlumb(this, alumb)
+                onClicked: CoreData.openMenuAlbum(this, album)
             }
 
             // 图片上背景
             Rectangle {
                 id: textBack
-                width: alumbCover.width * 0.7
-                height: alumbCover.height / 5
-                anchors.bottom: alumbCover.bottom
-                anchors.right: alumbCover.right
+                width: albumCover.width * 0.7
+                height: albumCover.height / 5
+                anchors.bottom: albumCover.bottom
+                anchors.right: albumCover.right
                 topLeftRadius: 10
                 bottomRightRadius: 10
                 opacity: 0.6
@@ -97,17 +97,17 @@ Item{
                 font.bold: true
                 color: Setting.backdropColor
                 opacity: 0.7
-                text: alumb.getArtist()
+                text: album.getArtist()
                 horizontalAlignment: Text.AlignHCenter
             }
 
             // 专辑名
             TikoTextLine {
                 id: textLine
-                anchors.top: alumbCover.bottom
+                anchors.top: albumCover.bottom
                 anchors.topMargin: 10
                 width: parent.width
-                text: alumb.name
+                text: album.name
             }
 
             // 专辑时长
@@ -116,7 +116,7 @@ Item{
                 anchors.top: textLine.bottom
                 width: parent.width
                 opacity: 0.4
-                text: alumb.getStringTime()
+                text: album.getStringTime()
             }
         }
     }

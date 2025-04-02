@@ -44,7 +44,7 @@ long long Music::getEndTime() const
 
 Music::Music() {
     url = "";
-    alumb = tr("未知专辑");
+    album = tr("未知专辑");
     artistList.append(tr("未知歌手"));
     title = tr("未知音乐");
     level = 0;
@@ -78,8 +78,8 @@ void Music::readMedia()
         else if (keyList[i].compare("artist", Qt::CaseInsensitive) == 0) {
             artistList = valueList[i].split(";");
         }
-        else if (keyList[i].compare("alumb", Qt::CaseInsensitive) == 0) {
-            alumb = valueList[i];
+        else if (keyList[i].compare("album", Qt::CaseInsensitive) == 0) {
+            album = valueList[i];
         }
         else if (keyList[i].compare("endTime", Qt::CaseInsensitive) == 0) {
             endTime = valueList[i].toLongLong();
@@ -340,7 +340,7 @@ QImage Music::loadAloneCover()
 */
 bool Music::isSearch(QString aim)
 {
-    if(title.contains(aim) || artistList.contains(aim) || alumb.contains(aim)){
+    if(title.contains(aim) || artistList.contains(aim) || album.contains(aim)){
         return true;
     }
     return false;
@@ -358,7 +358,7 @@ void Music::copyMusicData()
 {
     QString data = QObject::tr("标题") +":"+ title +" "
                    +QObject::tr("歌手") +":"+ artistList.join(";") +" "
-                   +QObject::tr("专辑") +":"+ alumb;
+                   +QObject::tr("专辑") +":"+ album;
     Base::getInstance()->copyString(data);
 }
 
@@ -442,7 +442,8 @@ void Music::writeLove()
     newUrl.replace(getBaseName(), getBaseName() + "new");
 
     FFmpeg ff;
-    if(ff.writeDict(keyList, valueList, url, newUrl)){
+    bool work = ff.writeDict(keyList, valueList, url, newUrl);
+    if(work){
         base->renameFile(newUrl, url);
         base->sendMessage(url + tr("更新喜爱成功"), 0);
     }
@@ -486,9 +487,9 @@ QString Music::getUrl() const
     return url;
 }
 
-QString Music::getAlumb() const
+QString Music::getAlbum() const
 {
-    return alumb;
+    return album;
 }
 
 QString Music::getLastEdit() const
