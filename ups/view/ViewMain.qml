@@ -68,7 +68,7 @@ Item {
         visible: false
     }
 
-    PageMain {
+    PageRecommend {
         id: mainPage
         visible: false
     }

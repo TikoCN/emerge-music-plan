@@ -5,11 +5,13 @@ import DataCore
 
 Item{
     id: artistButton
-    width: 160
-    height: showItem.height + 10
+    width: r + space * 2
+    height: showItem.height + space * 2
 
     property ArtistData artist
     property int coverId: artist.musicList[0].coreId
+    property int r: 160
+    property int space: 5
 
     // 整体背景
     Rectangle {
@@ -28,21 +30,21 @@ Item{
         Item {
             id: showItem
             height: childrenRect.height
-            x: 5
-            y: 5
-            width: parent.width - 10
+            x: space
+            y: space
+            width: r
 
             TikoImageAuto {
                 id: artistCover
-                width: parent.width
-                height: parent.width
+                width: r
+                height: r
                 normalUrl: "qrc:/image/artist.png"
                 loadUrl: "image://cover/file:" + artistButton.coverId.toString()
             }
 
             // 播放按钮
             TikoButtonIcon {
-                width: artistCover.width * 0.2
+                width: 30
                 height: width
                 radius: width / 2
                 icon.source: "qrc:/image/play.png"
@@ -60,7 +62,7 @@ Item{
 
             // 菜单按钮
             TikoButtonIcon {
-                width: artistCover.width * 0.2
+                width: 30
                 height: width
                 radius: width / 2
                 icon.source: "qrc:/image/more.png"

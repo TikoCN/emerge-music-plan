@@ -42,6 +42,38 @@ long long Music::getEndTime() const
     return endTime;
 }
 
+int Music::getPlayNumber() const
+{
+    return playNumber;
+}
+
+void Music::setPlayNumber(int newPlayNumber)
+{
+    if (playNumber == newPlayNumber)
+        return;
+    playNumber = newPlayNumber;
+    emit playNumberChanged();
+
+    // 数据更新后，写入文件
+    Base *base = Base::getInstance();
+    QStringList keyList;
+    QStringList valueList;
+    keyList.append("playNumber");
+    valueList.append(QString::number(playNumber));
+    QString newUrl = url;
+    newUrl.replace(getBaseName(), getBaseName() + "new");
+
+    FFmpeg ff;
+    bool work = ff.writeDict(keyList, valueList, url, newUrl);
+    if(work){
+        base->renameFile(newUrl, url);
+        base->sendMessage(url + tr("更新播放次数成功"), 0);
+    }
+    else {
+        base->sendMessage(url + tr("更新播放次数失败"), 1);
+    }
+}
+
 Music::Music() {
     url = "";
     album = tr("未知专辑");
@@ -49,6 +81,7 @@ Music::Music() {
     title = tr("未知音乐");
     level = 0;
     isLove = false;
+    playNumber = 0;
 }
 
 void Music::writeDataToFile(QStringList key, QStringList value)
@@ -89,6 +122,9 @@ void Music::readMedia()
         }
         else if (keyList[i].compare("love", Qt::CaseInsensitive) == 0) {
             isLove = valueList[i].toInt() == 1;
+        }
+        else if (keyList[i].compare("playNumber", Qt::CaseInsensitive) == 0) {
+            playNumber = valueList[i].toInt();
         }
     }
 }
@@ -267,10 +303,10 @@ QString Music::getBaseUrl()
  */
 QString Music::getStringTime()
 {
-    //qint64 ms = endTime % 1000;
-    qint64 s = endTime / 1000 % 60;
-    qint64 m = endTime / 1000 / 60;
-    return QString::number(m) + ":" + QString::number(s);
+    QDateTime dataTime;
+    dataTime.setMSecsSinceEpoch(endTime);
+    dataTime = dataTime.toUTC();
+    return dataTime.toString("mm:ss");
 }
 
 /*

@@ -723,7 +723,7 @@ bool FFmpeg::getDict(QStringList *keys, QStringList *values, QString url)
         }
         // 插入其他数据
         keys->append("endTime");
-        values->append(QString::number(inFmt->duration));
+        values->append(QString::number(inFmt->duration / (double)AV_TIME_BASE * 1000));
     }
     catch(QString e){
         logError(e);

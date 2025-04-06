@@ -50,7 +50,8 @@ void ImageResponse::downOnlineCover(int id)
 
     if (img.isNull()) img.load(":/image/default.png");
     img = img.scaled(requestedSize, Qt::IgnoreAspectRatio);
-    buildRoundImage(&img, 10);
+
+    if (!img.isNull()) buildRoundImage(&img, 10);
 }
 
 void ImageResponse::loadFileCover(int id)
@@ -63,7 +64,8 @@ void ImageResponse::loadFileCover(int id)
 
     if (img.isNull()) img.load(":/image/default.png");
     img = img.scaled(requestedSize, Qt::IgnoreAspectRatio);
-    buildRoundImage(&img, 10);
+
+    if (!img.isNull()) buildRoundImage(&img, 10);
 }
 
 void ImageResponse::loadFileClipCover(int id)

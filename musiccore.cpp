@@ -234,6 +234,34 @@ QList<Music *> MusicCore::getMusicRandList()
     return list;
 }
 
+QList<Music *> MusicCore::getNewMusicList()
+{
+    if(musicList.size() < 45){
+        return musicList;
+    }
+
+    QList<Music *> list = musicList;
+
+    std::partial_sort(list.begin(), list.begin() + 45, list.end(), [](Music *a, Music *b){
+        return a->endTime > b->endTime;
+    });
+    return list.mid(0, 45);
+}
+
+QList<Music *> MusicCore::getReadMoreList()
+{
+    if(musicList.size() < 45){
+        return musicList;
+    }
+
+    QList<Music *> list = musicList;
+
+    std::partial_sort(list.begin(), list.begin() + 45, list.end(), [](Music *a, Music *b){
+        return a->playNumber > b->playNumber;
+    });
+    return list.mid(0, 45);
+}
+
 QJsonObject MusicCore::readJsonData()
 {
     QFile dataFile(QDir::currentPath() + "/data.json");

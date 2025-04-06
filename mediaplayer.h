@@ -68,6 +68,7 @@ public:
     Q_INVOKABLE void playMusic(Album *album, int musicId = 0);
     Q_INVOKABLE void playMusic(Artist* artist, int musicId = 0);
     Q_INVOKABLE void playMusic(int musicId);
+    Q_INVOKABLE void playMusic(Music *music);
 
     //加载歌词
     void loadLrcList();

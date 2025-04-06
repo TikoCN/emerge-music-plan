@@ -34,9 +34,15 @@ public:
     // 写入列表,歌曲数据
     Q_INVOKABLE void writeJsonData();
 
+    // 获得随机列表
     Q_INVOKABLE QList<Album *> getAlbumRandList();
     Q_INVOKABLE QList<Artist *> getArtistRandList();
     Q_INVOKABLE QList<Music *> getMusicRandList();
+    // 得到最新加入列表
+    Q_INVOKABLE QList<Music *> getNewMusicList();
+
+    // 得到最多播放音乐
+    Q_INVOKABLE QList<Music *> getReadMoreList();
 
     QJsonObject readJsonData();
 

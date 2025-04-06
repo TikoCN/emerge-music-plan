@@ -2,14 +2,17 @@ import QtQuick
 import Tiko
 import DataCore
 import MediaerAPI
+import Ups
 
 Item{
     id: albumButton
-    width: 160
-    height: showItem.height + 10
+    width: r + space * 2
+    height: showItem.height + space * 2
 
     property AlbumData album
     property int coverId: album.musicList[0].coreId
+    property int r: 160
+    property int space: 5
 
     // 整体背景
     Rectangle {
@@ -28,21 +31,21 @@ Item{
         Item {
             id: showItem
             height: childrenRect.height
-            x: 5
-            y: 5
-            width: parent.width - 10
+            x: space
+            y: space
+            width: r
 
             TikoImageAuto {
                 id: albumCover
-                width: parent.width
-                height: parent.width
+                width: r
+                height: r
                 normalUrl: "qrc:/image/album.png"
                 loadUrl: "image://cover/file:" + albumButton.coverId.toString()
             }
 
             // 播放按钮
             TikoButtonIcon {
-                width: albumCover.width * 0.2
+                width: 30
                 height: width
                 radius: width / 2
                 icon.source: "qrc:/image/play.png"
@@ -60,7 +63,7 @@ Item{
 
             // 菜单按钮
             TikoButtonIcon {
-                width: albumCover.width * 0.2
+                width: 30
                 height: width
                 radius: width / 2
                 icon.source: "qrc:/image/more.png"
@@ -75,30 +78,6 @@ Item{
                 borderSize: 1.5
                 autoColor: Setting.backdropColor
                 onClicked: CoreData.openMenuAlbum(this, album)
-            }
-
-            // 图片上背景
-            Rectangle {
-                id: textBack
-                width: albumCover.width * 0.7
-                height: albumCover.height / 5
-                anchors.bottom: albumCover.bottom
-                anchors.right: albumCover.right
-                topLeftRadius: 10
-                bottomRightRadius: 10
-                opacity: 0.6
-                color: Setting.transparentColor
-            }
-
-            // 图片上文字
-            TikoTextLine {
-                anchors.fill: textBack
-                font.pixelSize: 13
-                font.bold: true
-                color: Setting.backdropColor
-                opacity: 0.7
-                text: album.getArtist()
-                horizontalAlignment: Text.AlignHCenter
             }
 
             // 专辑名

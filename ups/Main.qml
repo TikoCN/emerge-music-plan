@@ -213,7 +213,7 @@ TikoFrameless{
         text: qsTr("00:00")
         font: Setting.mainFont
         onBoundingRectChanged: {
-            CoreData.timeWidth = boundingRect.width
+            CoreData.timeWidth = boundingRect.width + 20
         }
     }
     TextMetrics{

@@ -18,17 +18,17 @@ qt_add_qml_module(UpsLib
     QML_FILES
     Main.qml
     CoreData.qml
-    CoreMusicLine.qml
+    ToolDeskLrc.qml
     player/PlayerLrcTable.qml
     player/PlayerTable.qml
-    ToolDeskLrc.qml
+    player/PlayerAlbum.qml
+    player/PlayerArtist.qml
     view/ViewBottomBar.qml
     view/ViewLeftBar.qml
     view/ViewMain.qml
     view/ViewPlayingTable.qml
     playMusicShow/PlayStyle1.qml
     playMusicShow/PlayStyle2.qml
-    playMusicShow/PageMusicPlay.qml
     menu/MenuTableSort.qml
     menu/MenuMusic.qml
     menu/MenuTable.qml
@@ -38,18 +38,23 @@ qt_add_qml_module(UpsLib
     centerPage/PageArtist.qml
     centerPage/PageAlbum.qml
     centerPage/PageSeit.qml
+    centerPage/PageMusicPlay.qml
+    centerPage/PageRecommend.qml
+    recommend/RecomAlbum.qml
+    recommend/RecomArtist.qml
+    recommend/RecomMusic.qml
+    recommend/RecomMusicNew.qml
+    recommend/RecomMusicPlay.qml
     lrcLine/DrawLrcLine.qml
     lrcLine/DrawLoadLine.qml
     lrcLine/CoreLrcLine.qml
     lrcLine/DrawLrcFixHeight.qml
-    centerPage/PageMain.qml
-    CoreAlbumButton.qml
-    player/PlayerAlbum.qml
-    player/PlayerArtist.qml
-    CoreArtistButton.qml
-    QML_FILES core/CoreMusicButton.qml
-    QML_FILES menu/MenuAlbum.qml
-    QML_FILES menu/MenuArtist.qml
+    core/CoreMusicButton.qml
+    core/CoreAlbumButton.qml
+    core/CoreArtistButton.qml
+    core/CoreMusicLine.qml
+    menu/MenuAlbum.qml
+    menu/MenuArtist.qml
     RESOURCES ui.qrc
 )
 

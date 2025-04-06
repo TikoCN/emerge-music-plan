@@ -17,6 +17,7 @@ Item {
     property int type: 0
     property int musicId: music.coreId
     property MusicData music
+    property bool isLittle: false
 
     MouseArea{
         id: mouseArea
@@ -50,7 +51,8 @@ Item {
 
             Column{
                 id: coreName
-                width: (parent.width - tool.width - cover.width - 30) / 2
+                width: isLittle ? (parent.width - cover.width - 30) / 2 :
+                                  (parent.width - tool.width - cover.width - 30) / 2
 
                 TikoTextLine{
                     text: musicLine.music.title
@@ -75,6 +77,7 @@ Item {
             Row{
                 id: tool
                 spacing: 3
+                visible: !isLittle
 
                 Row {
                     id: hoverItem
@@ -140,6 +143,11 @@ Item {
                     width: CoreData.editTimeWidth
                     height: 50
                 }
+                TikoTextLine{
+                    text: musicLine.music.playNumber.toString()
+                    width: CoreData.playNumberWidth
+                    height: 50
+                }
             }
         }
     }
@@ -161,7 +169,7 @@ Item {
     function play(){
         switch(type){
         case -1:
-            MediaPlayer.playMusic(table, listId)
+            MediaPlayer.playMusic(music)
             break
         case 0:
             MediaPlayer.playMusic(table, listId)

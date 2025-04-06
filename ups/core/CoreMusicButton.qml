@@ -6,11 +6,9 @@ import Ups
 
 Item {
     id: musicButton
-    width: sizeR + 10
-    height: sizeR + title.height + artist.height + 30
+
     property MusicData music: null
     property int type: 0
-    property int sizeR: 100
 
     Rectangle {
         anchors.fill: parent
@@ -27,7 +25,7 @@ Item {
                 return
             }
 
-            MediaPlayer.appendPlayMusic(music)
+            MediaPlayer.playMusic(music)
             window.stackMusicPaly()
         }
 
@@ -38,13 +36,13 @@ Item {
             anchors.top: parent.top
             anchors.left: parent.left
             anchors.margins: 5
-            width: sizeR
-            height: sizeR
+            width: parent.width - 10
+            height: parent.height - title.height - artist.height - 10
         }
 
         // 播放按钮
         TikoButtonIcon {
-            width: musicCover.width * 0.2
+            width: 30
             height: width
             radius: width / 2
             icon.source: "qrc:/image/play.png"
@@ -62,7 +60,7 @@ Item {
 
         // 菜单按钮
         TikoButtonIcon {
-            width: musicCover.width * 0.2
+            width: 30
             height: width
             radius: width / 2
             icon.source: "qrc:/image/more.png"

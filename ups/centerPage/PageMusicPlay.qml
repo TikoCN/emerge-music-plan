@@ -3,7 +3,6 @@ import QtQuick.Effects
 import MediaerAPI
 import Tiko
 import Ups
-
 Item {
     id: pageMain
     property bool show: false
@@ -17,22 +16,22 @@ Item {
 
         switch(pageMain.type){
         case 0:
-            loaderStyle.source = "Playtyle0.qml"
+            loaderStyle.source = "../playMusicShow/Playtyle0.qml"
             break
         case 1:
-            loaderStyle.source = "PlayStyle1.qml"
+            loaderStyle.source = "../playMusicShow/PlayStyle1.qml"
             break
         case 2:
-            loaderStyle.source = "PlayStyle2.qml"
+            loaderStyle.source = "../playMusicShow/PlayStyle2.qml"
             break
         case 3:
-            loaderStyle.source = "PlayStyle3.qml"
+            loaderStyle.source = "../playMusicShow/PlayStyle3.qml"
             break
         case 4:
-            loaderStyle.source = "PlayStyle4.qml"
+            loaderStyle.source = "../playMusicShow/PlayStyle4.qml"
             break
         case 5:
-            loaderStyle.source = "PlayStyle5.qml"
+            loaderStyle.source = "../playMusicShow/PlayStyle5.qml"
             break
         }
     }
@@ -153,6 +152,7 @@ Item {
         onClicked: window.close()
         icon.width: 15
         icon.height: 15
+        autoColor: Setting.backdropColor
     }
 
     //最大化
@@ -164,6 +164,7 @@ Item {
         icon.source: "qrc:/image/max.png"
         icon.width: 15
         icon.height: 15
+        autoColor: Setting.backdropColor
         onClicked: {
             if(window.visibility === 5){
                 window.showNormal()
@@ -183,6 +184,7 @@ Item {
         icon.source: "qrc:/image/min.png"
         icon.width: 15
         icon.height: 15
+        autoColor: Setting.backdropColor
         onClicked: window.showMinimized()
     }
 
@@ -195,6 +197,7 @@ Item {
         icon.source: "qrc:/image/back.png"
         icon.width: 15
         icon.height: 15
+        autoColor: Setting.backdropColor
         onClicked: window.stackCenter()
     }
 

@@ -226,6 +226,14 @@ void MediaPlayer::playMusic(int musicId)
     emit downLrc(playingMusic->getBaseName(), playingMusic->getLrcUrl());//加载新歌词
 }
 
+void MediaPlayer::playMusic(Music *music)
+{
+    musicList.append(music);
+    emit buildMusicList();
+
+    playMusic(musicList.size() - 1);
+}
+
 /*
  * 下一目标
  */

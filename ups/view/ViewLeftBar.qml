@@ -30,11 +30,11 @@ Item {
             width: parent.width
             height: parent.height
 
-            //切换到主页
+            //切换到推荐
             TikoButtonNormal{
                 width: parent.width
                 id: mainPageButton
-                text: qsTr("主页")
+                text: qsTr("推荐")
                 iconSource: "qrc:/image/main.png"
                 anchors.horizontalCenter: parent.horizontalCenter
                 onClickLeft: {

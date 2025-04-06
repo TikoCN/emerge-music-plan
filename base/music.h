@@ -19,6 +19,7 @@ public:
     qint64 lastEditTime;
     int coreId;
     int level;
+    int playNumber;
     bool isLove;
 
     Music();
@@ -121,10 +122,15 @@ public:
 
     long long getEndTime() const;
 
+    int getPlayNumber() const;
+    void setPlayNumber(int newPlayNumber);
+
 signals:
     void isLoveChanged();
 
     void levelChanged();
+
+    void playNumberChanged();
 
 private:
     Q_PROPERTY(QString title READ getTitle CONSTANT)
@@ -136,6 +142,7 @@ private:
     Q_PROPERTY(bool isLove READ getIsLove WRITE setIsLove NOTIFY isLoveChanged FINAL)
     Q_PROPERTY(int level READ getLevel WRITE setLevel NOTIFY levelChanged FINAL)
     Q_PROPERTY(long long endTime READ getEndTime CONSTANT FINAL)
+    Q_PROPERTY(int playNumber READ getPlayNumber WRITE setPlayNumber NOTIFY playNumberChanged FINAL)
 };
 
 #endif // MUSIC_H
