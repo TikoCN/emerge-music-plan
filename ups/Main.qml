@@ -122,7 +122,7 @@ TikoFrameless{
                 property: "y"
                 from: 10
                 to: -mainView.height
-                duration: 500
+                duration: 300
                 easing.type: Easing.InOutQuad
             }
 
@@ -131,7 +131,7 @@ TikoFrameless{
                 property: "y"
                 from: 10 + barView.height
                 to: editPage.height
-                duration: 500
+                duration: 300
                 easing.type: Easing.InOutQuad
             }
         }
@@ -142,7 +142,7 @@ TikoFrameless{
                 property: "y"
                 from: 0
                 to: -editPage.height
-                duration: 500
+                duration: 300
                 easing.type: Easing.InOutQuad
             }
 
@@ -151,7 +151,7 @@ TikoFrameless{
                 property: "y"
                 from: musicPlayPage.height
                 to: 0
-                duration: 500
+                duration: 300
                 easing.type: Easing.InOutQuad
             }
         }
@@ -166,7 +166,7 @@ TikoFrameless{
                 property: "y"
                 from: -editPage.height
                 to: 0
-                duration: 500
+                duration: 300
                 easing.type: Easing.InOutQuad
             }
 
@@ -175,7 +175,7 @@ TikoFrameless{
                 property: "y"
                 from: 0
                 to: musicPlayPage.height
-                duration: 500
+                duration: 300
                 easing.type: Easing.InOutQuad
             }
         }
@@ -186,7 +186,7 @@ TikoFrameless{
                 property: "y"
                 from: -mainView.height
                 to: 10
-                duration: 500
+                duration: 300
                 easing.type: Easing.InOutQuad
             }
 
@@ -195,7 +195,7 @@ TikoFrameless{
                 property: "y"
                 from: editPage.height
                 to: 10 + barView.height
-                duration: 500
+                duration: 300
                 easing.type: Easing.InOutQuad
             }
         }

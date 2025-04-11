@@ -31,7 +31,6 @@ Item {
         border.color: tikoColorSelcet.borderColor
     }
 
-
     TikoPopup{
         id: colorSelect
         width: 600
@@ -42,17 +41,17 @@ Item {
             Rectangle{
                 id: redR
                 color: "red"
-                width: 15
-                height: 15
+                width: 50
+                height: 50
             }
 
             TikoSliderH{
                 anchors.left: redR.right
-                anchors.leftMargin: 15
-                anchors.top: redR.top
+                anchors.leftMargin: 30
+                anchors.verticalCenter: redR.verticalCenter
                 id: redSlider
-                width: parent.width - 50
-                height: 15
+                width: parent.width - 100
+                height: 30
                 radius: 6
                 from: 0
                 to: 255
@@ -65,17 +64,17 @@ Item {
                 y: redR.y + redR.height + 10
                 id: greenR
                 color: "green"
-                width: 15
-                height: 15
+                width: 50
+                height: 50
             }
 
             TikoSliderH{
                 anchors.left: greenR.right
-                anchors.leftMargin: 15
-                anchors.top: greenR.top
+                anchors.leftMargin: 30
+                anchors.verticalCenter: greenR.verticalCenter
                 id: greenSlider
-                width: parent.width - 50
-                height: 15
+                width: parent.width - 100
+                height: 30
                 radius: 6
                 from: 0
                 to: 255
@@ -88,17 +87,17 @@ Item {
                 y: greenR.y + greenR.height + 10
                 id: blueR
                 color: "blue"
-                width: 15
-                height: 15
+                width: 50
+                height: 50
             }
 
             TikoSliderH{
                 anchors.left: blueR.right
-                anchors.leftMargin: 15
-                anchors.top: blueR.top
+                anchors.leftMargin: 30
+                anchors.verticalCenter: blueR.verticalCenter
                 id: blueSlider
-                width: parent.width - 50
-                height: 15
+                width: parent.width - 100
+                height: 30
                 radius: 6
                 from: 0
                 to: 255
@@ -116,8 +115,8 @@ Item {
                 Repeater{
                     delegate: Component{
                         Item{
-                            height: 20
-                            width: 20
+                            height: 30
+                            width: 30
                             id: select
                             property color showColor: inColor
                             Rectangle{
