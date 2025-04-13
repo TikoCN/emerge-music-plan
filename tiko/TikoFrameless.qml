@@ -3,12 +3,13 @@ Window{
     id:win
     color:"#00000000"
     flags: Qt.Window | Qt.FramelessWindowHint // 尝试隐藏边框和标题栏
+    property int acttion : 0
+    property bool sizeChange: false
 
     MouseArea{
         id:dropSize
         anchors.fill:parent
         hoverEnabled:true
-        property int acttion : 0
 
         cursorShape:setCursorShape()
 
@@ -38,6 +39,7 @@ Window{
             resizeWindow(mouseX, mouseY)
             if(acttion != 0){
                 win.startSystemResize(acttion)
+                sizeChange = true
             }
             else{
                 win.startSystemMove()
@@ -66,6 +68,7 @@ Window{
 
         onReleased:{
             acttion = 0
+            sizeChange = false
         }
     }
 }

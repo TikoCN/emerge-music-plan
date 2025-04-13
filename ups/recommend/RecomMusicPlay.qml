@@ -48,4 +48,8 @@ Item {
             playMoreMusicModel.append({musicData: playMoreMusicList[i]})
         }
     }
+
+    function clear(){
+        playMoreMusicModel.clear()
+    }
 }

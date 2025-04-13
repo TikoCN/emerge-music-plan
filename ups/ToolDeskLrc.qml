@@ -71,7 +71,7 @@ Window{
 
             //播放 暂停按钮
             TikoButtonIcon{
-                icon.source: MediaPlayer.player.playing ? "qrc:/image/stop.png" : "qrc:/image/playBlack.png"
+                icon.source: MediaPlayer.player.playing ? "qrc:/image/stop.png" : "qrc:/image/play.png"
                 onClicked: MediaPlayer.player.playing ? MediaPlayer.player.pause() : MediaPlayer.player.play()
                 text: MediaPlayer.player.playing ? qsTr("暂停") : qsTr("播放")
             }

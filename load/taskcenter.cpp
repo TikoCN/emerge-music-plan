@@ -407,12 +407,12 @@ void TaskCenter::clearData()
 
     //从头删除到尾
     while (!buildMusicList.empty()) {
-        delete buildMusicList.takeFirst();
+        delete buildMusicList.takeLast();
     }
 
     //从头删除到尾
     while (!buildUserTableList.empty()) {
-        delete buildUserTableList.takeFirst();
+        delete buildUserTableList.takeLast();
     }
 
     //删除信号量

@@ -45,4 +45,8 @@ Item {
             artistRandModel.append({artistData: artistList[i]})
         }
     }
+
+    function clear(){
+        artistRandModel.clear()
+    }
 }

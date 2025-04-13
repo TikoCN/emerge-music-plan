@@ -17,6 +17,7 @@ TikoFrameless{
     y:Setting.windowRect.y
     visible: true
     title: qsTr("尘星音乐")
+    property int showType: 0
 
     Binding{
         target: TikoSeit
@@ -43,6 +44,11 @@ TikoFrameless{
         property: "fontPixelSize"
         value: Setting.mainFont.pixelSize
     }
+    Binding {
+        target: CoreData
+        property: "sizeChange"
+        value: window.sizeChange
+    }
 
     Component.onDestruction:{
         //写入配置
@@ -56,17 +62,9 @@ TikoFrameless{
         Core.writeJsonData()
     }
 
-    PageMusicPlay {
-        id: musicPlayPage
-        width: parent.width
-        height: parent.height
-        y: parent.height
-    }
-
     Item{
         id: editPage
-        width: parent.width
-        height: parent.height
+        anchors.fill: parent
 
         //圆角背景
         Rectangle{
@@ -76,6 +74,7 @@ TikoFrameless{
             topLeftRadius: 10
             topRightRadius: 10
             color: Setting.backdropColor
+            y: showType === 0 ? 0 : -height
 
             Rectangle{
                 anchors.fill: parent
@@ -92,7 +91,7 @@ TikoFrameless{
             height: parent.height - bottomView.height - 10
             width: 200
             x: 10
-            y: 10
+            y: showType === 0 ? 10 : -height
         }
 
         //中间内容导航
@@ -101,7 +100,7 @@ TikoFrameless{
             width: parent.width - barView.width - 20
             height: barView.height
             anchors.left: barView.right
-            y: 10
+            y: showType === 0 ? 10 : -height
         }
 
         //底部导航
@@ -109,12 +108,22 @@ TikoFrameless{
             id: bottomView
             height: 90
             width: parent.width
-            y: 10 + barView.height
+            y: showType === 0 ? 10 + barView.height : editPage.height
         }
     }
 
+    PageMusicPlay {
+        id: musicPlayPage
+        width: parent.width
+        height: parent.height
+        y: showType === 1 ? 0 : parent.height
+        clip: true
+    }
+
+    // 切换到音乐播放界面动画
     SequentialAnimation {
         id: trunToMusicPlayAnimation
+        onFinished: showType = 1
 
         ParallelAnimation{
             NumberAnimation {
@@ -159,6 +168,7 @@ TikoFrameless{
 
     SequentialAnimation {
         id: trunToMainAnimation
+        onFinished: showType = 0
 
         ParallelAnimation {
             NumberAnimation {

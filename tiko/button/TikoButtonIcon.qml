@@ -20,7 +20,7 @@ Button {
     property int radius: 3
     property double hover: 0.3
     property double normal: 0
-    property bool cache: false
+    property bool cache: true
     property double borderSize: 0
     property bool useAutoColor: true
     property color autoColor: TikoSeit.transparentColor

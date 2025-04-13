@@ -2,16 +2,16 @@ import QtQuick
 
 Image{
     id: image
-    cache: true
-    source: normalUrl
     sourceSize.width: imgWidth
     sourceSize.height: imgHeight
     asynchronous: true
+    cache: false
 
     property int imgWidth: width
     property int imgHeight: height
     property string normalUrl: ""
     property string loadUrl: ""
+    property bool loadFlag: image.visible
 
     onVisibleChanged: {
         if (visible) {
@@ -24,10 +24,9 @@ Image{
 
     Timer {
         id: deleteImag
-        interval: 30000
+        interval: 10000
         onTriggered: {
-            if (!image.visible) {
-                image.cache = true
+            if (!loadFlag) {
                 image.source = normalUrl
             }
         }
@@ -37,8 +36,7 @@ Image{
         id: loadImag
         interval: 500
         onTriggered: {
-            if (image.visible) {
-                image.cache = false
+            if (loadFlag) {
                 image.source = loadUrl
             }
         }

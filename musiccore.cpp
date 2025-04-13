@@ -194,7 +194,7 @@ QList<Album *> MusicCore::getAlbumRandList()
 
     QList<Album *> list;
     QList<int> aimList = Base::getInstance()->getRandNumber(0, albumList.size(), 15);
-    for (int i : aimList) {
+    for (int i = 0; i < aimList.size(); i++) {
         if (i < albumList.size()) {
             list.append(albumList[i]);
         }
@@ -210,7 +210,7 @@ QList<Artist *> MusicCore::getArtistRandList()
 
     QList<Artist *> list;
     QList<int> aimList = Base::getInstance()->getRandNumber(0, artistList.size(), 15);
-    for (int i : aimList) {
+    for (int i = 0; i < aimList.size(); i++) {
         if (i < artistList.size()) {
             list.append(artistList[i]);
         }
@@ -226,7 +226,7 @@ QList<Music *> MusicCore::getMusicRandList()
 
     QList<Music *> list;
     QList<int> aimList = Base::getInstance()->getRandNumber(0, musicList.size(), 15);
-    for (int i : aimList) {
+    for (int i = 0; i < aimList.size(); i++) {
         if (i < musicList.size()) {
             list.append(musicList[i]);
         }

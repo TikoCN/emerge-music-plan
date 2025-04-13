@@ -44,4 +44,8 @@ Item {
             musicRandModel.append({musicData: musicList[i]})
         }
     }
+
+    function clear(){
+        musicRandModel.clear()
+    }
 }

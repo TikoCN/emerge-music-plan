@@ -48,4 +48,8 @@ Item {
             newMusicModel.append({musicData: newMusicList[i]})
         }
     }
+
+    function clear(){
+        newMusicModel.clear()
+    }
 }

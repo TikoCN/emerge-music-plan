@@ -44,4 +44,8 @@ Item {
             albumRandModel.append({albumData: albumList[i]})
         }
     }
+
+    function clear(){
+        albumRandModel.clear()
+    }
 }
