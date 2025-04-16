@@ -30,6 +30,12 @@ public:
         }
     }
 
+    static void freeInstance(){
+        if(instance != nullptr){
+            delete instance;
+        }
+    }
+
     ~TaskCenter();
 
     int workPos = 0;                           // 正在工作的线程数
@@ -82,6 +88,9 @@ public slots:
     void clearData();
 private:
     QThread *thread;
+
+    // 写入数据库
+    void writeDataSQL();
 
 signals:
     //筛选音乐文件

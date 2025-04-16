@@ -42,13 +42,15 @@ Item {
         color: Setting.transparentColor
     }
     //模糊背景
-    Image {
+    TikoImageAuto {
         id: backCover
         width: 100
         height: 100
         sourceSize.width: backCover.width
         sourceSize.height: backCover.height
         visible: false
+        loadMsTime: 10
+        loadFlag: show
     }
     MultiEffect {
         id: effectCover
@@ -204,7 +206,7 @@ Item {
     Connections{
         target:MediaPlayer.player
         function onSourceChanged(){
-            backCover.source = "image://cover/back:" + MediaPlayer.playingMusic.coreId.toString()
+            backCover.loadUrl = "image://cover/back:" + MediaPlayer.playingMusic.coreId.toString()
         }
     }
 

@@ -20,6 +20,13 @@ public:
         }
     }
 
+    static void freeInstance(){
+        if(instance != nullptr){
+            delete instance;
+        }
+    }
+
+
     // 替换文件
     void replaceFile(QString inUrl, QString outUrl);
 

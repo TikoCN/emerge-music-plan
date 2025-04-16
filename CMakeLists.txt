@@ -29,6 +29,7 @@ qt_add_qml_module(appmusicPlay
     ffmpeg.h ffmpeg.cpp
     base.h base.cpp
     musiccore.h musiccore.cpp
+    sqlite.h sqlite.cpp
     base/keyvaluepair.h base/keyvaluepair.cpp
     base/album.h base/album.cpp
     base/lrcdata.h base/lrcdata.cpp
@@ -47,6 +48,9 @@ target_link_libraries(appmusicPlay PRIVATE FFTW3::fftw3)
 # link TagLib
 find_package(TagLib REQUIRED)
 target_link_libraries(appmusicPlay PRIVATE TagLib::TagLib)
+
+find_package(unofficial-sqlite3 CONFIG REQUIRED)
+target_link_libraries(appmusicPlay PRIVATE unofficial::sqlite3::sqlite3)
 
 #link FFmpeg
 # 设置FFmpeg根目录（注意路径斜杠）
@@ -86,6 +90,7 @@ set_target_properties(appmusicPlay PROPERTIES
 target_link_libraries(appmusicPlay PRIVATE Qt6::Multimedia)
 target_link_libraries(appmusicPlay PRIVATE Qt6::Quick)
 target_link_libraries(appmusicPlay PRIVATE Qt6::Network)
+
 
 include(GNUInstallDirs)
 install(TARGETS appmusicPlay

@@ -22,6 +22,12 @@ public:
         }
     }
 
+    static void freeInstance(){
+        if(instance != nullptr){
+            delete instance;
+        }
+    }
+
     //下载封面
     Q_INVOKABLE void downCover(QString key, QString url);
 

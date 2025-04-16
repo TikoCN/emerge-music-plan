@@ -1,6 +1,7 @@
 #include "musiccore.h"
 #include "base.h"
 #include "load/taskcenter.h"
+#include "sqlite.h"
 #include <QDir>
 #include <QJsonDocument>
 #include <QJsonObject>

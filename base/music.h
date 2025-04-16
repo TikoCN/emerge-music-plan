@@ -20,6 +20,7 @@ public:
     int coreId;
     int level;
     int playNumber;
+    int albumId;
     bool isLove;
 
     Music();

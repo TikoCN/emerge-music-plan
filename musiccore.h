@@ -21,6 +21,12 @@ public:
         }
     }
 
+    static void freeInstance(){
+        if(instance != nullptr){
+            delete instance;
+        }
+    }
+
     QList<Table *> tableList;       // 播放列表
     QList<Music *> musicList;       // 音乐核心列表
     QList<Album *> albumList;      // 专辑列表

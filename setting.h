@@ -61,6 +61,12 @@ public:
         }
     }
 
+    static void freeInstance(){
+        if(instance != nullptr){
+            delete instance;
+        }
+    }
+
     bool isOnLine;
     bool isGetCoverFromNetEase;
     bool isGetCoverFromQQMusic;

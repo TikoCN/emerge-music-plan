@@ -5,6 +5,7 @@
 #include "setting.h"
 #include "musiccore.h"
 #include "base.h"
+#include "sqlite.h"
 
 TaskCenter::TaskCenter()
 {
@@ -323,6 +324,8 @@ void TaskCenter::insertAlbum(Music *music)
     for (int i = 0; i < albumList.size(); ++i) {
         if(albumList[i]->name == albumName) {
             albumList[i]->musicList.append(music);
+            music->albumId = albumList[i]->id;
+
             // 在专辑中添加歌手
             for (int j = 0; j < music->artistList.size(); ++j) {
                 albumList[i]->artistSet.insert(music->artistList[j]);
@@ -345,6 +348,7 @@ void TaskCenter::insertAlbum(Music *music)
         }
 
         album->musicList.append(music);
+        music->albumId = album->id;
         // 在专辑中添加歌手
         for (int j = 0; j < music->artistList.size(); ++j) {
             album->artistSet.insert(music->artistList[j]);
@@ -387,6 +391,7 @@ void TaskCenter::finishUserTable()
             return a->lineKey < b->lineKey;
         });
 
+        writeDataSQL();
         emit musicsLoaded(musicList, tableList, artistList, albumList);
     }
 }
@@ -417,4 +422,33 @@ void TaskCenter::clearData()
 
     //删除信号量
     delete semaphore;
+}
+
+void TaskCenter::writeDataSQL()
+{
+    SQLite *sql = SQLite::getInstance();
+    bool flag;
+    flag = sql->begin();
+    if (!flag) qDebug()<< flag;
+
+    flag = sql->updateAlbum(albumList);
+    if (!flag) qDebug()<< flag;
+
+    flag = sql->updateArtist(artistList);
+    if (!flag) qDebug()<< flag;
+
+    flag = sql->updateMusic(musicList);
+    if (!flag) qDebug()<< flag;
+
+    flag = sql->updateTable(tableList);
+    if (!flag) qDebug()<< flag;
+
+    flag = sql->updateTableMusic(tableList);
+    if (!flag) qDebug()<< flag;
+
+    flag = sql->updateArtistMusic(artistList);
+    if (!flag) qDebug()<< flag;
+
+    flag = sql->commit();
+    if (!flag) qDebug()<< flag;
 }

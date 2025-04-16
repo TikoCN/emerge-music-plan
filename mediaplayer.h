@@ -42,6 +42,12 @@ public:
         }
     }
 
+    static void freeInstance(){
+        if(instance != nullptr){
+            delete instance;
+        }
+    }
+
     QMediaPlayer *player;//播放设备
     QAudioOutput *audioOutput;//音频输出
     QAudioBufferOutput *bufferOutput;//缓冲区输出

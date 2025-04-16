@@ -9,12 +9,14 @@ Image{
 
     property int imgWidth: width
     property int imgHeight: height
+    property int loadMsTime: 500
+    property int freeMsTime: 1000
     property string normalUrl: ""
     property string loadUrl: ""
     property bool loadFlag: image.visible
 
-    onVisibleChanged: {
-        if (visible) {
+    onLoadFlagChanged: {
+        if (loadFlag) {
             loadImag.start()
         }
         else {
@@ -24,7 +26,7 @@ Image{
 
     Timer {
         id: deleteImag
-        interval: 10000
+        interval: freeMsTime
         onTriggered: {
             if (!loadFlag) {
                 image.source = normalUrl
@@ -34,7 +36,7 @@ Image{
 
     Timer {
         id: loadImag
-        interval: 500
+        interval: loadMsTime
         onTriggered: {
             if (loadFlag) {
                 image.source = loadUrl

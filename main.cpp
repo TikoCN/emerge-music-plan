@@ -7,9 +7,11 @@
 #include "online.h"
 #include "base.h"
 #include "musiccore.h"
+#include "sqlite.h"
 #include <QQmlContext>
 #include <QIcon>
 
+SQLite *SQLite::instance = nullptr;
 Setting* Setting::instance = nullptr;
 TaskCenter* TaskCenter::instance = nullptr;
 MediaPlayer* MediaPlayer::instance = nullptr;
@@ -29,6 +31,7 @@ int main(int argc, char *argv[])
     TaskCenter::buildInstance();
     Base::buildInstance();
     MusicCore::buildInstance();
+    SQLite::buildInstance();
 
     //获得单例指针
     Setting* seit = Setting::getInstance();
