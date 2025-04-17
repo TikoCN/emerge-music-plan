@@ -1,4 +1,5 @@
 #include "sqlite.h"
+#include "ffmpeg.h"
 #include <QDebug>
 
 SQLite *SQLite::getInstance()
@@ -519,7 +520,7 @@ bool SQLite::getArtistList(QList<Artist *> *artistList)
 }
 
 
-bool SQLite::selectNewMusic(QList<Music *> musicList, QList<Music *> newMusicList)
+bool SQLite::selectNewMusic(QFileInfoList infoList, QFileInfoList &newInfoList)
 {
     sqlite3_stmt *checkUrlStmt = nullptr;
     sqlite3_stmt *checkMediaStmt = nullptr;
@@ -527,9 +528,10 @@ bool SQLite::selectNewMusic(QList<Music *> musicList, QList<Music *> newMusicLis
     try {
         const char *checkUrlSql = "SELECT count(*) FROM music WHERE url=?";
         const char *checkMediaSql = "SELECT count(*) FROM music "
+                                    "JOIN album ON album.album_id = artist.album_id "
                                     "JOIN artist_music ON music.music_id = artist_music.music_id "
-                                    "JOIN artist ON artist_music.artist = artist.artist_id "
-                                    "WHERE music.title=? AND artist.name=?";
+                                    "JOIN artist ON artist_music.artist_id = artist.artist_id "
+                                    "WHERE music.title=? AND artist.name=? AND album.name=?";
 
         r = sqlite3_prepare_v2(db, checkUrlSql, -1, &checkUrlStmt, nullptr);
         if (r != SQLITE_OK) logError("检测 checkUrlSql 初始化失败");
@@ -538,16 +540,36 @@ bool SQLite::selectNewMusic(QList<Music *> musicList, QList<Music *> newMusicLis
         if (r != SQLITE_OK) logError("检测 checkMediaSql 初始化失败");
 
         int value = 0;
-        for (int i = 0; i < musicList.size(); ++i) {
+        for (int i = 0; i < infoList.size(); ++i) {
             r = sqlite3_reset(checkUrlStmt);
             if (r != SQLITE_OK) logError("重置 checkUrlSql 失败");
 
-            r = sqlite3_bind_text(checkUrlStmt, 1, musicList[i]->url.toStdString().c_str(), -1, SQLITE_TRANSIENT);
+            r = sqlite3_bind_text(checkUrlStmt, 1, infoList[i].filePath().toStdString().c_str(), -1, SQLITE_TRANSIENT);
             if (r != SQLITE_OK) logError("绑定 checkUrlSql 变量1失败");
 
             value = sqlite3_column_int(checkUrlStmt, 0);
             if (value > 0) break;
 
+            MediaData data;
+            FFmpeg ff;
+            ff.getDict(&data, infoList[i].filePath());
+            for (int j = 0; j < data.artistList.size(); ++j) {
+                r = sqlite3_reset(checkMediaStmt);
+                if (r != SQLITE_OK) logError("重置 checkMediaSql 失败");
+
+                r = sqlite3_bind_text(checkMediaStmt, 1, data.title.toStdString().c_str(), -1, SQLITE_TRANSIENT);
+                if (r != SQLITE_OK) logError("绑定 checkMediaSql 变量1失败");
+
+                r = sqlite3_bind_text(checkMediaStmt, 2, data.artistList[j].toStdString().c_str(), -1, SQLITE_TRANSIENT);
+                if (r != SQLITE_OK) logError("绑定 checkMediaSql 变量2失败");
+
+                r = sqlite3_bind_text(checkMediaStmt, 3, data.album.toStdString().c_str(), -1, SQLITE_TRANSIENT);
+                if (r != SQLITE_OK) logError("绑定 checkMediaSql 变量3失败");
+
+                value = sqlite3_column_int(checkMediaStmt, 0);
+                if (value > 0) break;
+            }
+            if (value <= 0) newInfoList.append(infoList[i]);
         }
 
     } catch (QString e) {

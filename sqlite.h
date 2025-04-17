@@ -67,7 +67,7 @@ public:
     bool getTableList(QList<Table *> *tableList);
 
     // 获得新的条目
-    bool selectNewMusic(QList<Music *> musicList, QList<Music *> newMusicList);
+    bool selectNewMusic(QFileInfoList infoList, QFileInfoList &newInfoList);
 
     bool commit();
 

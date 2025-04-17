@@ -733,6 +733,38 @@ bool FFmpeg::getDict(QStringList *keys, QStringList *values, QString url)
     return work;
 }
 
+bool FFmpeg::getDict(MediaData *data, QString url)
+{
+    QStringList keyList;
+    QStringList valueList;
+    bool r = getDict(&keyList, &valueList, url);
+
+    for (int i = 0; i < keyList.size(); ++i) {
+        if (keyList[i].compare("title", Qt::CaseInsensitive) == 0) {
+            data->title = valueList[i];
+        }
+        else if (keyList[i].compare("artist", Qt::CaseInsensitive) == 0) {
+            data->artistList = valueList[i].split(";");
+        }
+        else if (keyList[i].compare("album", Qt::CaseInsensitive) == 0) {
+            data->album = valueList[i];
+        }
+        else if (keyList[i].compare("endTime", Qt::CaseInsensitive) == 0) {
+            data->duration = valueList[i].toLongLong();
+        }
+        else if (keyList[i].compare("level", Qt::CaseInsensitive) == 0) {
+            data->level = valueList[i].toInt();
+        }
+        else if (keyList[i].compare("love", Qt::CaseInsensitive) == 0) {
+            data->isLove = valueList[i].toInt() == 1;
+        }
+        else if (keyList[i].compare("playNumber", Qt::CaseInsensitive) == 0) {
+            data->playNumber = valueList[i].toInt();
+        }
+    }
+    return r;
+}
+
 bool FFmpeg::writeDict(QStringList key, QStringList value, QString inUrl, QString outUrl)
 {
     AVFormatContext *inFmt = nullptr;

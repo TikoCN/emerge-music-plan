@@ -9,6 +9,16 @@ extern "C" {
 #include "libswresample/swresample.h"
 }
 
+struct MediaData
+{
+    QString title;
+    QString album;
+    QStringList artistList;
+    long long duration;
+    bool isLove;
+    int level;
+    int playNumber;
+};
 class FFmpeg : public QObject
 {
 public:
@@ -62,6 +72,7 @@ public:
 
     //得到标签
     bool getDict(QStringList *keys, QStringList *values, QString url);
+    bool getDict(MediaData *data, QString url);
 };
 
 #endif // FFMPEG_H

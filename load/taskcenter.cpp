@@ -92,6 +92,7 @@ void TaskCenter::filterFileInfo(QStringList dirPath)
     }
 }
 
+// 变量文件夹，捕获所有的音乐文件
 void TaskCenter::filterFileInfo(QFileInfoList dirs)
 {
     for (int i = 0; i < dirs.size(); ++i) {
@@ -119,9 +120,11 @@ void TaskCenter::filterFileInfo(QFileInfoList dirs)
     }
 }
 
-/*
- *加载音乐文件资源
- */
+/************************************************************************
+
+                            资源开始加载函数
+
+************************************************************************/
 void TaskCenter::loadMusicFile()
 {
     Setting* seit = Setting::getInstance();//获得设置指针
@@ -133,8 +136,12 @@ void TaskCenter::loadMusicFile()
         keyList.append(QString(i));
     }
 
+    QFileInfoList newFileList;
+    SQLite::getInstance()->selectNewMusic(musicFileList, &newFileList);
+
     workPos = 0;//重置工作位置
     workNumber = buildMusicList.size();//设置工作单元数
+    // 启动子单元
     emit startMusicCore();
 }
 
