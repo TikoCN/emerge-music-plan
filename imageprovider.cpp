@@ -5,6 +5,10 @@
 #include <QPainter>
 #include <QPainterPath>
 #include <QThread>
+#include <QImageReader>
+#include "sqlite/sqlite.h"
+#include "ffmpeg.h"
+#include "base.h"
 
 
 /*
@@ -31,71 +35,78 @@ void ImageResponse::buildRoundImage(QImage *pix, int radius)
 
 void ImageResponse::downOnlineCover(int id)
 {
+    QString url = SQLite::getInstance()->getMusicUrl(id);
+    if (url == "") return;
+
     OnLine *onLine = OnLine::getInstance();
-    MusicCore *core = MusicCore::getInstance();
-    if(id < 0 || id >core->musicList.size()){
-        return;
-    }
+    FFmpeg ffmpeg;
+    QString coverUrl = Base::getInstance()->getBaseUrl(url) + ".jpg";
+    //提取附加封面
+    m_img = ffmpeg.getInlayCover(url);
 
-    //加载附加封面，和独立封面
-    img = core->musicList[id]->loadCover();
+    // 检测独立封面
+    if(m_img.isNull() && QFile::exists(coverUrl)) loadFileCover(coverUrl);
 
-    if(img.isNull()){
-        //从网络下载封面，并写入到独立文件
-        onLine->downCover(core->musicList[id]->getSearchString(), core->musicList[id]->getCoverUrl());
-    }
+    // 下载网络封面
+    if(m_img.isNull()) onLine->downCover(Base::getInstance()->getFileName(url), coverUrl);
 
-    // 检测加载附加封面，和独立封面
-    img = core->musicList[id]->loadCover();
+    // 检测独立封面
+    if(m_img.isNull() && QFile::exists(coverUrl)) loadFileCover(coverUrl);
 
-    if (img.isNull()) img.load(":/image/default.png");
-    img = img.scaled(requestedSize, Qt::IgnoreAspectRatio);
+    if (m_img.isNull()) m_img.load(":/image/default.png");
+    m_img = m_img.scaled(m_requestedSize, Qt::IgnoreAspectRatio);
 
-    if (!img.isNull()) buildRoundImage(&img, 10);
+    if (!m_img.isNull()) buildRoundImage(&m_img, 10);
 }
 
 void ImageResponse::loadFileCover(int id)
 {
-    MusicCore *core = MusicCore::getInstance();
-    if(id < 0 || id >core->musicList.size()){
-        return;
-    }
-    img = core->musicList[id]->loadCover();
+    OnLine *onLine = OnLine::getInstance();
+    QString url = SQLite::getInstance()->getMusicUrl(id);
+    if (url == "") return;
+    FFmpeg ffmpeg;
+    QString coverUrl = Base::getInstance()->getBaseUrl(url) + ".jpg";
 
-    if (img.isNull()) img.load(":/image/default.png");
-    img = img.scaled(requestedSize, Qt::IgnoreAspectRatio);
+    //提取附加封面
+    m_img = ffmpeg.getInlayCover(url);
 
-    if (!img.isNull()) buildRoundImage(&img, 10);
+    if(m_img.isNull() && QFile::exists(coverUrl)) loadFileCover(coverUrl);
+
+    if (m_img.isNull()) m_img.load(":/image/default.png");
+    m_img = m_img.scaled(m_requestedSize, Qt::IgnoreAspectRatio);
+
+    if (!m_img.isNull()) buildRoundImage(&m_img, 10);
 }
 
-void ImageResponse::loadFileClipCover(int id)
+void ImageResponse::loadFileCover(QString url)
 {
-    MusicCore *core = MusicCore::getInstance();
-    if(id < 0 || id >core->musicList.size()){
-        return;
+    //如果存在 独立封面
+    if(QFile::exists(url))
+    {
+        QImageReader reader;
+        reader.setFileName(url);
+        QSize aim = reader.size();
+        aim.scale(QSize(300,300), Qt::KeepAspectRatioByExpanding);
+        reader.setScaledSize(aim);
+        m_img = reader.read();
     }
-    img = core->musicList[id]->loadCover();
-
-    if (img.isNull()) img.load(":/image/default.png");
-    img = img.scaled(requestedSize, Qt::KeepAspectRatioByExpanding);
 }
 
 ImageResponse::ImageResponse(const QString &url, const QSize &requestedSize)
+    :m_url(url), m_requestedSize(requestedSize)
 {
     setAutoDelete(false);
-    this->url = url;
-    this->requestedSize = requestedSize;
 }
 
 QQuickTextureFactory *ImageResponse::textureFactory() const
 {
-    return QQuickTextureFactory::textureFactoryForImage(img);
+    return QQuickTextureFactory::textureFactoryForImage(m_img);
 }
 
 void ImageResponse::run()
 {
-    QString type = url.split(":").first();
-    int id = url.split(":").last().toInt();
+    QString type = m_url.split(":").first();
+    int id = m_url.split(":").last().toInt();
 
     QStringList typeList = {"file", "fileClip", "back", "onLine"};
     switch (typeList.indexOf(type)) {

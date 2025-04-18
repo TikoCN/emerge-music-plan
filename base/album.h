@@ -8,7 +8,7 @@ class Album : public QObject
 {
     Q_OBJECT
 public:
-    explicit Album(QString name);
+    explicit Album(QString name, int id, QString lineKey);
 
     QList<Music *> musicList; // 音乐列表
     QString name;

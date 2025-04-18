@@ -37,67 +37,28 @@ public:
     //来自文件
     void fromFileInfo(QFileInfo info);
 
-    //获得封面路径
-    QString getCoverUrl();
-
     Q_INVOKABLE QString getLrcUrl();
 
     //获得歌词文件路径
     QList<LrcData *> getLyricsData();
 
-    //获得父文件夹
-    QString getParentDir();
-
-    //获得文件基础名字
-    QString getBaseName();
-
-    //获得文件基础路径
-    Q_INVOKABLE QString getBaseUrl();
-
     //获得时长
     Q_INVOKABLE QString getStringTime();
 
-    //获得识别文本
-    QString getKey();
-
     //加载封面
-    QImage loadCover();
+    static QImage loadCover(QString url);
 
     //加载封面·
-    QImage loadAloneCover();
+    static QImage loadAloneCover(QString url);
 
     //判断是否符合搜索条件
     bool isSearch(QString aim);
 
-    //得到lrc文件数据
-    Q_INVOKABLE QString getLrcData();
-
-    //获得搜索文本
-    Q_INVOKABLE QString getSearchString();
-
     //复制音乐信息
-    Q_INVOKABLE void copyMusicData();
-
-    //复制音乐文件路径
-    Q_INVOKABLE void copyMusicUrl();
-
-    //打开音乐封面文件
-    Q_INVOKABLE void openMusicDir();
-
-    //打开音乐封面文件
-    Q_INVOKABLE void openMusicCover();
-
-    //打开音乐歌词文件
-    Q_INVOKABLE void openMusicLrc();
+    Q_INVOKABLE void getString();
 
     //格式转换
     Q_INVOKABLE void setSuffix(QString type);
-
-    // 写入喜爱
-    void writeLove();
-
-    // 写入评级
-    void writeLevel();
 
     QString getTitle() const;
 

@@ -1,8 +1,8 @@
 #include "album.h"
 #include "base.h"
 
-Album::Album(QString name)
-    : name(name)
+Album::Album(QString name, int id, QString lineKey)
+    : name(name), id(id), lineKey(lineKey)
 {
 
 }

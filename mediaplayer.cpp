@@ -223,7 +223,8 @@ void MediaPlayer::playMusic(int musicId)
     player->setSource(musicList[musicId]->url);
     player->play();
 
-    emit downLrc(playingMusic->getBaseName(), playingMusic->getLrcUrl());//加载新歌词
+    emit downLrc(Base::getInstance()->getFileName(playingMusic->url),
+                 playingMusic->getLrcUrl());//加载新歌词
 }
 
 void MediaPlayer::playMusic(Music *music)

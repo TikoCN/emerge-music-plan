@@ -1,8 +1,8 @@
 #include "artist.h"
 #include "base.h"
 
-Artist::Artist(QString name)
-    : name(name)
+Artist::Artist(QString name, int id, QString lineKey)
+    : name(name), id(id), lineKey(lineKey)
 {
 
 }

@@ -26,13 +26,15 @@ public:
     // 加载本地封面
     void loadFileCover(int musicId);
 
+    void loadFileCover(QString url);
+
     // 加载本地封面，裁剪版
     void loadFileClipCover(int musicId);
 
 private:
-    QImage img;
-    QString url;
-    QSize requestedSize;
+    QImage m_img;
+    QString m_url;
+    QSize m_requestedSize;
 };
 
 class ImageProvider : public QQuickAsyncImageProvider{

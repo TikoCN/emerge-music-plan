@@ -8,6 +8,7 @@
 #include <QClipboard>
 #include <QImageReader>
 #include <QPixmap>
+#include "mediadata.h"
 
 bool Music::getIsLove() const
 {
@@ -20,7 +21,6 @@ void Music::setIsLove(bool newIsLove)
         return;
     isLove = newIsLove;
     emit isLoveChanged();
-    writeLove();
 }
 
 int Music::getLevel() const
@@ -34,7 +34,6 @@ void Music::setLevel(int newLevel)
         return;
     level = newLevel;
     emit levelChanged();
-    writeLevel();
 }
 
 long long Music::getEndTime() const
@@ -53,25 +52,6 @@ void Music::setPlayNumber(int newPlayNumber)
         return;
     playNumber = newPlayNumber;
     emit playNumberChanged();
-
-    // 数据更新后，写入文件
-    Base *base = Base::getInstance();
-    QStringList keyList;
-    QStringList valueList;
-    keyList.append("playNumber");
-    valueList.append(QString::number(playNumber));
-    QString newUrl = url;
-    newUrl.replace(getBaseName(), getBaseName() + "new");
-
-    FFmpeg ff;
-    bool work = ff.writeDict(keyList, valueList, url, newUrl);
-    if(work){
-        base->renameFile(newUrl, url);
-        base->sendMessage(url + tr("更新播放次数成功"), 0);
-    }
-    else {
-        base->sendMessage(url + tr("更新播放次数失败"), 1);
-    }
 }
 
 Music::Music() {
@@ -86,7 +66,7 @@ Music::Music() {
 
 void Music::writeDataToFile(QStringList key, QStringList value)
 {
-    QString baseName = getBaseName();
+    QString baseName = Base::getInstance()->getFileName(url);
     QString newUrl = url.replace(baseName, "new"+baseName);
     FFmpeg ff;
     if(ff.writeDict(key, value, url, newUrl)){
@@ -100,33 +80,15 @@ void Music::writeDataToFile(QStringList key, QStringList value)
 void Music::readMedia()
 {
     FFmpeg ff;
-    QStringList keyList;
-    QStringList valueList;
-    ff.getDict(&keyList, &valueList, url);
-
-    for (int i = 0; i < keyList.size(); ++i) {
-        if (keyList[i].compare("title", Qt::CaseInsensitive) == 0) {
-            title = valueList[i];
-        }
-        else if (keyList[i].compare("artist", Qt::CaseInsensitive) == 0) {
-            artistList = valueList[i].split(";");
-        }
-        else if (keyList[i].compare("album", Qt::CaseInsensitive) == 0) {
-            album = valueList[i];
-        }
-        else if (keyList[i].compare("endTime", Qt::CaseInsensitive) == 0) {
-            endTime = valueList[i].toLongLong();
-        }
-        else if (keyList[i].compare("level", Qt::CaseInsensitive) == 0) {
-            level = valueList[i].toInt();
-        }
-        else if (keyList[i].compare("love", Qt::CaseInsensitive) == 0) {
-            isLove = valueList[i].toInt() == 1;
-        }
-        else if (keyList[i].compare("playNumber", Qt::CaseInsensitive) == 0) {
-            playNumber = valueList[i].toInt();
-        }
-    }
+    MediaData data;
+    ff.getDict(&data, url);
+    title = data.title;
+    artistList = data.artistList;
+    album = data.album;
+    playNumber = data.playNumber;
+    isLove = data.isLove;
+    url = data.url;
+    level = data.level;
 }
 
 QList<KeyValuePair *> Music::getAllKey()
@@ -147,12 +109,6 @@ void Music::fromFileInfo(QFileInfo info)
     url = info.filePath();
     lastEdit = info.lastModified().toString("yy-MM-dd hh:mm:ss");
     lastEditTime = info.lastModified().toMSecsSinceEpoch();
-}
-
-//获得封面路径
-QString Music::getCoverUrl()
-{
-    return url.split("." + url.split(".").last())[0] + ".jpg";
 }
 
 QString Music::getLrcUrl()
@@ -279,26 +235,6 @@ QList<LrcData *> Music::getLyricsData()
 }
 
 /*
- * 获得父文件夹
- */
-QString Music::getParentDir()
-{
-    QString fileName = url.split("/").last();
-    return url.split("/"+fileName)[0];
-}
-
-QString Music::getBaseName()
-{
-    return url.split("/").last().split("." + url.split(".").last())[0];
-}
-
-QString Music::getBaseUrl()
-{
-    QString suffix = url.split(".").last();
-    return url.split("." + suffix)[0];
-}
-
-/*
  * 时长
  */
 QString Music::getStringTime()
@@ -310,41 +246,20 @@ QString Music::getStringTime()
 }
 
 /*
- * 获得识别文本
- */
-QString Music::getKey()
-{
-    return title +"-&&-"+ artistList.join(";");
-}
-
-QString Music::getSearchString()
-{
-    QString search;
-    if(!title.isNull() || artistList.size()){
-        search = title + artistList.join(" ");
-    }
-    else{
-        search = getBaseName();
-    }
-
-    return search;
-}
-
-/*
 加载封面
 */
-QImage Music::loadCover()
+QImage Music::loadCover(QString url)
 {
     FFmpeg ffmpeg;
 
-    QString coverUrl = getCoverUrl();
+    QString coverUrl = Base::getInstance()->getBaseUrl(url) + ".jpg";
     //提取附加封面
     QImage img = ffmpeg.getInlayCover(url);
 
     if(img.isNull()){
         //如果存在 独立封面
         if(QFile::exists(coverUrl)){
-            img = loadAloneCover();
+            img = loadAloneCover(url);
         }
     }
 
@@ -354,10 +269,11 @@ QImage Music::loadCover()
 /*
  * 加载独立的封面文件
 */
-QImage Music::loadAloneCover()
+QImage Music::loadAloneCover(QString url)
 {
     QImage img;
-    QString coverUrl = getCoverUrl();
+    QString coverUrl = Base::getInstance()->getBaseUrl(url) + ".jpg";
+
     //如果存在 独立封面
     if(QFile::exists(coverUrl))
     {
@@ -382,52 +298,15 @@ bool Music::isSearch(QString aim)
     return false;
 }
 
-QString Music::getLrcData()
-{
-    return Base::getInstance()->readFileText(getLrcUrl());
-}
-
 /*
  * 复制音乐信息
 */
-void Music::copyMusicData()
+void Music::getString()
 {
     QString data = QObject::tr("标题") +":"+ title +" "
                    +QObject::tr("歌手") +":"+ artistList.join(";") +" "
                    +QObject::tr("专辑") +":"+ album;
     Base::getInstance()->copyString(data);
-}
-
-/*
- * 复制音乐文件路径
-*/
-void Music::copyMusicUrl()
-{
-    Base::getInstance()->copyString(url);
-}
-
-/*
- * 打开音乐文件夹
-*/
-void Music::openMusicDir()
-{
-    Base::getInstance()->deskOpenFile(getParentDir(), 1);
-}
-
-/*
- * 打开音乐封面文件
-*/
-void Music::openMusicCover()
-{
-    Base::getInstance()->deskOpenFile(getCoverUrl(), 1);
-}
-
-/*
- * 打开音乐歌词文件
-*/
-void Music::openMusicLrc()
-{
-    Base::getInstance()->deskOpenFile(getLrcUrl(), 1);
 }
 
 /*
@@ -465,47 +344,6 @@ void Music::setSuffix(QString type)
     }
     bool s = false;
     s = ffmpeg.transformCodec(url, suffix);
-}
-
-void Music::writeLove()
-{
-    Base *base = Base::getInstance();
-    QStringList keyList;
-    QStringList valueList;
-    keyList.append("love");
-    valueList.append(QString::number(isLove ? 1 : 0));
-    QString newUrl = url;
-    newUrl.replace(getBaseName(), getBaseName() + "new");
-
-    FFmpeg ff;
-    bool work = ff.writeDict(keyList, valueList, url, newUrl);
-    if(work){
-        base->renameFile(newUrl, url);
-        base->sendMessage(url + tr("更新喜爱成功"), 0);
-    }
-    else {
-        base->sendMessage(url + tr("更新喜爱失败"), 1);
-    }
-}
-
-void Music::writeLevel()
-{
-    Base *base = Base::getInstance();
-    QStringList keyList;
-    QStringList valueList;
-    keyList.append("level");
-    valueList.append(QString::number(level));
-    QString newUrl = url;
-    newUrl.replace(getBaseName(), getBaseName() + "new");
-
-    FFmpeg ff;
-    if(ff.writeDict(keyList, valueList, url, newUrl)){
-        base->renameFile(newUrl, url);
-        base->sendMessage(url + tr("更新评级成功"), 0);
-    }
-    else {
-        base->sendMessage(url + tr("更新评级失败"), 1);
-    }
 }
 
 QString Music::getTitle() const

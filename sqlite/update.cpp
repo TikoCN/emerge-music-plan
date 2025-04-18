@@ -1,164 +1,13 @@
-#include "sqlite.h"
-#include "ffmpeg.h"
-#include <QDebug>
+#include "update.h"
 
-SQLite *SQLite::getInstance()
-{
-    return instance;
-}
-
-SQLite::SQLite() {
-    error = nullptr;
-
-    try{
-        int flags =  SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE | SQLITE_OPEN_URI | SQLITE_OPEN_FULLMUTEX;
-        r = sqlite3_open_v2("file:data.db", &db, flags, nullptr);
-        if (r != SQLITE_OK) logError("打开数据库文件失败");
-        int value = 0;
-
-        // 启用外键约束
-        const char* enableFK = "PRAGMA foreign_keys = ON;";
-        r = sqlite3_exec(db, enableFK, nullptr, nullptr, nullptr);
-        if (r != SQLITE_OK) logError("启用外键失败");
-
-        const char *check = "SELECT count(*) FROM sqlite_master WHERE type='table' AND ("
-                            "name='music' OR "
-                            "name='playlist' OR "
-                            "name='playlist_music' OR "
-                            "name='artist' OR "
-                            "name='artist_music' OR "
-                            "name='album'"
-                            ")";
-
-        r = sqlite3_exec(db, check, countCallBack, &value, &error);
-        if (r != SQLITE_OK) logError("查询数据库中表完整性失败");
-
-        if (value == 6) return;
-        else if (value > 0) logError("数据库异常，请删除 data.db 文件");
-
-        // 检测 playlist
-        {
-            const char *sql = "CREATE TABLE playlist("
-                              "list_id INT PRIMARY KEY NOT NULL,"
-                              "name TEXT NOT NULL,"
-                              "sort INT NOT NULL,"
-                              "url TEXT,"
-                              "is_dir INT NOT NULL"
-                              ")";
-            // 执行sql
-            r = sqlite3_exec(db, sql, NULL, NULL, &error);
-            if (r != SQLITE_OK) logError("创建 playlist 表失败");
-        }
-
-        // 检测 artist
-        {
-            const char *sql = "CREATE TABLE artist("
-                              "artist_id INT PRIMARY KEY NOT NULL,"
-                              "name TEXT NOT NULL"
-                              ")";
-            // 执行sql
-            r = sqlite3_exec(db, sql, NULL, NULL, &error);
-            if (r != SQLITE_OK) logError("创建artist表失败");
-        }
-
-        // 检测 album
-        {
-            const char *sql = "CREATE TABLE album("
-                              "album_id INT PRIMARY KEY NOT NULL,"
-                              "name TEXT NOT NULL"
-                              ")";
-            // 执行sql
-            r = sqlite3_exec(db, sql, NULL, NULL, &error);
-            if (r != SQLITE_OK) logError("创建album表失败");
-        }
-
-        // music
-        {
-            const char *sql = "CREATE TABLE music("
-                              "music_id INT PRIMARY KEY NOT NULL,"
-                              "title TEXT NOT NULL,"
-                              "album_id INT NOT NULL,"
-                              "duration INT NOT NULL,"
-                              "insert_time INT NOT NULL,"
-                              "level INT NOT NULL,"
-                              "love INT NOT NULL,"
-                              "play_number INT NOT NULL,"
-                              "url TEXT NOT NULL,"
-                              "FOREIGN KEY (album_id) REFERENCES album(album_id) ON DELETE CASCADE"
-                              ")";
-            // 执行sql
-            r = sqlite3_exec(db, sql, NULL, NULL, &error);
-            if (r != SQLITE_OK) logError("创建music表失败");
-        }
-
-        // 检测 playlist_music
-        {
-            const char *sql = "CREATE TABLE playlist_music("
-                              "music_id INT NOT NULL,"
-                              "list_id INT NOT NULL,"
-                              "PRIMARY KEY (music_id, list_id),"
-                              "FOREIGN KEY (music_id) REFERENCES music(music_id) ON DELETE CASCADE,"
-                              "FOREIGN KEY (list_id) REFERENCES playlist(list_id) ON DELETE CASCADE"
-                              ")";
-            // 执行sql
-            r = sqlite3_exec(db, sql, NULL, NULL, &error);
-            if (r != SQLITE_OK) logError("创建playlist_music表失败");
-        }
-
-        // 检测 artist_music
-        {
-            const char *sql = "CREATE TABLE artist_music("
-                              "music_id INT NOT NULL,"
-                              "artist_id INT NOT NULL,"
-                              "PRIMARY KEY (music_id, artist_id),"
-                              "FOREIGN KEY (music_id) REFERENCES music(music_id) ON DELETE CASCADE,"
-                              "FOREIGN KEY (artist_id) REFERENCES artist(artist_id) ON DELETE CASCADE"
-                              ")";
-            // 执行sql
-            r = sqlite3_exec(db, sql, NULL, NULL, &error);
-            if (r != SQLITE_OK) logError("创建artist_music表失败");
-        }
-
-    }  catch (QString e) {
-        return;
-    }
-}
-
-SQLite::~SQLite()
-{
-    r = sqlite3_close(db);
-    if (r != SQLITE_OK) logError("关闭保存数据库失败");
-}
-
-void SQLite::logError(QString error)
-{
-    if (this->error != nullptr) {
-        error += " " + QString(this->error);
-    }
-    if (sqlite3_errmsg(db) != nullptr && QString(sqlite3_errmsg(db)) != QString(this->error)) {
-        error += " " + QString(sqlite3_errmsg(db));
-    }
-    error = "SQLITE3 MODE：ERROR CODE " + QString::number(r) + ", " + error;
-    qDebug()<<error;
-    throw error;
-}
-
-int SQLite::countCallBack(void *data, int argc, char **argv, char **azColName)
-{
-    QString valueStr(*argv);
-    int *value = static_cast<int *>(data);
-    *value = valueStr.toInt();
-    return SQLITE_OK;
-}
-
-bool SQLite::updateMusic(Music *music)
+bool Update::updateMusic(Music *music)
 {
     QList<Music *> list;
     list.append(music);
     return updateMusic(list);
 }
 
-bool SQLite::updateMusic(QList<Music *> musicList)
+bool Update::updateMusic(QList<Music *> musicList)
 {
     sqlite3_stmt *stmt = nullptr;
     try {
@@ -212,14 +61,14 @@ bool SQLite::updateMusic(QList<Music *> musicList)
     return true;
 }
 
-bool SQLite::updateAlbum(Album *album)
+bool Update::updateAlbum(Album *album)
 {
     QList<Album *> list;
     list.append(album);
     return updateAlbum(list);
 }
 
-bool SQLite::updateAlbum(QList<Album *> albumList)
+bool Update::updateAlbum(QList<Album *> albumList)
 {
     sqlite3_stmt *stmt = nullptr;
     try {
@@ -252,14 +101,14 @@ bool SQLite::updateAlbum(QList<Album *> albumList)
     return true;
 }
 
-bool SQLite::updateArtist(Artist *artist)
+bool Update::updateArtist(Artist *artist)
 {
     QList<Artist *> list;
     list.append(artist);
     return updateArtist(list);
 }
 
-bool SQLite::updateArtist(QList<Artist *> artistList)
+bool Update::updateArtist(QList<Artist *> artistList)
 {
     sqlite3_stmt *stmt = nullptr;
     try {
@@ -292,14 +141,14 @@ bool SQLite::updateArtist(QList<Artist *> artistList)
     return true;
 }
 
-bool SQLite::updateTable(Table *table)
+bool Update::updateTable(Table *table)
 {
     QList<Table *> list;
     list.append(table);
     return updateTable(list);
 }
 
-bool SQLite::updateTable(QList<Table *> tableList)
+bool Update::updateTable(QList<Table *> tableList)
 {
     sqlite3_stmt *stmt = nullptr;
     try {
@@ -341,14 +190,14 @@ bool SQLite::updateTable(QList<Table *> tableList)
     return true;
 }
 
-bool SQLite::updateTableMusic(QPair<int, int> pair)
+bool Update::updateTableMusic(QPair<int, int> pair)
 {
     QList<QPair<int, int> > list;
     list.append(pair);
     return updateTableMusic(list);
 }
 
-bool SQLite::updateTableMusic(QList<QPair<int, int> > pairList)
+bool Update::updateTableMusic(QList<QPair<int, int> > pairList)
 {
     sqlite3_stmt *stmt = nullptr;
     try {
@@ -381,14 +230,14 @@ bool SQLite::updateTableMusic(QList<QPair<int, int> > pairList)
     return true;
 }
 
-bool SQLite::updateTableMusic(Table *table)
+bool Update::updateTableMusic(Table *table)
 {
     QList<Table *> list;
     list.append(table);
     return updateTableMusic(list);
 }
 
-bool SQLite::updateTableMusic(QList<Table *> tableList)
+bool Update::updateTableMusic(QList<Table *> tableList)
 {
     sqlite3_stmt *stmt = nullptr;
     try {
@@ -422,14 +271,14 @@ bool SQLite::updateTableMusic(QList<Table *> tableList)
     return true;
 }
 
-bool SQLite::updateArtistMusic(QPair<int, int> pair)
+bool Update::updateArtistMusic(QPair<int, int> pair)
 {
     QList<QPair<int, int> > list;
     list.append(pair);
     return updateArtistMusic(list);
 }
 
-bool SQLite::updateArtistMusic(QList<QPair<int, int> > pairList)
+bool Update::updateArtistMusic(QList<QPair<int, int> > pairList)
 {
     sqlite3_stmt *stmt = nullptr;
     try {
@@ -462,14 +311,14 @@ bool SQLite::updateArtistMusic(QList<QPair<int, int> > pairList)
     return true;
 }
 
-bool SQLite::updateArtistMusic(Artist *artist)
+bool Update::updateArtistMusic(Artist *artist)
 {
     QList<Artist *> list;
     list.append(artist);
     return updateArtistMusic(list);
 }
 
-bool SQLite::updateArtistMusic(QList<Artist *> artistList)
+bool Update::updateArtistMusic(QList<Artist *> artistList)
 {
     sqlite3_stmt *stmt = nullptr;
     try {
@@ -501,116 +350,5 @@ bool SQLite::updateArtistMusic(QList<Artist *> artistList)
         return false;
     }
     sqlite3_finalize(stmt);
-    return true;
-}
-
-bool SQLite::getArtistList(QList<Artist *> *artistList)
-{
-    try {
-        const char *sql = "SELECT * FROM artist";
-        r = sqlite3_exec(db, sql, [](void* data, int argc, char** argv, char** azColName)->int{
-            qDebug()<<*argv;
-            return SQLITE_OK;
-        },artistList, &error);
-        if (r != SQLITE_OK) logError("获取 artist 中的数据失败");
-    } catch (QString e) {
-        return false;
-    }
-    return true;
-}
-
-
-bool SQLite::selectNewMusic(QFileInfoList infoList, QFileInfoList &newInfoList)
-{
-    sqlite3_stmt *checkUrlStmt = nullptr;
-    sqlite3_stmt *checkMediaStmt = nullptr;
-
-    try {
-        const char *checkUrlSql = "SELECT count(*) FROM music WHERE url=?";
-        const char *checkMediaSql = "SELECT count(*) FROM music "
-                                    "JOIN album ON album.album_id = artist.album_id "
-                                    "JOIN artist_music ON music.music_id = artist_music.music_id "
-                                    "JOIN artist ON artist_music.artist_id = artist.artist_id "
-                                    "WHERE music.title=? AND artist.name=? AND album.name=?";
-
-        r = sqlite3_prepare_v2(db, checkUrlSql, -1, &checkUrlStmt, nullptr);
-        if (r != SQLITE_OK) logError("检测 checkUrlSql 初始化失败");
-
-        r = sqlite3_prepare_v2(db, checkMediaSql, -1, &checkMediaStmt, nullptr);
-        if (r != SQLITE_OK) logError("检测 checkMediaSql 初始化失败");
-
-        int value = 0;
-        for (int i = 0; i < infoList.size(); ++i) {
-            r = sqlite3_reset(checkUrlStmt);
-            if (r != SQLITE_OK) logError("重置 checkUrlSql 失败");
-
-            r = sqlite3_bind_text(checkUrlStmt, 1, infoList[i].filePath().toStdString().c_str(), -1, SQLITE_TRANSIENT);
-            if (r != SQLITE_OK) logError("绑定 checkUrlSql 变量1失败");
-
-            value = sqlite3_column_int(checkUrlStmt, 0);
-            if (value > 0) break;
-
-            MediaData data;
-            FFmpeg ff;
-            ff.getDict(&data, infoList[i].filePath());
-            for (int j = 0; j < data.artistList.size(); ++j) {
-                r = sqlite3_reset(checkMediaStmt);
-                if (r != SQLITE_OK) logError("重置 checkMediaSql 失败");
-
-                r = sqlite3_bind_text(checkMediaStmt, 1, data.title.toStdString().c_str(), -1, SQLITE_TRANSIENT);
-                if (r != SQLITE_OK) logError("绑定 checkMediaSql 变量1失败");
-
-                r = sqlite3_bind_text(checkMediaStmt, 2, data.artistList[j].toStdString().c_str(), -1, SQLITE_TRANSIENT);
-                if (r != SQLITE_OK) logError("绑定 checkMediaSql 变量2失败");
-
-                r = sqlite3_bind_text(checkMediaStmt, 3, data.album.toStdString().c_str(), -1, SQLITE_TRANSIENT);
-                if (r != SQLITE_OK) logError("绑定 checkMediaSql 变量3失败");
-
-                value = sqlite3_column_int(checkMediaStmt, 0);
-                if (value > 0) break;
-            }
-            if (value <= 0) newInfoList.append(infoList[i]);
-        }
-
-    } catch (QString e) {
-        sqlite3_finalize(checkUrlStmt);
-        sqlite3_finalize(checkMediaStmt);
-        return false;
-    }
-    sqlite3_finalize(checkUrlStmt);
-    sqlite3_finalize(checkMediaStmt);
-    return true;
-}
-
-bool SQLite::begin()
-{
-    try {
-        r = sqlite3_exec(db, "BEGIN TRANSACTION;", nullptr, nullptr, &error);
-        if (r != SQLITE_OK) logError("开始事务失败");
-    } catch (QString e) {
-        return false;
-    }
-    return true;
-}
-
-bool SQLite::rollback()
-{
-    try {
-        r = sqlite3_exec(db, "ROLLBACK;", nullptr, nullptr, &error);
-        if (r != SQLITE_OK) logError("回滚事务失败");
-    } catch (QString e) {
-        return false;
-    }
-    return true;
-}
-
-bool SQLite::commit()
-{
-    try {
-        r = sqlite3_exec(db, "COMMIT;", nullptr, nullptr, &error);
-        if (r != SQLITE_OK) logError("结束事务失败");
-    } catch (QString e) {
-        return false;
-    }
     return true;
 }

@@ -29,7 +29,7 @@ qt_add_qml_module(appmusicPlay
     ffmpeg.h ffmpeg.cpp
     base.h base.cpp
     musiccore.h musiccore.cpp
-    sqlite.h sqlite.cpp
+    sqlite/sqlite.h sqlite/sqlite.cpp sqlite/update.cpp sqlite/append.cpp
     base/keyvaluepair.h base/keyvaluepair.cpp
     base/album.h base/album.cpp
     base/lrcdata.h base/lrcdata.cpp
@@ -37,8 +37,14 @@ qt_add_qml_module(appmusicPlay
     base/table.h base/table.cpp
     base/artist.h base/artist.cpp
     load/taskcenter.h load/taskcenter.cpp
-    load/buildmusic.h load/buildmusic.cpp
-    load/buildusertable.h load/buildusertable.cpp
+    load/selectmusicurl.h load/selectmusicurl.cpp
+    load/buildmusiccore.h load/buildmusiccore.cpp
+    base/mediadata.h
+    SOURCES sqlite/get.cpp
+    SOURCES sqlite/appned.h
+    SOURCES sqlite/get.h
+    SOURCES sqlite/update.h
+    SOURCES sqlite/core.h sqlite/core.cpp
 )
 
 # link fftw3

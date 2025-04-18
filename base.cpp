@@ -33,6 +33,16 @@ void Base::replaceFile(QString inUrl, QString outUrl)
     out.close();
 }
 
+QString Base::getFirstKey(QString s)
+{
+    if (s.isNull()) {
+        return "";
+    }
+    else {
+        return s[0];
+    }
+}
+
 QString Base::readFileText(QString url)
 {
     QString data = "";
@@ -169,4 +179,20 @@ bool Base::renameFile(QString oldUrl, QString newUrl)
         return false;
     }
     return true;
+}
+
+QString Base::getBaseUrl(QString url)
+{
+    return url.split("." + url.split(".").last()).last();
+}
+
+QString Base::getFileName(QString url)
+{
+    QString baseUrl = getBaseUrl(url);
+    return baseUrl.split("/").last();
+}
+
+QString Base::getParentDir(QString url)
+{
+    return url.split("/" + url.split("/").last()).last();
 }

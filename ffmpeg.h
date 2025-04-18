@@ -3,22 +3,13 @@
 
 #include <QObject>
 #include <QDebug>
+#include "base/mediadata.h"
 extern "C" {
 #include "libavformat/avformat.h"
 #include "libavcodec/avcodec.h"
 #include "libswresample/swresample.h"
 }
 
-struct MediaData
-{
-    QString title;
-    QString album;
-    QStringList artistList;
-    long long duration;
-    bool isLove;
-    int level;
-    int playNumber;
-};
 class FFmpeg : public QObject
 {
 public:

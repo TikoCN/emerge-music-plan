@@ -30,6 +30,8 @@ public:
     // 替换文件
     void replaceFile(QString inUrl, QString outUrl);
 
+    QString getFirstKey(QString s);
+
     //读文件信息
     QString readFileText(QString url);
 
@@ -54,6 +56,10 @@ public:
 
     // 重命名文件
     bool renameFile(QString oldUrl, QString newUrl);
+
+    QString getBaseUrl(QString url);
+    QString getFileName(QString url);
+    QString getParentDir(QString url);
 
 signals:
     void message(QString msg, int type);
