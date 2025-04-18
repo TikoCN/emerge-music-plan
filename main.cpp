@@ -59,6 +59,7 @@ int main(int argc, char *argv[])
     QObject::connect(seit, &Setting::loadMusics, center, &TaskCenter::start);
     QObject::connect(mediaPlayer, &MediaPlayer::downLrc, onLine, &OnLine::downLrc);
     QObject::connect(onLine, &OnLine::lrcDowned, mediaPlayer, &MediaPlayer::loadLrcList);
+    QObject::connect(center, &TaskCenter::finish, core, &MusicCore::getMusicCore);
 
     // 开始加载
     seit->loadMusicCores();
