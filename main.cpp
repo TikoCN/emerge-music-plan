@@ -7,7 +7,7 @@
 #include "online.h"
 #include "base.h"
 #include "musiccore.h"
-#include "sqlite.h"
+#include "sqlite/sqlite.h"
 #include <QQmlContext>
 #include <QIcon>
 
@@ -56,9 +56,10 @@ int main(int argc, char *argv[])
     qmlRegisterType<Artist *>("DataCore", 1, 0, "ArtistData");
     qmlRegisterType<Album *>("DataCore", 1, 0, "AlbumData");
 
-    QObject::connect(center, &TaskCenter::musicsLoaded, core, &MusicCore::getMusicCore);
+    QObject::connect(seit, &Setting::loadMusics, center, &TaskCenter::start);
     QObject::connect(mediaPlayer, &MediaPlayer::downLrc, onLine, &OnLine::downLrc);
     QObject::connect(onLine, &OnLine::lrcDowned, mediaPlayer, &MediaPlayer::loadLrcList);
+    QObject::connect(center, &TaskCenter::finish, core, &MusicCore::getMusicCore);
 
     // 开始加载
     seit->loadMusicCores();

@@ -33,6 +33,16 @@ void Base::replaceFile(QString inUrl, QString outUrl)
     out.close();
 }
 
+QString Base::getFirstKey(QString s)
+{
+    if (s.isNull()) {
+        return "";
+    }
+    else {
+        return s[0];
+    }
+}
+
 QString Base::readFileText(QString url)
 {
     QString data = "";

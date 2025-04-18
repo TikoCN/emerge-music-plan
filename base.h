@@ -30,6 +30,8 @@ public:
     // 替换文件
     void replaceFile(QString inUrl, QString outUrl);
 
+    QString getFirstKey(QString s);
+
     //读文件信息
     QString readFileText(QString url);
 

@@ -1,7 +1,6 @@
 #include "musiccore.h"
 #include "base.h"
-#include "load/taskcenter.h"
-#include "sqlite.h"
+#include "sqlite/sqlite.h"
 #include <QDir>
 #include <QJsonDocument>
 #include <QJsonObject>
@@ -15,18 +14,12 @@ MusicCore::MusicCore(QObject *parent)
 /*
  * 获得音乐核心
  */
-void MusicCore::getMusicCore(QList<Music *>musicList, QList<Table *> tableList, QList<Artist *> artistList, QList<Album *> albumList)
+void MusicCore::getMusicCore()
 {
-    this->musicList = musicList;
-    this->tableList = tableList;
-    this->albumList = albumList;
-    this->artistList = artistList;
+    SQLite *sql = SQLite::getInstance();
+    sql->getArtistKeyList();
 
     emit finishInit();
-
-    //清空数据
-    TaskCenter *host = TaskCenter::getInstance();
-    host->clearData();
 }
 
 /*

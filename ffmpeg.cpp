@@ -1,6 +1,8 @@
 #include "ffmpeg.h"
 #include <QImage>
 #include <QFile>
+#include <QDir>
+#include <QRegularExpression>
 
 QString FFmpeg::suffixToString(Suffix s)
 {
@@ -739,15 +741,25 @@ bool FFmpeg::getDict(MediaData *data, QString url)
     QStringList valueList;
     bool r = getDict(&keyList, &valueList, url);
 
+    data->url = url;
+    QString name = url.split("/").last();
+    data->dir = url.split("/"+name)[0];
+
     for (int i = 0; i < keyList.size(); ++i) {
         if (keyList[i].compare("title", Qt::CaseInsensitive) == 0) {
-            data->title = valueList[i];
+            QString title = valueList[i];
+            if (title == "" || title.replace(" ", "") == "") title = tr("未知歌曲");
+            data->title = title;
         }
         else if (keyList[i].compare("artist", Qt::CaseInsensitive) == 0) {
-            data->artistList = valueList[i].split(";");
+            QString artist = valueList[i];
+            if (artist == "" || artist.replace(" ", "") == "") artist = tr("未知歌手");
+            data->artistList = artist.split(";");
         }
         else if (keyList[i].compare("album", Qt::CaseInsensitive) == 0) {
-            data->album = valueList[i];
+            QString album = valueList[i];
+            if (album == "" || album.replace(" ", "") == "") album = tr("未知专辑");
+            data->album = album;
         }
         else if (keyList[i].compare("endTime", Qt::CaseInsensitive) == 0) {
             data->duration = valueList[i].toLongLong();

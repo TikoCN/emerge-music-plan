@@ -53,7 +53,7 @@ public:
     QJsonObject readJsonData();
 
     //获得音乐核心
-    void getMusicCore(QList<Music *>musicList, QList<Table *> tableList, QList<Artist *> artistList, QList<Album *> albumList);
+    void getMusicCore();
 
     //新建播放列表
     Q_INVOKABLE void appendTable(QString tableName, bool isDir = false);
