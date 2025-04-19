@@ -3,6 +3,7 @@
 
 #include "lrcdata.h"
 #include "base/keyvaluepair.h"
+#include "mediadata.h"
 #include <QObject>
 #include <QFileInfo>
 
@@ -16,7 +17,8 @@ public:
     QString album;
     QString lastEdit;
     long long endTime;
-    qint64 lastEditTime;
+    long long lastEditTime;
+    long long insetTime;
     int coreId;
     int level;
     int playNumber;
@@ -30,6 +32,7 @@ public:
 
     // 读取元数据
     void readMedia();
+    void setMedia(MediaData data);
 
     // 读取所有标签
     Q_INVOKABLE QList<KeyValuePair *> getAllKey();

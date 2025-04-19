@@ -82,6 +82,11 @@ void Music::readMedia()
     FFmpeg ff;
     MediaData data;
     ff.getDict(&data, url);
+    setMedia(data);
+}
+
+void Music::setMedia(MediaData data)
+{
     title = data.title;
     artistList = data.artistList;
     album = data.album;
@@ -89,6 +94,7 @@ void Music::readMedia()
     isLove = data.isLove;
     url = data.url;
     level = data.level;
+    insetTime = data.insetTime;
 }
 
 QList<KeyValuePair *> Music::getAllKey()

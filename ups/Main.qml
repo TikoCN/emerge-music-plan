@@ -59,7 +59,6 @@ TikoFrameless{
         Setting.windowRect.y = mousePos.y
 
         Setting.writeData()
-        Core.writeJsonData()
     }
 
     Item{
@@ -274,21 +273,11 @@ TikoFrameless{
         }
     }
 
-    //关联
     Connections{
         target: Core
-
-        function onTableAdd(){
-            mainView.addPlayTablePage(Core.tableList.length - 1)
-            barView.addTable(Core.tableList.length - 1)
-        }
-
-        function onFinishInit(){
+        function onFinish(){
+            CoreData.table = JSON.parse(SQLData.getAllList())
             mainView.buildData()
-            for (var i=0; i < Core.tableList.length; ++i) {
-                mainView.addPlayTablePage(i)
-                barView.addTable(i)
-            }
         }
     }
 }

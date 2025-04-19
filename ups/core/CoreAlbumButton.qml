@@ -7,12 +7,13 @@ import Ups
 Item{
     id: albumButton
     width: r + space * 2
-    height: showItem.height + space * 2
+    height: r + space * 2
 
-    property AlbumData album
-    property int coverId: album.musicList[0].coreId
     property int r: 160
     property int space: 5
+    property int albumId: -1
+    property AlbumData album: visible ? Core.getAlbum(albumId) : null
+    property int coverId: 0
 
     // 整体背景
     Rectangle {
@@ -40,7 +41,7 @@ Item{
                 width: r
                 height: r
                 normalUrl: "qrc:/image/album.png"
-                loadUrl: "image://cover/file:" + albumButton.coverId.toString()
+                loadUrl: "image://cover/file:" + albumId.toString()
             }
 
             // 播放按钮
@@ -86,7 +87,7 @@ Item{
                 anchors.top: albumCover.bottom
                 anchors.topMargin: 10
                 width: parent.width
-                text: album.name
+                text: album !== null ? album.name : qsTr("专辑")
             }
 
             // 专辑时长
@@ -95,7 +96,7 @@ Item{
                 anchors.top: textLine.bottom
                 width: parent.width
                 opacity: 0.4
-                text: album.getStringTime()
+                text: album !== null ? album.getStringTime() : qsTr("00:00")
             }
         }
     }

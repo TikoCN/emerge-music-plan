@@ -249,13 +249,13 @@ bool Update::updateTableMusic(QList<Table *> tableList)
 
         for (int i = 0; i < tableList.size(); ++i) {
             Table *table = tableList[i];
-            for (int j = 0; j < table->musics.size(); ++j) {
+            for (int j = 0; j < table->musicList.size(); ++j) {
                 r = sqlite3_reset(stmt); // 删除绑定
                 if (r != SQLITE_OK) logError("重置 stmt 状态失败");
                 r = sqlite3_bind_int(stmt, 1, table->tableId);
                 if (r != SQLITE_OK) logError("绑定SQLITE "+QString(sql)+" 语句变量1失败");
 
-                r = sqlite3_bind_int(stmt, 2, table->musics[j]->coreId);
+                r = sqlite3_bind_int(stmt, 2, table->musicList[j]);
                 if (r != SQLITE_OK) logError("绑定SQLITE "+QString(sql)+" 语句变量2失败");
 
                 r = sqlite3_step(stmt);
@@ -337,7 +337,7 @@ bool Update::updateArtistMusic(QList<Artist *> artistList)
                 r = sqlite3_bind_int(stmt, 1, artist->id);
                 if (r != SQLITE_OK) logError("绑定SQLITE "+QString(sql)+" 语句变量1失败");
 
-                r = sqlite3_bind_int(stmt, 2, artist->musicList[j]->coreId);
+                r = sqlite3_bind_int(stmt, 2, artist->musicList[j]);
                 if (r != SQLITE_OK) logError("绑定SQLITE "+QString(sql)+" 语句变量2失败");
 
                 r = sqlite3_step(stmt);

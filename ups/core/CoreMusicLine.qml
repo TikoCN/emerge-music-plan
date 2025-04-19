@@ -10,25 +10,23 @@ Item {
     implicitWidth: 100
     clip: true
 
-    property var table
-    property var album
-    property var artist
     property int listId: 0
     property int type: 0
-    property int musicId: music.coreId
-    property MusicData music
+    property int musicId: -1
     property bool isLittle: false
+
+    property MusicData music : visible ? Core.getMusic(musicId) : null
 
     MouseArea{
         id: mouseArea
         onClicked:(mouse)=>{
-            if(mouse.button === Qt.RightButton){
-                CoreData.openMenuMusic(musicLine, music, 0)
-            }
-            else{
-                musicLine.play()
-            }
-        }
+                      if(mouse.button === Qt.RightButton){
+                          CoreData.openMenuMusic(musicLine, music, 0)
+                      }
+                      else{
+                          musicLine.play()
+                      }
+                  }
         acceptedButtons: Qt.LeftButton | Qt.RightButton
         anchors.fill: parent
         hoverEnabled: true
@@ -46,7 +44,8 @@ Item {
                 width: 50
                 height: 50
                 normalUrl: "qrc:/image/music.png"
-                loadUrl: "image://cover/file:" + musicLine.musicId.toString()
+                loadUrl: "image://cover/file:" + musicId.toString()
+                loadFlag: visible && music !== null
             }
 
             Column{
@@ -55,21 +54,21 @@ Item {
                                   (parent.width - tool.width - cover.width - 30) / 2
 
                 TikoTextLine{
-                    text: musicLine.music.title
+                    text: music !== null ? music.title : qsTr("标题")
                     exSize: 3
                     font.bold: true
                     height: 30
                     width: parent.width
                 }
                 TikoTextLine{
-                    text: musicLine.music.artist
+                    text: music !== null ? music.artist : qsTr("作曲家")
                     height: 20
                     width: parent.width
                 }
             }
 
             TikoTextLine{
-                text: musicLine.music.album
+                text: music !== null ? music.album : qsTr("专辑")
                 width: coreName.width
                 height: 50
             }
@@ -90,9 +89,13 @@ Item {
                         visible: mouseArea.containsMouse
                         width: 50
                         height: 50
-                        onClicked: music.isLove = !music.isLove
-                        icon.source: music.isLove ? "qrc:/image/love.png" : "qrc:/image/unlove.png"
-                        useAutoColor: !music.isLove
+                        onClicked: {
+                            if (music !== null)
+                            music.isLove = !music.isLove
+                        }
+                        icon.source: music !== null &&  music.isLove ?
+                                         "qrc:/image/love.png" : "qrc:/image/unlove.png"
+                        useAutoColor: music !== null && !music.isLove
                         cache: true
                     }
 
@@ -109,9 +112,13 @@ Item {
                                 height: 50
                                 hover: 0
                                 cache: true
-                                onClicked: music.level = level
-                                icon.source: music.level >= level ? "qrc:/image/int.png" : "qrc:/image/unInt.png"
-                                useAutoColor: !(music.level >= level)
+                                onClicked: {
+                                    if (music !== null)
+                                    music.level = level
+                                }
+                                icon.source: music !== null && music.level >= level ?
+                                                 "qrc:/image/int.png" : "qrc:/image/unInt.png"
+                                useAutoColor: music !== null && !(music.level >= level)
                             }
                             model: ListModel{
                                 ListElement{level: 1}
@@ -134,17 +141,17 @@ Item {
                 }
 
                 TikoTextLine{
-                    text: musicLine.music.getStringTime()
+                    text: music !== null ? music.getStringTime() : qsTr("00:00")
                     width: CoreData.timeWidth
                     height: 50
                 }
                 TikoTextLine{
-                    text: musicLine.music.lastEdit
+                    text: music !== null ? music.lastEdit : qsTr("00:00")
                     width: CoreData.editTimeWidth
                     height: 50
                 }
                 TikoTextLine{
-                    text: musicLine.music.playNumber.toString()
+                    text: music !== null ? music.playNumber.toString() : qsTr("00:00")
                     width: CoreData.playNumberWidth
                     height: 50
                 }
@@ -167,19 +174,7 @@ Item {
     }
 
     function play(){
-        switch(type){
-        case -1:
-            MediaPlayer.playMusic(music)
-            break
-        case 0:
-            MediaPlayer.playMusic(table, listId)
-            break
-        case 1:
-            MediaPlayer.playMusic(album, listId)
-            break
-        case 2:
-            MediaPlayer.playMusic(artist, listId)
-            break
-        }
+        MediaPlayer.playMusic(music, type)
     }
 }
+

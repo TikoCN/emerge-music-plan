@@ -5,6 +5,7 @@
 #include "selectmusicurl.h"
 #include "setting.h"
 #include "sqlite/sqlite.h"
+#include "musiccore.h"
 
 TaskCenter::TaskCenter()
 {
@@ -148,7 +149,7 @@ void TaskCenter::appendMedia(QList<MediaData> dataList)
     if (_work == 0) {
         writeDataSQL();
         clearData();
-        emit finish();
+        emit MusicCore::getInstance()->finish();
     }
 }
 

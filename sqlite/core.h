@@ -14,12 +14,15 @@ protected:
     void logError(QString error);
 
     static int countCallBack(void *data, int argc, char **argv, char **azColName);
+    static int idListCallBack(void *data, int argc, char **argv, char **azColName);
 
     void stmtPrepare(sqlite3_stmt **stmt, const char *sql);
     void stmtBindText(sqlite3_stmt *stmt, int pos, QString s);
     void stmtBindInt(sqlite3_stmt *stmt, int pos, long long i);
     bool stmtStep(sqlite3_stmt *stmt);
     void stmtReset(sqlite3_stmt *stmt);
+
+    void sqlExec(const char *sql, sqlite3_callback back, void *data);
 
 public:
 

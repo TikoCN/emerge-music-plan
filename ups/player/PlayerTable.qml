@@ -8,10 +8,9 @@ import DataCore
 
 Item {
     id: playerTable
-    property int tableId
-    property TableData table: Core.tableList[tableId]
-    property int allMusic:  0
-    property string showCover: "qrc:/image/default.png"
+    property int tableId: -1
+    property TableData table: visible ? Core.getTable(tableId) : null
+    property int allMusic: 0
 
     Item{
         id: showView
@@ -24,9 +23,10 @@ Item {
             anchors.left: parent.left
             anchors.leftMargin: 10
             normalUrl: "qrc:/image/default.png"
-            loadUrl: playerTable.showCover
+            loadUrl: "image://cover/table:" + tableId.toString()
             width: 200
             height: 200
+            loadFlag: visible && table !== null && tableId !== -1
         }
 
         //列表名字
@@ -35,7 +35,7 @@ Item {
             anchors.left: tableCover.right
             anchors.leftMargin: 10
             anchors.top: tableCover.top
-            text: table.name
+            text: table !== null ? table.name : qsTr("列表名")
             width: parent.width - tableCover.width
             exSize: 20
             font.bold: true
@@ -47,7 +47,6 @@ Item {
             anchors.left: tableName.left
             anchors.top: tableName.bottom
             anchors.topMargin: 10
-            text: table.name
             width: parent.width - tableCover.width
             exSize: 5
         }
@@ -185,53 +184,35 @@ Item {
 
         delegate: CoreMusicLine{
             width: musicList.width - 20
-            table: playerTable.table
             listId: musicListId
-            music: musicCore
+            musicId: inMusicId
         }
     }
 
-    Connections{
-        target: table
-        function onBuildShow(){
-            musicModel.clear()
-            playerTable.appendMusic(0, table.showMusics.length)
-        }
-
-        function onMusicAppend(start, length){
-            playerTable.appendMusic(start, length)
-        }
-
-        function onUpdateCover(){
-            playerTable.updateCover()
-        }
-    }
-
-    Component.onCompleted: {
+    onTableChanged: {
+        if(table === null) return
         playerTable.updateCover()
-        playerTable.appendMusic(0, table.showMusics.length)
+        playerTable.appendMusic(0, table.musicList.length)
     }
 
     function updateCover(){
         //调整列表展示信息
-        if(table.showMusics.length !== 0){
+        if(table === null) return
+        if(table.musicList.length !== 0){
             var coorId = table.getLastCoreId()
-            playerTable.showCover = "image://cover/file:" + coorId.toString()
-            playerTable.allMusic = table.musics.length
+            playerTable.allMusic = table.musicList.length
             var allTime = 0
-            for (var i=0; i<table.musics.length; i++) {
-                allTime += table.musics[i].endTime
-            }
-            tableHelp.text = table.musics.length.toString()+" "+qsTr("首歌曲") +"-"+
+            tableHelp.text = table.musicList.length.toString()+" "+qsTr("首歌曲") +"-"+
                     Base.timeToString(allTime)+" "+qsTr("歌曲长度")
         }
     }
 
     function appendMusic(start, length){
+        if(table === null) return
         for(var i=start; i<start+length; i++){
             musicModel.append({
                                   musicListId: i,
-                                  musicCore: table.showMusics[i]
+                                  inMusicId: table.musicList[i]
                               })
         }
     }

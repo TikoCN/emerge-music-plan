@@ -34,15 +34,15 @@ Item {
         }
 
         delegate: CoreArtistButton {
-            artist: artistData
+            artistId: inArtistId
             r: artistRandList.width / 6 - artistRandList.spacing - space * 2
         }
     }
 
     function build(){
-        var artistList = Core.getArtistRandList()
+        var artistList = SQLData.getArtistRandList()
         for (var i in artistList) {
-            artistRandModel.append({artistData: artistList[i]})
+            artistRandModel.append({inArtistId: artistList[i]})
         }
     }
 

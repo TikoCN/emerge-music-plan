@@ -45,7 +45,7 @@ Drawer {
             width: musicList.width - 20
             type: -1
             listId: musicListId
-            music: MediaPlayer.musicList[musicListId]
+            musicId: MediaPlayer.musicList[musicListId].coreId
         }
     }
 

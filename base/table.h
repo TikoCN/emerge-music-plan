@@ -2,8 +2,6 @@
 #define TABLE_H
 
 #include <QObject>
-#include "music.h"
-
 class Table : public QObject //播放列表
 {
     Q_OBJECT
@@ -20,8 +18,7 @@ public:
 
     QString name;//列表名
     QString url;//文件夹路径
-    QList<Music *> musics;//音乐库列表
-    QList<Music *> showMusics;//显示音乐列表
+    QList<int> musicList;//音乐库列表
     int tableId;//列表id
     bool isDir;
 
@@ -36,8 +33,8 @@ public:
     Q_INVOKABLE int getLastCoreId();
 
     //插入新音乐核心
-    Q_INVOKABLE void appendMusic(Music *core);
-    Q_INVOKABLE void appendMusic(QList<Music *> core);
+    Q_INVOKABLE void appendMusic(int core);
+    Q_INVOKABLE void appendMusic(QList<int> core);
 
     //移除音乐核心
     Q_INVOKABLE void removeMusic(int listId);
@@ -53,11 +50,9 @@ public:
     QString getName() const;
     void setName(const QString &newName);
 
-    QList<Music *> getMusics() const;
-
-    QList<Music *> getShowMusics() const;
-
     bool getIsDir() const;
+
+    QList<int> getMusicList() const;
 
 signals:
     // 更新qml展示列表
@@ -73,8 +68,7 @@ signals:
 
 private:
     Q_PROPERTY(QString name READ getName WRITE setName NOTIFY nameChanged FINAL)
-    Q_PROPERTY(QList<Music *> showMusics READ getShowMusics CONSTANT)
-    Q_PROPERTY(QList<Music *> musics READ getMusics CONSTANT)
     Q_PROPERTY(bool isDir READ getIsDir CONSTANT FINAL)
+    Q_PROPERTY(QList<int> musicList READ getMusicList CONSTANT FINAL)
 };
 #endif // TABLE_H

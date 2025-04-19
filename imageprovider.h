@@ -19,17 +19,16 @@ public:
 
     //计算圆角图片
     void buildRoundImage(QImage *pix, int radius);
+    void loadImageFile(QString url);
 
-    // 加载网络封面
-    void downOnlineCover(int musicId);
-
-    // 加载本地封面
-    void loadFileCover(int musicId);
-
-    void loadFileCover(QString url);
-
-    // 加载本地封面，裁剪版
-    void loadFileClipCover(int musicId);
+    void loadMusicFile(int id);
+    void loadMusicOnline(int id);
+    void loadTableFile(int id);
+    void loadTableOnline(int id);
+    void loadArtistFile(int id);
+    void loadArtistOnline(int id);
+    void loadAlbumFile(int id);
+    void loadAlbumOnline(int id);
 
 private:
     QImage m_img;

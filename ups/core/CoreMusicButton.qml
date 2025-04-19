@@ -7,8 +7,9 @@ import Ups
 Item {
     id: musicButton
 
-    property MusicData music: null
+    property int musicId: -1
     property int type: 0
+    property MusicData music: musicButton.visible ? Core.getMusic(musicId) : null
 
     Rectangle {
         anchors.fill: parent
@@ -32,7 +33,8 @@ Item {
         TikoImageAuto {
             id: musicCover
             normalUrl: "qrc:/image/exe.png"
-            loadUrl: "image://cover/file:" + music.coreId.toString()
+            loadUrl: "image://cover/file:" + musicId.toString()
+            loadFlag: visible && music !== null
             anchors.top: parent.top
             anchors.left: parent.left
             anchors.margins: 5
@@ -79,7 +81,7 @@ Item {
 
         TikoTextLine {
             id: title
-            text: music.title
+            text: music !== null ? music.title : qsTr("标题")
             width: parent.width
             anchors.top: musicCover.bottom
             anchors.left: parent.left
@@ -88,7 +90,7 @@ Item {
 
         TikoTextLine {
             id: artist
-            text: music.artist
+            text: music !== null ? music.artist : qsTr("作曲家")
             width: parent.width
             opacity: 0.7
             anchors.top: title.bottom
@@ -96,4 +98,5 @@ Item {
             anchors.margins: 10
         }
     }
+
 }

@@ -10,7 +10,6 @@ Item {
     id: mainView
     clip: true
 
-    property var tableList: []//列表指针
     property PageSeit seitPage: PageSeit{visible: false}
 
     //背景
@@ -83,10 +82,16 @@ Item {
         visible: false
     }
 
+    PlayerTable {
+        id: tablePlayer
+        visible: false
+    }
+
     //切换到列表
     function stackTable(page){
-        if(stackView.currentItem !== mainView.tableList[page]){
-            stackView.replace(mainView.tableList[page])
+        tablePlayer.tableId = page
+        if(stackView.currentItem !== tablePlayer){
+            stackView.replace(tablePlayer)
         }
     }
 
@@ -123,17 +128,6 @@ Item {
         }
     }
 
-    function addPlayTablePage(table){
-        var component = Qt.createComponent("../player/PlayerTable.qml")
-
-        if (component.status === Component.Ready) {
-            var playTable = component.createObject(stackView, {tableId: table, visible: false})
-
-            //插入链表
-            mainView.tableList.push(playTable)
-        }
-    }
-
     function clearData(){
         //清空数据避免显示异常
         for(let i = 0; i < mainView.tableList.length; i++){
@@ -145,8 +139,8 @@ Item {
     }
 
     function buildData(){
-        artistPage.build()
-        albumPage.build()
+        // artistPage.build()
+        // albumPage.build()
         mainPage.buildRand()
     }
 

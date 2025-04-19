@@ -2,16 +2,15 @@
 #include <QUrl>
 #include <QDesktopServices>
 
-//复制列表
-QList<Music *> Table::getMusics() const
-{
-    return musics;
-}
-
 Table::Table(QObject *parent)
     :QObject(parent)
 {
     sort = SORT_TITTLE_ASC;
+}
+
+QList<int> Table::getMusicList() const
+{
+    return musicList;
 }
 
 bool Table::getIsDir() const
@@ -23,97 +22,12 @@ void Table::copy(Table* a)
 {
     name = a->name;
     tableId = a->tableId;
-    musics.clear();
-    musics.append(a->showMusics);
+    musicList = a->musicList;
 }
 
 void Table::sortMusic(int type)
 {
-    if(showMusics.size() == 0){
-        return;
-    }
 
-    SORT_TYPE inSort = static_cast<SORT_TYPE>(type);
-    if(sort == inSort){
-        return;
-    }
-
-    sort = inSort;
-
-    switch (sort) {
-    case SORT_TITTLE_ASC:
-        std::sort(showMusics.begin(), showMusics.end(), [this](Music *a, Music *b){
-            bool isRight = a->title > b->title;
-            return isRight;
-        });
-        break;
-    case SORT_TITTLE_DESC:
-        std::sort(showMusics.begin(), showMusics.end(), [this](Music *a, Music *b){
-            bool isRight = a->title < b->title;
-            return isRight;
-        });
-        break;
-    case SORT_ATRIST_ASC:
-        std::sort(showMusics.begin(), showMusics.end(), [this](Music *a, Music *b){
-            bool isRight = a->artistList[0] > b->artistList[0];
-            return isRight;
-        });
-        break;
-    case SORT_ATRIST_DESC:
-        std::sort(showMusics.begin(), showMusics.end(), [this](Music *a, Music *b){
-            bool isRight = a->artistList[0] < b->artistList[0];
-            return isRight;
-        });
-        break;
-    case SORT_ALUMB_ASC:
-        std::sort(showMusics.begin(), showMusics.end(), [this](Music *a, Music *b){
-            bool isRight = a->album > b->album;
-            return isRight;
-        });
-        break;
-    case SORT_ALUMB_DESC:
-        std::sort(showMusics.begin(), showMusics.end(), [this](Music *a, Music *b){
-            bool isRight = a->album < b->album;
-            return isRight;
-        });
-        break;
-    case SORT_NED_TIME_ASC:
-        std::sort(showMusics.begin(), showMusics.end(), [this](Music *a, Music *b){
-            bool isRight = a->endTime > b->endTime;
-            return isRight;
-        });
-        break;
-    case SORT_NED_TIME_DESC:
-        std::sort(showMusics.begin(), showMusics.end(), [this](Music *a, Music *b){
-            bool isRight = a->endTime < b->endTime;
-            return isRight;
-        });
-        break;
-    case SORT_LAST_EDIT_TIME_ASC:
-        std::sort(showMusics.begin(), showMusics.end(), [this](Music *a, Music *b){
-            bool isRight = a->lastEditTime > b->lastEditTime;
-            return isRight;
-        });
-        break;
-    case SORT_LAST_EDIT_TIME_DESC:
-        std::sort(showMusics.begin(), showMusics.end(), [this](Music *a, Music *b){
-            bool isRight = a->lastEditTime < b->lastEditTime;
-            return isRight;
-        });
-        break;
-    case SORT_LEVEL_ASC:
-        std::sort(showMusics.begin(), showMusics.end(), [this](Music *a, Music *b){
-            bool isRight = a->level > b->level;
-            return isRight;
-        });
-        break;
-    case SORT_LEVEL_DESC:
-        std::sort(showMusics.begin(), showMusics.end(), [this](Music *a, Music *b){
-            bool isRight = a->level < b->level;
-            return isRight;
-        });
-        break;
-    }
 
     // qml重新生成控件
     emit buildShow();
@@ -126,26 +40,24 @@ int Table::getSort()
 
 int Table::getLastCoreId()
 {
-    return showMusics.last()->coreId;
+    return musicList.last();
 }
 
 /*
  * 插入新音乐核心
 */
-void Table::appendMusic(Music *core)
+void Table::appendMusic(int core)
 {
-    musics.append(core);//插入到数据库
-    showMusics.append(core);//符合条件插入显示
-    emit musicAppend(showMusics.size()-1, 1);
+    musicList.append(core);//插入到数据库
+    emit musicAppend(musicList.size()-1, 1);
 }
 
-void Table::appendMusic(QList<Music *> core)
+void Table::appendMusic(QList<int> core)
 {
-    musics.append(core);//插入到数据库
-    showMusics.append(core);
+    musicList.append(core);//插入到数据库
 
     int success = core.size();
-    emit musicAppend(showMusics.size()-success, success);
+    emit musicAppend(musicList.size()-success, success);
 }
 
 /*
@@ -153,7 +65,7 @@ void Table::appendMusic(QList<Music *> core)
 */
 void Table::removeMusic(int listId)
 {
-    musics.removeAt(listId);
+    musicList.removeAt(listId);
 }
 
 void Table::openDir()
@@ -166,21 +78,15 @@ void Table::openDir()
 
 void Table::showAllMusic()
 {
-    showMusics.clear();
-    showMusics = musics;
+    musicList.clear();
 
     emit buildShow();
 }
 
 void Table::showLoveMusic()
 {
-    showMusics.clear();
+    musicList.clear();
 
-    for (int i = 0; i < musics.size(); ++i) {
-        if(musics[i]->isLove){
-            showMusics.append(musics[i]);
-        }
-    }
 
     emit buildShow();
 }
@@ -188,12 +94,9 @@ void Table::showLoveMusic()
 void Table::showSearchMusic(QString search)
 {
     //清空并重建
-    showMusics.clear();
-    for(int i=0; i<musics.size(); i++){
-        if(musics[i]->isSearch(search)){
-            showMusics.append(musics[i]);
-        }
-    }
+    musicList.clear();
+
+
 
     emit buildShow();
 }
@@ -211,10 +114,6 @@ void Table::setName(const QString &newName)
     emit nameChanged();
 }
 
-QList<Music *> Table::getShowMusics() const
-{
-    return showMusics;
-}
 
 
 

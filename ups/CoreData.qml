@@ -10,12 +10,14 @@ QtObject {
     property double editTimeWidth: 0.0
     property double playNumberWidth: 0.0
     property bool sizeChange: false
+    property var table: []
     signal mainTurnSeit()
     signal mainTurnMain()
     signal mainTurnAlbumPage()
     signal mainTurnAlbumPlayer(AlbumData album)
     signal mainTurnArtistPage()
     signal mainTurnArtistPlayer(ArtistData artist)
+
 
     function editMusic(parent, core){
         var component = Qt.createComponent("toolEditMusicPage/ToolEditMusic.qml")

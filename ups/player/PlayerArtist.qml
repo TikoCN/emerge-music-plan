@@ -72,8 +72,7 @@ Item{
         delegate: CoreMusicLine {
             width: musicList.width
             listId: musicListId
-            music: musicCore
-            artist: artistDataShow.artist
+            musicId: inMusicId
             type: 2
         }
     }
@@ -81,12 +80,12 @@ Item{
 
     function openArtistData (artist) {
         var allTime = 0
-        artistDataCover.source = "image://cover/file:" +  artist.musicList[0].coreId.toString()
+        artistDataCover.source = "image://cover/artist:" +  artist.id.toString()
         artistMusicList.clear()
         for (var i=0; i<artist.musicList.length; i++) {
             artistMusicList.append({
                                        musicListId: i,
-                                       musicCore: artist.musicList[i]
+                                       inMusicId: artist.musicList[i]
                                    })
             allTime += artist.musicList[i].endTime
         }

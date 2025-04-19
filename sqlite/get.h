@@ -6,16 +6,22 @@
 #include "base/album.h"
 #include "base/artist.h"
 #include "base/table.h"
+#include "base/mediadata.h"
+#include "base/keyvaluepair.h"
+#include <QJsonObject>
+#include <QJsonArray>
 
-class Get : virtual public Core
+class Get : public QObject, virtual public Core
 {
+    Q_OBJECT
+
 public:
-    QStringList getArtistKeyList();
+    Q_INVOKABLE QStringList getArtistKeyList();
     QHash<int, Artist *> getArtist(QString key);
     Artist *getArtist(int id);
     QHash<int, Artist *> getArtist(QList<int> idList);
 
-    QStringList getAlbumKeyList();
+    Q_INVOKABLE QStringList getAlbumKeyList();
     QHash<int, Album *> getAlbum(QString key);
     Album *getAlbum(int id);
     QHash<int, Album *> getAlbum(QList<int> idList);
@@ -24,7 +30,7 @@ public:
     QHash<int, Music *> getMusic(QList<int> idList);
     QString getMusicUrl(int id);
 
-    QHash<int, QString> getAllList();
+    Q_INVOKABLE QString getAllList();
     Table *getList(int id);
 
     // 获得随机列表
@@ -35,6 +41,9 @@ public:
     Q_INVOKABLE QList<int> getNewMusicList();
     // 得到最多播放音乐
     Q_INVOKABLE QList<int> getReadMoreList();
+
+    QList<int> getIntList(const char *sql);
+    MediaData getMediaFromStmt(sqlite3_stmt *stmt);
 
 };
 

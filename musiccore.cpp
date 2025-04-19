@@ -1,24 +1,8 @@
 #include "musiccore.h"
-#include "base.h"
 #include "sqlite/sqlite.h"
 #include <QDir>
 #include <QJsonDocument>
 #include <QJsonObject>
-
-QStringList MusicCore::getArtistKeyList()
-{
-    return SQLite::getInstance()->getArtistKeyList();
-}
-
-QStringList MusicCore::getAlbumKeyList()
-{
-    return SQLite::getInstance()->getAlbumKeyList();
-}
-
-QHash<int, QString> MusicCore::getAllList()
-{
-    return SQLite::getInstance()->getAllList();
-}
 
 void MusicCore::appendTable(QString name)
 {
@@ -37,6 +21,7 @@ Table *MusicCore::getTable(int id)
     if (table != nullptr) {
         m_tableHash.insert(id, table);
     }
+    qDebug()<<table;
     return table;
 }
 
@@ -80,6 +65,16 @@ Music *MusicCore::getMusic(int id)
         m_musicHash.insert(id, music);
     }
     return music;
+}
+
+QList<Music *> MusicCore::getMusic(QList<int> idList)
+{
+    QList<Music *> list;
+    for (int i = 0; i < idList.size(); ++i) {
+        Music *music = getMusic(idList[i]);
+        if (music != nullptr) list.append(music);
+    }
+    return list;
 }
 
 MusicCore::MusicCore(QObject *parent)

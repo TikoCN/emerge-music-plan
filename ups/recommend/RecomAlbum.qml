@@ -32,16 +32,16 @@ Item {
         }
 
         delegate: CoreAlbumButton {
-            album: albumData
+            albumId: inAlbumId
             r: albumRandList.width / 6 - albumRandList.spacing - space * 2
         }
     }
 
 
     function build(){
-        var albumList = Core.getAlbumRandList()
+        var albumList = SQLData.getAlbumRandList()
         for (var i in albumList) {
-            albumRandModel.append({albumData: albumList[i]})
+            albumRandModel.append({inAlbumId: albumList[i]})
         }
     }
 

@@ -84,7 +84,7 @@ Item {
 
                     delegate: CoreArtistButton {
                         id: artistButton
-                        artist: artistData
+                        // artist: artistData
                     }
                 }
             }

@@ -42,7 +42,7 @@ void MediaPlayer::insertMusic(Album *album)
         Base::getInstance()->sendMessage(tr("插入专辑列表失败"), 1);
         return;
     }
-    insertMusic(album->musicList);
+    insertMusic(MusicCore::getInstance()->getMusic(album->musicList));
 }
 
 void MediaPlayer::insertMusic(Artist *artist)
@@ -51,7 +51,7 @@ void MediaPlayer::insertMusic(Artist *artist)
         Base::getInstance()->sendMessage(tr("插入作曲家列表失败"), 1);
         return;
     }
-    insertMusic(artist->musicList);
+    insertMusic(MusicCore::getInstance()->getMusic(artist->musicList));
 }
 
 void MediaPlayer::insertMusic(QList<Music *> musicList)
@@ -84,7 +84,7 @@ void MediaPlayer::appendMusic(Album *album)
         Base::getInstance()->sendMessage(tr("插入专辑列表失败"), 1);
         return;
     }
-    appendMusic(album->musicList);
+    appendMusic(MusicCore::getInstance()->getMusic(album->musicList));
 }
 
 void MediaPlayer::appendMusic(Artist *artist)
@@ -93,7 +93,7 @@ void MediaPlayer::appendMusic(Artist *artist)
         Base::getInstance()->sendMessage(tr("插入作曲家列表失败"), 1);
         return;
     }
-    appendMusic(artist->musicList);
+    appendMusic(MusicCore::getInstance()->getMusic(artist->musicList));
 }
 
 void MediaPlayer::appendMusic(QList<Music *> musicList)
@@ -179,7 +179,7 @@ void MediaPlayer::playMusic(Table *table, int musicId){
         return;
     }
 
-    musicList.append(table->showMusics);
+    musicList.append(MusicCore::getInstance()->getMusic(table->musicList));
     emit buildMusicList();
 
     playMusic(musicId);
@@ -195,7 +195,7 @@ void MediaPlayer::playMusic(Album *album, int musicId){
         return;
     }
 
-    musicList.append(album->musicList);
+    musicList.append(MusicCore::getInstance()->getMusic(album->musicList));
     emit buildMusicList();
 
     playMusic(musicId);
@@ -210,7 +210,7 @@ void MediaPlayer::playMusic(Artist *artist, int musicId){
         return;
     }
 
-    musicList.append(artist->musicList);
+    musicList.append(MusicCore::getInstance()->getMusic(artist->musicList));
     emit buildMusicList();
 
     playMusic(musicId);

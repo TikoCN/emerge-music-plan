@@ -6,12 +6,12 @@ import DataCore
 Item{
     id: artistButton
     width: r + space * 2
-    height: showItem.height + space * 2
+    height: r + space * 2
 
-    property ArtistData artist
-    property int coverId: artist.musicList[0].coreId
     property int r: 160
     property int space: 5
+    property int artistId: -1
+    property ArtistData artist: visible ? Core.getArtist(artistId) : null
 
     // 整体背景
     Rectangle {
@@ -39,7 +39,7 @@ Item{
                 width: r
                 height: r
                 normalUrl: "qrc:/image/artist.png"
-                loadUrl: "image://cover/file:" + artistButton.coverId.toString()
+                loadUrl: "image://cover/artist:" + artistId.toString()
             }
 
             // 播放按钮
@@ -85,7 +85,7 @@ Item{
                 anchors.top: artistCover.bottom
                 anchors.topMargin: 10
                 width: parent.width
-                text: artist.name
+                text: artist !== null ? artist.name : qsTr("专辑名")
             }
 
             // 专辑时长
@@ -94,7 +94,7 @@ Item{
                 anchors.top: textLine.bottom
                 width: parent.width
                 opacity: 0.4
-                text: artist.getStringTime()
+                text: artist !== null ? artist.getStringTime() : qsTr("00:00")
             }
         }
     }

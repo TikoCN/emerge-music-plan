@@ -4,6 +4,7 @@ import QtQuick.Controls
 import QtQml
 import MediaerAPI   
 import Tiko
+import Ups
 
 Item {
     id: root
@@ -139,15 +140,15 @@ Item {
 
                 delegate: TikoButtonNormal{
                     width: userTableListView.width
-                    text: Core.tableList[i].name
-                    iconSource: mainView.tableList[i].showCover
+                    text: name
+                    iconSource: ""
                     iconWidth: 30
                     iconHeight: 30
                     cache: false
                     useAutoColor: false
                     onClickLeft: {
                         root.showText = text
-                        mainView.stackTable(i)
+                        mainView.stackTable(tableId)
                     }
                     onClickRight: tableMenu.open()
 
@@ -167,11 +168,19 @@ Item {
         }
     }
 
-    function addTable(tableId){
-        userTableModel.append({i: tableId})
-    }
+    Connections{
+        target: CoreData
+        function onTableChanged(){
+            userTableModel.clear()
+            var length = CoreData.table.length
 
-    function clearData(){
-        userTableModel.clear()
+            for (var i=0; i<length; i++){
+                userTableModel.append({
+                                          tableId: CoreData.table[i]["tableId"],
+                                          name: CoreData.table[i]["name"]
+                                      })
+
+            }
+        }
     }
 }

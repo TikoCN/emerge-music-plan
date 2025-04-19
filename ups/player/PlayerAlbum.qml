@@ -72,20 +72,19 @@ Item{
         delegate: CoreMusicLine {
             width: musicList.width
             listId: musicListId
-            music: musicCore
-            album: albumDataShow.album
+            musicId: inMusicId
             type: 1
         }
     }
 
     function openAlbumData (album) {
         var allTime = 0
-        albumDataCover.source = "image://cover/file:" +  album.musicList[0].coreId.toString()
+        albumDataCover.source = "image://cover/album:" +  album.id.toString()
         albumMusicList.clear()
         for (var i=0; i<album.musicList.length; i++) {
             albumMusicList.append({
                                       musicListId: i,
-                                      musicCore: album.musicList[i]
+                                      inMusicId: album.musicList[i]
                                   })
             allTime += album.musicList[i].endTime
         }

@@ -65,6 +65,16 @@ void Core::stmtReset(sqlite3_stmt *stmt)
     }
 }
 
+void Core::sqlExec(const char *sql, sqlite3_callback back, void *data)
+{
+    r = sqlite3_exec(db, sql, back, data, &error);
+    if (r != SQLITE_OK) {
+        QString error = QString("执行 %1 失败").arg(sql);
+        logError(error);
+    }
+
+}
+
 bool Core::begin()
 {
     try {
@@ -103,5 +113,12 @@ int Core::countCallBack(void *data, int argc, char **argv, char **azColName)
     QString valueStr(*argv);
     int *value = static_cast<int *>(data);
     *value = valueStr.toInt();
+    return SQLITE_OK;
+}
+
+int Core::idListCallBack(void *data, int argc, char **argv, char **azColName)
+{
+    QList<int> *idList = static_cast<QList<int> *>(data);
+    idList->append(QString(argv[0]).toInt());
     return SQLITE_OK;
 }

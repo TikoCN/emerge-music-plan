@@ -13,9 +13,11 @@ struct MediaData
     QString url  = "";
     QString dir  = "";
     long long duration = 0;
+    long long insetTime = 0;
     bool isLove = false;
     int level = 0;
     int playNumber = 0;
+    int id = -1;
 };
 
 #endif // MEDIADATA_H

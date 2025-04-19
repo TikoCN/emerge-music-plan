@@ -32,53 +32,90 @@ void ImageResponse::buildRoundImage(QImage *pix, int radius)
 
     *pix = destImage;
 }
-
-void ImageResponse::downOnlineCover(int id)
+void ImageResponse::loadMusicFile(int id)
 {
-    QString url = SQLite::getInstance()->getMusicUrl(id);
-    if (url == "") return;
+    try {
+        FFmpeg ffmpeg;
+        QString musicUrl = SQLite::getInstance()->getMusicUrl(id);
+        if (musicUrl == "" || !QFile::exists(musicUrl)) {
+            throw QString("路径错误，读取默认封面");
+        }
+        QString coverUrl = Base::getInstance()->getBaseUrl(musicUrl) + ".jpg";
 
-    OnLine *onLine = OnLine::getInstance();
-    FFmpeg ffmpeg;
-    QString coverUrl = Base::getInstance()->getBaseUrl(url) + ".jpg";
-    //提取附加封面
-    m_img = ffmpeg.getInlayCover(url);
+        //提取附加封面
+        m_img = ffmpeg.getInlayCover(musicUrl);
 
-    // 检测独立封面
-    if(m_img.isNull() && QFile::exists(coverUrl)) loadFileCover(coverUrl);
-
-    // 下载网络封面
-    if(m_img.isNull()) onLine->downCover(Base::getInstance()->getFileName(url), coverUrl);
-
-    // 检测独立封面
-    if(m_img.isNull() && QFile::exists(coverUrl)) loadFileCover(coverUrl);
-
-    if (m_img.isNull()) m_img.load(":/image/default.png");
-    m_img = m_img.scaled(m_requestedSize, Qt::IgnoreAspectRatio);
+        if(m_img.isNull() && QFile::exists(coverUrl)) {
+            loadImageFile(coverUrl);
+        }
+    } catch (QString e) {
+        if (m_img.isNull()) m_img.load(":/image/default.png");
+        m_img = m_img.scaled(m_requestedSize, Qt::IgnoreAspectRatio);
+    }
 
     if (!m_img.isNull()) buildRoundImage(&m_img, 10);
 }
 
-void ImageResponse::loadFileCover(int id)
+void ImageResponse::loadMusicOnline(int id)
 {
-    OnLine *onLine = OnLine::getInstance();
-    QString url = SQLite::getInstance()->getMusicUrl(id);
-    if (url == "") return;
-    FFmpeg ffmpeg;
-    QString coverUrl = Base::getInstance()->getBaseUrl(url) + ".jpg";
+    try {
+        FFmpeg ffmpeg;
+        QString musicUrl = SQLite::getInstance()->getMusicUrl(id);
+        if (musicUrl == "" || !QFile::exists(musicUrl)) {
+            throw QString("路径错误，读取默认封面");
+        }
+        QString coverUrl = Base::getInstance()->getBaseUrl(musicUrl) + ".jpg";
 
-    //提取附加封面
-    m_img = ffmpeg.getInlayCover(url);
+        //提取附加封面
+        m_img = ffmpeg.getInlayCover(musicUrl);
 
-    if(m_img.isNull() && QFile::exists(coverUrl)) loadFileCover(coverUrl);
+        // 下载网络封面
+        if(m_img.isNull()) {
+            OnLine::getInstance()->downCover(Base::getInstance()->getFileName(musicUrl), coverUrl);
+        }
 
-    if (m_img.isNull()) m_img.load(":/image/default.png");
-    m_img = m_img.scaled(m_requestedSize, Qt::IgnoreAspectRatio);
+        if(m_img.isNull() && QFile::exists(coverUrl)) {
+            loadImageFile(coverUrl);
+        }
+    } catch (QString e) {
+        if (m_img.isNull()) m_img.load(":/image/default.png");
+        m_img = m_img.scaled(m_requestedSize, Qt::IgnoreAspectRatio);
+    }
 
     if (!m_img.isNull()) buildRoundImage(&m_img, 10);
 }
 
-void ImageResponse::loadFileCover(QString url)
+void ImageResponse::loadTableFile(int id)
+{
+
+}
+
+void ImageResponse::loadTableOnline(int id)
+{
+
+}
+
+void ImageResponse::loadArtistFile(int id)
+{
+
+}
+
+void ImageResponse::loadArtistOnline(int id)
+{
+
+}
+
+void ImageResponse::loadAlbumFile(int id)
+{
+
+}
+
+void ImageResponse::loadAlbumOnline(int id)
+{
+
+}
+
+void ImageResponse::loadImageFile(QString url)
 {
     //如果存在 独立封面
     if(QFile::exists(url))
@@ -108,19 +145,36 @@ void ImageResponse::run()
     QString type = m_url.split(":").first();
     int id = m_url.split(":").last().toInt();
 
-    QStringList typeList = {"file", "fileClip", "back", "onLine"};
+    QStringList typeList = {
+        "musicFile", "musicOnLine",
+        "artistFile", "artistOnLine",
+        "albumFile", "albumOnLine",
+        "tableFile", "tableOnLine"
+    };
     switch (typeList.indexOf(type)) {
     case 0:
-        loadFileCover(id);
+        loadMusicFile(id);
         break;
     case 1:
-        loadFileClipCover(id);
+        loadMusicOnline(id);
         break;
     case 2:
-        downOnlineCover(id);
+        loadArtistFile(id);
         break;
     case 3:
-        downOnlineCover(id);
+        loadArtistOnline(id);
+        break;
+    case 4:
+        loadAlbumFile(id);
+        break;
+    case 5:
+        loadAlbumOnline(id);
+        break;
+    case 6:
+        loadTableFile(id);
+        break;
+    case 7:
+        loadTableOnline(id);
         break;
     default:
         break;

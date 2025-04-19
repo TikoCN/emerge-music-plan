@@ -34,12 +34,13 @@ int main(int argc, char *argv[])
     SQLite::buildInstance();
 
     //获得单例指针
-    Setting* seit = Setting::getInstance();
-    MusicCore* core = MusicCore::getInstance();
-    MediaPlayer* mediaPlayer = MediaPlayer::getInstance();
-    TaskCenter* center = TaskCenter::getInstance();
-    OnLine* onLine = OnLine::getInstance();
-    Base* base = Base::getInstance();
+    Setting *seit = Setting::getInstance();
+    MusicCore *core = MusicCore::getInstance();
+    MediaPlayer *mediaPlayer = MediaPlayer::getInstance();
+    TaskCenter *center = TaskCenter::getInstance();
+    OnLine *onLine = OnLine::getInstance();
+    Base *base = Base::getInstance();
+    SQLite *sql = SQLite::getInstance();
     mediaPlayer->core = core;
 
     // 注册单例
@@ -48,6 +49,7 @@ int main(int argc, char *argv[])
     qmlRegisterSingletonInstance<OnLine>("MediaerAPI", 1, 0, "OnLine", onLine);
     qmlRegisterSingletonInstance<Base>("MediaerAPI", 1, 0, "Base", base);
     qmlRegisterSingletonInstance<MusicCore>("MediaerAPI", 1, 0, "Core", core);
+    qmlRegisterSingletonInstance<SQLite>("MediaerAPI", 1, 0, "SQLData", sql);
 
     // 注册数据类
     qmlRegisterType<Music *>("DataCore", 1, 0, "MusicData");
@@ -59,7 +61,6 @@ int main(int argc, char *argv[])
     QObject::connect(seit, &Setting::loadMusics, center, &TaskCenter::start);
     QObject::connect(mediaPlayer, &MediaPlayer::downLrc, onLine, &OnLine::downLrc);
     QObject::connect(onLine, &OnLine::lrcDowned, mediaPlayer, &MediaPlayer::loadLrcList);
-    QObject::connect(center, &TaskCenter::finish, core, &MusicCore::getMusicCore);
 
     // 开始加载
     seit->loadMusicCores();

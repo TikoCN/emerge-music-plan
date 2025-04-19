@@ -32,16 +32,16 @@ Item {
         }
 
         delegate: CoreMusicButton {
-            music: musicData
+            musicId: inMusicId
             height: randMusicList.height
             width: randMusicList.width / 6 - randMusicList.spacing
         }
     }
 
     function build () {
-        var musicList = Core.getMusicRandList()
+        var musicList = SQLData.getMusicRandList()
         for (var i in musicList) {
-            musicRandModel.append({musicData: musicList[i]})
+            musicRandModel.append({inMusicId: musicList[i]})
         }
     }
 

@@ -83,7 +83,7 @@ Item {
 
                     delegate: CoreAlbumButton {
                         id: albumButton
-                        album: albumData
+                        // albumId: albumData
                     }
                 }
             }

@@ -62,8 +62,6 @@ public:
 
     void appendInfo(QFileInfoList fileInfoList);
     void appendMedia(QList<MediaData> dataList);
-signals:
-    void finish();
 };
 
 

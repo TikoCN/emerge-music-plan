@@ -7,6 +7,11 @@ Album::Album(QString name, int id, QString lineKey)
 
 }
 
+QList<int> Album::getMusicList() const
+{
+    return musicList;
+}
+
 QString Album::getLineKey() const
 {
     return lineKey;
@@ -16,7 +21,7 @@ QString Album::getStringTime()
 {
     long long time = 0;
     for (int i = 0; i < musicList.size(); ++i) {
-        time += musicList[i]->endTime;
+        //
     }
 
     // 转换标准时间
@@ -31,11 +36,6 @@ QString Album::getArtist()
 int Album::getId() const
 {
     return id;
-}
-
-QList<Music *> Album::getMusicList() const
-{
-    return musicList;
 }
 
 QString Album::getName() const

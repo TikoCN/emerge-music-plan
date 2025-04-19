@@ -36,16 +36,16 @@ Item {
 
         delegate: CoreMusicLine {
             width: playMoreMusicGrid.width / 3 - 10
-            music: musicData
+            musicId: inMusicId
             isLittle: true
             type: -1
         }
     }
 
     function build(){
-        var playMoreMusicList = Core.getReadMoreList()
+        var playMoreMusicList = SQLData.getReadMoreList()
         for (var i in playMoreMusicList) {
-            playMoreMusicModel.append({musicData: playMoreMusicList[i]})
+            playMoreMusicModel.append({inMusicId: playMoreMusicList[i]})
         }
     }
 
