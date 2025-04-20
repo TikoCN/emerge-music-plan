@@ -41,16 +41,17 @@ void Core::stmtBindInt(sqlite3_stmt *stmt, int pos, long long i)
 bool Core::stmtStep(sqlite3_stmt *stmt)
 {
     r = sqlite3_step(stmt);
-    if (r == SQLITE_DONE) {
+    if (r == SQLITE_ROW) {
         return true;
     }
-    else if (r != SQLITE_ROW) {
-        char *sql = sqlite3_expanded_sql(stmt);
-        QString error = QString("执行 %1 失败").arg(sql);
-        sqlite3_free(sql);
-        logError(error);
+    else if (r == SQLITE_DONE) {
+        return false;
     }
 
+    char *sql = sqlite3_expanded_sql(stmt);
+    QString error = QString("执行 %1 失败").arg(sql);
+    sqlite3_free(sql);
+    logError(error);
     return false;
 }
 

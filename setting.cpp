@@ -51,7 +51,7 @@ bool Setting::getParameterList()
 
     windowRect.setRect(ini->value("windowRectX").toDouble(), ini->value("windowRectY").toDouble(),
                        ini->value("windowRectW").toDouble(), ini->value("windowRectH").toDouble());
-    player->audioOutput->setVolume(ini->value("volume").toFloat());
+    player->getAudioOutput()->setVolume(ini->value("volume").toFloat());
 
     ini->endGroup();
     ini->sync();//写入磁盘
@@ -119,7 +119,7 @@ void Setting::writeData()
     ini->setValue("windowRectW", windowRect.width());
     ini->setValue("windowRectH", windowRect.height());
 
-    ini->setValue("volume", player->audioOutput->volume());
+    ini->setValue("volume", player->getAudioOutput()->volume());
 
     ini->endGroup();
     ini->sync();//写入磁盘
@@ -165,11 +165,11 @@ Setting::Setting()
 
     MediaPlayer* player = MediaPlayer::getInstance();
     //额外读写数据
-    connect(player->audioOutput, &QAudioOutput::volumeChanged, this, [=](float volume){
+    connect(player->getAudioOutput(), &QAudioOutput::volumeChanged, this, [=](float volume){
         setParameter("volume", volume);
     });
 
-    connect(player->player, &QMediaPlayer::playbackRateChanged, this, [=](float rate){
+    connect(player->getPlayer(), &QMediaPlayer::playbackRateChanged, this, [=](float rate){
         setParameter("playRate", rate);
     });
 }

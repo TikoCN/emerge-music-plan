@@ -14,9 +14,9 @@ QtObject {
     signal mainTurnSeit()
     signal mainTurnMain()
     signal mainTurnAlbumPage()
-    signal mainTurnAlbumPlayer(AlbumData album)
+    signal mainTurnAlbumPlayer(int album)
     signal mainTurnArtistPage()
-    signal mainTurnArtistPlayer(ArtistData artist)
+    signal mainTurnArtistPlayer(int artist)
 
 
     function editMusic(parent, core){

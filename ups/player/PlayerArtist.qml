@@ -1,16 +1,18 @@
 import QtQuick
 import Tiko
-import Ups
 import MediaerAPI
+import Ups
+import DataCore
 
 Item{
     id: artistDataShow
-    property var artist
+    property ArtistData artist: null
+    property int artistId: -1
 
     TikoButtonIcon{
         y: -10
         icon.source: "qrc:/image/back.png"
-        onClicked: mainView.turnToArtist()
+        onClicked: CoreData.mainTurnArtistPage()
     }
 
     // 专辑信息背景
@@ -73,25 +75,25 @@ Item{
             width: musicList.width
             listId: musicListId
             musicId: inMusicId
-            type: 2
+            onPlay: MediaPlayer.buildMusicartist(artistId, listId)
         }
     }
 
-
-    function openArtistData (artist) {
+    function openartistData (artistId) {
         var allTime = 0
-        artistDataCover.source = "image://cover/artist:" +  artist.id.toString()
+        artistDataShow.artistId = artistId
+        artist = Core.getArtist(artistId)
+        artistDataCover.source = "image://cover/artistFile:" +  artist.id.toString()
         artistMusicList.clear()
         for (var i=0; i<artist.musicList.length; i++) {
             artistMusicList.append({
-                                       musicListId: i,
-                                       inMusicId: artist.musicList[i]
-                                   })
+                                      musicListId: i,
+                                      inMusicId: artist.musicList[i]
+                                  })
             allTime += artist.musicList[i].endTime
         }
         artistText.text = artist.name
         artistHelp.text = artist.musicList.length.toString()+" "+qsTr("首歌曲") +"-"
-               +artist.getStringTime()+" "+qsTr("歌曲长度")
-        artistDataShow.artist = artist
+                +artist.getStringTime()+" "+qsTr("歌曲长度")
     }
 }

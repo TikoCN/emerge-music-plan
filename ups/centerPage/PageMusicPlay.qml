@@ -204,9 +204,9 @@ Item {
     }
 
     Connections{
-        target:MediaPlayer.player
+        target: MediaPlayer.player
         function onSourceChanged(){
-            backCover.loadUrl = "image://cover/back:" + MediaPlayer.playingMusic.coreId.toString()
+            backCover.loadUrl = "image://cover/musicOnLine:" + MediaPlayer.playingMusic.coreId.toString()
         }
     }
 

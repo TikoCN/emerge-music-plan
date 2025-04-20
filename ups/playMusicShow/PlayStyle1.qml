@@ -201,13 +201,13 @@ Item{
         function onSourceChanged(){
             artist.text = MediaPlayer.playingMusic.artist
             title.text = MediaPlayer.playingMusic.title
-            cover.source = "image://cover/onLine:" + MediaPlayer.playingMusic.coreId.toString()
+            cover.source = "image://cover/musicOnLine:"+ MediaPlayer.playingMusic.coreId.toString()
         }
     }
 
     Component.onCompleted: {
         artist.text = MediaPlayer.playingMusic.artist
         title.text = MediaPlayer.playingMusic.title
-        cover.source = "image://cover/onLine:" + MediaPlayer.playingMusic.coreId.toString()
+        cover.source = "image://cover/musicOnLine:"+ MediaPlayer.playingMusic.coreId.toString()
     }
 }

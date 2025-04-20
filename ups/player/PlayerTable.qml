@@ -23,7 +23,7 @@ Item {
             anchors.left: parent.left
             anchors.leftMargin: 10
             normalUrl: "qrc:/image/default.png"
-            loadUrl: "image://cover/table:" + tableId.toString()
+            loadUrl: "image://cover/tableFile:" + tableId.toString()
             width: 200
             height: 200
             loadFlag: visible && table !== null && tableId !== -1
@@ -186,16 +186,11 @@ Item {
             width: musicList.width - 20
             listId: musicListId
             musicId: inMusicId
+            onPlay: MediaPlayer.buildMusicTable(tableId, listId)
         }
     }
 
     onTableChanged: {
-        if(table === null) return
-        playerTable.updateCover()
-        playerTable.appendMusic(0, table.musicList.length)
-    }
-
-    function updateCover(){
         //调整列表展示信息
         if(table === null) return
         if(table.musicList.length !== 0){
@@ -205,11 +200,9 @@ Item {
             tableHelp.text = table.musicList.length.toString()+" "+qsTr("首歌曲") +"-"+
                     Base.timeToString(allTime)+" "+qsTr("歌曲长度")
         }
-    }
 
-    function appendMusic(start, length){
-        if(table === null) return
-        for(var i=start; i<start+length; i++){
+        musicModel.clear()
+        for(var i=0; i<table.musicList.length; i++){
             musicModel.append({
                                   musicListId: i,
                                   inMusicId: table.musicList[i]

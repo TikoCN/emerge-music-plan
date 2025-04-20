@@ -31,7 +31,6 @@ public:
     Q_INVOKABLE void writeDataToFile(QStringList key, QStringList value);
 
     // 读取元数据
-    void readMedia();
     void setMedia(MediaData data);
 
     // 读取所有标签

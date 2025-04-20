@@ -15,6 +15,20 @@ private:
     static MediaPlayer* instance;
     MediaPlayer();
 
+    QMediaPlayer *m_player;//播放设备
+    QAudioOutput *m_audioOutput;//音频输出
+    QAudioBufferOutput *m_bufferOutput;//缓冲区输出
+
+    QList<Music *> m_musicList;//正在播放列表
+    QVector<double> m_allSamples;//处理之后的音乐样本
+    QList<LrcData *> m_lrcList;//歌词
+
+    MusicCore *m_core;//音乐数据中心
+    int m_loopType;//播放种类
+    int m_playingMusicListId;//正在播放歌曲的列表id
+    Music *m_playingMusic;// 正在播放音乐
+    LrcData *m_playingLrc;// 正在播放歌词行
+
     Q_PROPERTY(QMediaPlayer *player READ getPlayer CONSTANT)
 
     Q_PROPERTY(int loopType READ getLoopType WRITE setLoopType NOTIFY loopTypeChanged FINAL)
@@ -48,21 +62,6 @@ public:
         }
     }
 
-    QMediaPlayer *player;//播放设备
-    QAudioOutput *audioOutput;//音频输出
-    QAudioBufferOutput *bufferOutput;//缓冲区输出
-
-    QList<Music *> musicList;//正在播放列表
-    QVector<double> allSamples;//处理之后的音乐样本
-    QList<LrcData *> lrcList;//歌词
-
-    MusicCore *core;//音乐数据中心
-    int loopType;//播放种类
-    int playingMusicListId;//正在播放歌曲的列表id
-    Music *playingMusic;// 正在播放音乐
-    LrcData *playingLrc;// 正在播放歌词行
-
-public:
     //删除以及加载的数据
     Q_INVOKABLE void clearData();
 
@@ -70,27 +69,30 @@ public:
     void updateAudioOutPut();
 
     //播放音乐
-    Q_INVOKABLE void playMusic(Table *table, int musicId = 0);
-    Q_INVOKABLE void playMusic(Album *album, int musicId = 0);
-    Q_INVOKABLE void playMusic(Artist* artist, int musicId = 0);
-    Q_INVOKABLE void playMusic(int musicId);
-    Q_INVOKABLE void playMusic(Music *music);
+    Q_INVOKABLE void playMusicList(int musicListId);
+
+    Q_INVOKABLE void buildMusicAlbum(int albumId, int listId = 0);
+    Q_INVOKABLE void buildMusicArtist(int artistId, int listId = 0);
+    Q_INVOKABLE void buildMusicTable(int tableId, int listId = 0);
+    Q_INVOKABLE void buildMusic(int musicId);
+    Q_INVOKABLE void buildMusicList(QList<int> list);
 
     //加载歌词
     void loadLrcList();
 
     // 播放列表插入歌曲
-    Q_INVOKABLE void insertMusic(Music *music);
-    Q_INVOKABLE void insertMusic(QList<Music *> musicList);
-    Q_INVOKABLE void insertMusic(Album *album);
-    Q_INVOKABLE void insertMusic(Artist *artist);
+    Q_INVOKABLE void insertMusicAlbum(int albumId);
+    Q_INVOKABLE void insertMusicArtist(int artistId);
+    Q_INVOKABLE void insertMusicTable(int tableId);
+    Q_INVOKABLE void insertMusic(int musicId);
+    Q_INVOKABLE void insertMusicList(QList<int> list);
 
     // 播放列表插入歌曲
-    Q_INVOKABLE void appendMusic(Music *music);
-    Q_INVOKABLE void appendMusic(QList<Music *> musicList);
-    Q_INVOKABLE void appendMusic(Album *album);
-    Q_INVOKABLE void appendMusic(Artist *artist);
-
+    Q_INVOKABLE void appendMusicAlbum(int albumId);
+    Q_INVOKABLE void appendMusicArtist(int artistId);
+    Q_INVOKABLE void appendMusicTable(int tableId);
+    Q_INVOKABLE void appendMusic(int musicId);
+    Q_INVOKABLE void appendMusicList(QList<int> list);
     //播放下一首
     Q_INVOKABLE void playNext(int forward);
 
@@ -132,10 +134,10 @@ signals:
     void finishClearData();
 
     //重建播放列表
-    void buildMusicList();
+    void musicListBuild();
 
     //将歌曲添加到播放播放列表
-    void musicAppend(int, int);
+    void musicListAppend(int, int);
 
     //绘制音频波形
     void cppDrawLine(QVector<double>);

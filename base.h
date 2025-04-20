@@ -52,7 +52,7 @@ public:
 
     QList<QStringList> getChineseToPinyinJson();
 
-    void sendMessage(QString msg, int type);
+    void sendMessage(QString msg, int type = 0);
 
     // 重命名文件
     bool renameFile(QString oldUrl, QString newUrl);

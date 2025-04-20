@@ -2,6 +2,7 @@ import QtQuick
 import Tiko
 import MediaerAPI
 import DataCore
+import Ups
 
 Item{
     id: artistButton
@@ -24,7 +25,7 @@ Item{
     MouseArea {
         id: mouse
         anchors.fill: parent
-        onClicked: CoreData.mainTurnArtistPlayer(artist)
+        onClicked: CoreData.mainTurnArtistPlayer(artistId)
         hoverEnabled: true
 
         Item {
@@ -39,7 +40,7 @@ Item{
                 width: r
                 height: r
                 normalUrl: "qrc:/image/artist.png"
-                loadUrl: "image://cover/artist:" + artistId.toString()
+                loadUrl: "image://cover/artistFile:" + artistId.toString()
             }
 
             // 播放按钮

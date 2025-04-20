@@ -175,7 +175,6 @@ bool Base::renameFile(QString oldUrl, QString newUrl)
         }
     }
     catch(QString e){
-        qDebug()<<e;
         return false;
     }
     return true;
@@ -183,7 +182,7 @@ bool Base::renameFile(QString oldUrl, QString newUrl)
 
 QString Base::getBaseUrl(QString url)
 {
-    return url.split("." + url.split(".").last()).last();
+    return url.split("." + url.split(".").last()).first();
 }
 
 QString Base::getFileName(QString url)

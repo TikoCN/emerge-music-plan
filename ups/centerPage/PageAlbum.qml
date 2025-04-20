@@ -3,15 +3,20 @@ import QtQuick.Controls
 import Tiko
 import MediaerAPI
 import Ups
+
 Item {
     id: albumPage
 
+    property string key: ""
+    property string keyList: []
+
     // 跳转按钮列表
     ListView {
-        id: albumTurnButtonList
+        id: albumButtonList
         orientation: ListView.Horizontal
-        currentIndex: albumLineList.currentIndex
         width: parent.width - 60
+        currentIndex: keyList.indexOf(key)
+        height: 40
         anchors.left: parent.left
         anchors.margins: 30
         spacing: 10
@@ -20,112 +25,65 @@ Item {
         preferredHighlightEnd: width / 4
 
         model: ListModel {
-            id: albumTurnButtonModel
+            id: albumButtonModel
         }
 
         delegate: TikoTextLine {
-            text: lineText
+            text: keyString
             height: 40
             opacity: ListView.isCurrentItem ? 1 : 0.3
             exSize: ListView.isCurrentItem ? 5 : 3
 
             MouseArea {
                 anchors.fill: parent
-                onClicked: {
-                    albumLineList.currentIndex = lineId
-                    albumLineList.positionViewAtIndex(lineId, ListView.SnapPosition)
-                }
+                onClicked: key = keyString
             }
         }
     }
 
-    ListView {
-        id: albumLineList
-        anchors.left: parent.left
-        anchors.top: albumTurnButtonList.bottom
+    Grid {
+        id: albumShow
+        width: parent.width
+        columns: width / 160
+        columnSpacing: 9
+        rowSpacing: 10
+        anchors.top: albumButtonList.bottom
         anchors.margins: 30
-        width: parent.width - 60
-        height: parent.height - albumTurnButtonList.height - 60
-        ScrollBar.vertical: TikoBarV{}
-        clip: true
+        flow: Grid.LeftToRight
 
-        model: ListModel{
-            id: albumModel
-        }
-
-        delegate: Item {
-            id: albumLine
-            width: albumLineList.width
-            height: albumLineText.height + albumShow.height + 10
-            property int lineId: albumLineId
-
-            TikoTextLine {
-                id: albumLineText
-                text: lineText
-                width: parent.width
-                exSize: 10
-                color: TikoSeit.themeColor
-                opacity: parent.ListView.isCurrentItem ? 1 : 0.3
+        Repeater{
+            model: ListModel {
+                id: albumModel
             }
 
-            Grid {
-                id: albumShow
-                width: parent.width
-                columns: width / 160
-                columnSpacing: 9
-                rowSpacing: 10
-                anchors.top: albumLineText.bottom
-                anchors.margins: 10
-                flow: Grid.LeftToRight
-
-                Repeater{
-                    model: albumDataList
-
-                    delegate: CoreAlbumButton {
-                        id: albumButton
-                        // albumId: albumData
-                    }
-                }
+            delegate: CoreAlbumButton {
+                id: albumButton
+                albumId: inalbumId
             }
         }
     }
+
 
     function build () {
         albumModel.clear()
-        var list = Core.albumList
-        var all = 0
-        var albumDataList = []
-        var lineKey = ""
-        var length = 0
-        var line = 0
+        var list = SQLData.getAlbumKeyList()
+        if (list.length > 0) {
+            keyList = list
+            key = list[0]
+        }
+
         for (var i=0; i<list.length; i++) {
+            albumButtonModel.append({keyString: list[i]})
+        }
+    }
 
-            if (lineKey !== list[i].lineKey) {
-                if (albumDataList.length > 0){
-                    albumModel.append({
-                                          lineText: lineKey,
-                                          albumDataList: albumDataList,
-                                          leng: length,
-                                          albumLineId: line
-                                      })
-                    albumTurnButtonModel.append({
-                                                    lineText: lineKey,
-                                                    lineId: line
-                                                })
-                    length = 0
-                    line++
-                }
-                lineKey = list[i].lineKey
-                albumDataList = []
-            }
-
-            albumDataList.push({
-                                   lineId: i,
-                                   albumData: list[i],
-                                   musicId: list[i].musicList[0].coreId
-                               })
-            length++
+    onKeyChanged: {
+        albumModel.clear()
+        var list = SQLData.getAlbum(key)
+        for (var i=0; i<list.length; i++) {
+            albumModel.append({inalbumId: list[i]})
         }
     }
 }
+
 

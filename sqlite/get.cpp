@@ -5,7 +5,7 @@ QStringList Get::getArtistKeyList()
 {
     QStringList keyList;
     try {
-        const char *sql = "SELECT name FROM artist";
+        const char *sql = "SELECT key FROM artist";
 
         sqlite3_callback callback = [](void *data, int argc, char **argv, char **azColName)->int{
             QStringList *keyList = static_cast<QStringList *>(data);
@@ -20,37 +20,27 @@ QStringList Get::getArtistKeyList()
     return keyList;
 }
 
-QHash<int, Artist *> Get::getArtist(QString key)
+QList<int> Get::getArtist(QString key)
 {
-    QHash<int, Artist *> artistHash;
+    QList<int> artistList;
     sqlite3_stmt *stmt = nullptr;
 
     try {
-        const char *sql = "SELECT artist.name, artist.artist_id, artist.key, "
-                          "GROUP_CONCAT(artist_music.music_id) AS artist_music "
+        const char *sql = "SELECT artist_id "
                           "FROM artist "
-                          "JOIN artist_music ON artist.artist_id = artist_music.artist_id "
-                          "WHERE artist.key = ? LIMIT 1";
+                          "WHERE key = ? ";
         stmtPrepare(&stmt, sql);
         stmtBindText(stmt, 1, key);
-        while (!stmtStep(stmt)) {
-            QString name = QString::fromUtf8(sqlite3_column_text(stmt, 0));
-            int id = sqlite3_column_int(stmt, 1);
-            QString key = QString::fromUtf8(sqlite3_column_text(stmt, 2));
-            QStringList list = QString::fromUtf8(sqlite3_column_text(stmt, 3)).split(",");
-
-            Artist *artist = new Artist(name, id, key);
-            for (int j = 0; j < list.size(); ++j) {
-                artist->musicList.append(list[j].toInt());
-            }
-            artistHash.insert(id, artist);
+        while (stmtStep(stmt)) {
+            int id = sqlite3_column_int(stmt, 0);
+            artistList.append(id);
         }
     } catch (QString e) {
         sqlite3_finalize(stmt);
-        return artistHash;
+        artistList.clear();
     }
     sqlite3_finalize(stmt);
-    return artistHash;
+    return artistList;
 }
 
 Artist *Get::getArtist(int id)
@@ -108,7 +98,7 @@ QStringList Get::getAlbumKeyList()
 {
     QStringList keyList;
     try {
-        const char *sql = "SELECT name FROM album";
+        const char *sql = "SELECT key FROM album";
 
         sqlite3_callback callback = [](void *data, int argc, char **argv, char **azColName)->int{
             QStringList *keyList = static_cast<QStringList *>(data);
@@ -123,37 +113,27 @@ QStringList Get::getAlbumKeyList()
     return keyList;
 }
 
-QHash<int, Album *> Get::getAlbum(QString key)
+QList<int> Get::getAlbum(QString key)
 {
-    QHash<int, Album *> albumHash;
+    QList<int> albumList;
     sqlite3_stmt *stmt = nullptr;
 
     try {
-        const char *sql = "SELECT album.name, album.album_id, album.key, "
-                          "GROUP_CONCAT(music.music_id) AS album_music "
+        const char *sql = "SELECT album_id "
                           "FROM album "
-                          "JOIN music ON album.album_id = music.album_id "
-                          "WHERE album.key = ? LIMIT 1";
+                          "WHERE key = ? ";
         stmtPrepare(&stmt, sql);
         stmtBindText(stmt, 1, key);
-        while (!stmtStep(stmt)) {
-            QString name = QString::fromUtf8(sqlite3_column_text(stmt, 0));
-            int id = sqlite3_column_int(stmt, 1);
-            QString key = QString::fromUtf8(sqlite3_column_text(stmt, 2));
-            QStringList list = QString::fromUtf8(sqlite3_column_text(stmt, 3)).split(",");
-
-            Album *album = new Album(name, id, key);
-            for (int j = 0; j < list.size(); ++j) {
-                album->musicList.append(list[j].toInt());
-            }
-            albumHash.insert(id, album);
+        while (stmtStep(stmt)) {
+            int id = sqlite3_column_int(stmt, 0);
+            albumList.append(id);
         }
     } catch (QString e) {
         sqlite3_finalize(stmt);
-        return albumHash;
+        albumList.clear();
     }
     sqlite3_finalize(stmt);
-    return albumHash;
+    return albumList;
 }
 
 Album *Get::getAlbum(int id)
@@ -248,7 +228,7 @@ QHash<int, Music *> Get::getMusic(QList<int> idList)
                           "JOIN artist_music ON artist_music.music_id = music.music_id "
                           "JOIN artist ON artist_music.artist_id = artist.artist_id "
                           "WHERE music.music_id = ? "
-                          "GROUP BY music.music_id;";
+                          "GROUP BY music.music_id";
         stmtPrepare(&stmt, sql);
         for (int i = 0; i < idList.size(); ++i) {
             stmtReset(stmt);
@@ -376,7 +356,7 @@ MediaData Get::getMediaFromStmt(sqlite3_stmt *stmt)
      */
 
     MediaData data;
-    data.id = sqlite3_column_int(stmt, 1);
+    data.id = sqlite3_column_int(stmt, 0);
     data.title = QString::fromUtf8(sqlite3_column_text(stmt, 1));
     data.duration = sqlite3_column_int64(stmt, 2);
     data.insetTime = sqlite3_column_int64(stmt, 3);
@@ -389,7 +369,3 @@ MediaData Get::getMediaFromStmt(sqlite3_stmt *stmt)
     return data;
 }
 
-// QList<Table *> Get::getList(int id)
-// {
-
-// }

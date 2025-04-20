@@ -108,8 +108,8 @@ Item {
         }
     }
 
-    function turnToArtistPlayer(artist){
-        artistPlayer.openArtistData(artist)
+    function turnToArtistPlayer(artistId){
+        artistPlayer.openArtistData(artistId)
         if(stackView.currentItem != artistPlayer){
             stackView.replace(artistPlayer)
         }
@@ -121,8 +121,8 @@ Item {
         }
     }
 
-    function turnToAlbumPlayer(album){
-        albumPlayer.openAlbumData(album)
+    function turnToAlbumPlayer(albumId){
+        albumPlayer.openAlbumData(albumId)
         if(stackView.currentItem != albumPlayer){
             stackView.replace(albumPlayer)
         }
@@ -139,8 +139,8 @@ Item {
     }
 
     function buildData(){
-        // artistPage.build()
-        // albumPage.build()
+        artistPage.build()
+        albumPage.build()
         mainPage.buildRand()
     }
 

@@ -26,7 +26,7 @@ Item{
     MouseArea {
         id: mouse
         anchors.fill: parent
-        onClicked: CoreData.mainTurnAlbumPlayer(album)
+        onClicked: CoreData.mainTurnAlbumPlayer(albumId)
         hoverEnabled: true
 
         Item {
@@ -41,7 +41,7 @@ Item{
                 width: r
                 height: r
                 normalUrl: "qrc:/image/album.png"
-                loadUrl: "image://cover/file:" + albumId.toString()
+                loadUrl: "image://cover/albumFile:" + albumId.toString()
             }
 
             // 播放按钮

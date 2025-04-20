@@ -26,11 +26,11 @@ int main(int argc, char *argv[])
 
     //建立
     OnLine::buildInstance();
+    MusicCore::buildInstance();
     MediaPlayer::buildInstance();
     Setting::buildInstance();
     TaskCenter::buildInstance();
     Base::buildInstance();
-    MusicCore::buildInstance();
     SQLite::buildInstance();
 
     //获得单例指针
@@ -41,7 +41,6 @@ int main(int argc, char *argv[])
     OnLine *onLine = OnLine::getInstance();
     Base *base = Base::getInstance();
     SQLite *sql = SQLite::getInstance();
-    mediaPlayer->core = core;
 
     // 注册单例
     qmlRegisterSingletonInstance<Setting>("MediaerAPI", 1, 0, "Setting", seit);

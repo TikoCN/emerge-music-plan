@@ -35,6 +35,7 @@ Item {
             musicId: inMusicId
             height: randMusicList.height
             width: randMusicList.width / 6 - randMusicList.spacing
+            onPlay: MediaPlayer.buildMusic(inMusicId)
         }
     }
 

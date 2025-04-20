@@ -19,7 +19,7 @@ Item {
         anchors.top: playPos.bottom
         anchors.topMargin: 10
 
-        Image{
+        Image {
             id: cover
             x: 10
             width: 50
@@ -249,10 +249,10 @@ Item {
     Connections{
         target: MediaPlayer.player
         function onSourceChanged(){
-            if(!MediaPlayer.playingMusic != null){
+            if(MediaPlayer.playingMusic !== null){
                 artist.text = MediaPlayer.playingMusic.artist
                 title.text = MediaPlayer.playingMusic.title
-                cover.source = "image://cover/onLine:" + MediaPlayer.playingMusic.coreId.toString()
+                cover.source = "image://cover/musicOnLine:" + MediaPlayer.playingMusic.coreId.toString()
             }
         }
     }

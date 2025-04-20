@@ -38,7 +38,7 @@ Item {
             width: playMoreMusicGrid.width / 3 - 10
             musicId: inMusicId
             isLittle: true
-            type: -1
+            onPlay: MediaPlayer.buildMusic(inMusicId)
         }
     }
 

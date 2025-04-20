@@ -2,15 +2,17 @@ import QtQuick
 import Tiko
 import MediaerAPI   
 import Ups
+import DataCore
 
 Item{
     id: albumDataShow
-    property var album
+    property AlbumData album: null
+    property int albumId: -1
 
     TikoButtonIcon{
         y: -10
         icon.source: "qrc:/image/back.png"
-        onClicked: mainView.turnToAlbum()
+        onClicked: CoreData.mainTurnAlbumPage()
     }
 
     // 专辑信息背景
@@ -73,13 +75,15 @@ Item{
             width: musicList.width
             listId: musicListId
             musicId: inMusicId
-            type: 1
+            onPlay: MediaPlayer.buildMusicAlbum(albumId, listId)
         }
     }
 
-    function openAlbumData (album) {
+    function openAlbumData (albumId) {
         var allTime = 0
-        albumDataCover.source = "image://cover/album:" +  album.id.toString()
+        albumDataShow.albumId = albumId
+        album = Core.getAlbum(albumId)
+        albumDataCover.source = "image://cover/albumFile:" +  album.id.toString()
         albumMusicList.clear()
         for (var i=0; i<album.musicList.length; i++) {
             albumMusicList.append({
@@ -91,6 +95,5 @@ Item{
         albumText.text = album.name
         albumHelp.text = album.musicList.length.toString()+" "+qsTr("首歌曲") +"-"
                 +album.getStringTime()+" "+qsTr("歌曲长度")
-        albumDataShow.album = album
     }
 }

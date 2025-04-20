@@ -10,6 +10,7 @@ Item {
     property int musicId: -1
     property int type: 0
     property MusicData music: musicButton.visible ? Core.getMusic(musicId) : null
+    signal play()
 
     Rectangle {
         anchors.fill: parent
@@ -21,19 +22,12 @@ Item {
         id: mouse
         anchors.fill: parent
         hoverEnabled: true
-        onClicked: {
-            if (music === null) {
-                return
-            }
-
-            MediaPlayer.playMusic(music)
-            window.stackMusicPaly()
-        }
+        onClicked: play()
 
         TikoImageAuto {
             id: musicCover
             normalUrl: "qrc:/image/exe.png"
-            loadUrl: "image://cover/file:" + musicId.toString()
+            loadUrl: "image://cover/musicFile:" + musicId.toString()
             loadFlag: visible && music !== null
             anchors.top: parent.top
             anchors.left: parent.left
@@ -58,6 +52,7 @@ Item {
             hover: 0.1
             borderSize: 1.5
             autoColor: Setting.backdropColor
+            onClicked: play()
         }
 
         // 菜单按钮

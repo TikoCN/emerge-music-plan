@@ -77,16 +77,9 @@ void Music::writeDataToFile(QStringList key, QStringList value)
     }
 }
 
-void Music::readMedia()
-{
-    FFmpeg ff;
-    MediaData data;
-    ff.getDict(&data, url);
-    setMedia(data);
-}
-
 void Music::setMedia(MediaData data)
 {
+    coreId = data.id;
     title = data.title;
     artistList = data.artistList;
     album = data.album;

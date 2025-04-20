@@ -43,7 +43,7 @@ Drawer {
 
         delegate: CoreMusicLine{
             width: musicList.width - 20
-            type: -1
+            onPlay: MediaPlayer.playMusicList(listId)
             listId: musicListId
             musicId: MediaPlayer.musicList[musicListId].coreId
         }
@@ -53,12 +53,12 @@ Drawer {
     Connections{
         target: MediaPlayer
 
-        function onBuildMusicList(){
-            playingTable.buildMusicLine()
+        function onMusicListBuild(){
+            buildMusicLine()
         }
 
-        function onMusicAppend(start, length){
-            playingTable.addNewMuiscLine(MediaPlayer.musicList.length - 1)
+        function onMusicListAppend(start, length){
+            appendMusic(start, length)
         }
 
         function onClearData(){

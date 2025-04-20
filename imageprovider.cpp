@@ -1,5 +1,4 @@
 #include "imageprovider.h"
-#include "musiccore.h"
 #include <QPixmapCache>
 #include "online.h"
 #include <QPainter>
@@ -37,22 +36,24 @@ void ImageResponse::loadMusicFile(int id)
     try {
         FFmpeg ffmpeg;
         QString musicUrl = SQLite::getInstance()->getMusicUrl(id);
-        if (musicUrl == "" || !QFile::exists(musicUrl)) {
-            throw QString("路径错误，读取默认封面");
-        }
-        QString coverUrl = Base::getInstance()->getBaseUrl(musicUrl) + ".jpg";
 
         //提取附加封面
-        m_img = ffmpeg.getInlayCover(musicUrl);
+        if (QFile::exists(musicUrl))
+            m_img = ffmpeg.getInlayCover(musicUrl);
+        if (!m_img.isNull())  throw (true);
 
-        if(m_img.isNull() && QFile::exists(coverUrl)) {
-            loadImageFile(coverUrl);
-        }
+        QString coverUrl = Base::getInstance()->getBaseUrl(musicUrl) + ".jpg";
+        loadImageFile(coverUrl);
+        if (m_img.isNull())
+            throw QString("加载失败，读取默认封面");
+
     } catch (QString e) {
-        if (m_img.isNull()) m_img.load(":/image/default.png");
-        m_img = m_img.scaled(m_requestedSize, Qt::IgnoreAspectRatio);
+        m_img.load(":/image/default.png");
+    } catch (bool finish) {
+        // 加载完成，提前退出
     }
 
+    m_img = m_img.scaled(m_requestedSize, Qt::IgnoreAspectRatio);
     if (!m_img.isNull()) buildRoundImage(&m_img, 10);
 }
 
@@ -61,27 +62,29 @@ void ImageResponse::loadMusicOnline(int id)
     try {
         FFmpeg ffmpeg;
         QString musicUrl = SQLite::getInstance()->getMusicUrl(id);
-        if (musicUrl == "" || !QFile::exists(musicUrl)) {
-            throw QString("路径错误，读取默认封面");
-        }
-        QString coverUrl = Base::getInstance()->getBaseUrl(musicUrl) + ".jpg";
 
         //提取附加封面
-        m_img = ffmpeg.getInlayCover(musicUrl);
+        if (QFile::exists(musicUrl))
+            m_img = ffmpeg.getInlayCover(musicUrl);
+        if(!m_img.isNull())  throw (true);
 
-        // 下载网络封面
-        if(m_img.isNull()) {
-            OnLine::getInstance()->downCover(Base::getInstance()->getFileName(musicUrl), coverUrl);
-        }
+        QString coverUrl = Base::getInstance()->getBaseUrl(musicUrl) + ".jpg";
+        if (coverUrl == "")
+            throw QString("路径错误，读取默认封面");
 
-        if(m_img.isNull() && QFile::exists(coverUrl)) {
-            loadImageFile(coverUrl);
-        }
+        OnLine::getInstance()->downCover(Base::getInstance()->getFileName(musicUrl), coverUrl);
+        loadImageFile(coverUrl);
+
+        if (m_img.isNull())
+            throw QString("下载失败，读取默认封面");
+
     } catch (QString e) {
-        if (m_img.isNull()) m_img.load(":/image/default.png");
-        m_img = m_img.scaled(m_requestedSize, Qt::IgnoreAspectRatio);
+        m_img.load(":/image/default.png");
+    } catch (bool finish) {
+        // 加载完成，提前退出
     }
 
+    m_img = m_img.scaled(m_requestedSize, Qt::IgnoreAspectRatio);
     if (!m_img.isNull()) buildRoundImage(&m_img, 10);
 }
 
@@ -147,9 +150,9 @@ void ImageResponse::run()
 
     QStringList typeList = {
         "musicFile", "musicOnLine",
-        "artistFile", "artistOnLine",
-        "albumFile", "albumOnLine",
-        "tableFile", "tableOnLine"
+        "artistFile", "artistOnline",
+        "albumFile", "albumOnline",
+        "tableFile", "tableOnline"
     };
     switch (typeList.indexOf(type)) {
     case 0:

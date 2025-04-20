@@ -3,6 +3,7 @@ import QtQuick.Layouts
 import MediaerAPI
 import Tiko
 import DataCore
+import Ups
 
 Item {
     id: musicLine
@@ -11,9 +12,9 @@ Item {
     clip: true
 
     property int listId: 0
-    property int type: 0
     property int musicId: -1
     property bool isLittle: false
+    signal play()
 
     property MusicData music : visible ? Core.getMusic(musicId) : null
 
@@ -24,7 +25,7 @@ Item {
                           CoreData.openMenuMusic(musicLine, music, 0)
                       }
                       else{
-                          musicLine.play()
+                          play()
                       }
                   }
         acceptedButtons: Qt.LeftButton | Qt.RightButton
@@ -44,7 +45,7 @@ Item {
                 width: 50
                 height: 50
                 normalUrl: "qrc:/image/music.png"
-                loadUrl: "image://cover/file:" + musicId.toString()
+                loadUrl: "image://cover/musicFile:" + musicId.toString()
                 loadFlag: visible && music !== null
             }
 
@@ -171,10 +172,6 @@ Item {
                 opacity = 0.05
             }
         }
-    }
-
-    function play(){
-        MediaPlayer.playMusic(music, type)
     }
 }
 

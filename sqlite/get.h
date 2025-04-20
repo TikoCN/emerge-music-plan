@@ -17,12 +17,12 @@ class Get : public QObject, virtual public Core
 
 public:
     Q_INVOKABLE QStringList getArtistKeyList();
-    QHash<int, Artist *> getArtist(QString key);
+    Q_INVOKABLE QList<int> getArtist(QString key);
     Artist *getArtist(int id);
     QHash<int, Artist *> getArtist(QList<int> idList);
 
     Q_INVOKABLE QStringList getAlbumKeyList();
-    QHash<int, Album *> getAlbum(QString key);
+    Q_INVOKABLE QList<int> getAlbum(QString key);
     Album *getAlbum(int id);
     QHash<int, Album *> getAlbum(QList<int> idList);
 

@@ -21,7 +21,6 @@ Table *MusicCore::getTable(int id)
     if (table != nullptr) {
         m_tableHash.insert(id, table);
     }
-    qDebug()<<table;
     return table;
 }
 
