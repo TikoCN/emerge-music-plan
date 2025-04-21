@@ -1,7 +1,7 @@
 #ifndef SQLITE_H
 #define SQLITE_H
 #include "get.h"
-#include "appned.h"
+#include "append.h"
 #include "update.h"
 #include <sqlite3.h>
 #include <QObject>
@@ -24,7 +24,6 @@ public:
             delete instance;
         }
     }
-
 
     // 获得新的条目
     bool selectNewMusic(QFileInfoList infoList, QFileInfoList *newInfoList);

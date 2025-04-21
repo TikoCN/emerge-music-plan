@@ -45,5 +45,10 @@ Image{
     }
 
     Component.onCompleted: {loadImag.start()}
+
+    onLoadUrlChanged: {
+        if (loadFlag)
+            image.source = loadUrl
+    }
 }
 

@@ -25,13 +25,14 @@ int main(int argc, char *argv[])
     app.setWindowIcon(QIcon(":/image/exe.png"));
 
     //建立
-    OnLine::buildInstance();
     MusicCore::buildInstance();
     MediaPlayer::buildInstance();
     Setting::buildInstance();
+
     TaskCenter::buildInstance();
     Base::buildInstance();
     SQLite::buildInstance();
+    OnLine::buildInstance();
 
     //获得单例指针
     Setting *seit = Setting::getInstance();
@@ -51,11 +52,11 @@ int main(int argc, char *argv[])
     qmlRegisterSingletonInstance<SQLite>("MediaerAPI", 1, 0, "SQLData", sql);
 
     // 注册数据类
-    qmlRegisterType<Music *>("DataCore", 1, 0, "MusicData");
-    qmlRegisterType<Table *>("DataCore", 1, 0, "TableData");
-    qmlRegisterType<LrcData *>("DataCore", 1, 0, "LrcData");
-    qmlRegisterType<Artist *>("DataCore", 1, 0, "ArtistData");
-    qmlRegisterType<Album *>("DataCore", 1, 0, "AlbumData");
+    qmlRegisterType<Music>("DataType", 1, 0, "MusicData");
+    qmlRegisterType<Table>("DataType", 1, 0, "TableData");
+    qmlRegisterType<LrcData>("DataType", 1, 0, "LrcData");
+    qmlRegisterType<Artist>("DataType", 1, 0, "ArtistData");
+    qmlRegisterType<Album>("DataType", 1, 0, "AlbumData");
 
     QObject::connect(seit, &Setting::loadMusics, center, &TaskCenter::start);
     QObject::connect(mediaPlayer, &MediaPlayer::downLrc, onLine, &OnLine::downLrc);
@@ -71,7 +72,7 @@ int main(int argc, char *argv[])
         &app,
         []() { QCoreApplication::exit(-1); },
         Qt::QueuedConnection);
-    engine.loadFromModule("Ups", "Main");
+    engine.loadFromModule("PlayView", "Main");
     engine.addImageProvider("cover", new ImageProvider);
 
     return app.exec();

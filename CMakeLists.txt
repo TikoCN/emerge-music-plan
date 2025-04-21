@@ -15,8 +15,8 @@ qt_add_executable(appmusicPlay
 )
 
 qt_policy(SET QTP0004 NEW)
-add_subdirectory(tiko)
-add_subdirectory(ups)
+add_subdirectory(Tiko)
+add_subdirectory(PlayView)
 
 qt_add_qml_module(appmusicPlay
     URI musicPlay
@@ -29,8 +29,11 @@ qt_add_qml_module(appmusicPlay
     ffmpeg.h ffmpeg.cpp
     base.h base.cpp
     musiccore.h musiccore.cpp
-    sqlite/sqlite.h sqlite/sqlite.cpp sqlite/update.cpp sqlite/append.cpp
-    base/keyvaluepair.h base/keyvaluepair.cpp
+    sqlite/sqlite.h sqlite/sqlite.cpp
+    sqlite/append.h sqlite/append.cpp
+    sqlite/update.h sqlite/update.cpp
+    sqlite/get.h sqlite/get.cpp
+    sqlite/core.h sqlite/core.cpp
     base/album.h base/album.cpp
     base/lrcdata.h base/lrcdata.cpp
     base/music.h base/music.cpp
@@ -40,20 +43,11 @@ qt_add_qml_module(appmusicPlay
     load/selectmusicurl.h load/selectmusicurl.cpp
     load/buildmusiccore.h load/buildmusiccore.cpp
     base/mediadata.h
-    SOURCES sqlite/get.cpp
-    SOURCES sqlite/appned.h
-    SOURCES sqlite/get.h
-    SOURCES sqlite/update.h
-    SOURCES sqlite/core.h sqlite/core.cpp
 )
 
 # link fftw3
 find_package(FFTW3 CONFIG REQUIRED)
 target_link_libraries(appmusicPlay PRIVATE FFTW3::fftw3)
-
-# link TagLib
-find_package(TagLib REQUIRED)
-target_link_libraries(appmusicPlay PRIVATE TagLib::TagLib)
 
 find_package(unofficial-sqlite3 CONFIG REQUIRED)
 target_link_libraries(appmusicPlay PRIVATE unofficial::sqlite3::sqlite3)
