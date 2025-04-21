@@ -6,13 +6,13 @@ import DataCore
 
 Item{
     id: artistDataShow
-    property ArtistData artist: null
+    property ArtistData artist: Core.getArtist(artistId)
     property int artistId: -1
 
     TikoButtonIcon{
         y: -10
         icon.source: "qrc:/image/back.png"
-        onClicked: CoreData.mainTurnArtistPage()
+        onClicked: CoreData.mainTurnartistPage()
     }
 
     // 专辑信息背景
@@ -36,6 +36,9 @@ Item{
         anchors.left: parent.left
         anchors.top: parent.top
         anchors.margins: 30
+        source: artistId !== -1 ?
+                    "image://cover/artistOnline:" + artistId.toString()
+                  : "qrc:/image/artist.png"
     }
 
     TikoTextLine {
@@ -45,6 +48,7 @@ Item{
         anchors.leftMargin: 30
         anchors.top: artistDataCover.top
         exSize: 20
+        text: artist !== null ? artist.name : qsTr("专辑")
     }
 
     TikoTextLine {
@@ -55,6 +59,10 @@ Item{
         anchors.left: artistText.left
         exSize: 5
         opacity: 0.5
+        text: qsTr("共 ") +
+              (artist !== null ? artist.musicList.length.toString() : "0") +
+              qsTr(" 首歌曲，共计 ") +
+              Base.timeToString(artist !== null ? artist.duration : 0)
     }
 
     // 音乐列表
@@ -68,7 +76,7 @@ Item{
         clip: true
 
         model: ListModel {
-            id: artistMusicList
+            id: artistMusicModel
         }
 
         delegate: CoreMusicLine {
@@ -79,21 +87,16 @@ Item{
         }
     }
 
-    function openartistData (artistId) {
-        var allTime = 0
-        artistDataShow.artistId = artistId
-        artist = Core.getArtist(artistId)
-        artistDataCover.source = "image://cover/artistFile:" +  artist.id.toString()
-        artistMusicList.clear()
+    onArtistChanged: {
+        if (artist === null )
+            return
+
+        artistMusicModel.clear()
         for (var i=0; i<artist.musicList.length; i++) {
-            artistMusicList.append({
-                                      musicListId: i,
-                                      inMusicId: artist.musicList[i]
-                                  })
-            allTime += artist.musicList[i].endTime
+            artistMusicModel.append({
+                                       inMusicId: artist.musicList[i],
+                                       musicListId: i
+                                   })
         }
-        artistText.text = artist.name
-        artistHelp.text = artist.musicList.length.toString()+" "+qsTr("首歌曲") +"-"
-                +artist.getStringTime()+" "+qsTr("歌曲长度")
     }
 }

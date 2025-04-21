@@ -19,6 +19,7 @@ Table *MusicCore::getTable(int id)
     SQLite *sql = SQLite::getInstance();
     Table *table = sql->getList(id);
     if (table != nullptr) {
+        table->moveToThread(this->thread());
         m_tableHash.insert(id, table);
     }
     return table;
@@ -33,6 +34,7 @@ Album *MusicCore::getAlbum(int id)
     SQLite *sql = SQLite::getInstance();
     Album *album = sql->getAlbum(id);
     if (album != nullptr) {
+        album->moveToThread(this->thread());
         m_albumHash.insert(id, album);
     }
     return album;
@@ -47,6 +49,7 @@ Artist *MusicCore::getArtist(int id)
     SQLite *sql = SQLite::getInstance();
     Artist *artist = sql->getArtist(id);
     if (artist != nullptr) {
+        artist->moveToThread(this->thread());
         m_artistHash.insert(id, artist);
     }
     return artist;
@@ -61,6 +64,7 @@ Music *MusicCore::getMusic(int id)
     SQLite *sql = SQLite::getInstance();
     Music *music = sql->getMusic(id);
     if (music != nullptr) {
+        music->moveToThread(this->thread());
         m_musicHash.insert(id, music);
     }
     return music;

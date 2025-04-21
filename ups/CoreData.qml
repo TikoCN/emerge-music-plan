@@ -33,11 +33,24 @@ QtObject {
         }
     }
 
-    function openMenuMusic(parent, music, type){
+    function openMenuMusic(parent, musicId){
         var component = Qt.createComponent("menu/MenuMusic.qml")
 
         if (component.status === Component.Ready) {
-            var item = component.createObject(parent, {music: music, type: type})
+            var item = component.createObject(parent, {musicId: musicId})
+            item.open()
+        }
+        else {
+            TikoSeit.sendMessage(parent, component.errorString(), 1)
+            console.log(component.errorString())
+        }
+    }
+
+    function openMenuMusicTable(parent, musicId, tableId){
+        var component = Qt.createComponent("menu/MenuMusicTable.qml")
+
+        if (component.status === Component.Ready) {
+            var item = component.createObject(parent, {musicId: musicId, tableId: tableId})
             item.open()
         }
         else {

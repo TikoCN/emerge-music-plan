@@ -9,6 +9,7 @@
 #include <QImageReader>
 #include <QPixmap>
 #include "mediadata.h"
+#include "sqlite/sqlite.h"
 
 bool Music::getIsLove() const
 {
@@ -21,6 +22,8 @@ void Music::setIsLove(bool newIsLove)
         return;
     isLove = newIsLove;
     emit isLoveChanged();
+
+    SQLite::getInstance()->updateMusic(this);
 }
 
 int Music::getLevel() const
@@ -34,6 +37,8 @@ void Music::setLevel(int newLevel)
         return;
     level = newLevel;
     emit levelChanged();
+
+    SQLite::getInstance()->updateMusic(this);
 }
 
 long long Music::getEndTime() const
@@ -52,6 +57,8 @@ void Music::setPlayNumber(int newPlayNumber)
         return;
     playNumber = newPlayNumber;
     emit playNumberChanged();
+
+    SQLite::getInstance()->updateMusic(this);
 }
 
 Music::Music() {

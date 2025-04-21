@@ -185,6 +185,7 @@ Item {
         delegate: CoreMusicLine{
             width: musicList.width - 20
             listId: musicListId
+            tableId: playerTable.tableId
             musicId: inMusicId
             onPlay: MediaPlayer.buildMusicTable(tableId, listId)
         }
@@ -193,12 +194,12 @@ Item {
     onTableChanged: {
         //调整列表展示信息
         if(table === null) return
-        if(table.musicList.length !== 0){
-            var coorId = table.getLastCoreId()
-            playerTable.allMusic = table.musicList.length
-            var allTime = 0
+        var length = table.musicList.length
+        if(length !== 0){
+            var coorId = table.musicList[length - 1]
+            playerTable.allMusic = length
             tableHelp.text = table.musicList.length.toString()+" "+qsTr("首歌曲") +"-"+
-                    Base.timeToString(allTime)+" "+qsTr("歌曲长度")
+                    Base.timeToString(table.duraiton)+" "+qsTr("歌曲长度")
         }
 
         musicModel.clear()

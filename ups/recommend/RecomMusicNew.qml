@@ -4,7 +4,6 @@ import MediaerAPI
 import Ups
 
 Item {
-    width: showColumn.width
     height: childrenRect.height
 
     TikoTextLine {

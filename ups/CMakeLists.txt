@@ -56,5 +56,6 @@ qt_add_qml_module(UpsLib
     menu/MenuAlbum.qml
     menu/MenuArtist.qml
     RESOURCES ui.qrc
+    QML_FILES menu/MenuMusicTable.qml
 )
 

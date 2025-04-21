@@ -30,14 +30,6 @@ public:
     //新建播放列表
     Q_INVOKABLE void appendTable(QString name);
 
-    // //将歌曲移动到
-    // Q_INVOKABLE void tableMoveMusic(int orgTableId, int musicId, int aimTalbeId);
-
-    // // 将歌曲插入类别
-    // Q_INVOKABLE void tableInsertMusic(int tableId, int musicId);
-    // Q_INVOKABLE void tableInsertArtist(int tableId, int artistId);
-    // Q_INVOKABLE void tableInsertAlbum(int tableId, int albumId);
-
     Q_INVOKABLE Table *getTable(int id);
 
     Q_INVOKABLE Album *getAlbum(int id);

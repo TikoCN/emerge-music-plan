@@ -141,7 +141,7 @@ Item {
                 delegate: TikoButtonNormal{
                     width: userTableListView.width
                     text: name
-                    iconSource: ""
+                    iconSource: "image://cover/tableFile:" + tableId.toString()
                     iconWidth: 30
                     iconHeight: 30
                     cache: false

@@ -7,7 +7,7 @@ import Ups
 Item{
     id: albumButton
     width: r + space * 2
-    height: r + space * 2
+    height: showItem.height + space * 2
 
     property int r: 160
     property int space: 5
@@ -96,7 +96,7 @@ Item{
                 anchors.top: textLine.bottom
                 width: parent.width
                 opacity: 0.4
-                text: album !== null ? album.getStringTime() : qsTr("00:00")
+                text: album !== null ? Base.timeToString(album.duration) : qsTr("00:00")
             }
         }
     }

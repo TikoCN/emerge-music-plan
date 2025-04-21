@@ -13,6 +13,7 @@ Item {
 
     property int listId: 0
     property int musicId: -1
+    property int tableId: -1
     property bool isLittle: false
     signal play()
 
@@ -22,7 +23,7 @@ Item {
         id: mouseArea
         onClicked:(mouse)=>{
                       if(mouse.button === Qt.RightButton){
-                          CoreData.openMenuMusic(musicLine, music, 0)
+                          CoreData.openMenuMusicTable(musicLine, musicId, tableId)
                       }
                       else{
                           play()
@@ -135,14 +136,14 @@ Item {
                         visible: mouseArea.containsMouse
                         width: 50
                         height: 50
-                        onClicked: CoreData.openMenuMusic(musicLine, music, 0)
+                        onClicked: CoreData.openMenuMusicTable(musicLine, musicId, tableId)
                         icon.source: "qrc:/image/else.png"
                         cache: true
                     }
                 }
 
                 TikoTextLine{
-                    text: music !== null ? music.getStringTime() : qsTr("00:00")
+                    text: music !== null ? Base.timeToString(music.endTime) : qsTr("00:00")
                     width: CoreData.timeWidth
                     height: 50
                 }

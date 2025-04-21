@@ -1,10 +1,27 @@
 #include "album.h"
 #include "base.h"
+#include "sqlite/sqlite.h"
+#include <QDir>
 
 Album::Album(QString name, int id, QString lineKey)
     : name(name), id(id), lineKey(lineKey)
 {
 
+}
+
+void Album::setName(const QString &newName)
+{
+    if (name == newName)
+        return;
+    name = newName;
+    emit nameChanged();
+
+    SQLite::getInstance()->updateAlbum(this);
+}
+
+long long Album::getDuration() const
+{
+    return duration;
 }
 
 QList<int> Album::getMusicList() const
@@ -15,17 +32,6 @@ QList<int> Album::getMusicList() const
 QString Album::getLineKey() const
 {
     return lineKey;
-}
-
-QString Album::getStringTime()
-{
-    long long time = 0;
-    for (int i = 0; i < musicList.size(); ++i) {
-        //
-    }
-
-    // 转换标准时间
-    return Base::getInstance()->timeToString(time);
 }
 
 QString Album::getArtist()

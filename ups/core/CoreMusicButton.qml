@@ -71,7 +71,7 @@ Item {
             hover: 0.1
             borderSize: 1.5
             autoColor: Setting.backdropColor
-            onClicked: CoreData.openMenuMusic(this, music, 1)
+            onClicked: CoreData.openMenuMusic(this, music)
         }
 
         TikoTextLine {

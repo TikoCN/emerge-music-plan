@@ -26,6 +26,8 @@ public:
         }
     }
 
+    QString getArtistCoverUrl(QString name);
+    QString getAlbumCoverUrl(QString name);
 
     // 替换文件
     void replaceFile(QString inUrl, QString outUrl);
@@ -42,10 +44,10 @@ public:
     Q_INVOKABLE QString timeToString(long long time);
 
     //打开文件
-    void deskOpenFile(QString url, bool local);
+    Q_INVOKABLE void deskOpenFile(QString url, bool local = false);
 
     //剪切板
-    void copyString(QString data);
+    Q_INVOKABLE void copyString(QString data);
 
     // 得到 cout 个 大于 min 小于 max 不重复的随机数
     QList<int> getRandNumber(int min, int max, int count);
@@ -57,9 +59,9 @@ public:
     // 重命名文件
     bool renameFile(QString oldUrl, QString newUrl);
 
-    QString getBaseUrl(QString url);
-    QString getFileName(QString url);
-    QString getParentDir(QString url);
+    Q_INVOKABLE QString getBaseUrl(QString url);
+    Q_INVOKABLE QString getFileName(QString url);
+    Q_INVOKABLE QString getParentDir(QString url);
 
 signals:
     void message(QString msg, int type);

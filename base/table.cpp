@@ -1,4 +1,5 @@
 #include "table.h"
+#include "sqlite/sqlite.h"
 #include <QUrl>
 #include <QDesktopServices>
 
@@ -6,6 +7,11 @@ Table::Table(QObject *parent)
     :QObject(parent)
 {
     sort = SORT_TITTLE_ASC;
+}
+
+long long Table::getDuraiton() const
+{
+    return duraiton;
 }
 
 QList<int> Table::getMusicList() const
@@ -36,11 +42,6 @@ void Table::sortMusic(int type)
 int Table::getSort()
 {
     return static_cast<int>(sort);
-}
-
-int Table::getLastCoreId()
-{
-    return musicList.last();
 }
 
 /*
@@ -112,6 +113,8 @@ void Table::setName(const QString &newName)
         return;
     name = newName;
     emit nameChanged();
+
+    SQLite::getInstance()->updateTable(this);
 }
 
 

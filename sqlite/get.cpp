@@ -62,9 +62,10 @@ QHash<int, Artist *> Get::getArtist(QList<int> idList)
 
     try {
         const char *sql = "SELECT artist.name, artist.artist_id, artist.key, "
-                          "GROUP_CONCAT(artist_music.music_id) AS artist_music "
+                          "GROUP_CONCAT(artist_music.music_id) AS artist_music, SUM(music.duration) "
                           "FROM artist "
                           "JOIN artist_music ON artist.artist_id = artist_music.artist_id "
+                          "JOIN music ON artist_music.music_id = music.music_id "
                           "WHERE artist.artist_id = ? LIMIT 1";
 
         stmtPrepare(&stmt, sql);
@@ -76,8 +77,10 @@ QHash<int, Artist *> Get::getArtist(QList<int> idList)
             int id = sqlite3_column_int(stmt, 1);
             QString key = QString::fromUtf8(sqlite3_column_text(stmt, 2));
             QStringList list = QString::fromUtf8(sqlite3_column_text(stmt, 3)).split(",");
+            long long duration = sqlite3_column_int64(stmt, 4);
 
             Artist *artist = new Artist(name, id, key);
+            artist->duration = duration;
             for (int j = 0; j < list.size(); ++j) {
                 artist->musicList.append(list[j].toInt());
             }
@@ -155,7 +158,7 @@ QHash<int, Album *> Get::getAlbum(QList<int> idList)
 
     try {
         const char *sql = "SELECT album.name, album.album_id, album.key, "
-                          "GROUP_CONCAT(music.music_id) AS album_music "
+                          "GROUP_CONCAT(music.music_id) AS album_music, SUM(music.duration) "
                           "FROM album "
                           "JOIN music ON album.album_id = music.album_id "
                           "WHERE album.album_id = ? LIMIT 1";
@@ -169,8 +172,10 @@ QHash<int, Album *> Get::getAlbum(QList<int> idList)
             int id = sqlite3_column_int(stmt, 1);
             QString key = QString::fromUtf8(sqlite3_column_text(stmt, 2));
             QStringList list = QString::fromUtf8(sqlite3_column_text(stmt, 3)).split(",");
+            long long duration = sqlite3_column_int64(stmt, 4);
 
             Album *album = new Album(name, id, key);
+            album->duration = duration;
             for (int j = 0; j < list.size(); ++j) {
                 album->musicList.append(list[j].toInt());
             }

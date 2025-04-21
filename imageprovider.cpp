@@ -8,6 +8,7 @@
 #include "sqlite/sqlite.h"
 #include "ffmpeg.h"
 #include "base.h"
+#include "musiccore.h"
 
 
 /*
@@ -72,7 +73,7 @@ void ImageResponse::loadMusicOnline(int id)
         if (coverUrl == "")
             throw QString("路径错误，读取默认封面");
 
-        OnLine::getInstance()->downCover(Base::getInstance()->getFileName(musicUrl), coverUrl);
+        OnLine::getInstance()->downMusicCover(Base::getInstance()->getFileName(musicUrl), coverUrl);
         loadImageFile(coverUrl);
 
         if (m_img.isNull())
@@ -90,32 +91,212 @@ void ImageResponse::loadMusicOnline(int id)
 
 void ImageResponse::loadTableFile(int id)
 {
+    MusicCore *core = MusicCore::getInstance();
+    try {
+        if (id < 0)
+            throw false;
 
+        Table *table = core->getTable(id);
+        if (table == nullptr)
+            throw false;
+
+        if (table->musicList.size() > 0)
+            loadMusicFile(table->musicList.first());
+        else
+            throw false;
+
+        if (m_img.isNull())
+            throw false;
+
+    } catch (bool r) {
+        if (!r) {
+            m_img = m_img.scaled(m_requestedSize, Qt::IgnoreAspectRatio);
+            if (!m_img.isNull()) buildRoundImage(&m_img, 10);
+            m_img.load(":/image/default.png");
+        }
+    }
 }
 
 void ImageResponse::loadTableOnline(int id)
 {
+    MusicCore *core = MusicCore::getInstance();
+    try {
+        if (id < 0)
+            throw false;
 
+        Table *table = core->getTable(id);
+        if (table == nullptr)
+            throw false;
+
+        if (table->musicList.size() > 0)
+            loadMusicOnline(table->musicList.first());
+        else
+            throw false;
+
+        if (m_img.isNull())
+            throw false;
+
+    } catch (bool r) {
+        if (!r) {
+            m_img = m_img.scaled(m_requestedSize, Qt::IgnoreAspectRatio);
+            if (!m_img.isNull()) buildRoundImage(&m_img, 10);
+            m_img.load(":/image/default.png");
+        }
+    }
 }
 
 void ImageResponse::loadArtistFile(int id)
 {
+    MusicCore *core = MusicCore::getInstance();
+    Base *base = Base::getInstance();
+    try {
+        if (id < 0)
+            throw false;
 
+        Artist *artist = core->getArtist(id);
+        if (artist == nullptr)
+            throw false;
+
+        QString coverUrl = base->getArtistCoverUrl(artist->name);
+        loadImageFile(coverUrl);
+        if (!m_img.isNull())
+            throw true;
+
+        if (artist->musicList.size() > 0)
+            loadMusicFile(artist->musicList.first());
+        else
+            throw false;
+
+        if (m_img.isNull())
+            throw false;
+
+    } catch (bool r) {
+        if (!r)
+            m_img.load(":/image/default.png");
+    }
+
+    m_img = m_img.scaled(m_requestedSize, Qt::IgnoreAspectRatio);
+    if (!m_img.isNull()) buildRoundImage(&m_img, 10);
 }
 
 void ImageResponse::loadArtistOnline(int id)
 {
+    MusicCore *core = MusicCore::getInstance();
+    Base *base = Base::getInstance();
+    OnLine *online = OnLine::getInstance();
 
+    try {
+        if (id < 0)
+            throw false;
+
+        Artist *artist = core->getArtist(id);
+        if (artist == nullptr)
+            throw false;
+
+        // 检测是否存在下载文件
+        QString coverUrl = base->getArtistCoverUrl(artist->name);
+        loadImageFile(coverUrl);
+        if (!m_img.isNull())
+            throw true;
+
+        // 联网下载
+        online->downArtistCover(artist->name, coverUrl);
+        loadImageFile(coverUrl);
+        if (!m_img.isNull())
+            throw true;
+
+        if (artist->musicList.size() > 0)
+            loadMusicFile(artist->musicList.first());
+        else
+            throw false;
+
+        if (m_img.isNull())
+            throw false;
+
+    } catch (bool r) {
+        if (!r)
+            m_img.load(":/image/default.png");
+    }
+
+    m_img = m_img.scaled(m_requestedSize, Qt::IgnoreAspectRatio);
+    if (!m_img.isNull()) buildRoundImage(&m_img, 10);
 }
 
 void ImageResponse::loadAlbumFile(int id)
 {
+    MusicCore *core = MusicCore::getInstance();
+    Base *base = Base::getInstance();
+    try {
+        if (id < 0)
+            throw false;
 
+        Album *album = core->getAlbum(id);
+        if (album == nullptr)
+            throw false;
+
+        QString coverUrl = base->getAlbumCoverUrl(album->name);
+        loadImageFile(coverUrl);
+        if (!m_img.isNull())
+            throw true;
+
+        if (album->musicList.size() > 0)
+            loadMusicFile(album->musicList.first());
+        else
+            throw false;
+
+        if (m_img.isNull())
+            throw false;
+
+    } catch (bool r) {
+        if (!r)
+            m_img.load(":/image/default.png");
+    }
+
+    m_img = m_img.scaled(m_requestedSize, Qt::IgnoreAspectRatio);
+    if (!m_img.isNull()) buildRoundImage(&m_img, 10);
 }
 
 void ImageResponse::loadAlbumOnline(int id)
 {
+    MusicCore *core = MusicCore::getInstance();
+    Base *base = Base::getInstance();
+    OnLine *online = OnLine::getInstance();
 
+    try {
+        if (id < 0)
+            throw false;
+
+        Album *album = core->getAlbum(id);
+        if (album == nullptr)
+            throw false;
+
+        // 检测是否存在下载文件
+        QString coverUrl = base->getAlbumCoverUrl(album->name);
+        loadImageFile(coverUrl);
+        if (!m_img.isNull())
+            throw true;
+
+        // 联网下载
+        online->downAlbumCover(album->name, coverUrl);
+        loadImageFile(coverUrl);
+        if (!m_img.isNull())
+            throw true;
+
+        if (album->musicList.size() > 0)
+            loadMusicFile(album->musicList.first());
+        else
+            throw false;
+
+        if (m_img.isNull())
+            throw false;
+
+    } catch (bool r) {
+        if (!r)
+            m_img.load(":/image/default.png");
+    }
+
+    m_img = m_img.scaled(m_requestedSize, Qt::IgnoreAspectRatio);
+    if (!m_img.isNull()) buildRoundImage(&m_img, 10);
 }
 
 void ImageResponse::loadImageFile(QString url)

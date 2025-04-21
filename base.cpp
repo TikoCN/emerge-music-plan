@@ -10,6 +10,16 @@
 #include <QJsonObject>
 #include <QRandomGenerator>
 
+QString Base::getArtistCoverUrl(QString name)
+{
+    return QDir::currentPath() + "/artist/" + name + ".jpg";
+}
+
+QString Base::getAlbumCoverUrl(QString name)
+{
+    return QDir::currentPath() + "/artist/" + name + ".jpg";
+}
+
 void Base::replaceFile(QString inUrl, QString outUrl)
 {
     bool r = false;

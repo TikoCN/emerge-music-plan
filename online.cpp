@@ -16,33 +16,63 @@ OnLine::OnLine()
     thread->start();
 }
 
-void OnLine::downCover(QString key, QString url)
+void OnLine::downMusicCover(QString key, QString url)
 {
     Setting *seit = Setting::getInstance();
     if(!seit->isOnLine){ //未开启网络模块，退出
-        emit coverDowned();
         return;
     }
 
     if(seit->isGetCoverFromQQMusic && !QFile::exists(url)){
-        downCoverFromQQMusic(key, url);
+        downMusicCoverQQMusic(key, url);
     }
 
     if(seit->isGetCoverFromNetEase && !QFile::exists(url)){
-        downCoverFromNetEase(key, url);
+        downMusicCoverNetEase(key, url);
     }
 
     if(seit->isGetCoverFromBaidu && !QFile::exists(url)){
-        downCoverFromBaidu(key, url);
+        downCoverBaidu(key, url);
     }
 
     if(seit->isGetCoverFromBing && !QFile::exists(url)){
-        downCoverFromBing(key, url);
+        downCoverBing(key, url);
     }
-    emit coverDowned();
 }
 
-void OnLine::downCoverFromNetEase(QString title, QString url)
+void OnLine::downArtistCover(QString key, QString url)
+{
+    Setting *seit = Setting::getInstance();
+    if(!seit->isOnLine){ //未开启网络模块，退出
+        return;
+    }
+
+    if(seit->isGetCoverFromBaidu && !QFile::exists(url)){
+        downCoverBaidu(key, url);
+    }
+
+    if(seit->isGetCoverFromBing && !QFile::exists(url)){
+        downCoverBing(key, url);
+    }
+}
+
+void OnLine::downAlbumCover(QString key, QString url)
+{
+    Setting *seit = Setting::getInstance();
+    if(!seit->isOnLine){ //未开启网络模块，退出
+        return;
+    }
+
+    if(seit->isGetCoverFromBaidu && !QFile::exists(url)){
+        downCoverBaidu(key, url);
+    }
+
+    if(seit->isGetCoverFromBing && !QFile::exists(url)){
+        downCoverBing(key, url);
+    }
+}
+
+void OnLine::downMusicCoverNetEase(QString title, QString url)
 {
     QNetworkRequest request;
     QNetworkAccessManager manager;
@@ -86,7 +116,7 @@ void OnLine::downCoverFromNetEase(QString title, QString url)
         writeCoverToFile(matchList[1], url);
 }
 
-void OnLine::downCoverFromQQMusic(QString key, QString url)
+void OnLine::downMusicCoverQQMusic(QString key, QString url)
 {
     QNetworkRequest request;
     QNetworkAccessManager manager;
@@ -122,7 +152,7 @@ void OnLine::downCoverFromQQMusic(QString key, QString url)
         writeCoverToFile(matchList[1], url);
 }
 
-void OnLine::downCoverFromBing(QString key, QString url)
+void OnLine::downCoverBing(QString key, QString url)
 {
     QNetworkRequest request;
     QNetworkAccessManager manager;
@@ -147,7 +177,7 @@ void OnLine::downCoverFromBing(QString key, QString url)
         writeCoverToFile(matchList[1], url);
 }
 
-void OnLine::downCoverFromBaidu(QString key, QString url)
+void OnLine::downCoverBaidu(QString key, QString url)
 {
     QNetworkRequest request;
     QNetworkAccessManager manager;

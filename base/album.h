@@ -14,6 +14,7 @@ public:
     QString name;
     QString lineKey;
     QSet<QString> artistSet;
+    long long duration;
     int id;
 
     QString getName() const;
@@ -22,18 +23,25 @@ public:
 
     QString getLineKey() const;
 
-    // 得到专辑总时间
-    Q_INVOKABLE QString getStringTime();
-
     // 得到专辑作者列表
     Q_INVOKABLE QString getArtist();
 
     QList<int> getMusicList() const;
 
+    long long getDuration() const;
+
+    void setName(const QString &newName);
+
+signals:
+    void durationChanged();
+
+    void nameChanged();
+
 private:
-    Q_PROPERTY(QString name READ getName CONSTANT)
     Q_PROPERTY(int id READ getId CONSTANT FINAL)
     Q_PROPERTY(QString lineKey READ getLineKey CONSTANT FINAL)
     Q_PROPERTY(QList<int> musicList READ getMusicList CONSTANT FINAL)
+    Q_PROPERTY(long long duration READ getDuration CONSTANT FINAL)
+    Q_PROPERTY(QString name READ getName WRITE setName NOTIFY nameChanged FINAL)
 };
 #endif // ALBUM_H

@@ -29,15 +29,17 @@ public:
     }
 
     //下载封面
-    Q_INVOKABLE void downCover(QString key, QString url);
+    Q_INVOKABLE void downMusicCover(QString key, QString url);
+    Q_INVOKABLE void downArtistCover(QString key, QString url);
+    Q_INVOKABLE void downAlbumCover(QString key, QString url);
 
-    Q_INVOKABLE void downCoverFromNetEase(QString key, QString url);
+    Q_INVOKABLE void downMusicCoverNetEase(QString key, QString url);
 
-    Q_INVOKABLE void downCoverFromQQMusic(QString key, QString url);
+    Q_INVOKABLE void downMusicCoverQQMusic(QString key, QString url);
 
-    Q_INVOKABLE void downCoverFromBing(QString key, QString url);
+    Q_INVOKABLE void downCoverBing(QString key, QString url);
 
-    Q_INVOKABLE void downCoverFromBaidu(QString key, QString url);
+    Q_INVOKABLE void downCoverBaidu(QString key, QString url);
 
     //加载图片写入文件
     void writeCoverToFile(QString url, QString file);
@@ -51,7 +53,6 @@ public:
 
 signals:
     void lrcDowned();
-    void coverDowned();
 };
 
 #endif // ONLINE_H

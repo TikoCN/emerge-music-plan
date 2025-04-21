@@ -6,7 +6,7 @@ import DataCore
 
 Item{
     id: albumDataShow
-    property AlbumData album: null
+    property AlbumData album: Core.getAlbum(albumId)
     property int albumId: -1
 
     TikoButtonIcon{
@@ -36,6 +36,9 @@ Item{
         anchors.left: parent.left
         anchors.top: parent.top
         anchors.margins: 30
+        source: albumId !== -1 ?
+                    "image://cover/albumOnline:" + albumId.toString()
+                  : "qrc:/image/album.png"
     }
 
     TikoTextLine {
@@ -45,6 +48,7 @@ Item{
         anchors.leftMargin: 30
         anchors.top: albumDataCover.top
         exSize: 20
+        text: album !== null ? album.name : qsTr("专辑")
     }
 
     TikoTextLine {
@@ -55,6 +59,10 @@ Item{
         anchors.left: albumText.left
         exSize: 5
         opacity: 0.5
+        text: qsTr("共 ") +
+              (album !== null ? album.musicList.length.toString() : "0") +
+              qsTr(" 首歌曲，共计 ") +
+              Base.timeToString(album !== null ? album.duration : 0)
     }
 
     // 音乐列表
@@ -68,7 +76,7 @@ Item{
         clip: true
 
         model: ListModel {
-            id: albumMusicList
+            id: albumMusicModel
         }
 
         delegate: CoreMusicLine {
@@ -79,21 +87,16 @@ Item{
         }
     }
 
-    function openAlbumData (albumId) {
-        var allTime = 0
-        albumDataShow.albumId = albumId
-        album = Core.getAlbum(albumId)
-        albumDataCover.source = "image://cover/albumFile:" +  album.id.toString()
-        albumMusicList.clear()
+    onAlbumChanged: {
+        if (album === null )
+            return
+
+        albumMusicModel.clear()
         for (var i=0; i<album.musicList.length; i++) {
-            albumMusicList.append({
-                                      musicListId: i,
-                                      inMusicId: album.musicList[i]
-                                  })
-            allTime += album.musicList[i].endTime
+            albumMusicModel.append({
+                                       inMusicId: album.musicList[i],
+                                       musicListId: i
+                                   })
         }
-        albumText.text = album.name
-        albumHelp.text = album.musicList.length.toString()+" "+qsTr("首歌曲") +"-"
-                +album.getStringTime()+" "+qsTr("歌曲长度")
     }
 }

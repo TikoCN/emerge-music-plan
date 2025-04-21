@@ -41,25 +41,29 @@ Item {
         }
     }
 
-    Grid {
+    GridView {
         id: artistShow
         width: parent.width
-        columns: width / 160
-        columnSpacing: 9
-        rowSpacing: 10
+        height: parent.height - y
         anchors.top: artistButtonList.bottom
         anchors.margins: 30
-        flow: Grid.LeftToRight
+        cellWidth: 180
+        cellHeight: 210
+        clip: true
+        currentIndex: 0
+        highlightRangeMode: ListView.StrictlyEnforceRange
+        preferredHighlightBegin: 0
+        preferredHighlightEnd: 0
 
-        Repeater{
-            model: ListModel {
-                id: artistModel
-            }
+        model: ListModel {
+            id: artistModel
+        }
 
-            delegate: CoreArtistButton {
-                id: artistButton
-                artistId: inArtistId
-            }
+        delegate: CoreArtistButton {
+            y: 10
+            x: 10
+            id: artistButton
+            artistId: inArtistId
         }
     }
 

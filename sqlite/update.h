@@ -14,25 +14,20 @@ public:
     bool updateMusic(Music *music);
     bool updateMusic(QList<Music *> musicList);
 
-    bool updateAlbum(Album *album);
-    bool updateAlbum(QList<Album *> albumList);
+    bool updateTable(Table *table);
+
+    bool updateTableMusic(int musicId, int tableNewId, int tableOldId);
+    bool updateTableMusic(QList<int> musicIdList, int tableNewId, int tableOldId);
 
     bool updateArtist(Artist *artist);
-    bool updateArtist(QList<Artist *> artistList);
 
-    bool updateTable(Table *table);
-    bool updateTable(QList<Table *> tableList);
+    bool updateArtistMusic(int musicId, int artistNewId, int artistOldId);
+    bool updateArtistMusic(QList<int> musicIdList, int artistNewId, int artistOldId);
 
-    bool updateTableMusic(QPair<int ,int> pair);
-    bool updateTableMusic(QList<QPair<int ,int>> pairList);
-    bool updateTableMusic(Table *table);
-    bool updateTableMusic(QList<Table *> tableList);
+    bool updateAlbum(Album *album);
 
-    bool updateArtistMusic(QPair<int ,int> pair);
-    bool updateArtistMusic(QList<QPair<int ,int>> pairList);
-    bool updateArtistMusic(Artist *artist);
-    bool updateArtistMusic(QList<Artist *> artistList);
-
+    bool updateAlbumMusic(int musicId, int albumNewId, int albumOldId);
+    bool updateAlbumMusic(QList<int> musicIdList, int albumNewId, int albumOldId);
 };
 
 #endif // UPDATE_H

@@ -254,6 +254,7 @@ void MediaPlayer::playMusicList(int musicListId)
     if (musicListId >= m_musicList.size() || musicListId < 0)
         return;
     m_playingMusic = m_musicList[musicListId];
+    m_playingMusic->setPlayNumber(m_playingMusic->playNumber++);
     m_player->setSource(m_playingMusic->url);
     m_playingMusicListId = musicListId;
     m_player->play();

@@ -19,6 +19,7 @@ public:
     QString name;//列表名
     QString url;//文件夹路径
     QList<int> musicList;//音乐库列表
+    long long duraiton;
     int tableId;//列表id
     bool isDir;
 
@@ -28,9 +29,6 @@ public:
     //排序
     Q_INVOKABLE void sortMusic(int type);
     Q_INVOKABLE int getSort();
-
-    //得到最后id
-    Q_INVOKABLE int getLastCoreId();
 
     //插入新音乐核心
     Q_INVOKABLE void appendMusic(int core);
@@ -54,6 +52,9 @@ public:
 
     QList<int> getMusicList() const;
 
+    long long getDuraiton() const;
+    void setDuraiton(long long newDuraiton);
+
 signals:
     // 更新qml展示列表
     void buildShow();
@@ -66,9 +67,12 @@ signals:
 
     void nameChanged();
 
+    void duraitonChanged();
+
 private:
     Q_PROPERTY(QString name READ getName WRITE setName NOTIFY nameChanged FINAL)
     Q_PROPERTY(bool isDir READ getIsDir CONSTANT FINAL)
     Q_PROPERTY(QList<int> musicList READ getMusicList CONSTANT FINAL)
+    Q_PROPERTY(long long duraiton READ getDuraiton CONSTANT FINAL)
 };
 #endif // TABLE_H
