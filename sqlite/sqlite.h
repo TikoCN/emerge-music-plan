@@ -6,7 +6,7 @@
 #include <sqlite3.h>
 #include <QObject>
 
-class SQLite : public Get, virtual public Update, virtual public Append
+class SQLite : public Get
 {
     Q_OBJECT
 public:

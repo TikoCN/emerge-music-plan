@@ -180,6 +180,17 @@ void MusicCore::loadMusic(QList<int> idList)
     m_musicHash.insert(hash);
 }
 
+void MusicCore::tableAppendMusic(int id, QList<int> musicList)
+{
+    Table *table = getTable(id);
+    if (table != nullptr) {
+        table->musicList.append(musicList);
+        releaseTable(id);
+    }
+
+    SQLite::getInstance()->appendTableMusic(id, musicList);
+}
+
 QList<int> MusicCore::selectSearchMusic(QList<int> idList, QString e)
 {
     QList<Music *> musicList = getMusic(idList);

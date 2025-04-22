@@ -40,16 +40,21 @@ TikoMenu {
         Component {
             id: addMenu
             TikoMenuItem {
-                text: Core.tableList[aim].name
-                onTriggered: Core.tableInsertMusic(aim, artist)
-                enabled: !Core.tableList[aim].isDir
+                text: name
+                onTriggered: Core.tableAppendMusic(tableId, artist.musicList)
+                enabled: !isDir
             }
         }
 
         onOpened: {
             addMenuData.clear()
-            for(var i=0; i<Core.tableList.length; i++){
-                addMenuData.append({aim: i})
+            for(var i=0; i<CoreData.table.length; i++){
+                var data = CoreData.table[i]
+                addMenuData.append({
+                                       name: data["name"],
+                                       isDir: data["isDir"],
+                                       table: data["tableId"]
+                                   })
             }
         }
     }

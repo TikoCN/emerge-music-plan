@@ -235,8 +235,8 @@ ScrollView{
                     width: parent.itemWidth
                     show.text: qsTr("最大加载线程数")
                     show.width: 200
-                    input.text: Setting.maxThreadNumber.toString()
-                    input.onEditingFinished: Setting.maxThreadNumber = inputNumber(input, Setting.maxThreadNumber)
+                    inputItem.text: Setting.maxThreadNumber.toString()
+                    onFinish: Setting.maxThreadNumber = inputNumber(input, Setting.maxThreadNumber)
                 }
             }
         }

@@ -3,7 +3,7 @@ import Tiko
 import DataType
 import MediaerAPI
 import PlayView
-
+import "../js/CreateMenu.js" as JsMenu
 Item{
     id: albumButton
     width: r + space * 2

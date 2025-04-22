@@ -72,9 +72,9 @@ Item{
                 width: 150
                 height: 30
                 show.text: qsTr("文本大小")
-                input.width: 50
-                input.text: fontSize.value.toFixed(2).toString()
-                input.onEditingFinished: {
+                inputItem.width: 50
+                inputItem.text: fontSize.value.toFixed(2).toString()
+                onFinish: {
                     root.selectedFont.pixelSize = inputNumber(input, root.selectedFont.pixelSize);
                 }
 

@@ -45,6 +45,8 @@ public:
     Q_INVOKABLE void releaseMusic(int id);
     Q_INVOKABLE void loadMusic(QList<int > idList);
 
+    Q_INVOKABLE void tableAppendMusic(int id, QList<int> musicList);
+
     QList<int> selectSearchMusic(QList<int > idList, QString e);
     QList<int> sortMusic(QList<int > idList, Table::SORT_TYPE sort);
     QList<int> selectLoveMusic(QList<int > idList);

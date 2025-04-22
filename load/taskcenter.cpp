@@ -162,6 +162,6 @@ void TaskCenter::writeDataSQL()
     sql->appendDirTable(QStringList(_playlistSet.begin(), _playlistSet.end()));
     sql->appendMusic(_dataList);
     sql->appendArtistMusic(_artistMusicList);
-    sql->appendListMusic(_playlistMusicList);
+    sql->appendTableMusic(_playlistMusicList);
     sql->commit();
 }

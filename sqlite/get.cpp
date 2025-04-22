@@ -314,13 +314,14 @@ QString Get::getAllList()
 {
     QJsonArray array;
     try {
-        const char *sql = "SELECT list_id, name FROM playlist";
+        const char *sql = "SELECT list_id, name, is_dir FROM playlist";
 
         sqlite3_callback callback = [](void *data, int argc, char **argv, char **azColName)->int{
             QJsonArray *array = static_cast<QJsonArray *>(data);
             QJsonObject obj;
-            obj.insert("tableId", QString(argv[0]));
+            obj.insert("tableId", QString(argv[0]).toInt());
             obj.insert("name", QString(argv[1]));
+            obj.insert("isDir", QString(argv[2]).toInt());
             array->append(obj);
             return SQLITE_OK;
         };
@@ -447,5 +448,65 @@ MediaData Get::getMediaFromStmt(sqlite3_stmt *stmt)
     data.album= QString::fromUtf8(sqlite3_column_text(stmt, 6));
     data.artistList = QString::fromUtf8(sqlite3_column_text(stmt, 7)).split(",");
     return data;
+}
+
+int Get::checkArtistName(QString name)
+{
+    sqlite3_stmt *stmt = nullptr;
+    int r = -1;
+    try {
+        const char *sql = "SELECT COALESCE("
+                          "(SELECT artist_id FROM artist WHERE name = ? LIMIT 1), "
+                          "-1) AS artist_id";
+        stmtPrepare(&stmt, sql);
+        stmtBindText(stmt, 1, name);
+        stmtStep(stmt);
+        r = sqlite3_column_int(stmt, 0);
+    } catch (QString e) {
+        sqlite3_finalize(stmt);
+        return -2;
+    }
+    sqlite3_finalize(stmt);
+    return r;
+}
+
+int Get::checkAlbumName(QString name)
+{
+    sqlite3_stmt *stmt = nullptr;
+    int r = -1;
+    try {
+        const char *sql = "SELECT COALESCE("
+                          "(SELECT album_id FROM album WHERE name = ? LIMIT 1), "
+                          "-1) AS album_id";
+        stmtPrepare(&stmt, sql);
+        stmtBindText(stmt, 1, name);
+        stmtStep(stmt);
+        r = sqlite3_column_int(stmt, 0);
+    } catch (QString e) {
+        sqlite3_finalize(stmt);
+        return -2;
+    }
+    sqlite3_finalize(stmt);
+    return r;
+}
+
+int Get::checkTableName(QString name)
+{
+    sqlite3_stmt *stmt = nullptr;
+    int r = -1;
+    try {
+        const char *sql = "SELECT COALESCE("
+                          "(SELECT list_id FROM playlist WHERE name = ? LIMIT 1), "
+                          "-1) AS list_id";
+        stmtPrepare(&stmt, sql);
+        stmtBindText(stmt, 1, name);
+        stmtStep(stmt);
+        r = sqlite3_column_int(stmt, 0);
+    } catch (QString e) {
+        sqlite3_finalize(stmt);
+        return -2;
+    }
+    sqlite3_finalize(stmt);
+    return r;
 }
 

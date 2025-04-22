@@ -177,7 +177,8 @@ Item {
             for (var i=0; i<length; i++){
                 userTableModel.append({
                                           tableId: CoreData.table[i]["tableId"],
-                                          name: CoreData.table[i]["name"]
+                                          name: CoreData.table[i]["name"],
+                                          isDir: CoreData.table[i]["isDir"]
                                       })
 
             }

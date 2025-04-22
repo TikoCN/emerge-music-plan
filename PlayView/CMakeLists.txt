@@ -32,6 +32,9 @@ qt_add_qml_module(PlayViewLib
     menu/MenuTableSort.qml
     menu/MenuMusic.qml
     menu/MenuTable.qml
+    menu/MenuAlbum.qml
+    menu/MenuArtist.qml
+    menu/MenuMusicTable.qml
     toolEditMusicPage/EditPageMusic.qml
     toolEditMusicPage/EditPageLrc.qml
     toolEditMusicPage/ToolEditMusic.qml
@@ -53,10 +56,11 @@ qt_add_qml_module(PlayViewLib
     core/CoreAlbumButton.qml
     core/CoreArtistButton.qml
     core/CoreMusicLine.qml
-    menu/MenuAlbum.qml
-    menu/MenuArtist.qml
     RESOURCES ui.qrc
-    QML_FILES menu/MenuMusicTable.qml
-    QML_FILES inputPopup/InputArtistName.qml
+    inputPopup/InputArtistName.qml
+    inputPopup/InputAlbumName.qml
+    inputPopup/InputTableName.qml
+    QML_FILES js/CreateMenu.js
+    QML_FILES js/CreateInput.js
 )
 

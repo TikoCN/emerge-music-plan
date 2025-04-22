@@ -7,13 +7,13 @@
 #include "base/artist.h"
 #include "base/table.h"
 #include "base/mediadata.h"
+#include "update.h"
 #include <QJsonObject>
 #include <QJsonArray>
 
-class Get : public QObject, virtual public Core
+class Get : public Update
 {
     Q_OBJECT
-
 public:
     Q_INVOKABLE QStringList getArtistKeyList();
     Q_INVOKABLE QList<int> getArtist(QString key);
@@ -47,6 +47,9 @@ public:
     QList<int> getIntList(const char *sql);
     MediaData getMediaFromStmt(sqlite3_stmt *stmt);
 
+    Q_INVOKABLE int checkArtistName(QString name);
+    Q_INVOKABLE int checkAlbumName(QString name);
+    Q_INVOKABLE int checkTableName(QString name);
 };
 
 #endif // GET_H

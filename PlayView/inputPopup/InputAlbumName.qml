@@ -4,40 +4,40 @@ import DataType
 import MediaerAPI
 
 TikoPopupInput {
-    id: artistNameInput
+    id: albumNameInput
     text: qsTr("请输入新的作曲家")
     property bool isCheck: false
     property bool isDClick: false
-    property int artistId: -1
-    property int newArtistId: -1
-    property ArtistData artist: Core.getArtist(artistId)
+    property int albumId: -1
+    property int newAlbumId: -1
+    property AlbumData album: Core.getAlbum(albumId)
     onFinish: {
-        newArtistId = SQLData.checkArtistName(name)
-        if (newArtistId === -2)
+        newAlbumId = SQLData.checkAlbumName(name)
+        if (newAlbumId === -2)
             isCheck = true
         isDClick = false
     }
     onInput: isCheck = false
     onAccept: {
         if (!isCheck) {
-            var checkMsg = checkMsgCom.createObject(artistNameInput)
+            var checkMsg = checkMsgCom.createObject(albumNameInput)
             checkMsg.open()
         }
-        else if (newArtistId === -1) {
-            artist.name = inputText
+        else if (newAlbumId === -1) {
+            album.name = inputText
         }
         else if (isDClick) {
-            SQLData.updateArtistMusic(artist.musicList, newArtistId, artistId)
+            SQLData.updateAlbumMusic(album.musicList, newAlbumId, albumId)
         }
         else {
             isDClick = true
-            var errorMsg = checkMsgCom.createObject(artistNameInput)
+            var errorMsg = checkMsgCom.createObject(albumNameInput)
             errorMsg.open()
         }
     }
     onCancel: close()
     onClosed: {
-        Core.releaseArtist(artistId)
+        Core.releaseAlbum(AlbumId)
         destroy()
     }
 
@@ -46,7 +46,7 @@ TikoPopupInput {
         TikoMessageLittle {
             id: errorMsg
             message: qsTr("该作曲家已存在，再次点击将歌曲迁移至目标作曲家")
-            anchors.centerIn: artistNameInput
+            anchors.centerIn: AlbumNameInput
         }
     }
 
@@ -55,8 +55,7 @@ TikoPopupInput {
         TikoMessageLittle {
             id: checkMsg
             message: qsTr("数据库错误，未能检验文本")
-            anchors.centerIn: artistNameInput
+            anchors.centerIn: AlbumNameInput
         }
     }
 }
-

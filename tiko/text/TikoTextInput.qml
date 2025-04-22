@@ -8,10 +8,12 @@ Item {
     implicitWidth: 200
 
     property Text show: show
-    property TextField input: input
+    property TextField inputItem: inputItem
     property color borderColor: TikoSeit.transparentColor
     property color backColor: TikoSeit.transparentColor
     property color focusColor: TikoSeit.themeColor
+    signal finish
+    signal input
 
     TikoTextLine{
         id: show
@@ -23,19 +25,21 @@ Item {
     }
 
     TextField{
-        id: input
+        id: inputItem
         placeholderText: qsTr("在这里输入")
         anchors.right: inputText.right
         width: inputText.width - show.width - 10
         height: inputText.height
         onFocusChanged: {
-            if(input.focus){
+            if(inputItem.focus){
                 mouseInAnimation.start()
             }
             else{
                 mouseOutAnimation.start()
             }
         }
+        onEditingFinished: finish()
+        onTextEdited: input()
 
         ParallelAnimation{
             id: mouseInAnimation

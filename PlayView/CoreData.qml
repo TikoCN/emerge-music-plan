@@ -17,7 +17,7 @@ QtObject {
     signal mainTurnAlbumPlayer(int album)
     signal mainTurnArtistPage()
     signal mainTurnArtistPlayer(int artist)
-
+    signal sendMsg(string msg, int type)
 
     function editMusic(parent, core){
         var component = Qt.createComponent("toolEditMusicPage/ToolEditMusic.qml")

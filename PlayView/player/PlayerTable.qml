@@ -141,7 +141,7 @@ Item {
                 id: inputText
                 Layout.maximumWidth: 0
                 show.text: qsTr("搜索")
-                input.onEditingFinished: {
+                onFinish: {
                     table.showSearchMusic(input.text)
                     closeWidthAnimation.start()
                 }

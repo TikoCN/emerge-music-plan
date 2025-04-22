@@ -6,8 +6,6 @@ TikoPopup {
     id: littleMessage
     width: icon.width + messageShow.width + 60
     height: messageShow.height
-    y: 0
-    x: (Overlay.overlay.width - width)/2
     padding: 0
     borderColor: TikoSeit.themeColor
     backColor: TikoSeit.themeColor
@@ -52,48 +50,5 @@ TikoPopup {
         id: mathWidth
         text: littleMessage.message
         font: messageShow.font
-    }
-
-    //进入动画
-    ParallelAnimation{
-        id: showAnimation
-
-        NumberAnimation{
-            target: littleMessage
-            property: "y"
-            to: aimY
-            duration: 100
-        }
-    }
-
-    //关闭动画
-    ParallelAnimation{
-        id: closeAnimation
-        onStopped: {
-            TikoSeit.messageY -= littleMessage.height + 10
-            littleMessage.destroy()
-        }
-
-        NumberAnimation{
-            target: littleMessage
-            property: "y"
-            to: - littleMessage.height
-            duration: 100
-        }
-    }
-
-    //自动关闭计时器
-    Timer{
-        id: timer
-        interval: 3000
-        onTriggered: closeAnimation.start()
-    }
-
-    function show(){
-        TikoSeit.messageY += littleMessage.height + 10
-        aimY = TikoSeit.messageY + 1
-        littleMessage.open()
-        showAnimation.start()
-        timer.start()
     }
 }

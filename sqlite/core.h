@@ -4,8 +4,9 @@
 #include <QObject>
 #include "sqlite3.h"
 
-class Core
+class Core : public QObject
 {
+    Q_OBJECT
 protected:
     sqlite3 *db;
     int r;

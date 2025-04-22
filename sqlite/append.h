@@ -4,8 +4,9 @@
 #include "core.h"
 #include "base/mediadata.h"
 
-class Append : virtual public Core
+class Append : public Core
 {
+    Q_OBJECT
 public:
     // 附加条目
     bool appendMusic(MediaData data);
@@ -24,9 +25,11 @@ public:
 
     bool appendArtistMusic(QPair<QString, QString> pair);
     bool appendArtistMusic(QList<QPair<QString, QString>> pairList);
+    bool appendArtistMusic(int id, QList<int> musicList);
 
-    bool appendListMusic(QPair<QString, QString> pair);
-    bool appendListMusic(QList<QPair<QString, QString>> pairList);
+    bool appendTableMusic(QPair<QString, QString> pair);
+    bool appendTableMusic(QList<QPair<QString, QString>> pairList);
+    bool appendTableMusic(int id, QList<int> musicList);
 
 };
 #endif // APPNED_H
