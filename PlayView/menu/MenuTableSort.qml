@@ -7,7 +7,10 @@ TikoMenu{
     id: menuTableSort
     width: 150
     y: parent.height
-    onClosed: menuTableSort.destroy()
+    onClosed: {
+        Core.releaseTable(tableId)
+        menuTableSort.destroy()
+    }
     property TableData table: Core.getTable(tableId)
     property int tableId: 0
     property int forword: table.getSort() % 2

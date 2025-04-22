@@ -64,6 +64,7 @@ public:
 
     //删除以及加载的数据
     Q_INVOKABLE void clearData();
+    void clearMusicList();
 
     //更新播放设备
     void updateAudioOutPut();

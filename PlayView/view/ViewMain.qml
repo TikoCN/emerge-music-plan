@@ -89,7 +89,7 @@ Item {
 
     //切换到列表
     function stackTable(page){
-        tablePlayer.tableId = page
+        tablePlayer.setTableId(page)
         if(stackView.currentItem !== tablePlayer){
             stackView.replace(tablePlayer)
         }

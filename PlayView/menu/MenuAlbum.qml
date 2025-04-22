@@ -55,7 +55,7 @@ TikoMenu {
     }
 
     TikoMenuItem {
-        text: qsTr("编辑信息")
+        text: qsTr("修改名称")
     }
 
     TikoMenuSpeacer{}

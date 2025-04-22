@@ -57,5 +57,6 @@ qt_add_qml_module(PlayViewLib
     menu/MenuArtist.qml
     RESOURCES ui.qrc
     QML_FILES menu/MenuMusicTable.qml
+    QML_FILES inputPopup/InputArtistName.qml
 )
 

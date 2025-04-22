@@ -271,7 +271,7 @@ QHash<int, Music *> Get::getMusic(QList<int> idList)
     try {
         const char *sql = "SELECT music.music_id, music.title, music.duration, music.insert_time, "
                           "music.level, music.love, music.play_number, music.url, "
-                          "album.name, GROUP_CONCAT(artist.name) AS artist_names "
+                          "album.name, GROUP_CONCAT(artist.name) AS artist_names, music.album_id "
                           "FROM music "
                           "JOIN album ON album.album_id = music.album_id "
                           "JOIN artist_music ON artist_music.music_id = music.music_id "
@@ -284,8 +284,19 @@ QHash<int, Music *> Get::getMusic(QList<int> idList)
             stmtBindInt(stmt, 1, idList[i]);
             stmtStep(stmt);
             Music *music = new Music;
-            MediaData data = getMediaFromStmt(stmt);
-            music->setMedia(data);
+
+            music->id = sqlite3_column_int(stmt, 0);
+            music->title = QString::fromUtf8(sqlite3_column_text(stmt, 1));
+            music->duration = sqlite3_column_int64(stmt, 2);
+            music->insetTime = sqlite3_column_int64(stmt, 3);
+            music->level = sqlite3_column_int(stmt, 4);
+            music->isLove = sqlite3_column_int(stmt, 5) == 1;
+            music->playNumber = sqlite3_column_int(stmt, 6);
+            music->url = QString::fromUtf8(sqlite3_column_text(stmt, 7));
+            music->album = QString::fromUtf8(sqlite3_column_text(stmt, 8));
+            music->artistList = QString::fromUtf8(sqlite3_column_text(stmt, 9)).split(",");
+            music->albumId = sqlite3_column_int(stmt, 10);
+
             music->fromFileInfo(QFileInfo(music->url));
             hash.insert(idList[i], music);
         }
@@ -421,22 +432,20 @@ QList<int> Get::getIntList(const char *sql)
 MediaData Get::getMediaFromStmt(sqlite3_stmt *stmt)
 {
     /*
-     * "SELECT music.music_id, music.title, music.duration, music.insert_time, "
+     * "SELECT music.title, music.duration, "
      * "music.level, music.love, music.play_number, music.url, "
      * "album.name, GROUP_CONCAT(artist.name) AS artist_names "
      */
 
     MediaData data;
-    data.id = sqlite3_column_int(stmt, 0);
-    data.title = QString::fromUtf8(sqlite3_column_text(stmt, 1));
-    data.duration = sqlite3_column_int64(stmt, 2);
-    data.insetTime = sqlite3_column_int64(stmt, 3);
-    data.level = sqlite3_column_int(stmt, 4);
-    data.isLove = sqlite3_column_int(stmt, 5) == 1;
-    data.playNumber = sqlite3_column_int(stmt, 6);
-    data.url = QString::fromUtf8(sqlite3_column_text(stmt, 7));
-    data.album= QString::fromUtf8(sqlite3_column_text(stmt, 8));
-    data.artistList = QString::fromUtf8(sqlite3_column_text(stmt, 9)).split(",");
+    data.title = QString::fromUtf8(sqlite3_column_text(stmt, 0));
+    data.duration = sqlite3_column_int64(stmt, 1);
+    data.level = sqlite3_column_int(stmt, 2);
+    data.isLove = sqlite3_column_int(stmt, 3) == 1;
+    data.playNumber = sqlite3_column_int(stmt, 4);
+    data.url = QString::fromUtf8(sqlite3_column_text(stmt, 5));
+    data.album= QString::fromUtf8(sqlite3_column_text(stmt, 6));
+    data.artistList = QString::fromUtf8(sqlite3_column_text(stmt, 7)).split(",");
     return data;
 }
 

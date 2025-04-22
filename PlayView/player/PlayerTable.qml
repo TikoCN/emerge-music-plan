@@ -9,8 +9,8 @@ import DataType
 Item {
     id: playerTable
     property int tableId: -1
-    property TableData table: visible ? Core.getTable(tableId) : null
-    property int allMusic: 0
+    property TableData table: null
+    property int musicSize: 0
 
     Item{
         id: showView
@@ -86,7 +86,7 @@ Item {
             TikoButtonNormal{
                 Layout.minimumWidth: 70
                 onClickLeft: table.showOrignMusic()
-                text: qsTr("歌曲") + allMusic.toString()
+                text: qsTr("歌曲") + musicSize.toString()
                 iconSource: "qrc:/image/music.png"
             }
 
@@ -191,13 +191,33 @@ Item {
         }
     }
 
-    onTableChanged: {
+    onVisibleChanged: init()
+
+    function setTableId(id){
+        if (tableId == id)
+            return
+        if(table !== null)
+            Core.releaseTable(tableId)
+        tableId = id
+        table = null
+        init()
+    }
+
+    function init(){
+        if (visible){
+            if (table == null)
+                table = Core.getTable(tableId)
+        }
+        else {
+            table = null
+            Core.releaseTable(tableId)
+        }
+
         //调整列表展示信息
         if(table === null) return
         var length = table.musicList.length
         if(length !== 0){
-            var coorId = table.musicList[length - 1]
-            playerTable.allMusic = length
+            musicSize = length
             tableHelp.text = table.musicList.length.toString()+" "+qsTr("首歌曲") +"-"+
                     Base.timeToString(table.duraiton)+" "+qsTr("歌曲长度")
             build()
@@ -215,8 +235,8 @@ Item {
     }
 
     Connections {
-        target: table
-        function onBuildShow(){
+        target: Core
+        function onBuildTablePlayer(){
             build()
         }
     }

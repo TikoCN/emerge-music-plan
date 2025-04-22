@@ -2,7 +2,10 @@
 #define TABLE_H
 
 #include <QObject>
-class Table : public QObject //播放列表
+#include "referencecount.h"
+
+
+class Table : public QObject, public ReferenceCount
 {
     Q_OBJECT
 public:
@@ -52,8 +55,6 @@ public:
     long long getDuraiton() const;
 
 signals:
-    // 更新qml展示列表
-    void buildShow();
 
     void nameChanged();
 

@@ -2,8 +2,9 @@
 #define ARTIST_H
 
 #include <QObject>
+#include "referencecount.h"
 
-class Artist : public QObject
+class Artist : public QObject, public ReferenceCount
 {
     Q_OBJECT
 public:

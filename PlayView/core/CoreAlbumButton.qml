@@ -12,8 +12,20 @@ Item{
     property int r: 160
     property int space: 5
     property int albumId: -1
-    property AlbumData album: visible ? Core.getAlbum(albumId) : null
+    property AlbumData album: null
     property int coverId: 0
+
+    Component.onCompleted: album = Core.getAlbum(albumId)
+    onVisibleChanged: {
+        if (visible) {
+            if (album === null)
+                album = Core.getAlbum(albumId)
+        }
+        else {
+            Core.releaseAlbum(albumId)
+            album = null
+        }
+    }
 
     // 整体背景
     Rectangle {

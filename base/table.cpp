@@ -37,7 +37,7 @@ void Table::sortMusic(int type)
     sort = static_cast<SORT_TYPE>(type);
     musicList = MusicCore::getInstance()->sortMusic(musicList, sort);
     // qml重新生成控件
-    emit buildShow();
+    emit MusicCore::getInstance()->buildTablePlayer();
 }
 
 int Table::getSort()
@@ -64,19 +64,19 @@ void Table::openDir()
 void Table::showOrignMusic()
 {
     musicList = SQLite::getInstance()->getTableMusicList(id);
-    emit buildShow();
+    emit MusicCore::getInstance()->buildTablePlayer();
 }
 
 void Table::showLoveMusic()
 {
     musicList = MusicCore::getInstance()->selectLoveMusic(musicList);
-    emit buildShow();
+    emit MusicCore::getInstance()->buildTablePlayer();
 }
 
 void Table::showSearchMusic(QString search)
 {
     musicList = MusicCore::getInstance()->selectSearchMusic(musicList, search);
-    emit buildShow();
+    emit MusicCore::getInstance()->buildTablePlayer();
 }
 
 QString Table::getName() const

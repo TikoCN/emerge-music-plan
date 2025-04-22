@@ -13,8 +13,8 @@ bool Update::updateMusic(QList<Music *> musicList)
     sqlite3_stmt *stmt = nullptr;
     try {
         const char *sql = "UPDATE music "
-                          "SET title = ?, album_id = ?, duration = ?, insert_time = ?, level = ?, love = ?, "
-                          "play_number = ?, url = ?"
+                          "SET title = ?, album_id = ?, duration = ?, level = ?, love = ?, "
+                          "play_number = ?, url = ? "
                           "WHERE music_id = ?";
         stmtPrepare(&stmt, sql);
         for (int i = 0; i < musicList.size(); ++i) {
@@ -25,12 +25,11 @@ bool Update::updateMusic(QList<Music *> musicList)
             stmtBindText(stmt, 1, music->title);
             stmtBindInt(stmt, 2, music->albumId);
             stmtBindInt(stmt, 3, music->duration);
-            stmtBindInt(stmt, 4, music->insetTime);
-            stmtBindInt(stmt, 5, music->level);
-            stmtBindInt(stmt, 6, music->isLove);
-            stmtBindInt(stmt, 7, music->playNumber);
-            stmtBindText(stmt, 8, music->url);
-            stmtBindInt(stmt, 9, music->id);
+            stmtBindInt(stmt, 4, music->level);
+            stmtBindInt(stmt, 5, music->isLove);
+            stmtBindInt(stmt, 6, music->playNumber);
+            stmtBindText(stmt, 7, music->url);
+            stmtBindInt(stmt, 8, music->id);
             stmtStep(stmt);
         }
     } catch (QString e) {

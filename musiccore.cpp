@@ -12,75 +12,161 @@ void MusicCore::appendTable(QString name)
 
 Table *MusicCore::getTable(int id)
 {
+    Table *table = nullptr;
     if (m_tableHash.contains(id)) {
-        return m_tableHash.value(id);
+        table = m_tableHash.value(id);
+        table->increment();
+        return table;
     }
 
     SQLite *sql = SQLite::getInstance();
-    Table *table = sql->getList(id);
+    table = sql->getList(id);
     if (table != nullptr) {
         table->moveToThread(this->thread());
         m_tableHash.insert(id, table);
+        table->increment();
+        return table;
     }
-    return table;
+    return nullptr;
+}
+
+void MusicCore::releaseTable(int id)
+{
+    Table *table = nullptr;
+    if (m_tableHash.contains(id))
+        table = m_tableHash.value(id);
+    else
+        return;
+
+    if (table->decrement()) {
+        m_tableHash.remove(id);
+        delete table;
+    }
 }
 
 Album *MusicCore::getAlbum(int id)
 {
+    Album *album = nullptr;
     if (m_albumHash.contains(id)) {
-        return m_albumHash.value(id);
+        album = m_albumHash.value(id);
+        album->increment();
+        return album;
     }
 
     SQLite *sql = SQLite::getInstance();
-    Album *album = sql->getAlbum(id);
+    album = sql->getAlbum(id);
     if (album != nullptr) {
         album->moveToThread(this->thread());
         m_albumHash.insert(id, album);
+        album->increment();
+        return album;
     }
-    return album;
+    return nullptr;
+}
+
+void MusicCore::releaseAlbum(int id)
+{
+    Album *album = nullptr;
+    if (m_albumHash.contains(id))
+        album = m_albumHash.value(id);
+    else
+        return;
+
+    if (album->decrement()) {
+        m_albumHash.remove(id);
+        delete album;
+    }
 }
 
 Artist *MusicCore::getArtist(int id)
 {
+    Artist *artist = nullptr;
     if (m_artistHash.contains(id)) {
-        return m_artistHash.value(id);
+        artist = m_artistHash.value(id);
+        artist->increment();
+        return artist;
     }
 
     SQLite *sql = SQLite::getInstance();
-    Artist *artist = sql->getArtist(id);
+    artist = sql->getArtist(id);
     if (artist != nullptr) {
         artist->moveToThread(this->thread());
         m_artistHash.insert(id, artist);
+        artist->increment();
+        return artist;
     }
-    return artist;
+    return nullptr;
+}
+
+void MusicCore::releaseArtist(int id)
+{
+    Artist *artist = nullptr;
+    if (m_artistHash.contains(id))
+        artist = m_artistHash.value(id);
+    else
+        return;
+
+    if (artist->decrement()) {
+        m_artistHash.remove(id);
+        delete artist;
+    }
 }
 
 Music *MusicCore::getMusic(int id)
 {
+    Music *music = nullptr;
     if (m_musicHash.contains(id)) {
-        return m_musicHash.value(id);
+        music = m_musicHash.value(id);
+        music->increment();
+        return music;
     }
 
     SQLite *sql = SQLite::getInstance();
-    Music *music = sql->getMusic(id);
+    music = sql->getMusic(id);
     if (music != nullptr) {
         music->moveToThread(this->thread());
         m_musicHash.insert(id, music);
+        music->increment();
+        return music;
     }
-    return music;
+    return nullptr;
 }
 
 QList<Music *> MusicCore::getMusic(QList<int> idList)
 {
+    QList<Music *> musicList;
     QList<int> newIdList;
     for (int i = 0; i < idList.size(); ++i) {
         if (!m_musicHash.contains(idList[i]))
             newIdList.append(idList[i]);
+        else
+            musicList.append(m_musicHash.value(idList[i]));
     }
     QHash<int, Music *> hash = SQLite::getInstance()->getMusic(newIdList);
     m_musicHash.insert(hash);
 
-    return hash.values();
+    musicList.append(hash.values());
+    return musicList;
+}
+
+void MusicCore::releaseMusic(int id)
+{
+    Music *music = nullptr;
+    if (m_musicHash.contains(id))
+        music = m_musicHash.value(id);
+    else
+        return;
+
+    if (music->decrement()) {
+        m_musicHash.remove(id);
+        delete music;
+    }
+}
+
+void MusicCore::releaseMusic(QList<int> idList)
+{
+    for (int i = 0; i < idList.size(); ++i)
+        releaseMusic(idList[i]);
 }
 
 void MusicCore::loadMusic(QList<int> idList)
@@ -104,6 +190,7 @@ QList<int> MusicCore::selectSearchMusic(QList<int> idList, QString e)
             newIdList.append(musicList[i]->id);
     }
 
+    releaseMusic(idList);
     return newIdList;
 }
 
@@ -191,6 +278,7 @@ QList<int> MusicCore::sortMusic(QList<int> idList, Table::SORT_TYPE sort)
         newIdList.append(musicList[i]->id);
     }
 
+    releaseMusic(idList);
     return newIdList;
 }
 
@@ -204,6 +292,7 @@ QList<int> MusicCore::selectLoveMusic(QList<int> idList)
             newIdList.append(musicList[i]->id);
     }
 
+    releaseMusic(idList);
     return newIdList;
 }
 

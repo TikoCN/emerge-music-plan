@@ -9,8 +9,20 @@ Item {
 
     property int musicId: -1
     property int type: 0
-    property MusicData music: musicButton.visible ? Core.getMusic(musicId) : null
+    property MusicData music: null
     signal play()
+
+    Component.onCompleted: music = Core.getMusic(musicId)
+    onVisibleChanged: {
+        if (visible) {
+            if (music === null)
+                music = Core.getMusic(musicId)
+        }
+        else {
+            Core.releaseMusic(musicId)
+            music = null
+        }
+    }
 
     Rectangle {
         anchors.fill: parent

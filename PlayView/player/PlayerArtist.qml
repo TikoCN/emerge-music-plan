@@ -6,8 +6,17 @@ import DataType
 
 Item{
     id: artistDataShow
-    property ArtistData artist: Core.getArtist(artistId)
+    property ArtistData artist: null
     property int artistId: -1
+
+    onVisibleChanged: {
+        if (visible)
+            artist = Core.getArtist(artistId)
+        else {
+            artist = null
+            Core.releaseArtist(artistId)
+        }
+    }
 
     TikoButtonIcon{
         y: -10
@@ -90,7 +99,17 @@ Item{
     onArtistChanged: {
         if (artist === null )
             return
+        build()
+    }
 
+    Connections {
+        target: Core
+        function onBuildArtistPlayer(){
+            build()
+        }
+    }
+
+    function build(){
         artistMusicModel.clear()
         for (var i=0; i<artist.musicList.length; i++) {
             artistMusicModel.append({

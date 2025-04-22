@@ -14,9 +14,20 @@ Item {
     property int musicId: -1
     property int tableId: -1
     property bool isLittle: false
+    property MusicData music: null
     signal play()
 
-    property MusicData music : visible ? Core.getMusic(musicId) : null
+    Component.onCompleted: music = Core.getMusic(musicId)
+    onVisibleChanged: {
+        if (visible) {
+            if (music === null)
+                music = Core.getMusic(musicId)
+        }
+        else {
+            Core.releaseMusic(musicId)
+            music = null
+        }
+    }
 
     MouseArea{
         id: mouseArea

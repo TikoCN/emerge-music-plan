@@ -86,7 +86,6 @@ void Music::writeDataToFile(QStringList key, QStringList value)
 
 void Music::setMedia(MediaData data)
 {
-    id = data.id;
     title = data.title;
     artistList = data.artistList;
     album = data.album;
@@ -94,7 +93,6 @@ void Music::setMedia(MediaData data)
     isLove = data.isLove;
     url = data.url;
     level = data.level;
-    insetTime = data.insetTime;
 }
 
 QString Music::getMediaJson()

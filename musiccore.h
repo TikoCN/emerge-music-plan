@@ -31,15 +31,19 @@ public:
     Q_INVOKABLE void appendTable(QString name);
 
     Q_INVOKABLE Table *getTable(int id);
+    Q_INVOKABLE void releaseTable(int id);
 
     Q_INVOKABLE Album *getAlbum(int id);
+    Q_INVOKABLE void releaseAlbum(int id);
 
     Q_INVOKABLE Artist *getArtist(int id);
+    Q_INVOKABLE void releaseArtist(int id);
 
     Q_INVOKABLE Music *getMusic(int id);
     Q_INVOKABLE QList<Music *> getMusic(QList<int > idList);
+    Q_INVOKABLE void releaseMusic(QList<int> id);
+    Q_INVOKABLE void releaseMusic(int id);
     Q_INVOKABLE void loadMusic(QList<int > idList);
-
 
     QList<int> selectSearchMusic(QList<int > idList, QString e);
     QList<int> sortMusic(QList<int > idList, Table::SORT_TYPE sort);
@@ -55,6 +59,10 @@ private:
     QHash<int, Artist *> m_artistHash;     // 歌手列表
 signals:
     void finish();
+
+    void buildTablePlayer();
+    void buildArtistPlayer();
+    void buildAlbumPlayer();
 };
 
 #endif // MUSICCORE_H

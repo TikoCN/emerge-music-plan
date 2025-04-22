@@ -10,17 +10,21 @@ Image{
     property int imgWidth: width
     property int imgHeight: height
     property int loadMsTime: 500
-    property int freeMsTime: 1000
+    property int freeMsTime: 60000
     property string normalUrl: ""
     property string loadUrl: ""
     property bool loadFlag: image.visible
 
     onLoadFlagChanged: {
         if (loadFlag) {
-            loadImag.start()
+            deleteImag.stop()
+            if (image.source !== loadUrl)
+                loadImag.start()
         }
         else {
-            deleteImag.start()
+            loadImag.stop()
+            if (image.source !== normalUrl)
+                deleteImag.start()
         }
     }
 
@@ -44,7 +48,9 @@ Image{
         }
     }
 
-    Component.onCompleted: {loadImag.start()}
+    Component.onCompleted: {
+        loadImag.start()
+    }
 
     onLoadUrlChanged: {
         if (loadFlag)

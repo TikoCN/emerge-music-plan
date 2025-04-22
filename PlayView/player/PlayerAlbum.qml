@@ -6,8 +6,17 @@ import DataType
 
 Item{
     id: albumDataShow
-    property AlbumData album: Core.getAlbum(albumId)
+    property AlbumData album: null
     property int albumId: -1
+
+    onVisibleChanged: {
+        if (visible)
+            album = Core.getAlbum(albumId)
+        else {
+            album = null
+            Core.releaseAlbum(albumId)
+        }
+    }
 
     TikoButtonIcon{
         y: -10
@@ -90,7 +99,17 @@ Item{
     onAlbumChanged: {
         if (album === null )
             return
+        build()
+    }
 
+    Connections {
+        target: Core
+        function onBuildAlbumPlayer(){
+            build()
+        }
+    }
+
+    function build(){
         albumMusicModel.clear()
         for (var i=0; i<album.musicList.length; i++) {
             albumMusicModel.append({

@@ -36,6 +36,7 @@ void MediaPlayer::insertMusicAlbum(int albumId)
         return;
     }
 
+    m_core->releaseAlbum(albumId);
     insertMusicList(album->musicList);
 }
 
@@ -49,19 +50,21 @@ void MediaPlayer::insertMusicArtist(int artistId)
         return;
     }
 
+    m_core->releaseArtist(artistId);
     insertMusicList(artist->musicList);
 }
 
-void MediaPlayer::insertMusicTable(int artistId)
+void MediaPlayer::insertMusicTable(int tableId)
 {
     Base *base = Base::getInstance();
 
-    Table *table = m_core->getTable(artistId);
+    Table *table = m_core->getTable(tableId);
     if (table == nullptr) {
         base->sendMessage(tr("找不到专辑，无法播放"));
         return;
     }
 
+    m_core->releaseTable(tableId);
     insertMusicList(table->musicList);
 }
 
@@ -90,6 +93,7 @@ void MediaPlayer::appendMusicAlbum(int albumId)
         return;
     }
 
+    m_core->releaseAlbum(albumId);
     appendMusicList(album->musicList);
 }
 
@@ -103,19 +107,21 @@ void MediaPlayer::appendMusicArtist(int artistId)
         return;
     }
 
+    m_core->releaseArtist(artistId);
     appendMusicList(artist->musicList);
 }
 
-void MediaPlayer::appendMusicTable(int artistId)
+void MediaPlayer::appendMusicTable(int tableId)
 {
     Base *base = Base::getInstance();
 
-    Table *table = m_core->getTable(artistId);
+    Table *table = m_core->getTable(tableId);
     if (table == nullptr) {
         base->sendMessage(tr("找不到专辑，无法播放"));
         return;
     }
 
+    m_core->releaseTable(tableId);
     appendMusicList(table->musicList);
 }
 
@@ -181,6 +187,16 @@ void MediaPlayer::clearData()
     emit finishClearData();
 }
 
+void MediaPlayer::clearMusicList()
+{
+    m_musicList.clear();
+    QList<int> idList;
+    for (int i = 0; i < m_musicList.size(); ++i) {
+        idList.append(m_musicList[i]->id);
+    }
+    m_core->releaseMusic(idList);
+}
+
 void MediaPlayer::updateAudioOutPut()
 {
     QAudioOutput* nowOut = new QAudioOutput;
@@ -204,6 +220,7 @@ void MediaPlayer::buildMusicAlbum(int albumId, int listId)
         return;
     }
 
+    m_core->releaseAlbum(albumId);
     buildMusicList(album->musicList);
     playMusicList(listId);
 }
@@ -214,10 +231,11 @@ void MediaPlayer::buildMusicArtist(int artistId, int listId)
 
     Artist *artist = m_core->getArtist(artistId);
     if (artist == nullptr) {
-        base->sendMessage(tr("找不到专辑，无法播放"));
+        base->sendMessage(tr("找不到作曲家，无法播放"));
         return;
     }
 
+    m_core->releaseArtist(artistId);
     buildMusicList(artist->musicList);
     playMusicList(listId);
 }
@@ -228,10 +246,11 @@ void MediaPlayer::buildMusicTable(int tableId, int listId)
 
     Table *table = m_core->getTable(tableId);
     if (table == nullptr) {
-        base->sendMessage(tr("找不到专辑，无法播放"));
+        base->sendMessage(tr("找不到播放列表，无法播放"));
         return;
     }
 
+    m_core->releaseTable(tableId);
     buildMusicList(table->musicList);
     playMusicList(listId);
 }
@@ -245,6 +264,7 @@ void MediaPlayer::buildMusic(int musicId)
 
 void MediaPlayer::buildMusicList(QList<int> list)
 {
+    clearMusicList();
     m_musicList = m_core->getMusic(list);
     emit musicListBuild();
 }

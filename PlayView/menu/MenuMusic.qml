@@ -7,11 +7,16 @@ import DataType
 TikoMenu{
     id: menuMusic
     cascade: true
-    onClosed: menuMusic.destroy()
+    onClosed: {
+        Core.releaseMusic(musicId)
+        menuMusic.destroy()
+    }
 
     property MusicData music: Core.getMusic(musicId)
     property int musicId: -1
     property int type: 0
+
+
 
     TikoMenuItem{
         text: qsTr("播放")

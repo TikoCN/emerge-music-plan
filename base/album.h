@@ -3,8 +3,9 @@
 
 #include <QObject>
 #include <QSet>
+#include "referencecount.h"
 
-class Album : public QObject
+class Album : public QObject, public ReferenceCount
 {
     Q_OBJECT
 public:

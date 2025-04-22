@@ -2,11 +2,12 @@
 #define MUSIC_H
 
 #include "lrcdata.h"
+#include "referencecount.h"
 #include "mediadata.h"
 #include <QObject>
 #include <QFileInfo>
 
-class Music : public QObject
+class Music : public QObject, public ReferenceCount
 {
     Q_OBJECT
 

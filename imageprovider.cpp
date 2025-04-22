@@ -92,11 +92,12 @@ void ImageResponse::loadMusicOnline(int id)
 void ImageResponse::loadTableFile(int id)
 {
     MusicCore *core = MusicCore::getInstance();
+    Table *table = nullptr;
     try {
         if (id < 0)
             throw false;
 
-        Table *table = core->getTable(id);
+        table = core->getTable(id);
         if (table == nullptr)
             throw false;
 
@@ -115,16 +116,19 @@ void ImageResponse::loadTableFile(int id)
             m_img.load(":/image/default.png");
         }
     }
+
+    if (table == nullptr) core->releaseTable(id);
 }
 
 void ImageResponse::loadTableOnline(int id)
 {
     MusicCore *core = MusicCore::getInstance();
+    Table *table = nullptr;
     try {
         if (id < 0)
             throw false;
 
-        Table *table = core->getTable(id);
+        table = core->getTable(id);
         if (table == nullptr)
             throw false;
 
@@ -143,17 +147,20 @@ void ImageResponse::loadTableOnline(int id)
             m_img.load(":/image/default.png");
         }
     }
+
+    if (table == nullptr) core->releaseTable(id);
 }
 
 void ImageResponse::loadArtistFile(int id)
 {
     MusicCore *core = MusicCore::getInstance();
     Base *base = Base::getInstance();
+    Artist *artist = nullptr;
     try {
         if (id < 0)
             throw false;
 
-        Artist *artist = core->getArtist(id);
+        artist = core->getArtist(id);
         if (artist == nullptr)
             throw false;
 
@@ -175,6 +182,7 @@ void ImageResponse::loadArtistFile(int id)
             m_img.load(":/image/default.png");
     }
 
+    if (artist == nullptr) core->releaseArtist(id);
     m_img = m_img.scaled(m_requestedSize, Qt::IgnoreAspectRatio);
     if (!m_img.isNull()) buildRoundImage(&m_img, 10);
 }
@@ -184,12 +192,12 @@ void ImageResponse::loadArtistOnline(int id)
     MusicCore *core = MusicCore::getInstance();
     Base *base = Base::getInstance();
     OnLine *online = OnLine::getInstance();
-
+    Artist *artist = nullptr;
     try {
         if (id < 0)
             throw false;
 
-        Artist *artist = core->getArtist(id);
+        artist = core->getArtist(id);
         if (artist == nullptr)
             throw false;
 
@@ -218,6 +226,7 @@ void ImageResponse::loadArtistOnline(int id)
             m_img.load(":/image/default.png");
     }
 
+    if (artist == nullptr) core->releaseArtist(id);
     m_img = m_img.scaled(m_requestedSize, Qt::IgnoreAspectRatio);
     if (!m_img.isNull()) buildRoundImage(&m_img, 10);
 }
@@ -226,11 +235,12 @@ void ImageResponse::loadAlbumFile(int id)
 {
     MusicCore *core = MusicCore::getInstance();
     Base *base = Base::getInstance();
+    Album *album = nullptr;
     try {
         if (id < 0)
             throw false;
 
-        Album *album = core->getAlbum(id);
+        album = core->getAlbum(id);
         if (album == nullptr)
             throw false;
 
@@ -252,6 +262,7 @@ void ImageResponse::loadAlbumFile(int id)
             m_img.load(":/image/default.png");
     }
 
+    if (album != nullptr) core->releaseAlbum(album->id);
     m_img = m_img.scaled(m_requestedSize, Qt::IgnoreAspectRatio);
     if (!m_img.isNull()) buildRoundImage(&m_img, 10);
 }
@@ -261,12 +272,13 @@ void ImageResponse::loadAlbumOnline(int id)
     MusicCore *core = MusicCore::getInstance();
     Base *base = Base::getInstance();
     OnLine *online = OnLine::getInstance();
+    Album *album = nullptr;
 
     try {
         if (id < 0)
             throw false;
 
-        Album *album = core->getAlbum(id);
+        album = core->getAlbum(id);
         if (album == nullptr)
             throw false;
 
@@ -295,6 +307,7 @@ void ImageResponse::loadAlbumOnline(int id)
             m_img.load(":/image/default.png");
     }
 
+    if (album != nullptr) core->releaseAlbum(album->id);
     m_img = m_img.scaled(m_requestedSize, Qt::IgnoreAspectRatio);
     if (!m_img.isNull()) buildRoundImage(&m_img, 10);
 }

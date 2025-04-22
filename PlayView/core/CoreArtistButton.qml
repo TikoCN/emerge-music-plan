@@ -12,7 +12,19 @@ Item{
     property int r: 160
     property int space: 5
     property int artistId: -1
-    property ArtistData artist: visible ? Core.getArtist(artistId) : null
+    property ArtistData artist: null
+
+    Component.onCompleted: artist = Core.getArtist(artistId)
+    onVisibleChanged: {
+        if (visible) {
+            if (artist === null)
+                artist = Core.getArtist(artistId)
+        }
+        else {
+            Core.releaseArtist(artistId)
+            artist = null
+        }
+    }
 
     // 整体背景
     Rectangle {
