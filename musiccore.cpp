@@ -307,6 +307,47 @@ QList<int> MusicCore::selectLoveMusic(QList<int> idList)
     return newIdList;
 }
 
+QString MusicCore::getArtistName(int id)
+{
+    if (m_artistHash.contains(id))
+        return m_artistHash.value(id)->name;
+    return "";
+}
+
+QString MusicCore::getAlbumName(int id)
+{
+    if (m_albumHash.contains(id))
+        return m_albumHash.value(id)->name;
+    return "";
+}
+
+bool MusicCore::setArtistIsNoCover(int id, bool b)
+{
+    if (m_artistHash.contains(id)){
+        m_artistHash.value(id)->isNoCover = b;
+        return true;
+    }
+    return false;
+}
+
+bool MusicCore::setAlbumIsNoCover(int id, bool b)
+{
+    if (m_albumHash.contains(id)){
+        m_albumHash.value(id)->isNoCover = b;
+        return true;
+    }
+        return false;
+}
+
+bool MusicCore::setMusicIsNoCover(int id, bool b)
+{
+    if (m_musicHash.contains(id)){
+        m_musicHash.value(id)->isNoCover = b;
+        return true;
+    }
+    return false;
+}
+
 MusicCore::MusicCore(QObject *parent)
     : QObject{parent}
 {

@@ -2,22 +2,45 @@ import QtQuick
 import QtQuick.Controls.Basic
 import Tiko
 
-Button {
+TikoButtonBase {
     id: button
-    implicitWidth: textRect.boundingRect.width * 4
-    implicitHeight: 32
+    width: textRect.boundingRect.width * 4
+    height: 32
+
     property color backColor: TikoSeit.transparentColor
     property color textColor: TikoSeit.backdropColor
-    property int radius: 3
-
-    background: Rectangle{
-        id: back
-        radius: button.radius
-        color: button.backColor
-        opacity: 0.3
+    property string text: qsTr("TikoButtonBorder")
+    property int radius: 20
+    onHoveredChanged: {
+        if (hovered)
+            inAnimation.start()
+        else
+            outAnimation.start()
     }
 
-    contentItem: TikoTextLine{
+    Rectangle {
+        id: back
+        radius: radius
+        color: button.backColor
+        opacity: 0.3
+        anchors.fill: parent
+
+        PropertyAnimation on radius {
+            id: inAnimation
+            from: button.radius
+            to: 0
+            duration: 300
+        }
+
+        PropertyAnimation on radius {
+            id: outAnimation
+            from: button.radius
+            to: 0
+            duration: 300
+        }
+    }
+
+    TikoTextLine {
         id: textShow
         anchors.fill: parent
         text: button.text

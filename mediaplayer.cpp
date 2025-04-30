@@ -213,7 +213,6 @@ void MediaPlayer::updateAudioOutPut()
 void MediaPlayer::buildMusicAlbum(int albumId, int listId)
 {
     Base *base = Base::getInstance();
-
     Album *album = m_core->getAlbum(albumId);
     if (album == nullptr) {
         base->sendMessage(tr("找不到专辑，无法播放"));
@@ -277,7 +276,6 @@ void MediaPlayer::playMusicList(int musicListId)
     m_playingMusic->setPlayNumber(m_playingMusic->playNumber++);
     m_player->setSource(m_playingMusic->url);
     m_playingMusicListId = musicListId;
-    m_player->play();
     loadLrcList();
 }
 
@@ -443,6 +441,8 @@ MediaPlayer::MediaPlayer()
     m_player->setAudioBufferOutput(m_bufferOutput);
 
     m_core = MusicCore::getInstance();
+    m_player->play();
+    m_player->pause();
 
     connect(m_bufferOutput, &QAudioBufferOutput::audioBufferReceived, this, &MediaPlayer::buildFrequencySpectrum);
 
@@ -450,12 +450,18 @@ MediaPlayer::MediaPlayer()
         updateAudioOutPut();
         selectPlayLrc(time);
     });
-    //自动播放
 
     connect(m_player, &QMediaPlayer::mediaStatusChanged, this, [=](QMediaPlayer::MediaStatus staus){
-        if(staus == QMediaPlayer::EndOfMedia)
-        {
+
+        switch (staus) {
+        case QMediaPlayer::EndOfMedia:
             playNext(1);
+            break;
+        case QMediaPlayer::LoadedMedia:
+            m_player->play();
+            break;
+        default:
+            break;
         }
     });
 }

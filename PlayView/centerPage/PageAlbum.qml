@@ -63,7 +63,7 @@ Item {
             y: 10
             x: 10
             id: albumButton
-            albumId: inalbumId
+            albumId: inAlbumId
         }
 
     }
@@ -86,7 +86,7 @@ Item {
         albumModel.clear()
         var list = SQLData.getAlbum(key)
         for (var i=0; i<list.length; i++) {
-            albumModel.append({inalbumId: list[i]})
+            albumModel.append({inAlbumId: list[i]})
         }
     }
 }

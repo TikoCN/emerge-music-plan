@@ -11,8 +11,10 @@ TikoPopupInput {
     property int artistId: -1
     property int newArtistId: -1
     property ArtistData artist: Core.getArtist(artistId)
+    orgText: artist.name
+
     onFinish: {
-        newArtistId = SQLData.checkArtistName(name)
+        newArtistId = SQLData.checkArtistName(inputText)
         if (newArtistId === -2)
             isCheck = true
         isDClick = false

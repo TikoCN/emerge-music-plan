@@ -1,3 +1,4 @@
+import QtQuick.Effects
 import QtQuick
 
 Image{
@@ -14,6 +15,7 @@ Image{
     property string normalUrl: ""
     property string loadUrl: ""
     property bool loadFlag: image.visible
+    property bool loadIsNull: false
 
     onLoadFlagChanged: {
         if (loadFlag) {
@@ -26,6 +28,29 @@ Image{
             if (image.source !== normalUrl)
                 deleteImag.start()
         }
+    }
+
+    onStatusChanged: {
+        if (source !== normalUrl && loadIsNull){
+            image.source = normalUrl
+        }
+    }
+
+    Component.onCompleted: {
+        loadImag.start()
+    }
+
+    onLoadUrlChanged: {
+        if (loadFlag)
+            image.source = loadUrl
+    }
+
+    MultiEffect {
+        id: iconShow
+        anchors.fill: image
+        source: image
+        colorization: (!loadFlag || loadIsNull) ? 1 : 0
+        colorizationColor: TikoSeit.transparentColor
     }
 
     Timer {
@@ -46,15 +71,6 @@ Image{
                 image.source = loadUrl
             }
         }
-    }
-
-    Component.onCompleted: {
-        loadImag.start()
-    }
-
-    onLoadUrlChanged: {
-        if (loadFlag)
-            image.source = loadUrl
     }
 }
 

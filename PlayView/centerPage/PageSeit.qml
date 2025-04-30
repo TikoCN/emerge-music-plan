@@ -34,7 +34,7 @@ ScrollView{
                     width: 150
                     height: 50
                     text: qsTr("选择音乐文件地址")
-                    onClicked: selectMusicDir.open()
+                    onClick: selectMusicDir.open()
                 }
 
                 TikoButtonBorder{
@@ -43,7 +43,7 @@ ScrollView{
                     width: selectDirButton.width
                     height: 50
                     text: qsTr("加载音乐")
-                    onClicked: {
+                    onClick: {
                         window.clearData()
                         Setting.loadMusicCores()
                     }

@@ -6,7 +6,12 @@
 Album::Album(QString name, int id, QString lineKey)
     : name(name), id(id), lineKey(lineKey)
 {
+    isNoCover = true;
+}
 
+bool Album::getIsNoCover() const
+{
+    return isNoCover;
 }
 
 void Album::setName(const QString &newName)

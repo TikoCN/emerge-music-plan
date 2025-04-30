@@ -4,7 +4,12 @@
 Artist::Artist(QString name, int id, QString lineKey)
     : name(name), id(id), lineKey(lineKey)
 {
+    isNoCover = true;
+}
 
+bool Artist::getIsNoCover() const
+{
+    return isNoCover;
 }
 
 void Artist::setName(const QString &newName)

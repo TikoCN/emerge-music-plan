@@ -61,6 +61,11 @@ void Music::setPlayNumber(int newPlayNumber)
     SQLite::getInstance()->updateMusic(this);
 }
 
+bool Music::getIsNoCover() const
+{
+    return isNoCover;
+}
+
 Music::Music() {
     url = "";
     album = tr("未知专辑");
@@ -69,6 +74,7 @@ Music::Music() {
     level = 0;
     isLove = false;
     playNumber = 0;
+    isNoCover = true;
 }
 
 void Music::writeDataToFile(QStringList key, QStringList value)

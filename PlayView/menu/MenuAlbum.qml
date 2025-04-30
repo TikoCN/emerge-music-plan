@@ -5,9 +5,15 @@ import MediaerAPI
 import PlayView
 
 TikoMenu {
-    id: artistMenu
-    onClosed: destroy()
-    property AlbumData album
+    id: albumMenu
+    onClosed: {
+        Core.releaseAlbum(albumId)
+        if (inputPopup === null)
+            destroy()
+    }
+    property var inputPopup: null
+    property AlbumData album: Core.getAlbum(albumId)
+    property int albumId: -1
 
     TikoMenuItem {
         text: qsTr("播放")
@@ -28,7 +34,7 @@ TikoMenu {
     TikoMenuSpeacer{}
 
     TikoMenu{
-        title: qsTr("添加到")
+        title: qsTr("添加到...")
         icon.source: "qrc:/image/move.png"
 
         Repeater{
@@ -61,6 +67,7 @@ TikoMenu {
 
     TikoMenuItem {
         text: qsTr("修改名称")
+        onClicked: openInput()
     }
 
     TikoMenuSpeacer{}
@@ -68,5 +75,23 @@ TikoMenu {
     TikoMenuItem {
         text: qsTr("显示专辑")
         onClicked: CoreData.mainTurnAlbumPlayer(album)
+    }
+
+    Component {
+        id: inputComponent
+        InputAlbumName {
+            albumId: albumMenu.albumId
+            onClosed: {
+                destroy()
+                albumMenu.destroy()
+            }
+        }
+    }
+
+    function openInput(){
+        if (inputComponent.status === Component.Ready) {
+            inputPopup = inputComponent.createObject(parent)
+            inputPopup.open()
+        }
     }
 }

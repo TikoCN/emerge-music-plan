@@ -23,6 +23,8 @@ private:
     Q_PROPERTY(long long duration READ getDuration CONSTANT FINAL)
     Q_PROPERTY(int playNumber READ getPlayNumber WRITE setPlayNumber NOTIFY playNumberChanged FINAL)
 
+    Q_PROPERTY(bool isNoCover READ getIsNoCover CONSTANT FINAL)
+
 public:
     QString title;
     QStringList artistList;
@@ -37,6 +39,7 @@ public:
     int playNumber;
     int albumId;
     bool isLove;
+    bool isNoCover;
 
     Music();
 
@@ -95,6 +98,8 @@ public:
 
     int getPlayNumber() const;
     void setPlayNumber(int newPlayNumber);
+
+    bool getIsNoCover() const;
 
 signals:
     void isLoveChanged();

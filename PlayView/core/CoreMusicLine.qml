@@ -4,6 +4,7 @@ import MediaerAPI
 import Tiko
 import DataType
 import PlayView
+
 Item {
     id: musicLine
     implicitHeight: 70
@@ -18,30 +19,23 @@ Item {
     signal play()
 
     Component.onCompleted: music = Core.getMusic(musicId)
-    onVisibleChanged: {
-        if (visible) {
-            if (music === null)
-                music = Core.getMusic(musicId)
-        }
-        else {
-            Core.releaseMusic(musicId)
-            music = null
-        }
-    }
+    Component.onDestruction: Core.releaseMusic(musicId)
 
     MouseArea{
         id: mouseArea
-        onClicked:(mouse)=>{
-                      if(mouse.button === Qt.RightButton){
-                          CoreData.openMenuMusicTable(musicLine, musicId, tableId)
-                      }
-                      else{
-                          play()
-                      }
-                  }
-        acceptedButtons: Qt.LeftButton | Qt.RightButton
         anchors.fill: parent
         hoverEnabled: true
+        acceptedButtons: Qt.RightButton | Qt.LeftButton
+        onClicked: (mouse) => {
+                       switch(mouse.button){
+                           case Qt.LeftButton:
+                           play()
+                           break
+                           case Qt.RightButton:
+                           createMenu(musicLine)
+                           break
+                       }
+                   }
 
         Row{
             x:10
@@ -146,7 +140,7 @@ Item {
                         visible: mouseArea.containsMouse
                         width: 50
                         height: 50
-                        onClicked: CoreData.openMenuMusicTable(musicLine, musicId, tableId)
+                        onClicked: createMenu(musicLine)
                         icon.source: "qrc:/image/else.png"
                         cache: true
                     }
@@ -182,6 +176,41 @@ Item {
             else{
                 opacity = 0.05
             }
+        }
+    }
+
+    Component {
+        id: menuMusicComponent
+        MenuMusicTable {
+            musicId: musicLine.musicId
+            tableId: tableId
+        }
+    }
+
+    Component {
+        id: menuMusicTableComponent
+        MenuMusicTable {
+            musicId: musicLine.musicId
+            tableId: tableId
+        }
+    }
+
+    function createMenu(parent){
+        if (tableId !== -1) {
+            if (menuMusicTableComponent.status === Component.Ready){
+                let menu = menuMusicTableComponent.createObject(parent)
+                menu.open()
+            }
+            else
+                console.log(menuComponent.errorString())
+        }
+        else {
+            if (menuMusicComponent.status === Component.Ready){
+                let menu = menuMusicComponent.createObject(parent)
+                menu.open()
+            }
+            else
+                console.log(menuComponent.errorString())
         }
     }
 }

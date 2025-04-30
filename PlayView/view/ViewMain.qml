@@ -109,7 +109,7 @@ Item {
     }
 
     function turnToArtistPlayer(artistId){
-        artistPlayer.artistId = artistId
+        artistPlayer.setArtistId(artistId)
         if(stackView.currentItem != artistPlayer){
             stackView.replace(artistPlayer)
         }
@@ -122,7 +122,7 @@ Item {
     }
 
     function turnToAlbumPlayer(albumId){
-        albumPlayer.albumId = albumId
+        albumPlayer.setAlbumId(albumId)
         if(stackView.currentItem != albumPlayer){
             stackView.replace(albumPlayer)
         }

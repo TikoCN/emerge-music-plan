@@ -44,6 +44,7 @@ qt_add_qml_module(appmusicPlay
     load/buildmusiccore.h load/buildmusiccore.cpp
     base/mediadata.h
     SOURCES base/referencecount.h base/referencecount.cpp
+    SOURCES tlog.h tlog.cpp
 )
 
 # link fftw3

@@ -3,7 +3,7 @@ import Tiko
 import DataType
 import MediaerAPI
 import PlayView
-import "../js/CreateMenu.js" as JsMenu
+
 Item{
     id: albumButton
     width: r + space * 2
@@ -16,30 +16,31 @@ Item{
     property int coverId: 0
 
     Component.onCompleted: album = Core.getAlbum(albumId)
-    onVisibleChanged: {
-        if (visible) {
-            if (album === null)
-                album = Core.getAlbum(albumId)
-        }
-        else {
-            Core.releaseAlbum(albumId)
-            album = null
-        }
-    }
+    Component.onDestruction: Core.releaseAlbum(albumId)
 
     // 整体背景
     Rectangle {
         anchors.fill: parent
         color: Setting.transparentColor
         radius: 10
-        opacity: mouse.containsMouse ? 0.1 : 0
+        opacity: mouseArea.containsMouse ? 0.1 : 0
     }
 
     MouseArea {
-        id: mouse
+        id: mouseArea
         anchors.fill: parent
-        onClicked: CoreData.mainTurnAlbumPlayer(albumId)
         hoverEnabled: true
+        acceptedButtons: Qt.RightButton | Qt.LeftButton
+        onClicked: (mouse) => {
+                       switch(mouse.button){
+                           case Qt.LeftButton:
+                           CoreData.mainTurnAlbumPlayer(albumId)
+                           break
+                           case Qt.RightButton:
+                           createMenu(this)
+                           break
+                       }
+                   }
 
         Item {
             id: showItem
@@ -53,7 +54,8 @@ Item{
                 width: r
                 height: r
                 normalUrl: "qrc:/image/album.png"
-                loadUrl: "image://cover/albumFile:" + albumId.toString()
+                loadUrl: "image://cover/-albumFile:" + albumId.toString()
+                loadIsNull: album !== null ? album.isNoCover : true
             }
 
             // 播放按钮
@@ -67,7 +69,7 @@ Item{
                 anchors.bottom: albumCover.bottom
                 anchors.left: albumCover.left
                 anchors.margins: albumCover.width * 0.05
-                visible: mouse.containsMouse
+                visible: mouseArea.containsMouse
                 normal: 0.5
                 hover: 1
                 borderSize: 1.5
@@ -85,12 +87,12 @@ Item{
                 anchors.top: albumCover.top
                 anchors.right: albumCover.right
                 anchors.margins: albumCover.width * 0.05
-                visible: mouse.containsMouse
+                visible: mouseArea.containsMouse
                 normal: 0.5
                 hover: 1
                 borderSize: 1.5
                 autoColor: Setting.backdropColor
-                onClicked: CoreData.openMenuAlbum(this, album)
+                onClicked: createMenu(this)
             }
 
             // 专辑名
@@ -111,5 +113,21 @@ Item{
                 text: album !== null ? Base.timeToString(album.duration) : qsTr("00:00")
             }
         }
+    }
+
+    Component {
+        id: menuComponent
+        MenuAlbum {
+            albumId: albumButton.albumId
+        }
+    }
+
+    function createMenu(parent){
+        if (menuComponent.status === Component.Ready){
+            let menu = menuComponent.createObject(parent)
+            menu.open()
+        }
+        else
+            console.log(menuComponent.errorString())
     }
 }

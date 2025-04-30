@@ -56,11 +56,9 @@ qt_add_qml_module(PlayViewLib
     core/CoreAlbumButton.qml
     core/CoreArtistButton.qml
     core/CoreMusicLine.qml
-    RESOURCES ui.qrc
     inputPopup/InputArtistName.qml
     inputPopup/InputAlbumName.qml
     inputPopup/InputTableName.qml
-    QML_FILES js/CreateMenu.js
-    QML_FILES js/CreateInput.js
+    RESOURCES ui.qrc
 )
 

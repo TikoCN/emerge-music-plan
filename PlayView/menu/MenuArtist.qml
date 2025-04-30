@@ -6,8 +6,14 @@ import PlayView
 
 TikoMenu {
     id: artistMenu
-    onClosed: destroy()
-    property ArtistData artist
+    onClosed: {
+        Core.releaseArtist(artistId)
+        if (inputPopup === null)
+            destroy()
+    }
+    property var inputPopup: null
+    property ArtistData artist: Core.getArtist(artistId)
+    property int artistId: -1
 
     TikoMenuItem {
         text: qsTr("播放")
@@ -28,7 +34,7 @@ TikoMenu {
     TikoMenuSpeacer{}
 
     TikoMenu{
-        title: qsTr("添加到")
+        title: qsTr("添加到...")
         icon.source: "qrc:/image/move.png"
 
         Repeater{
@@ -61,6 +67,7 @@ TikoMenu {
 
     TikoMenuItem {
         text: qsTr("编辑信息")
+        onClicked: openInput()
     }
 
     TikoMenuSpeacer{}
@@ -68,5 +75,19 @@ TikoMenu {
     TikoMenuItem {
         text: qsTr("显示作曲家")
         onClicked: CoreData.mainTurnArtistPlayer(artist)
+    }
+
+    Component {
+        id: inputComponent
+        InputArtistName {
+            artistId: artistMenu.artistId
+        }
+    }
+
+    function openInput(){
+        if (inputComponent.status === Component.Ready) {
+            inputPopup = inputComponent.createObject(artistMenu.parent)
+            inputPopup.open()
+        }
     }
 }

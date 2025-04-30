@@ -5,7 +5,7 @@ QStringList Get::getArtistKeyList()
 {
     QStringList keyList;
     try {
-        const char *sql = "SELECT key FROM artist";
+        const char *sql = "SELECT DISTINCT key FROM artist ORDER BY key ASC";
 
         sqlite3_callback callback = [](void *data, int argc, char **argv, char **azColName)->int{
             QStringList *keyList = static_cast<QStringList *>(data);
@@ -123,7 +123,7 @@ QStringList Get::getAlbumKeyList()
 {
     QStringList keyList;
     try {
-        const char *sql = "SELECT key FROM album";
+        const char *sql = "SELECT DISTINCT key FROM album ORDER BY key ASC";
 
         sqlite3_callback callback = [](void *data, int argc, char **argv, char **azColName)->int{
             QStringList *keyList = static_cast<QStringList *>(data);

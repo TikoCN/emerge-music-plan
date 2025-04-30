@@ -57,9 +57,8 @@ Item {
             anchors.left: tableHelp.left
             anchors.bottom: tableCover.bottom
             text: qsTr("播放")
-            icon.source: "qrc:/image/play.png"
             width: 100
-            onClicked: MediaPlayer.playMusic(tableId, 0)
+            onClick: MediaPlayer.playMusic(tableId, 0)
             backColor: TikoSeit.themeColor
             textColor: TikoSeit.transparentColor
         }
@@ -70,7 +69,6 @@ Item {
             anchors.leftMargin: 10
             anchors.bottom: tableCover.bottom
             text: qsTr("批量")
-            icon.source: "qrc:/image/batch.png"
             width: 100
         }
 
@@ -101,9 +99,23 @@ Item {
             //排序
             TikoButtonNormal{
                 Layout.minimumWidth: 70
-                onClickLeft: CoreData.openMenuTableSort(this, playerTable.tableId)
+                onClickLeft: sort()
                 text: qsTr("排序")
                 iconSource: "qrc:/image/sort.png"
+
+                Component {
+                    id: sortMenuComponent
+                    MenuTableSort {
+                        tableId: playerTable.tableId
+                    }
+                }
+
+                function sort(){
+                    if (sortMenuComponent.status === Component.Ready){
+                        var menu = sortMenuComponent.createObject(this)
+                        menu.open()
+                    }
+                }
             }
 
             //搜索
@@ -194,7 +206,7 @@ Item {
     onVisibleChanged: init()
 
     function setTableId(id){
-        if (tableId == id)
+        if (tableId === id)
             return
         if(table !== null)
             Core.releaseTable(tableId)

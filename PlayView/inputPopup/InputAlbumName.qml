@@ -2,22 +2,26 @@ import QtQuick
 import Tiko
 import DataType
 import MediaerAPI
+import PlayView
 
 TikoPopupInput {
     id: albumNameInput
-    text: qsTr("请输入新的作曲家")
+    text: qsTr("请输入新的专辑")
     property bool isCheck: false
     property bool isDClick: false
     property int albumId: -1
     property int newAlbumId: -1
     property AlbumData album: Core.getAlbum(albumId)
+    orgText: album.name
+
     onFinish: {
-        newAlbumId = SQLData.checkAlbumName(name)
+        newAlbumId = SQLData.checkAlbumName(inputText)
         if (newAlbumId === -2)
             isCheck = true
         isDClick = false
     }
     onInput: isCheck = false
+
     onAccept: {
         if (!isCheck) {
             var checkMsg = checkMsgCom.createObject(albumNameInput)
@@ -35,27 +39,26 @@ TikoPopupInput {
             errorMsg.open()
         }
     }
-    onCancel: close()
+    onCancel: {
+        close()
+    }
     onClosed: {
-        Core.releaseAlbum(AlbumId)
+        Core.releaseAlbum(albumId)
         destroy()
     }
 
     Component {
-        id: errorMsgCom
+        id: msgCom
         TikoMessageLittle {
-            id: errorMsg
-            message: qsTr("该作曲家已存在，再次点击将歌曲迁移至目标作曲家")
-            anchors.centerIn: AlbumNameInput
+            x: (parent.width - width) / 2
+            y: (parent.height - height) / 2
         }
     }
 
-    Component {
-        id: checkMsgCom
-        TikoMessageLittle {
-            id: checkMsg
-            message: qsTr("数据库错误，未能检验文本")
-            anchors.centerIn: AlbumNameInput
+    function sendMsg(){
+        if (msgCom.status === Component.Ready){
+            var msg = msgCom.createObject(albumNameInput)
+            msg.open()
         }
     }
 }

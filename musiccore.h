@@ -51,6 +51,13 @@ public:
     QList<int> sortMusic(QList<int > idList, Table::SORT_TYPE sort);
     QList<int> selectLoveMusic(QList<int > idList);
 
+    QString getArtistName(int id);
+    QString getAlbumName(int id);
+
+    bool setArtistIsNoCover(int id, bool b);
+    bool setAlbumIsNoCover(int id, bool b);
+    bool setMusicIsNoCover(int id, bool b);
+
 private:
     static MusicCore *instance;
     explicit MusicCore(QObject *parent = nullptr);

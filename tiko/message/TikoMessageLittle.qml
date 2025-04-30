@@ -13,7 +13,8 @@ TikoPopup {
 
     property string message: qsTr("消息送达")
     property int type: 0
-    property double aimY: 30
+    property int aimX: parent.width*0.3 - width*0.5
+    property int aimY: parent.height*0.3 - height*0.3
 
     Image {
         id: icon
@@ -50,5 +51,11 @@ TikoPopup {
         id: mathWidth
         text: littleMessage.message
         font: messageShow.font
+    }
+
+
+
+    PropertyAction on x {
+
     }
 }

@@ -134,7 +134,7 @@ TikoMenu{
     }
 
     TikoMenu{
-        title: qsTr("格式转换为")
+        title: qsTr("格式转换为...")
         Repeater{
             delegate: TikoMenuItem{
                 text: suffix
@@ -155,7 +155,7 @@ TikoMenu{
     TikoMenuSpeacer{}
 
     TikoMenu{
-        title: qsTr("添加到")
+        title: qsTr("添加到...")
         icon.source: "qrc:/image/move.png"
 
         Repeater{
@@ -168,7 +168,6 @@ TikoMenu{
             id: addMenu
             TikoMenuItem {
                 text: CoreData.table[aim]["name"]
-
             }
         }
 

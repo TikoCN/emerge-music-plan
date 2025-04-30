@@ -13,16 +13,7 @@ Item {
     signal play()
 
     Component.onCompleted: music = Core.getMusic(musicId)
-    onVisibleChanged: {
-        if (visible) {
-            if (music === null)
-                music = Core.getMusic(musicId)
-        }
-        else {
-            Core.releaseMusic(musicId)
-            music = null
-        }
-    }
+    Component.onDestruction: Core.releaseMusic(musicId)
 
     Rectangle {
         anchors.fill: parent
@@ -34,7 +25,17 @@ Item {
         id: mouse
         anchors.fill: parent
         hoverEnabled: true
-        onClicked: play()
+        acceptedButtons: Qt.RightButton | Qt.LeftButton
+        onClicked: (mouse) => {
+                       switch(mouse.button){
+                           case Qt.LeftButton:
+                           play()
+                           break
+                           case Qt.RightButton:
+                           createMenu(musicButton)
+                           break
+                       }
+                   }
 
         TikoImageAuto {
             id: musicCover
@@ -83,7 +84,7 @@ Item {
             hover: 0.1
             borderSize: 1.5
             autoColor: Setting.backdropColor
-            onClicked: CoreData.openMenuMusic(this, music)
+            onClicked: createMenu(this)
         }
 
         TikoTextLine {
@@ -106,4 +107,19 @@ Item {
         }
     }
 
+    Component {
+        id: menuComponent
+        MenuMusic {
+            musicId: musicButton.musicId
+        }
+    }
+
+    function createMenu(parent){
+        if (menuComponent.status === Component.Ready){
+            let menu = menuComponent.createObject(parent)
+            menu.open()
+        }
+        else
+            console.log(menuComponent.errorString())
+    }
 }

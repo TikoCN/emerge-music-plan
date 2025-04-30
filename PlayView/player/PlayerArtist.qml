@@ -5,23 +5,14 @@ import PlayView
 import DataType
 
 Item{
-    id: artistDataShow
+    id: artistPlayer
     property ArtistData artist: null
     property int artistId: -1
-
-    onVisibleChanged: {
-        if (visible)
-            artist = Core.getArtist(artistId)
-        else {
-            artist = null
-            Core.releaseArtist(artistId)
-        }
-    }
 
     TikoButtonIcon{
         y: -10
         icon.source: "qrc:/image/back.png"
-        onClicked: CoreData.mainTurnartistPage()
+        onClicked: CoreData.mainTurnArtistPage()
     }
 
     // 专辑信息背景
@@ -36,7 +27,7 @@ Item{
         radius: 15
     }
 
-    Image {
+    TikoImageAuto {
         id: artistDataCover
         width: 250
         height: 250
@@ -45,9 +36,9 @@ Item{
         anchors.left: parent.left
         anchors.top: parent.top
         anchors.margins: 30
-        source: artistId !== -1 ?
-                    "image://cover/artistOnline:" + artistId.toString()
-                  : "qrc:/image/artist.png"
+        normalUrl: "qrc:/image/artist.png"
+        loadUrl: "image://cover/artistOnline:" + artistId.toString()
+        loadIsNull: artist !== null ? artist.isNoCover: true
     }
 
     TikoTextLine {
@@ -92,14 +83,8 @@ Item{
             width: musicList.width
             listId: musicListId
             musicId: inMusicId
-            onPlay: MediaPlayer.buildMusicartist(artistId, listId)
+            onPlay: MediaPlayer.buildMusicArtist(artistId, listId)
         }
-    }
-
-    onArtistChanged: {
-        if (artist === null )
-            return
-        build()
     }
 
     Connections {
@@ -109,8 +94,18 @@ Item{
         }
     }
 
+    onArtistChanged: build()
+
+    function setArtistId(artistId){
+        Core.releaseArtist(artistPlayer.artistId)
+        artist = Core.getArtist(artistId)
+        artistPlayer.artistId = artistId
+    }
+
     function build(){
         artistMusicModel.clear()
+        if (artist === null)
+            return
         for (var i=0; i<artist.musicList.length; i++) {
             artistMusicModel.append({
                                        inMusicId: artist.musicList[i],

@@ -15,30 +15,30 @@ Item{
     property ArtistData artist: null
 
     Component.onCompleted: artist = Core.getArtist(artistId)
-    onVisibleChanged: {
-        if (visible) {
-            if (artist === null)
-                artist = Core.getArtist(artistId)
-        }
-        else {
-            Core.releaseArtist(artistId)
-            artist = null
-        }
-    }
+    Component.onDestruction: Core.releaseArtist(artistId)
 
     // 整体背景
     Rectangle {
         anchors.fill: parent
         color: Setting.transparentColor
         radius: 10
-        opacity: mouse.containsMouse ? 0.1 : 0
+        opacity: mouseArea.containsMouse ? 0.1 : 0
     }
 
     MouseArea {
-        id: mouse
+        id: mouseArea
         anchors.fill: parent
-        onClicked: CoreData.mainTurnArtistPlayer(artistId)
-        hoverEnabled: true
+        acceptedButtons: Qt.RightButton | Qt.LeftButton
+        onClicked: (mouse) => {
+                       switch(mouse.button){
+                           case Qt.LeftButton:
+                           CoreData.mainTurnArtistPlayer(artistId)
+                           break
+                           case Qt.RightButton:
+                           createMenu(artistButton)
+                           break
+                       }
+                   }
 
         Item {
             id: showItem
@@ -53,6 +53,7 @@ Item{
                 height: r
                 normalUrl: "qrc:/image/artist.png"
                 loadUrl: "image://cover/artistFile:" + artistId.toString()
+                loadIsNull: artist !== null ? artist.isNoCover: true
             }
 
             // 播放按钮
@@ -66,7 +67,7 @@ Item{
                 anchors.bottom: artistCover.bottom
                 anchors.left: artistCover.left
                 anchors.margins: artistCover.width * 0.05
-                visible: mouse.containsMouse
+                visible: mouseArea.containsMouse
                 normal: 0.5
                 hover: 1
                 borderSize: 1.5
@@ -84,12 +85,12 @@ Item{
                 anchors.top: artistCover.top
                 anchors.right: artistCover.right
                 anchors.margins: artistCover.width * 0.05
-                visible: mouse.containsMouse
+                visible: mouseArea.containsMouse
                 normal: 0.5
                 hover: 1
                 borderSize: 1.5
                 autoColor: Setting.backdropColor
-                onClicked: CoreData.openMenuArtist(this, artist)
+                onClicked: createMenu(this)
             }
 
             // 专辑名
@@ -110,5 +111,21 @@ Item{
                 text: artist !== null ? Base.timeToString(artist.duration) : qsTr("00:00")
             }
         }
+    }
+
+    Component {
+        id: menuComponent
+        MenuArtist {
+            artistId: artistButton.artistId
+        }
+    }
+
+    function createMenu(parent){
+        if (menuComponent.status === Component.Ready){
+            let menu = menuComponent.createObject(parent)
+            menu.open()
+        }
+        else
+            console.log(menuComponent.errorString())
     }
 }

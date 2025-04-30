@@ -1,11 +1,9 @@
 import QtQuick
 import QtQuick.Controls
-import "../"
+import Tiko
+
 Popup {
     id: popup
-    parent: Overlay.overlay
-    x: (parent.width - width) / 2
-    y: (parent.height - height) / 2
 
     property double radius: 0
     property color borderColor: TikoSeit.transparentColor

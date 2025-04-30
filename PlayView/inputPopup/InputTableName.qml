@@ -5,14 +5,16 @@ import MediaerAPI
 
 TikoPopupInput {
     id: tableNameInput
-    text: qsTr("请输入新的作曲家")
+    text: qsTr("请输入新的播放列表")
     property bool isCheck: false
     property bool isDClick: false
     property int tableId: -1
     property int newTableId: -1
     property TableData table: Core.getTable(tableId)
+    orgText: table.name
+
     onFinish: {
-        newTableId = SQLData.checkTableName(name)
+        newTableId = SQLData.checkTableName(inputText)
         if (newTableId === -2)
             isCheck = true
         isDClick = false
@@ -45,7 +47,7 @@ TikoPopupInput {
         id: errorMsgCom
         TikoMessageLittle {
             id: errorMsg
-            message: qsTr("该作曲家已存在，再次点击将歌曲迁移至目标作曲家")
+            message: qsTr("该播放列表已存在，再次点击将歌曲迁移至目标播放列表")
             anchors.centerIn: tableNameInput
         }
     }

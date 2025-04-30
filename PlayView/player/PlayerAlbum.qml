@@ -5,18 +5,9 @@ import PlayView
 import DataType
 
 Item{
-    id: albumDataShow
+    id: albumPlayer
     property AlbumData album: null
     property int albumId: -1
-
-    onVisibleChanged: {
-        if (visible)
-            album = Core.getAlbum(albumId)
-        else {
-            album = null
-            Core.releaseAlbum(albumId)
-        }
-    }
 
     TikoButtonIcon{
         y: -10
@@ -36,7 +27,7 @@ Item{
         radius: 15
     }
 
-    Image {
+    TikoImageAuto {
         id: albumDataCover
         width: 250
         height: 250
@@ -45,9 +36,9 @@ Item{
         anchors.left: parent.left
         anchors.top: parent.top
         anchors.margins: 30
-        source: albumId !== -1 ?
-                    "image://cover/albumOnline:" + albumId.toString()
-                  : "qrc:/image/album.png"
+        normalUrl: "qrc:/image/album.png"
+        loadUrl: "image://cover/albumOnline:" + albumId.toString()
+        loadIsNull: album !== null ? album.isNoCover : true
     }
 
     TikoTextLine {
@@ -96,21 +87,24 @@ Item{
         }
     }
 
-    onAlbumChanged: {
-        if (album === null )
-            return
-        build()
-    }
-
     Connections {
         target: Core
         function onBuildAlbumPlayer(){
             build()
         }
     }
+    onAlbumChanged: build()
+
+    function setAlbumId(albumId){
+        Core.releaseAlbum(albumPlayer.albumId)
+        album = Core.getAlbum(albumId)
+        albumPlayer.albumId = albumId
+    }
 
     function build(){
         albumMusicModel.clear()
+        if (album === null)
+            return
         for (var i=0; i<album.musicList.length; i++) {
             albumMusicModel.append({
                                        inMusicId: album.musicList[i],

@@ -15,6 +15,7 @@ public:
     QString lineKey;
     long long duration;
     int id;
+    bool isNoCover;
 
     QString getName() const;
 
@@ -28,6 +29,8 @@ public:
 
     void setName(const QString &newName);
 
+    bool getIsNoCover() const;
+
 signals:
     void nameChanged();
 
@@ -38,6 +41,7 @@ private:
     Q_PROPERTY(QList<int> musicList READ getMusicList CONSTANT FINAL)
     Q_PROPERTY(long long duration READ getDuration CONSTANT FINAL)
     Q_PROPERTY(QString name READ getName WRITE setName NOTIFY nameChanged FINAL)
+    Q_PROPERTY(bool isNoCover READ getIsNoCover CONSTANT FINAL)
 };
 
 #endif // ARTIST_H
