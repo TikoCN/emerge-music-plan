@@ -1,13 +1,14 @@
 #ifndef BASE_H
 #define BASE_H
 #include <QObject>
+#include "tlog.h"
 
 class Base : public QObject
 {
     Q_OBJECT
 private:
     static Base* instance;
-    explicit Base(){};
+    explicit Base();
 public:
 
     static Base* getInstance(){
@@ -55,7 +56,6 @@ public:
     QList<QStringList> getChineseToPinyinJson();
 
     void sendMessage(QString msg, int type = 0);
-
     // 重命名文件
     bool renameFile(QString oldUrl, QString newUrl);
 

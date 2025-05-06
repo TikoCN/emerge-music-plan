@@ -441,8 +441,6 @@ MediaPlayer::MediaPlayer()
     m_player->setAudioBufferOutput(m_bufferOutput);
 
     m_core = MusicCore::getInstance();
-    m_player->play();
-    m_player->pause();
 
     connect(m_bufferOutput, &QAudioBufferOutput::audioBufferReceived, this, &MediaPlayer::buildFrequencySpectrum);
 

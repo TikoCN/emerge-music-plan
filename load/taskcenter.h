@@ -13,17 +13,17 @@ private:
     static TaskCenter* instance;
     explicit TaskCenter();
 
-    QThread *_thread;
-    QFileInfoList _fileInfoList;
-    QList<MediaData> _dataList;
-    QSet<QString> _artistSet;
-    QSet<QString> _albumLSet;
-    QSet<QString> _playlistSet;
-    QList<QPair<QString, QString>> _artistMusicList;
-    QList<QPair<QString, QString>> _playlistMusicList;
+    QThread *m_thread;
+    QFileInfoList m_fileInfoList;
+    QList<MediaData> m_dataList;
+    QSet<QString> m_artistSet;
+    QSet<QString> m_albumLSet;
+    QSet<QString> m_playlistSet;
+    QList<QPair<QString, QString>> m_artistMusicList;
+    QList<QPair<QString, QString>> m_playlistMusicList;
 
-    QThreadPool *_pool;
-    int _work;                      //工作单元数量
+    QThreadPool *m_pool;
+    int m_work;                      //工作单元数量
 
     // 写入数据库
     void writeDataSQL();

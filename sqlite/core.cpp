@@ -10,7 +10,6 @@ void Core::logError(QString error)
         error += " " + QString(sqlite3_errmsg(db));
     }
     error = "SQLITE3 MODE：ERROR CODE " + QString::number(r) + ", " + error;
-    qDebug()<<error;
     throw error;
 }
 

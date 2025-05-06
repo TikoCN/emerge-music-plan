@@ -3,6 +3,7 @@
 #include <QObject>
 #include <QThread>
 #include <QFile>
+#include <QTextStream>
 
 class TLog : public QObject
 {
@@ -20,12 +21,24 @@ public:
         }
     }
 
+    void logDebug(QString str);
+    void logLoad(QString str);
+    void logUser(QString str);
+    void logError(QString str);
+    void logRelease(QString str);
+    void logInfo(QString str);
+
 private:
     TLog();
 
     static TLog* instance;
-    QThread *m_t;
-    QFile m_f;
+    QThread *mm_thread;
+    QFile m_file;
+    qint64 m_startTime;
+    QStringList m_type = {"DEBUG", "USER_DO", "LOAD", "REALEASE", "ERROR", "INFO"};
+
+signals:
+    void doLog(TYPE type, QString str);
 };
 
 #endif // TLOG_H

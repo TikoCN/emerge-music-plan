@@ -18,6 +18,7 @@ MediaPlayer* MediaPlayer::instance = nullptr;
 OnLine* OnLine::instance = nullptr;
 Base* Base::instance = nullptr;
 MusicCore *MusicCore::instance = nullptr;
+TLog *TLog::instance = nullptr;
 
 int main(int argc, char *argv[])
 {
@@ -25,6 +26,7 @@ int main(int argc, char *argv[])
     app.setWindowIcon(QIcon(":/image/exe.png"));
 
     //建立
+    TLog::buildInstance();
     MusicCore::buildInstance();
     MediaPlayer::buildInstance();
     Setting::buildInstance();

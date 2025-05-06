@@ -3,4 +3,7 @@ CMakeLists.txt.user
 *.user
 *.f0f0bda
 build/
+.idea/
+cmake-build-debug-visual-studio/
+cmake-build-debug/
 *.autosave

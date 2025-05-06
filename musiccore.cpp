@@ -1,5 +1,6 @@
 #include "musiccore.h"
 #include "sqlite/sqlite.h"
+#include "tlog.h"
 #include <QDir>
 #include <QJsonDocument>
 #include <QJsonObject>
@@ -12,6 +13,8 @@ void MusicCore::appendTable(QString name)
 
 Table *MusicCore::getTable(int id)
 {
+    TLog::getInstance()->logInfo(QString("获得 Table %1").arg(id));
+
     Table *table = nullptr;
     if (m_tableHash.contains(id)) {
         table = m_tableHash.value(id);
@@ -32,6 +35,8 @@ Table *MusicCore::getTable(int id)
 
 void MusicCore::releaseTable(int id)
 {
+    TLog::getInstance()->logRelease(QString("释放 Table %1").arg(id));
+
     Table *table = nullptr;
     if (m_tableHash.contains(id))
         table = m_tableHash.value(id);
@@ -46,6 +51,8 @@ void MusicCore::releaseTable(int id)
 
 Album *MusicCore::getAlbum(int id)
 {
+    TLog::getInstance()->logInfo(QString("获得 Album %1").arg(id));
+
     Album *album = nullptr;
     if (m_albumHash.contains(id)) {
         album = m_albumHash.value(id);
@@ -66,6 +73,8 @@ Album *MusicCore::getAlbum(int id)
 
 void MusicCore::releaseAlbum(int id)
 {
+    TLog::getInstance()->logError(QString("释放 Album %1").arg(id));
+
     Album *album = nullptr;
     if (m_albumHash.contains(id))
         album = m_albumHash.value(id);
@@ -80,6 +89,8 @@ void MusicCore::releaseAlbum(int id)
 
 Artist *MusicCore::getArtist(int id)
 {
+    TLog::getInstance()->logInfo(QString("获得 Artist %1").arg(id));
+
     Artist *artist = nullptr;
     if (m_artistHash.contains(id)) {
         artist = m_artistHash.value(id);
@@ -100,6 +111,8 @@ Artist *MusicCore::getArtist(int id)
 
 void MusicCore::releaseArtist(int id)
 {
+    TLog::getInstance()->logRelease(QString("获得 Artist %1").arg(id));
+
     Artist *artist = nullptr;
     if (m_artistHash.contains(id))
         artist = m_artistHash.value(id);
@@ -114,6 +127,8 @@ void MusicCore::releaseArtist(int id)
 
 Music *MusicCore::getMusic(int id)
 {
+    TLog::getInstance()->logInfo(QString("获得 Music %1").arg(id));
+
     Music *music = nullptr;
     if (m_musicHash.contains(id)) {
         music = m_musicHash.value(id);
@@ -134,6 +149,8 @@ Music *MusicCore::getMusic(int id)
 
 QList<Music *> MusicCore::getMusic(QList<int> idList)
 {
+    TLog::getInstance()->logInfo(QString("获得 Music %1").arg(idList.size()));
+
     QList<Music *> musicList;
     QList<int> newIdList;
     for (int i = 0; i < idList.size(); ++i) {
@@ -151,6 +168,8 @@ QList<Music *> MusicCore::getMusic(QList<int> idList)
 
 void MusicCore::releaseMusic(int id)
 {
+    TLog::getInstance()->logRelease(QString("获得 Music %1").arg(id));
+
     Music *music = nullptr;
     if (m_musicHash.contains(id))
         music = m_musicHash.value(id);

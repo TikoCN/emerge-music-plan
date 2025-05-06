@@ -275,8 +275,16 @@ TikoFrameless{
     Connections{
         target: Core
         function onFinish(){
-            CoreData.table = JSON.parse(SQLData.getAllList())
-            mainView.buildData()
+            load()
         }
+    }
+
+    Component.onCompleted: {
+        load()
+    }
+
+    function load(){
+        CoreData.table = JSON.parse(SQLData.getAllList())
+        mainView.buildData()
     }
 }

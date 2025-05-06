@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include "sqlite3.h"
+#include "tlog.h"
 
 class Core : public QObject
 {

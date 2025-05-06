@@ -6,20 +6,22 @@
 #include "setting.h"
 #include "sqlite/sqlite.h"
 #include "musiccore.h"
+#include "base.h"
+#include "tlog.h"
 
 TaskCenter::TaskCenter()
 {
-    _thread = new QThread;
-    _pool = new QThreadPool;
-    this->moveToThread(_thread);
-    _thread->start();
+    m_thread = new QThread;
+    m_pool = new QThreadPool;
+    this->moveToThread(m_thread);
+    m_thread->start();
 }
 
 TaskCenter::~TaskCenter()
 {
-    _thread->quit();
-    _thread->wait();
-    delete _thread;
+    m_thread->quit();
+    m_thread->wait();
+    delete m_thread;
 }
 
 
@@ -34,12 +36,14 @@ void TaskCenter::filterFileInfo(QStringList dirPath)
         //得到子文件
         dir.setFilter(QDir::Files |QDir::NoDotAndDotDot);
         QFileInfoList fileList = dir.entryInfoList();
-        _fileInfoList.append(fileList);
+        m_fileInfoList.append(fileList);
 
         //得到子文件夹
         dir.setFilter(QDir::Dirs |QDir::NoDotAndDotDot);
         filterFileInfo(dir.entryInfoList());
     }
+
+    TLog::getInstance()->logLoad(QString("文件数量列表加载完成，共 %1").arg(m_fileInfoList.size()));
 }
 
 // 变量文件夹，捕获所有的音乐文件
@@ -51,7 +55,7 @@ void TaskCenter::filterFileInfo(QFileInfoList dirs)
         //得到子文件
         dir.setFilter(QDir::Files |QDir::NoDotAndDotDot);
         QFileInfoList fileList = dir.entryInfoList();
-        _fileInfoList.append(fileList);
+        m_fileInfoList.append(fileList);
 
         //得到子文件夹
         dir.setFilter(QDir::Dirs |QDir::NoDotAndDotDot);
@@ -62,35 +66,40 @@ void TaskCenter::filterFileInfo(QFileInfoList dirs)
 void TaskCenter::selectFile()
 {
     int cell = 0;
-    _pool->setMaxThreadCount(Setting::getInstance()->getMaxThreadNumber());
-    _work = 0;
+    m_pool->setMaxThreadCount(Setting::getInstance()->getMaxThreadNumber());
+    m_work = 0;
 
-    for (int i = 0; i < _fileInfoList.size(); i+=cell) {
-        _work++;
+    for (int i = 0; i < m_fileInfoList.size(); i+=cell) {
+        m_work++;
         cell = 20;
-        if (i + cell >= _fileInfoList.size()) cell = _fileInfoList.size() - i;
-        SelectMusicUrl *task = new SelectMusicUrl(_fileInfoList.mid(i, cell));
+        if (i + cell >= m_fileInfoList.size()) cell = m_fileInfoList.size() - i;
+        SelectMusicUrl *task = new SelectMusicUrl(m_fileInfoList.mid(i, cell));
         task->connect(task, &SelectMusicUrl::fileSelected, this, &TaskCenter::appendInfo);
 
-        _pool->start(task);
+        m_pool->start(task);
     }
-    _fileInfoList.clear();
+    m_fileInfoList.clear();
 }
 
 void TaskCenter::loadMedia()
 {
     int cell = 0;
-    _pool->setMaxThreadCount(Setting::getInstance()->getMaxThreadNumber());
-    _work = 0;
+    m_pool->setMaxThreadCount(Setting::getInstance()->getMaxThreadNumber());
+    m_work = 0;
 
-    for (int i = 0; i < _fileInfoList.size(); i+=cell) {
-        _work++;
+    if (m_fileInfoList.size() == 0) {
+        emit MusicCore::getInstance()->finish();
+        TLog::getInstance()->logLoad("加载完成");
+    }
+
+    for (int i = 0; i < m_fileInfoList.size(); i+=cell) {
+        m_work++;
         cell = 20;
-        if (i + cell >= _fileInfoList.size()) cell = _fileInfoList.size() - i;
-        BuildMusicCore *task = new BuildMusicCore(_fileInfoList.mid(i, cell));
+        if (i + cell >= m_fileInfoList.size()) cell = m_fileInfoList.size() - i;
+        BuildMusicCore *task = new BuildMusicCore(m_fileInfoList.mid(i, cell));
         task->connect(task, &BuildMusicCore::dataLoaded, this, &TaskCenter::appendMedia);
 
-        _pool->start(task);
+        m_pool->start(task);
     }
 }
 
@@ -99,12 +108,12 @@ void TaskCenter::loadMedia()
  */
 void TaskCenter::clearData()
 {
-    _dataList.clear();
-    _albumLSet.clear();
-    _artistSet.clear();
-    _playlistSet.clear();
-    _artistMusicList.clear();
-    _playlistMusicList.clear();
+    m_dataList.clear();
+    m_albumLSet.clear();
+    m_artistSet.clear();
+    m_playlistSet.clear();
+    m_artistMusicList.clear();
+    m_playlistMusicList.clear();
 }
 
 void TaskCenter::start()
@@ -115,41 +124,47 @@ void TaskCenter::start()
 
 void TaskCenter::appendInfo(QFileInfoList fileInfoList)
 {
-    _fileInfoList.append(fileInfoList);
-    _work--;
-    if (_work == 0 ) {
+    m_fileInfoList.append(fileInfoList);
+    m_work--;
+    if (m_work == 0 ) {
         QFileInfoList newInfoList;
-        SQLite::getInstance()->selectNewMusic(_fileInfoList, &newInfoList);
-        _fileInfoList = newInfoList;
+        TLog::getInstance()->logLoad(QString("sql筛选拥有歌曲文件，共 %1").arg(m_fileInfoList.size()));
+
+        SQLite::getInstance()->selectNewMusic(m_fileInfoList, &newInfoList);
+        m_fileInfoList = newInfoList;
+
+        TLog::getInstance()->logLoad(QString("获得筛选未入库的歌曲文件，共 %1").arg(newInfoList.size()));
         loadMedia();
     }
 }
 
 void TaskCenter::appendMedia(QList<MediaData> dataList)
 {
-    _dataList.append(dataList);
+    m_dataList.append(dataList);
     for (int i = 0; i < dataList.size(); ++i) {
         MediaData *data = &dataList[i];
         for (int j = 0; j < data->artistList.size(); ++j) {
-            _artistSet.insert(data->artistList[j]);
+            m_artistSet.insert(data->artistList[j]);
             QPair<QString, QString> pair;
             pair.first = data->url;
             pair.second = data->artistList[j];
-            _artistMusicList.append(pair);
+            m_artistMusicList.append(pair);
         }
-        _albumLSet.insert(data->album);
-        _playlistSet.insert(data->dir);
-        _dataList.append(*data);
+        m_albumLSet.insert(data->album);
+        m_playlistSet.insert(data->dir);
+        m_dataList.append(*data);
         QPair<QString, QString> pair;
         pair.first = data->url;
         pair.second = data->dir;
-        _playlistMusicList.append(pair);
+        m_playlistMusicList.append(pair);
     }
-    _work--;
-    if (_work == 0) {
+    m_work--;
+
+    if (m_work == 0) {
         writeDataSQL();
         clearData();
         emit MusicCore::getInstance()->finish();
+        TLog::getInstance()->logLoad("加载完成");
     }
 }
 
@@ -157,11 +172,11 @@ void TaskCenter::writeDataSQL()
 {
     SQLite *sql = SQLite::getInstance();
     sql->begin();
-    sql->appendAlbum(QStringList(_albumLSet.begin(), _albumLSet.end()));
-    sql->appendArtist(QStringList(_artistSet.begin(), _artistSet.end()));
-    sql->appendDirTable(QStringList(_playlistSet.begin(), _playlistSet.end()));
-    sql->appendMusic(_dataList);
-    sql->appendArtistMusic(_artistMusicList);
-    sql->appendTableMusic(_playlistMusicList);
+    sql->appendAlbum(QStringList(m_albumLSet.begin(), m_albumLSet.end()));
+    sql->appendArtist(QStringList(m_artistSet.begin(), m_artistSet.end()));
+    sql->appendDirTable(QStringList(m_playlistSet.begin(), m_playlistSet.end()));
+    sql->appendMusic(m_dataList);
+    sql->appendArtistMusic(m_artistMusicList);
+    sql->appendTableMusic(m_playlistMusicList);
     sql->commit();
 }

@@ -10,6 +10,11 @@
 #include <QJsonObject>
 #include <QRandomGenerator>
 
+Base::Base()
+{
+
+}
+
 QString Base::getArtistCoverUrl(QString name)
 {
     return QDir::currentPath() + "/artist/" + name + ".jpg";
@@ -205,3 +210,5 @@ QString Base::getParentDir(QString url)
 {
     return url.split("/" + url.split("/").last()).last();
 }
+
+
