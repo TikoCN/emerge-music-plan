@@ -148,9 +148,9 @@ Item {
                     useAutoColor: false
                     onClickLeft: {
                         root.showText = text
-                        mainView.stackTable(tableId)
+                        CoreData.mainTurnMusicList(tableId)
                     }
-                    onClickRight: tableMenu.open()
+                    onClickRight: openMenu()
 
                     Rectangle {
                         color: TikoSeit.transparentColor
@@ -165,6 +165,23 @@ Item {
                     id: userTableModel
                 }
             }
+        }
+    }
+
+    // 菜单
+    Component{
+        id: editMusicListMenu
+        MenuTable {
+        }
+    }
+
+    function openMenu(tableId){
+        if (editMusicListMenu.status === Component.Ready) {
+            var menu = editMusicListMenu.createObject(parent, {tableId: tableId})
+            menu.open()
+        }
+        else {
+            console.log(editMusicListMenu.errorString())
         }
     }
 

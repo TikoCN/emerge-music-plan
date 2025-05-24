@@ -51,6 +51,11 @@ public:
 
     Q_INVOKABLE void downLrcFromQQMusic(QString key, QString url);
 
+    // 下载音乐元数据
+    Q_INVOKABLE void downMediaFromNetEase(QString search, QString musicUrl);
+
+    Q_INVOKABLE void downMediaFromQQMusic(QString search, QString musicUrl);
+
 signals:
     void lrcDowned();
 };

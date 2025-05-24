@@ -337,3 +337,12 @@ void OnLine::downLrcFromQQMusic(QString key, QString url)
     file.close();
 }
 
+void OnLine::downMediaFromNetEase(QString search, QString musicUrl)
+{
+
+}
+
+void OnLine::downMediaFromQQMusic(QString search, QString musicUrl)
+{
+
+}

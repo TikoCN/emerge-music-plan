@@ -11,6 +11,7 @@ QtObject {
     property double playNumberWidth: 0.0
     property bool sizeChange: false
     property var table: []
+    signal mainTurnMusicList(int page)
     signal mainTurnSeit()
     signal mainTurnMain()
     signal mainTurnAlbumPage()

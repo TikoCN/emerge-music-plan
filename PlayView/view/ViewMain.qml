@@ -88,7 +88,7 @@ Item {
     }
 
     //切换到列表
-    function stackTable(page){
+    function turnToMusicList(page){
         tablePlayer.setTableId(page)
         if(stackView.currentItem !== tablePlayer){
             stackView.replace(tablePlayer)
@@ -147,5 +147,6 @@ Item {
         CoreData.mainTurnAlbumPlayer.connect(turnToAlbumPlayer)
         CoreData.mainTurnArtistPage.connect(turnToArtist)
         CoreData.mainTurnArtistPlayer.connect(turnToArtistPlayer)
+        CoreData.mainTurnMusicList.connect(turnToMusicList)
     }
 }

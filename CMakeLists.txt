@@ -45,6 +45,8 @@ qt_add_qml_module(appmusicPlay
     base/mediadata.h
     SOURCES base/referencecount.h base/referencecount.cpp
     SOURCES tlog.h tlog.cpp
+    SOURCES namekey.h namekey.cpp
+
 )
 
 # link fftw3
@@ -56,7 +58,7 @@ target_link_libraries(appmusicPlay PRIVATE unofficial::sqlite3::sqlite3)
 
 #link FFmpeg
 # 设置FFmpeg根目录（注意路径斜杠）
-set(FFMPEG_ROOT "C:/Users/18215/Documents/ExLib/ffmpeg")
+set(FFMPEG_ROOT "C:/code/ExLib/ffmpeg")
 # 定义包含目录
 set(FFMPEG_INCLUDE_DIRS "${FFMPEG_ROOT}/include")
 # 定义库目录

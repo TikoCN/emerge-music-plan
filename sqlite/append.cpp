@@ -2,6 +2,7 @@
 #include <QDateTime>
 #include <QDir>
 #include "base.h"
+#include "namekey.h"
 
 bool Append::appendMusic(MediaData data)
 {
@@ -63,14 +64,14 @@ bool Append::appendAlbum(QStringList albumList)
 {
     sqlite3_stmt *stmt = nullptr;
     const char *sql = "INSERT OR IGNORE INTO album(name, key) VALUES(?, ?)";
-    Base *base = Base::getInstance();
+    NameKey key;
 
     try {
         stmtPrepare(&stmt, sql);
         for (int i = 0; i < albumList.size(); ++i) {
             stmtReset(stmt);
             stmtBindText(stmt, 1, albumList[i]);
-            stmtBindText(stmt, 2, base->getFirstKey(albumList[i]));
+            stmtBindText(stmt, 2, key.find(albumList[i]));
             stmtStep(stmt);
         }
     } catch (QString e) {
@@ -93,14 +94,14 @@ bool Append::appendArtist(QStringList artistList)
 {
     sqlite3_stmt *stmt = nullptr;
     const char *sql = "INSERT OR IGNORE INTO artist(name, key) VALUES(?, ?)";
-    Base *base = Base::getInstance();
+    NameKey key;
 
     try {
         stmtPrepare(&stmt, sql);
         for (int i = 0; i < artistList.size(); ++i) {
             stmtReset(stmt);
             stmtBindText(stmt, 1, artistList[i]);
-            stmtBindText(stmt, 2, base->getFirstKey(artistList[i]));
+            stmtBindText(stmt, 2, key.find(artistList[i]));
             stmtStep(stmt);
         }
     } catch (QString e) {
