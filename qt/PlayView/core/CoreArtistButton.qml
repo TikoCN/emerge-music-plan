@@ -52,7 +52,7 @@ Item{
                 width: r
                 height: r
                 normalUrl: "qrc:/image/artist.png"
-                loadUrl: "image://cover/artistFile:" + artistId.toString()
+                loadUrl: "image://cover/artistFile?id=" + artistId.toString()
                 loadIsNull: artist !== null ? artist.isNoCover: true
             }
 

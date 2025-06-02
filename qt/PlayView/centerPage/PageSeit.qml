@@ -4,6 +4,7 @@ import QtQuick.Dialogs
 import QtQuick.Layouts
 import MediaerAPI
 import Tiko
+import PlayView
 
 ScrollView{
     id: seitPage
@@ -38,14 +39,28 @@ ScrollView{
                 }
 
                 TikoButtonBorder{
+                    id: reloadButton
                     anchors.left: selectDirButton.right
                     anchors.leftMargin: 10
                     width: selectDirButton.width
                     height: 50
                     text: qsTr("加载音乐")
                     onClick: {
-                        window.clearData()
+                        CoreData.clearData()
                         Setting.loadMusicCores()
+                    }
+                }
+
+                TikoButtonBorder{
+                    id: deleteOverData
+                    anchors.left: reloadButton.right
+                    anchors.leftMargin: 10
+                    width: reloadButton.width
+                    height: 50
+                    text: qsTr("清除过时数据")
+                    onClick: {
+                        CoreData.clearData()
+                        Core.clearNullItem()
                     }
                 }
 

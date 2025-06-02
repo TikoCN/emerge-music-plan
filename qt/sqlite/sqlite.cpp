@@ -1,6 +1,8 @@
 #include "sqlite.h"
 #include "ffmpeg.h"
+#include "base.h"
 #include <QDebug>
+#include <QDir>
 
 SQLite *SQLite::getInstance()
 {
@@ -150,5 +152,71 @@ bool SQLite::selectNewMusic(QFileInfoList infoList, QFileInfoList *newInfoList)
         return false;
     }
     return true;
+}
+
+QList<QString> SQLite::clearNullPlayListItem()
+{
+    sqlite3_stmt *stmt = nullptr;
+    QList<QString> removeList;
+    try {
+        QList<QString> urlList ;
+
+        // 判断删除文件
+        const char* sql = "DELETE FROM playlist WHERE url = ?";
+        stmtPrepare(&stmt, sql);
+        while (!urlList.isEmpty()) {
+            QString url = urlList.takeLast();
+            if (!QFile::exists(url)){
+                removeList.append(url);
+                stmtReset(stmt);
+                stmtBindText(stmt, 1, url);
+                stmtStep(stmt);
+            }
+        }
+    } catch (QString e) {
+        sqlite3_finalize(stmt);
+        TLog::getInstance()->logError(e);
+    }
+
+    sqlite3_finalize(stmt);
+    return removeList;
+}
+
+QList<QString> SQLite::clearNullMusicItem()
+{
+    sqlite3_stmt *stmt = nullptr;
+    QList<QString> removeList;
+    try {
+        // 得到所有文件目录列表
+        const char* urlSql = "SELECT url FROM playlist";
+        QList<QString> urlList ;
+        sqlite3_callback callback = [](void *data, int argc, char **argv, char **azColName) -> int{
+            QList<QString> *list = static_cast<QList<QString> *>(data);
+            list->append(QString(argv[0]));
+            return SQLITE_OK;
+        };
+        sqlExec(urlSql, callback, &urlList);
+
+        // 判断删除文件
+        const char* sql = "DELETE FROM music WHERE url = ?";
+        stmtPrepare(&stmt, sql);
+        while (!urlList.isEmpty()) {
+            QString url = urlList.takeLast();
+            if (!QFile::exists(url)){
+                removeList.append(url);
+                stmtReset(stmt);
+                stmtBindText(stmt, 1, url);
+                stmtStep(stmt);
+            }
+        }
+    } catch (QString e) {
+        if(!stmt)
+            sqlite3_finalize(stmt);
+        TLog::getInstance()->logError(e);
+    }
+
+    if(!stmt)
+        sqlite3_finalize(stmt);
+    return removeList;
 }
 

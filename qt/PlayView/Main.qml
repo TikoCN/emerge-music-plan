@@ -281,10 +281,27 @@ TikoFrameless{
 
     Component.onCompleted: {
         load()
+        CoreData.clearData.connect(clearData)
+        CoreData.sendErrorMsg.connect(sendErroMsg)
     }
 
     function load(){
         CoreData.table = JSON.parse(SQLData.getAllList())
         mainView.buildData()
+    }
+
+    Component {
+        id: errorMsgCom
+        TikoMessageLittle {
+            type: 1
+            anchors.centerIn: Overlay.overlay
+        }
+    }
+
+    function sendErroMsg(msg) {
+        if (errorMsgCom.status === Component.Ready) {
+            var view = errorMsgCom.createObject(window, {message:msg})
+            view.open()
+        }
     }
 }

@@ -37,7 +37,7 @@ Item{
         anchors.top: parent.top
         anchors.margins: 30
         normalUrl: "qrc:/image/artist.png"
-        loadUrl: "image://cover/artistOnline:" + artistId.toString()
+        loadUrl: "image://cover/artistOnline?id=" + artistId.toString()
         loadIsNull: artist !== null ? artist.isNoCover: true
     }
 

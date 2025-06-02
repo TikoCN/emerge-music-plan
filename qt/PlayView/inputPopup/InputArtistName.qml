@@ -13,7 +13,7 @@ TikoPopupInput {
     property ArtistData artist: Core.getArtist(artistId)
     orgText: artist.name
 
-    onFinish: {
+    onFinishInput: {
         newArtistId = SQLData.checkArtistName(inputText)
         if (newArtistId === -2)
             isCheck = true
@@ -37,7 +37,6 @@ TikoPopupInput {
             errorMsg.open()
         }
     }
-    onCancel: close()
     onClosed: {
         Core.releaseArtist(artistId)
         destroy()

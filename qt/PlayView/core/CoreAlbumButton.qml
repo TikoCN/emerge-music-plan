@@ -54,7 +54,7 @@ Item{
                 width: r
                 height: r
                 normalUrl: "qrc:/image/album.png"
-                loadUrl: "image://cover/-albumFile:" + albumId.toString()
+                loadUrl: "image://cover/albumFile?id=" + albumId.toString()
                 loadIsNull: album !== null ? album.isNoCover : true
             }
 

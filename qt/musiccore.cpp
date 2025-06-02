@@ -4,11 +4,18 @@
 #include <QDir>
 #include <QJsonDocument>
 #include <QJsonObject>
+#include "setting.h"
 
 void MusicCore::appendTable(QString name)
 {
     SQLite *sql = SQLite::getInstance();
     sql->appendUserTable(name);
+}
+
+void MusicCore::clearNullItem()
+{
+    SQLite::getInstance()->clearNullMusicItem();
+    SQLite::getInstance()->clearNullPlayListItem();
 }
 
 Table *MusicCore::getTable(int id)

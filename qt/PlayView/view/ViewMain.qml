@@ -8,12 +8,13 @@ import PlayView
 
 Item {
     id: mainView
-    clip: true
 
     property PageSeit seitPage: PageSeit{visible: false}
+    property var playList: []
+    property var playListId: []
 
     //背景
-    Rectangle{
+    Rectangle {
         width: parent.width
         height: parent.height
         color: Setting.transparentColor//背景颜色
@@ -82,16 +83,40 @@ Item {
         visible: false
     }
 
-    PlayerTable {
-        id: tablePlayer
-        visible: false
+    Component{
+        id: tableListCom
+        PlayerTable {
+            visible: false
+        }
     }
 
     //切换到列表
     function turnToMusicList(page){
-        tablePlayer.setTableId(page)
-        if(stackView.currentItem !== tablePlayer){
-            stackView.replace(tablePlayer)
+
+        var list = null
+        for (var i=0;i<playList.length;i++) {
+            if (playList[i].tableId === page)
+                list = playList[i]
+        }
+
+        if (list === null) {
+            if (tableListCom.status === Component.Ready) {
+                list = tableListCom.createObject(mainView)
+                list.setTableId(page)
+            }
+
+            if (playList.length >= 3) {
+                var newList = []
+                for (i=1;i<playList.length;i++) {
+                    newList.push(playList[i])
+                }
+                playList = newList
+                playList.push(list)
+            }
+        }
+
+        if(stackView.currentItem !== list){
+            stackView.replace(list)
         }
     }
 

@@ -253,7 +253,7 @@ Item {
             if(MediaPlayer.playingMusic !== null){
                 artist.text = MediaPlayer.playingMusic.artist
                 title.text = MediaPlayer.playingMusic.title
-                cover.source = "image://cover/musicOnLine:" + MediaPlayer.playingMusic.id.toString()
+                cover.source = "image://cover/musicOnLine?id=" + MediaPlayer.playingMusic.id.toString()
             }
         }
     }

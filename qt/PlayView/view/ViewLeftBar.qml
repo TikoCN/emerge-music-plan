@@ -121,12 +121,23 @@ Item {
                 iconSource: "qrc:/image/new.png"
                 onClickLeft: inputName.open()
 
-                TikoPopupInput{
+                TikoPopupInput {
+                    anchors.centerIn: Overlay.overlay
                     id: inputName
                     text: qsTr("新建列表，请输入列表名")
                     onAccept: {
-                        Core.appendTable(inputName.inputText)
-                        inputName.setNormalText()
+                        if (inputText === "") {
+                            CoreData.sendErrorMsg("列表名不能为空")
+                            return
+                        }
+
+                        if (SQLData.checkTableName(inputText)) {
+                            Core.appendTable(inputText)
+                            inputName.setNormalText()
+                        }
+                        else {
+                            CoreData.sendErrorMsg("列表名不可用")
+                        }
                     }
                 }
             }
@@ -141,7 +152,7 @@ Item {
                 delegate: TikoButtonNormal{
                     width: userTableListView.width
                     text: name
-                    iconSource: "image://cover/tableFile:" + tableId.toString()
+                    iconSource: "image://cover/tableFile?id=" + tableId.toString() + "&raidus=3"
                     iconWidth: 30
                     iconHeight: 30
                     cache: false

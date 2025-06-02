@@ -107,7 +107,6 @@ signals:
     void levelChanged();
 
     void playNumberChanged();
-
 };
 
 #endif // MUSIC_H

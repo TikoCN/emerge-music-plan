@@ -84,7 +84,7 @@ TikoButtonBase {
     TikoTextLine{
         id: textShow
         anchors.left: iconImg.right
-        anchors.leftMargin: 3
+        anchors.leftMargin: 10
         text: button.text
         width: button.width - iconImg.width - 20
         height: button.height

@@ -28,6 +28,10 @@ public:
     // 获得新的条目
     bool selectNewMusic(QFileInfoList infoList, QFileInfoList *newInfoList);
 
+    // 清除不存在的条目
+    QList<QString> clearNullMusicItem();
+    QList<QString> clearNullPlayListItem();
+
 private:
     SQLite();
     ~SQLite();

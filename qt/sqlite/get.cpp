@@ -314,9 +314,12 @@ QString Get::getAllList()
 {
     QJsonArray array;
     try {
-        const char *sql = "SELECT list_id, name, is_dir FROM playlist";
+        const char *sql = "SELECT list_id, name, is_dir, url FROM playlist";
 
         sqlite3_callback callback = [](void *data, int argc, char **argv, char **azColName)->int{
+            if (!QFile::exists(QString(argv[3])))
+                return SQLITE_OK;
+
             QJsonArray *array = static_cast<QJsonArray *>(data);
             QJsonObject obj;
             obj.insert("tableId", QString(argv[0]).toInt());

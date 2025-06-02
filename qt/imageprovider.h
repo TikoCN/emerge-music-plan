@@ -21,14 +21,14 @@ public:
     void buildRoundImage(QImage *pix, int radius);
     void loadImageFile(QString url);
 
-    void loadMusicFile(int id);
-    void loadMusicOnline(int id);
-    void loadTableFile(int id);
-    void loadTableOnline(int id);
-    void loadArtistFile(int id);
-    void loadArtistOnline(int id);
-    void loadAlbumFile(int id);
-    void loadAlbumOnline(int id);
+    void loadMusicFile(int id, int radius);
+    void loadMusicOnline(int id, int radius);
+    void loadTableFile(int id, int radius);
+    void loadTableOnline(int id, int radius);
+    void loadArtistFile(int id, int radius);
+    void loadArtistOnline(int id, int radius);
+    void loadAlbumFile(int id, int radius);
+    void loadAlbumOnline(int id, int radius);
 
 private:
     QImage m_img;

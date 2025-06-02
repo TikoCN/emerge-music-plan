@@ -4,11 +4,13 @@ import Tiko
 
 Popup {
     id: popup
+    onClosed: hide()
 
     property double radius: 0
     property color borderColor: TikoSeit.transparentColor
     property color backColor: TikoSeit.backdropColor
     property double backOpacity: 1
+    signal hide()
 
     background: Rectangle{
         color: popup.backColor

@@ -52,10 +52,4 @@ TikoPopup {
         text: littleMessage.message
         font: messageShow.font
     }
-
-
-
-    PropertyAction on x {
-
-    }
 }

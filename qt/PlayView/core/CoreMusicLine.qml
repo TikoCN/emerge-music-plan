@@ -50,7 +50,7 @@ Item {
                 width: 50
                 height: 50
                 normalUrl: "qrc:/image/music.png"
-                loadUrl: "image://cover/musicFile:" + musicId.toString()
+                loadUrl: "image://cover/musicFile?id=" + musicId.toString()
                 loadFlag: visible && music !== null
             }
 

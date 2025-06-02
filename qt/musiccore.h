@@ -30,6 +30,8 @@ public:
     //新建播放列表
     Q_INVOKABLE void appendTable(QString name);
 
+    Q_INVOKABLE void clearNullItem();
+
     Q_INVOKABLE Table *getTable(int id);
     Q_INVOKABLE void releaseTable(int id);
 

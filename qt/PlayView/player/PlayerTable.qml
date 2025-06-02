@@ -23,7 +23,7 @@ Item {
             anchors.left: parent.left
             anchors.leftMargin: 10
             normalUrl: "qrc:/image/default.png"
-            loadUrl: "image://cover/tableFile:" + tableId.toString()
+            loadUrl: "image://cover/tableFile?id=" + tableId.toString()
             width: 200
             height: 200
             loadFlag: visible && table !== null && tableId !== -1
@@ -203,40 +203,30 @@ Item {
         }
     }
 
-    onVisibleChanged: init()
-
     function setTableId(id){
         if (tableId === id)
             return
         if(table !== null)
             Core.releaseTable(tableId)
         tableId = id
-        table = null
-        init()
-    }
-
-    function init(){
-        if (visible){
-            if (table == null)
-                table = Core.getTable(tableId)
-        }
-        else {
-            table = null
-            Core.releaseTable(tableId)
-        }
+        table = Core.getTable(id)
 
         //调整列表展示信息
-        if(table === null) return
-        var length = table.musicList.length
-        if(length !== 0){
-            musicSize = length
-            tableHelp.text = table.musicList.length.toString()+" "+qsTr("首歌曲") +"-"+
-                    Base.timeToString(table.duraiton)+" "+qsTr("歌曲长度")
-            build()
+        var duration = 0
+        musicSize = 0
+        if(table !== null) {
+            if(table.musicList.length !== 0){
+                musicSize = table.musicList.length
+            }
+            duration = table.duraiton
         }
+
+        tableHelp.text = musicSize.toString()+" "+qsTr("首歌曲") +"-"+
+                Base.timeToString(duration)+" "+qsTr("歌曲长度")
+        build()
     }
 
-    function build () {
+    function build() {
         musicModel.clear()
         for(var i=0; i<table.musicList.length; i++){
             musicModel.append({

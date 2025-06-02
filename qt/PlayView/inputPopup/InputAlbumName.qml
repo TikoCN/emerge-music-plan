@@ -14,7 +14,7 @@ TikoPopupInput {
     property AlbumData album: Core.getAlbum(albumId)
     orgText: album.name
 
-    onFinish: {
+    onFinishInput: {
         newAlbumId = SQLData.checkAlbumName(inputText)
         if (newAlbumId === -2)
             isCheck = true
@@ -38,9 +38,6 @@ TikoPopupInput {
             var errorMsg = checkMsgCom.createObject(albumNameInput)
             errorMsg.open()
         }
-    }
-    onCancel: {
-        close()
     }
     onClosed: {
         Core.releaseAlbum(albumId)

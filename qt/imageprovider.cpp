@@ -32,7 +32,7 @@ void ImageResponse::buildRoundImage(QImage *pix, int radius)
 
     *pix = destImage;
 }
-void ImageResponse::loadMusicFile(int id)
+void ImageResponse::loadMusicFile(int id, int radius)
 {
     FFmpeg ffmpeg;
     QString musicUrl = SQLite::getInstance()->getMusicUrl(id);
@@ -52,11 +52,11 @@ void ImageResponse::loadMusicFile(int id)
     }
 
     m_img = m_img.scaled(m_requestedSize, Qt::IgnoreAspectRatio);
-    if (!m_img.isNull()) buildRoundImage(&m_img, 10);
+    if (!m_img.isNull()) buildRoundImage(&m_img, radius);
     MusicCore::getInstance()->setMusicIsNoCover(id, false);
 }
 
-void ImageResponse::loadMusicOnline(int id)
+void ImageResponse::loadMusicOnline(int id, int radius)
 {
     FFmpeg ffmpeg;
     QString musicUrl = SQLite::getInstance()->getMusicUrl(id);
@@ -79,10 +79,10 @@ void ImageResponse::loadMusicOnline(int id)
         return;
 
     m_img = m_img.scaled(m_requestedSize, Qt::IgnoreAspectRatio);
-    buildRoundImage(&m_img, 10);
+    buildRoundImage(&m_img, radius);
 }
 
-void ImageResponse::loadTableFile(int id)
+void ImageResponse::loadTableFile(int id, int radius)
 {
     MusicCore *core = MusicCore::getInstance();
     Table *table = nullptr;
@@ -95,7 +95,7 @@ void ImageResponse::loadTableFile(int id)
             throw false;
 
         if (table->musicList.size() > 0)
-            loadMusicFile(table->musicList.first());
+            loadMusicFile(table->musicList.first(), radius);
         else
             throw false;
 
@@ -105,7 +105,7 @@ void ImageResponse::loadTableFile(int id)
     } catch (bool r) {
         if (!r) {
             m_img = m_img.scaled(m_requestedSize, Qt::IgnoreAspectRatio);
-            if (!m_img.isNull()) buildRoundImage(&m_img, 10);
+            if (!m_img.isNull()) buildRoundImage(&m_img, radius);
             m_img.load(":/image/default.png");
         }
     }
@@ -113,7 +113,7 @@ void ImageResponse::loadTableFile(int id)
     if (table == nullptr) core->releaseTable(id);
 }
 
-void ImageResponse::loadTableOnline(int id)
+void ImageResponse::loadTableOnline(int id, int radius)
 {
     MusicCore *core = MusicCore::getInstance();
     Table *table = nullptr;
@@ -126,7 +126,7 @@ void ImageResponse::loadTableOnline(int id)
             throw false;
 
         if (table->musicList.size() > 0)
-            loadMusicOnline(table->musicList.first());
+            loadMusicOnline(table->musicList.first(), radius);
         else
             throw false;
 
@@ -137,14 +137,14 @@ void ImageResponse::loadTableOnline(int id)
         if (!r) {
             m_img.load(":/image/default.png");
             m_img = m_img.scaled(m_requestedSize, Qt::IgnoreAspectRatio);
-            if (!m_img.isNull()) buildRoundImage(&m_img, 10);
+            if (!m_img.isNull()) buildRoundImage(&m_img, radius);
         }
     }
 
     if (table == nullptr) core->releaseTable(id);
 }
 
-void ImageResponse::loadArtistFile(int id)
+void ImageResponse::loadArtistFile(int id, int radius)
 {
     MusicCore *core = MusicCore::getInstance();
     QString name = core->getArtistName(id);
@@ -157,11 +157,11 @@ void ImageResponse::loadArtistFile(int id)
     }
 
     m_img = m_img.scaled(m_requestedSize, Qt::IgnoreAspectRatio);
-    buildRoundImage(&m_img, 10);
+    buildRoundImage(&m_img, radius);
     core->setArtistIsNoCover(id, true);
 }
 
-void ImageResponse::loadArtistOnline(int id)
+void ImageResponse::loadArtistOnline(int id, int radius)
 {
     MusicCore *core = MusicCore::getInstance();
     QString name = core->getArtistName(id);
@@ -178,11 +178,11 @@ void ImageResponse::loadArtistOnline(int id)
         return;
     }
     m_img = m_img.scaled(m_requestedSize, Qt::IgnoreAspectRatio);
-    buildRoundImage(&m_img, 10);
+    buildRoundImage(&m_img, radius);
     core->setArtistIsNoCover(id, true);
 }
 
-void ImageResponse::loadAlbumFile(int id)
+void ImageResponse::loadAlbumFile(int id, int radius)
 {
     MusicCore *core = MusicCore::getInstance();
     QString name = core->getAlbumName(id);
@@ -195,11 +195,11 @@ void ImageResponse::loadAlbumFile(int id)
     }
 
     m_img = m_img.scaled(m_requestedSize, Qt::IgnoreAspectRatio);
-    buildRoundImage(&m_img, 10);
+    buildRoundImage(&m_img, radius);
     core->setAlbumIsNoCover(id, true);
 }
 
-void ImageResponse::loadAlbumOnline(int id)
+void ImageResponse::loadAlbumOnline(int id, int radius)
 {
     MusicCore *core = MusicCore::getInstance();
     QString name = core->getAlbumName(id);
@@ -216,7 +216,7 @@ void ImageResponse::loadAlbumOnline(int id)
         return;
     }
     m_img = m_img.scaled(m_requestedSize, Qt::IgnoreAspectRatio);
-    buildRoundImage(&m_img, 10);
+    buildRoundImage(&m_img, radius);
     core->setAlbumIsNoCover(id, true);
 }
 
@@ -247,8 +247,24 @@ QQuickTextureFactory *ImageResponse::textureFactory() const
 
 void ImageResponse::run()
 {
-    QString type = m_url.split(":").first();
-    int id = m_url.split(":").last().toInt();
+    QRegularExpression rx;
+    rx.setPattern(R"(([^?]+)\?)");
+    QString type = "";
+    QRegularExpressionMatch r = rx.match(m_url);
+    if (r.hasMatch())
+        type = r.capturedTexts().at(1);
+
+    int id = 0;
+    rx.setPattern(R"(id=(\d+))");
+    r = rx.match(m_url);
+    if (r.hasMatch())
+        id = r.capturedTexts().at(1).toInt();
+
+    int radius = 10;
+    rx.setPattern(R"(raidus=(\d+))");
+    r = rx.match(m_url);
+    if (r.hasMatch())
+        radius = r.capturedTexts().at(1).toInt();
 
     QStringList typeList = {
         "musicFile", "musicOnLine",
@@ -258,28 +274,28 @@ void ImageResponse::run()
     };
     switch (typeList.indexOf(type)) {
     case 0:
-        loadMusicFile(id);
+        loadMusicFile(id, radius);
         break;
     case 1:
-        loadMusicOnline(id);
+        loadMusicOnline(id, radius);
         break;
     case 2:
-        loadArtistFile(id);
+        loadArtistFile(id, radius);
         break;
     case 3:
-        loadArtistOnline(id);
+        loadArtistOnline(id, radius);
         break;
     case 4:
-        loadAlbumFile(id);
+        loadAlbumFile(id, radius);
         break;
     case 5:
-        loadAlbumOnline(id);
+        loadAlbumOnline(id, radius);
         break;
     case 6:
-        loadTableFile(id);
+        loadTableFile(id, radius);
         break;
     case 7:
-        loadTableOnline(id);
+        loadTableOnline(id, radius);
         break;
     default:
         break;

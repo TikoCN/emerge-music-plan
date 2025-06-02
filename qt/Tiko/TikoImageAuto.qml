@@ -7,6 +7,7 @@ Image{
     sourceSize.height: imgHeight
     asynchronous: true
     cache: false
+    source: normalUrl
 
     property int imgWidth: width
     property int imgHeight: height

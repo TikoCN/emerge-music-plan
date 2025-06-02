@@ -12,7 +12,7 @@ TikoPopup {
     property int textWidth: 200
     signal accept()
     signal cancel()
-    signal finish()
+    signal finishInput()
     signal input()
 
     TikoButtonBorder{
@@ -22,7 +22,10 @@ TikoPopup {
         anchors.verticalCenterOffset: height / 2 + parent.width / 20
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.horizontalCenterOffset: - width / 2 - parent.width / 20
-        onClick: accept()
+        onClick: {
+            popupInput.close()
+            accept()
+        }
     }
 
     TikoButtonBorder{
@@ -32,7 +35,10 @@ TikoPopup {
         anchors.verticalCenterOffset: height / 2 + parent.width / 20
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.horizontalCenterOffset: width / 2 + parent.width / 20
-        onClick: cancel()
+        onClick: {
+            cancel()
+            popupInput.close()
+        }
     }
 
     TikoTextInput{
@@ -44,7 +50,7 @@ TikoPopup {
         anchors.verticalCenterOffset: - height / 2 - parent.width / 20
         anchors.horizontalCenter: parent.horizontalCenter
         width: parent.width - 20
-        onFinish: popupInput.finish()
+        onFinish: popupInput.finishInput()
         onInput: popupInput.input()
     }
 

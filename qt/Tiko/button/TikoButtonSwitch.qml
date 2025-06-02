@@ -10,6 +10,7 @@ Item {
     property string text: qsTr("文本")
     property color useingColor: TikoSeit.themeColor
     property color unuseColor: TikoSeit.transparentColor
+    property double fontOpacity: 0.3
 
     MouseArea{
         id: mouseArea
@@ -30,7 +31,7 @@ Item {
         anchors.verticalCenter: switchButton.verticalCenter
         opacity: 0.6
         radius: height * 0.5
-        anchors.right: switchButton.right
+        anchors.left: switchButton.left
         property double spacer: box.height * 0.1
 
         Rectangle{
@@ -65,10 +66,11 @@ Item {
 
     TikoTextLine{
         text: switchButton.text
-        anchors.left: switchButton.left
+        anchors.left: box.right
         anchors.leftMargin: 10
         height: switchButton.height
         width: switchButton.width - box.width - 20
         color: mouseArea.containsMouse ? switchButton.useingColor : switchButton.unuseColor
+        opacity: check ? 1 : fontOpacity
     }
 }

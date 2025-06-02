@@ -40,7 +40,7 @@ Item {
         TikoImageAuto {
             id: musicCover
             normalUrl: "qrc:/image/exe.png"
-            loadUrl: "image://cover/musicFile:" + musicId.toString()
+            loadUrl: "image://cover/musicFile?id=" + musicId.toString()
             loadFlag: visible && music !== null
             anchors.top: parent.top
             anchors.left: parent.left

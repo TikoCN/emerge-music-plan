@@ -206,7 +206,7 @@ Item {
     Connections{
         target: MediaPlayer.player
         function onSourceChanged(){
-            backCover.loadUrl = "image://cover/musicOnLine:" + MediaPlayer.playingMusic.id.toString()
+            backCover.loadUrl = "image://cover/musicOnLine?id=" + MediaPlayer.playingMusic.id.toString()
         }
     }
 

@@ -13,7 +13,7 @@ TikoPopupInput {
     property TableData table: Core.getTable(tableId)
     orgText: table.name
 
-    onFinish: {
+    onFinishInput: {
         newTableId = SQLData.checkTableName(inputText)
         if (newTableId === -2)
             isCheck = true
@@ -37,7 +37,6 @@ TikoPopupInput {
             errorMsg.open()
         }
     }
-    onCancel: close()
     onClosed: {
         Core.releaseTable(tableId)
         destroy()
