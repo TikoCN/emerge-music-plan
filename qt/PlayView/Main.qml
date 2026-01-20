@@ -269,7 +269,7 @@ TikoFrameless{
     }
 
     Connections{
-        target: Core
+        target: DataActive
         function onFinish(){
             load()
         }

@@ -8,10 +8,18 @@ Canvas {
     id: drawLrcFixHeight
     height: 0
 
-    property var playLrc: MediaPlayer.playingLrc
-    property string fontFamily: Setting.mainLrcFont.family
+    property int lrcId: -1
     property int fontPixelSize: Setting.mainLrcFont.pixelSize
     property int addFontSize: 0
+    property int playingPos: MediaPlayer.player.position
+    property string fontFamily: Setting.mainLrcFont.family
+    property var startList: []
+    property var endList: []
+    property var textList: []
+
+    onLrcIdChanged: load()
+    Component.onCompleted: load()
+    onPlayingPosChanged: drawLrcFixHeight.requestPaint()
 
     onPaint: {
         var ctx = getContext("2d")
@@ -21,9 +29,6 @@ Canvas {
         var centerY = height / 2
         var space = 10
         var boreder = 20
-        var endList = playLrc.endList
-        var startList = playLrc.startList
-        var textList = playLrc.textList
         var startY = height / 2
         var startX = 20
         var playingPos = MediaPlayer.player.position
@@ -75,29 +80,18 @@ Canvas {
         font.pixelSize: fontPixelSize + addFontSize
     }
 
-    Connections{
-        target: MediaPlayer
+    function load () {
+        var json = MediaPlayer.getLrcJsonObject(lrcId)
+        startList = Base.stringToLongList(json.startList)
+        endList = Base.stringToLongList(json.endList)
+        textList = Base.stringToStringList(json.textList)
 
-        function onPlayingLrcIdChange(){
-            playLrc = MediaPlayer.playingLrc
-            setWidth()
-        }
+        setWidth()
     }
-
-    Connections{
-        target: MediaPlayer.player
-
-        function onPositionChanged() {
-            drawLrcFixHeight.requestPaint()
-        }
-    }
-
-    Component.onCompleted: setWidth()
 
     function setWidth () {
         var space = 10
         var boreder = 20
-        var textList = playLrc.textList
         var startX = 20
 
         for (var i=0; i<textList.length; i++) {
@@ -106,5 +100,12 @@ Canvas {
         }
 
         width = startX + 20
+    }
+
+    Connections{
+        target: MediaPlayer
+        function onPlayingLrcIdChange(playingLrcId){
+            lrcId = playingLrcId
+        }
     }
 }

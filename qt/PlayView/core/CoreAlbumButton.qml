@@ -17,7 +17,7 @@ Item{
     property var musicList: []
 
     onAlbumIdChanged: {
-        var json = Core.getAlbumJson(albumId)
+        var json = DataActive.getAlbumJson(albumId)
         name = json.album
         duration = json.duration
         musicList = json.musicList

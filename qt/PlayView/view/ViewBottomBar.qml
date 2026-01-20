@@ -252,7 +252,7 @@ Item {
         target: MediaPlayer.player
         function onSourceChanged(){
             if(MediaPlayer.playingMusic !== null){
-                var Json = Core.getMusicJson(MediaPlayer.playingMusicId)
+                var Json = DataActive.getMusicJson(MediaPlayer.playingMusicId)
                 artist.text = Json.artist
                 title.text = Json.title
                 cover.source = "image://cover/musicOnLine?id=" +

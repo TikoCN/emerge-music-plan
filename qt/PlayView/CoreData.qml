@@ -39,7 +39,7 @@ QtObject {
 
         if (component.status === Component.Ready) {
             var item = component.createObject(parent)
-            item.build(musicId, FileMan.getMusicLyricsData(musicId))
+            item.build(musicId)
             item.show()
         }
         else {

@@ -1,13 +1,13 @@
 #include "filemanagement.h"
 #include "base.h"
 #include "ffmpeg.h"
-#include "musiccore.h"
+#include "datacore/dataactive.h"
 
 FileManagement::FileManagement() {}
 
 void FileManagement::writeMusicToFile(QStringList key, QStringList value, int musicId)
 {
-    MusicCore *core = MusicCore::getInstance();
+    DataActive *core = DataActive::getInstance();
     MusicPtr music = core->getMusicCore(musicId);
     if (music == NULL)
         return Base::getInstance()->sendMessage(QObject::tr("写入歌曲信息失败"), 1);;
@@ -27,7 +27,7 @@ void FileManagement::writeMusicToFile(QStringList key, QStringList value, int mu
 
 QString FileManagement::getMusicLrcUrl(int musicId)
 {
-    MusicCore *core = MusicCore::getInstance();
+    DataActive *core = DataActive::getInstance();
     MusicPtr music = core->getMusicCore(musicId);
 
     if (music == NULL) {
@@ -49,15 +49,41 @@ QString FileManagement::getMusicLrcUrl(int musicId)
     return lrc;
 }
 
-QList<LrcData *> FileManagement::getMusicLyricsData(int musicId)
+QString FileManagement::getMusicLrcData(int musicId)
+{
+    QString lrc = getMusicLrcUrl(musicId);
+    QFile lrcFile(lrc);
+    if(!lrcFile.open(QIODevice::Text |QIODevice::ReadOnly)){
+        return QString();
+    }
+    QTextStream out(&lrcFile);
+    QString lrcData = out.readAll();
+    lrcFile.close();
+
+    return lrcData;
+}
+
+void FileManagement::wrtiLrcData(int musicId, QString lrcData)
+{
+    QString lrc = getMusicLrcUrl(musicId);
+    QFile lrcFile(lrc);
+    if(!lrcFile.open(QIODevice::Text |QIODevice::WriteOnly)){
+        return;
+    }
+    QTextStream in(&lrcFile);
+    in << lrcData;
+    lrcFile.close();
+}
+
+QList<LrcDataPtr > FileManagement::getMusicLyricsData(int musicId)
 {
     TLog::getInstance()->logError(tr("开始读取歌曲歌词") +
                                   tr("歌曲ID:%1").arg(musicId));
 
     QString lrc = getMusicLrcUrl(musicId);
-    QList<LrcData *> lrcList;
+    QList<LrcDataPtr > lrcList;
 
-    MusicCore *core = MusicCore::getInstance();
+    DataActive *core = DataActive::getInstance();
     MusicPtr music = core->getMusicCore(musicId);
     if (music == nullptr) {
         TLog::getInstance()->logError(tr("获取数据失败") +
@@ -74,7 +100,7 @@ QList<LrcData *> FileManagement::getMusicLyricsData(int musicId)
     QRegularExpression rx;
     QRegularExpressionMatch match;
     QString line;
-    LrcData *lrcD = nullptr;
+    LrcDataPtr lrcD;
 
     //读取高级歌词
     if(lrc.split(".").last() == "hlrc"){
@@ -86,7 +112,7 @@ QList<LrcData *> FileManagement::getMusicLyricsData(int musicId)
             match = rx.match(line);
             //初始化并设置开始结束时间
             if(match.isValid()){
-                lrcD = new LrcData;
+                lrcD = LrcDataPtr(new LrcData);
                 lrcList.append(lrcD);
                 lrcD->id = lrcList.size()-1;
                 lrcD->startTime = match.captured(1).toLong();
@@ -122,7 +148,7 @@ QList<LrcData *> FileManagement::getMusicLyricsData(int musicId)
             line = in.readLine();
             match = rx.match(line);
             if(match.hasMatch()){
-                lrcD = new LrcData;
+                lrcD = LrcDataPtr(new LrcData);
                 lrcD->id = lrcList.size();
                 lrcD->startTime = match.captured(1).toLong() * 60 * 1000 +
                                   match.captured(2).toLong() * 1000 +
@@ -172,7 +198,7 @@ QList<LrcData *> FileManagement::getMusicLyricsData(int musicId)
 
 QJsonArray FileManagement::getMusicAllTaglib(int musicId)
 {
-    MusicCore *core = MusicCore::getInstance();
+    DataActive *core = DataActive::getInstance();
     MusicPtr music = core->getMusicCore(musicId);
 
     QStringList key, value;

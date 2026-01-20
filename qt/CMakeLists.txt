@@ -27,27 +27,29 @@ qt_add_qml_module(appmusicPlay
     online.h online.cpp
     ffmpeg.h ffmpeg.cpp
     base.h base.cpp
-    musiccore.h musiccore.cpp
+
     sqlite/sqlite.h sqlite/sqlite.cpp
     sqlite/append.h sqlite/append.cpp
     sqlite/update.h sqlite/update.cpp
     sqlite/get.h sqlite/get.cpp
     sqlite/core.h sqlite/core.cpp
-    base/album.h base/album.cpp
-    base/lrcdata.h base/lrcdata.cpp
-    base/music.h base/music.cpp
-    base/playlist.h base/playlist.cpp
-    base/artist.h base/artist.cpp
+    baseclass/album.h baseclass/album.cpp
+    baseclass/lrcdata.h baseclass/lrcdata.cpp
+    baseclass/music.h baseclass/music.cpp
+    baseclass/playlist.h baseclass/playlist.cpp
+    baseclass/artist.h baseclass/artist.cpp
+    baseclass/mediadata.h
     load/taskcenter.h load/taskcenter.cpp
     load/selectmusicurl.h load/selectmusicurl.cpp
     load/buildmusiccore.h load/buildmusiccore.cpp
-    base/mediadata.h
-
     tlog.h tlog.cpp
     namekey.h namekey.cpp
     filemanagement.h filemanagement.cpp
     imageload/imagecontrol.h imageload/imagecontrol.cpp
     imageload/imageprovider.h imageload/imageprovider.cpp
+    SOURCES datacore/datamanager.h datacore/datamanager.cpp
+    SOURCES datacore/dataactive.h datacore/dataactive.cpp
+    SOURCES basetool/typeconversion.h basetool/typeconversion.cpp
 
 )
 

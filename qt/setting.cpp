@@ -1,7 +1,7 @@
 #include "setting.h"
 #include "base.h"
 #include "mediaplayer.h"
-#include "musiccore.h"
+#include "datacore/dataactive.h"
 #include <QSettings>
 #include <QDir>
 #include <QGuiApplication>

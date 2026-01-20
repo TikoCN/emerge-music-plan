@@ -22,7 +22,7 @@ public:
     QString name;//列表名
     QString url;//文件夹路径
     QList<int> musicList;//音乐库列表
-    long long duraiton;
+    long long duration;
     int id;//列表id
     bool isDir;
 

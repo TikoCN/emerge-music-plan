@@ -10,8 +10,10 @@ Canvas {
 
     property color playingColor: "#ffffffff"
     property color normalColor: "#40ffffff"
-    property var core
-    property int lrcId: core.id
+    property int lrcId: -1
+    property int playingPos: MediaPlayer.player.position
+    property int startTime: -1
+    property int duration: -1
     property bool isDraw: false
     property double r: lrcFont.pixelSize / 2
     property font lrcFont: Setting.mainLrcFont
@@ -28,7 +30,7 @@ Canvas {
         ctx.clearRect(0, 0, width, height);
 
         // 渐变色
-        var overF = (MediaPlayer.player.position - core.startTime)/(core.duration - core.startTime)
+        var overF = (playingPos - startTime)/(duration - startTime)
         overF = overF || 0
         overF = overF > 1 || 1
         var gradient = ctx.createLinearGradient(boreder, centerY - r, boreder + (space + 2*r)*3 + 2*r, centerY - r);
@@ -91,18 +93,11 @@ Canvas {
     }
 
     Connections{
-        target: core
-        function onUpdate(){
-            drawLoadLine.requestPaint()
-        }
-    }
-
-    Connections{
         target: MediaPlayer
 
-        function onPlayingLrcIdChange(){
-            if(isDraw != (MediaPlayer.playingLrc.id === lrcId)) {
-                isDraw = (MediaPlayer.playingLrc.id === lrcId)
+        function onPlayingLrcIdChange(playingLrcId){
+            if(isDraw != (playingLrcId === lrcId)) {
+                isDraw = (playingLrcId === lrcId)
 
                 if (isDraw) {
                     showAnimation.start()

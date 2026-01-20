@@ -8,7 +8,7 @@
 #include "sqlite/sqlite.h"
 #include "ffmpeg.h"
 #include "base.h"
-#include "musiccore.h"
+#include "datacore/dataactive.h"
 
 namespace {
 // 匿名命名空间，只在当前文件可见
@@ -63,7 +63,7 @@ void ImageResponse::loadMusicCover(bool isOnline)
 
 void ImageResponse::loadPlayListCover(bool isOnline)
 {
-    PlayListPtr playlist = core->getPlayListCore(m_loadId);
+    PlayListPtr playlist = data->getPlayListCore(m_loadId);
 
     if (playlist != nullptr && playlist->musicList.size() > 0) {
         m_loadMusicId = playlist->musicList[0];
@@ -73,7 +73,12 @@ void ImageResponse::loadPlayListCover(bool isOnline)
 
 void ImageResponse::loadArtistCover(bool isOnline)
 {
-    QString name = core->getArtistName(m_loadId);
+    ArtistPtr artist = data->getArtistCore(m_loadId);
+    if (artist.isNull()) {
+        return;
+    }
+
+    QString name = artist->name;
     QString url = Base::getInstance()->getArtistCoverUrl(name);
 
     if (!loadImageFile(url) && isOnline) {
@@ -89,7 +94,12 @@ void ImageResponse::loadArtistCover(bool isOnline)
 
 void ImageResponse::loadAlbumCover(bool isOnline)
 {
-    QString name = core->getAlbumName(m_loadId);
+    AlbumPtr album = data->getAlbumCore(m_loadId);
+    if (album.isNull()) {
+        return;
+    }
+
+    QString name = album->name;
     QString url = Base::getInstance()->getAlbumCoverUrl(name);
 
     if (!loadImageFile(url) && isOnline){
@@ -141,7 +151,7 @@ ImageResponse::ImageResponse(const QString &url, const QSize &requestedSize)
 {
     setAutoDelete(false);
     ctr = ImageControl::getInstance();
-    core = MusicCore::getInstance();
+    data = DataActive::getInstance();
 }
 
 ImageResponse::~ImageResponse()

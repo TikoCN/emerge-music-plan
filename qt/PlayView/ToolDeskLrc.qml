@@ -15,8 +15,6 @@ Window{
     width: playingLine.width > 600 ? playingLine.width+40 : 640
     height: tool.height + playingLine.height + 30
 
-    property var playLrc
-
     Component.onDestruction: {
         var mousePos = deskLrcToolArea.mapToGlobal(0, 0)
         Setting.lrcTopPoint.x = mousePos.x
@@ -116,7 +114,7 @@ Window{
             anchors.topMargin: 10
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.leftMargin: 20
-            height: Setting.mainLrcFont.pixelSize * 4
+            height: Setting.deskFont.pixelSize * 3
             fontFamily: Setting.deskFont.family
             fontPixelSize: Setting.deskFont.pixelSize
         }

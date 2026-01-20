@@ -132,7 +132,7 @@ Item {
                         }
 
                         if (SQLData.checkPlayListName(inputText)) {
-                            Core.appendPlayList(inputText)
+                            DataActive.appendPlayList(inputText)
                             inputName.setNormalText()
                         }
                         else {

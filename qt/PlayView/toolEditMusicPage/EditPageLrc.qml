@@ -11,6 +11,7 @@ Item{
     property real wordStart: 0
     property string lrcUrl: ""
     property int mode: 0
+    property int musicId: -1
 
     Column {
         id: editLrctool
@@ -133,7 +134,7 @@ Item{
                 width: 150
                 iconSource: "qrc:/image/yes.png"
                 text: qsTr("保存.lrc")
-                onClick: Base.writeFileText(editLrcPage.getBaseUrl + ".lrc", lrcShow.text)
+                onClick: FileMan.wrtiLrcData(musicId, lrcShow.text)
             }
         }
     }
@@ -179,9 +180,10 @@ Item{
         }
     }
 
-    function init(lrc, lrcUrl){
-        lrcShow.text = lrc
-        editLrcPage.lrcUrl = lrcUrl
+    function init(musicId){
+        editLrcPage.musicId = musicId
+        lrcShow.text = FileMan.getMusicLrcData(musicId)
+        editLrcPage.lrcUrl = FileMan.getMusicLrcUrl(musicId)
     }
 
     function insertString(pos, input){

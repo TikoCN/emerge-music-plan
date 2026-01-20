@@ -1,12 +1,11 @@
 #ifndef GET_H
 #define GET_H
 
-#include "core.h"
-#include "base/music.h"
-#include "base/album.h"
-#include "base/artist.h"
-#include "base/playlist.h"
-#include "base/mediadata.h"
+#include "baseclass/music.h"
+#include "baseclass/album.h"
+#include "baseclass/artist.h"
+#include "baseclass/playlist.h"
+#include "baseclass/mediadata.h"
 #include "update.h"
 #include <QJsonObject>
 #include <QJsonArray>
@@ -44,7 +43,7 @@ public:
     // 获得随机列表
     Q_INVOKABLE QList<int> getAlbumRandList();
     Q_INVOKABLE QList<int> getArtistRandList();
-    Q_INVOKABLE QList<int> getMusicRandList();
+    Q_INVOKABLE QList<int> getMusicRandList(int length = -1);
     // 得到最新加入列表
     Q_INVOKABLE QList<int> getNewMusicList();
     // 得到最多播放音乐
@@ -56,6 +55,9 @@ public:
     Q_INVOKABLE int checkArtistName(QString name);
     Q_INVOKABLE int checkAlbumName(QString name);
     Q_INVOKABLE int checkPlayListName(QString name);
+
+    int getArtistSize();
+    int getAlbumSize();
 };
 
 #endif // GET_H

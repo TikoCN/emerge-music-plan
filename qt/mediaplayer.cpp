@@ -11,40 +11,27 @@
  */
 void MediaPlayer::loadLrcList()
 {
-    emit clearLrc();
-
-    // 清空以往资源
-    while (!m_lrcList.empty()) {
-        delete m_lrcList.takeFirst();
-    }
-
+    m_lrcList.clear();
     m_lrcList = FileManagement::getInstance()->getMusicLyricsData(m_playingMusicId);
-    if (m_lrcList.size() > 0) {
-        m_playingLrc->copy(m_lrcList.first());
-    }
+    m_playingLrcId = -1;
     emit lrcLoaded();
 }
 
 void MediaPlayer::selectPlayLrc(qint64 time)
 {
-    if(m_lrcList.size() == 0){
+    if (m_lrcList.size() == 0){
         return;
     }
 
-    if(m_playingLrc->startTime <= time && m_playingLrc->endTime >= time){
-        emit m_playingLrc->update();
-
-        if (m_playingLrc->id >=0 && m_playingLrc->id < m_lrcList.size()) {
-            emit m_lrcList[m_playingLrc->id]->update();
-        }
-    }
-    else{
+    if ((m_playingLrcId < 0 ||
+         m_PlayingListId > m_lrcList.size()) ||
+        (m_lrcList[m_playingLrcId]->startTime <= time &&
+         m_lrcList[m_playingLrcId]->endTime >= time)
+        ){
         for(int i=0; i<m_lrcList.size(); i++){
             if(m_lrcList[i]->startTime <= time && m_lrcList[i]->endTime >= time){
-                //改变 qml
-                m_playingLrc->copy(m_lrcList[i]);
-                emit m_lrcList[i]->update();
-                emit playingLrcIdChange();
+                m_PlayingListId = i;
+                emit playingLrcIdChange(i);
                 break;
             }
         }
@@ -57,12 +44,17 @@ void MediaPlayer::turnToLrc(int lrcId)
     }
 }
 
+QJsonObject MediaPlayer::getLrcJsonObject(int lrcId)
+{
+    if (lrcId < 0 || lrcId > m_lrcList.size()) {
+        return QJsonObject();
+    }
+    return m_lrcList[lrcId]->getJsonObject();
+}
+
 void MediaPlayer::clearData()
 {
-    while (!m_lrcList.empty()) {
-        delete m_lrcList.takeFirst();
-    }
-
+    m_lrcList.clear();
     m_musicList.clear();
     m_allSamples.clear();
 
@@ -147,14 +139,18 @@ void MediaPlayer::playMusicByListId(int musicListId)
 {
     if (musicListId >= m_musicList.size() || musicListId < 0)
         return;
-    MusicCore *core = MusicCore::getInstance();
 
-    m_playingMusic = core->getMusicCore(m_musicList[musicListId]);
+    m_playingMusic = m_dataActive->getMusicCore(m_musicList[musicListId]);
     m_playingMusic->playNumber++;
     m_playingMusicId = m_playingMusic->id;
     m_player->setSource(m_playingMusic->url);
     m_PlayingListId = musicListId;
     loadLrcList();
+}
+
+int MediaPlayer::getLrcListLength()
+{
+    return m_lrcList.size();
 }
 
 /*
@@ -308,18 +304,14 @@ MediaPlayer::MediaPlayer()
     m_loopType = 0;
     m_playingMusic = nullptr;
     m_playingMusicId = -1;
-    m_playingLrc = nullptr;
     m_player = new QMediaPlayer;//播放设备
     m_audioOutput = new QAudioOutput;//音频输出
     m_bufferOutput = new QAudioBufferOutput;//缓冲区输出
 
-    m_playingLrc = new LrcData;
-    m_playingLrc->append(0, 1, tr("这是行歌词"));
-
     m_player->setAudioOutput(m_audioOutput);
     m_player->setAudioBufferOutput(m_bufferOutput);
 
-    m_core = MusicCore::getInstance();
+    m_dataActive = DataActive::getInstance();
 
     connect(m_bufferOutput, &QAudioBufferOutput::audioBufferReceived, this, &MediaPlayer::buildFrequencySpectrum);
 
@@ -343,6 +335,11 @@ MediaPlayer::MediaPlayer()
     });
 }
 
+int MediaPlayer::playingLrcId() const
+{
+    return m_playingLrcId;
+}
+
 QList<int> MediaPlayer::musicList() const
 {
     return m_musicList;
@@ -351,17 +348,6 @@ QList<int> MediaPlayer::musicList() const
 int MediaPlayer::playingMusicId() const
 {
     return m_playingMusicId;
-}
-
-LrcData *MediaPlayer::getPlayingLrc() const
-{
-    return m_playingLrc;
-}
-
-
-QList<LrcData *> MediaPlayer::getLrcList() const
-{
-    return m_lrcList;
 }
 
 QAudioOutput *MediaPlayer::getAudioOutput() const

@@ -7,9 +7,9 @@ TLog::TLog() {
     m_thread->start();
 
     QDateTime t = QDateTime::currentDateTime();
-    QString time = t.toString("yyyy-MM-dd");
+    QDir().mkpath("log"); // 自动创建log目录（不存在时）
+    m_file.setFileName(QString("log/%1.txt").arg(t.toString("yyyy-MM-dd")));
 
-    m_file.setFileName(QDir::current().filePath(time + ".txt"));
     if(m_file.open(QIODevice::WriteOnly |QIODevice::Text)) {
 
     }

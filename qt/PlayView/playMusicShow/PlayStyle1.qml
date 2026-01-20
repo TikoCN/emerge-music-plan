@@ -205,7 +205,7 @@ Item{
 
     Component.onCompleted: loadPlaying()
     function loadPlaying() {
-        var json = Core.getMusicJson(MediaPlayer.playingMusicId)
+        var json = DataActive.getMusicJson(MediaPlayer.playingMusicId)
         artist.text = json.artist
         title.text = json.title
         cover.source = "image://cover/musicOnLine?id=" +

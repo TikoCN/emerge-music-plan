@@ -14,7 +14,6 @@ Item {
 
     property int listId: 0
     property int musicId: -1
-    property int playlistId: -1
     property int musicLevel: -1
     property int duration: -1
     property int playNumber: -1
@@ -27,7 +26,7 @@ Item {
     signal playMusic()
 
     Component.onCompleted:{
-        var json = Core.getMusicJson(musicId)
+        var json = DataActive.getMusicJson(musicId)
         musicTitle = json.title
         artist = json.artist
         album = json.album
@@ -126,6 +125,7 @@ Item {
                             height: parent.height
                             onClicked: {
                                 musicLine.isLove = !musicLine.isLove
+                                DataActive.updateMusicLove(musicLine.musicId, musicLine.isLove)
                             }
                             icon.source: musicLine.isLove ?
                                              "qrc:/image/love.png" : "qrc:/image/unlove.png"
@@ -148,6 +148,7 @@ Item {
                                     onClicked: {
                                         // 设置评级逻辑
                                         musicLine.musicLevel = level
+                                        DataActive.updateMusicLevel(musicLine.musicId, musicLine.musicLevel)
                                     }
                                     icon.source: musicLine.musicLevel >= level ?
                                                      "qrc:/image/int.png" : "qrc:/image/unInt.png"
@@ -226,22 +227,12 @@ Item {
     }
 
     function createMenu(parent){
-        if (playlistId !== -1) {
-            if (menuMusicPlayListComponent.status === Component.Ready){
-                let menu = menuMusicPlayListComponent.createObject(parent)
-                menu.popup()
-            }
-            else
-                console.log(menuComponent.errorString())
+        if (menuMusicComponent.status === Component.Ready){
+            let menu = menuMusicComponent.createObject(parent)
+            menu.popup()
         }
-        else {
-            if (menuMusicComponent.status === Component.Ready){
-                let menu = menuMusicComponent.createObject(parent)
-                menu.popup()
-            }
-            else
-                console.log(menuComponent.errorString())
-        }
+        else
+            console.log(menuComponent.errorString())
     }
 
     //根据次序间替设置背景颜色

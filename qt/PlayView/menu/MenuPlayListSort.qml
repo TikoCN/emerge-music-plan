@@ -7,8 +7,18 @@ TikoMenu{
     id: menuPlayListSort
     width: 150
     y: parent.height
+
     property int playlistId: 0
     property int sort: -1
+    property int newSort: -1
+    property int forword:{
+        if ( sort % 2 === 0 ) {
+            return 1
+        }
+        else {
+            return 0
+        }
+    }
     property int type: {
         if ( sort % 2 === 0 ) {
             return sort
@@ -51,7 +61,6 @@ TikoMenu{
     }
 
     function sortMusic(key, forword){
-        var sort = key + forword
-        //playlist.sortMusic(sort)
+        newSort = key + forword
     }
 }

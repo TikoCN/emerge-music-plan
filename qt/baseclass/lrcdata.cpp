@@ -1,45 +1,25 @@
 #include "lrcdata.h"
-
-int LrcData::getId() const
-{
-    return id;
-}
-
-QList<long long> LrcData::getStartList() const
-{
-    return startList;
-}
-
-QList<long long> LrcData::getEndList() const
-{
-    return endList;
-}
-
-QList<QString> LrcData::getTextList() const
-{
-    return textList;
-}
-
-QList<QString> LrcData::getHelpTextList() const
-{
-    return helpTextList;
-}
-
-long long LrcData::getStartTime() const
-{
-    return startTime;
-}
-
-long long LrcData::getEndTime() const
-{
-    return endTime;
-}
+#include <QJsonObject>
+#include "base.h"
 
 LrcData::LrcData(){
     id = 0;
     startTime = 0;
     endTime = 0;
     isPlay = false;
+}
+
+QJsonObject LrcData::getJsonObject()
+{
+    Base* base = Base::getInstance();
+    QJsonObject json;
+    json.insert("startTime", startTime);
+    json.insert("endTime", endTime);
+    json.insert("startList", base->intListToString(startList));
+    json.insert("endList", base->intListToString(endList));
+    json.insert("textList", base->stringListToString(textList));
+    json.insert("helpTextList", base->stringListToString(helpTextList));
+    return json;
 }
 
 void LrcData::append(long long start, long long end, QString text)
@@ -49,7 +29,7 @@ void LrcData::append(long long start, long long end, QString text)
     textList.append(text);
 }
 
-void LrcData::copy(LrcData *aim)
+void LrcData::copy(LrcDataPtr aim)
 {
     this->id = aim->id;
     if(aim->textList.size() > 0 || aim->helpTextList.size() > 0){

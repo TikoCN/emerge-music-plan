@@ -1,8 +1,7 @@
 #include "playlist.h"
-#include "sqlite/sqlite.h"
-#include "musiccore.h"
 #include <QUrl>
 #include <QDesktopServices>
+#include <QJsonObject>
 #include "base.h"
 
 PlayList::PlayList()
@@ -16,7 +15,7 @@ QJsonObject PlayList::getJsonObject()
     json.insert("playList", name);
     json.insert("id", id);
     json.insert("isDir", isDir);
-    json.insert("duration", duraiton);
+    json.insert("duration", duration);
     json.insert("musicList", Base::getInstance()->intListToString(musicList));
     json.insert("sort", static_cast<int>(sort));
     json.insert("url", url);

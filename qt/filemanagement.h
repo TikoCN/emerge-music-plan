@@ -2,7 +2,7 @@
 #define FILEMANAGEMENT_H
 
 #include <QObject>
-#include "base/lrcdata.h"
+#include "baseclass/lrcdata.h"
 #include <QJsonArray>
 
 class FileManagement : public QObject
@@ -29,16 +29,17 @@ public:
         }
     }
 
-    //将数据写入文件
+    // MUSIC FILE
     Q_INVOKABLE void writeMusicToFile(QStringList key, QStringList value, int musicId);
-
-    Q_INVOKABLE QString getMusicLrcUrl(int musicId);
-
-    //获得歌词文件数据
-    Q_INVOKABLE QList<LrcData *> getMusicLyricsData(int musicId);
-
     Q_INVOKABLE QJsonArray getMusicAllTaglib(int musicId);
 
+    // LRC FILE
+    Q_INVOKABLE QString getMusicLrcUrl(int musicId);
+    Q_INVOKABLE QString getMusicLrcData(int musicId);
+    Q_INVOKABLE void wrtiLrcData(int musicId, QString lrcData);
+    QList<LrcDataPtr> getMusicLyricsData(int musicId);
+
+    // DIR
     Q_INVOKABLE void openPlayListDir(int playListId);
 };
 

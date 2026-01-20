@@ -332,9 +332,10 @@ PlayListPtr Get::getList(int id)
     PlayListPtr playlist(new PlayList);
     sqlite3_stmt *stmt = nullptr;
     try {
-        const char *sql = "SELECT l.list_id, l.name, l.sort, l.url, l.is_dir, GROUP_CONCAT(lm.music_id) AS music_ids "
+        const char *sql = "SELECT l.list_id, l.name, l.sort, l.url, l.is_dir, SUM(m.duration) AS total_duration, GROUP_CONCAT(lm.music_id) AS music_ids "
                           "FROM playlist as l "
                           "JOIN playlist_music as lm ON l.list_id = lm.list_id "
+                          "JOIN music as m ON lm.music_id = m.music_id "
                           "WHERE l.list_id = ? "
                           "LIMIT 1";
         stmtPrepare(&stmt, sql);
@@ -346,8 +347,9 @@ PlayListPtr Get::getList(int id)
         playlist->sort = (PlayList::SORT_TYPE)sqlite3_column_int(stmt, 2);
         playlist->url  = QString::fromUtf8(sqlite3_column_text(stmt, 3));
         playlist->isDir = sqlite3_column_int(stmt, 4) == 1;
-        QStringList list = QString::fromUtf8(sqlite3_column_text(stmt, 5)).split(",");
+        playlist->duration = sqlite3_column_int64(stmt, 5);
 
+        QStringList list = QString::fromUtf8(sqlite3_column_text(stmt, 6)).split(",");
         for (int i = 0; i < list.size(); ++i) {
             playlist->musicList.append(list[i].toInt());
         }
@@ -393,10 +395,12 @@ QList<int> Get::getArtistRandList()
     return getIntList(sql);
 }
 
-QList<int> Get::getMusicRandList()
+QList<int> Get::getMusicRandList(int length)
 {
-    const char *sql = "SELECT music_id FROM music ORDER BY RANDOM() LIMIT 15";
-    return getIntList(sql);
+    length = (length == -1) ? 15 : length;
+
+    QString sql = QString("SELECT music_id FROM music ORDER BY RANDOM() LIMIT %1").arg(length);
+    return getIntList(sql.toStdString().c_str());
 }
 
 QList<int> Get::getNewMusicList()
@@ -499,5 +503,15 @@ int Get::checkPlayListName(QString name)
     }
     stmtFree(stmt);
     return r;
+}
+
+int Get::getArtistSize()
+{
+    return 0;
+}
+
+int Get::getAlbumSize()
+{
+    return 0;
 }
 

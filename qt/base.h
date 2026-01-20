@@ -2,8 +2,9 @@
 #define BASE_H
 #include <QObject>
 #include "tlog.h"
+#include "basetool/typeconversion.h"
 
-class Base : public QObject
+class Base : public TypeConversion
 {
     Q_OBJECT
 private:
@@ -41,9 +42,6 @@ public:
     //写文件信息
     Q_INVOKABLE bool writeFileText(QString url, QString data);
 
-    // 时间戳转文本
-    Q_INVOKABLE QString timeToString(long long time);
-
     //打开文件
     Q_INVOKABLE void deskOpenFile(QString url, bool local = false);
 
@@ -62,12 +60,6 @@ public:
     Q_INVOKABLE QString getBaseUrl(QString url);
     Q_INVOKABLE QString getFileName(QString url);
     Q_INVOKABLE QString getParentDir(QString url);
-
-    QString intListToString(QList<int> list);
-    QString stringSetToString(QSet<QString> set);
-
-    Q_INVOKABLE QList<int> stringToIntList(QString str);
-    Q_INVOKABLE QList<QString> stringToStringList(QString str);
 signals:
     void message(QString msg, int type);
 };

@@ -37,7 +37,7 @@ TikoPopupInput {
         }
     }
     onClosed: {
-        Core.decrementArtist(artistId)
+        DataActive.decrementArtist(artistId)
         destroy()
     }
 

@@ -3,7 +3,7 @@
 
 #include <QObject>
 #include <QDebug>
-#include "base/mediadata.h"
+#include "baseclass/mediadata.h"
 extern "C" {
 #include "libavformat/avformat.h"
 #include "libavcodec/avcodec.h"

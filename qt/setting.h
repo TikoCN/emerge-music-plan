@@ -76,6 +76,7 @@ public:
     bool isGetLrcFromQQMusic;
 
     int maxThreadNumber;//最大线程数量
+    int recomItemNumber; // 推荐条目数量
 
     QStringList sourceList;//资源地址列表
 
@@ -163,7 +164,6 @@ public:
 signals:
     //加载资源
     void loadMusics();
-
     void maxThreadNumberChanged();
     void sourceListChanged();
     void themeColorChanged();

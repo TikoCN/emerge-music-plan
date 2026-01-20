@@ -5,7 +5,7 @@
 #include "selectmusicurl.h"
 #include "setting.h"
 #include "sqlite/sqlite.h"
-#include "musiccore.h"
+#include "datacore/dataactive.h"
 #include "base.h"
 #include "tlog.h"
 
@@ -88,7 +88,7 @@ void TaskCenter::loadMedia()
     m_work = 0;
 
     if (m_fileInfoList.size() == 0) {
-        emit MusicCore::getInstance()->finish();
+        emit DataActive::getInstance()->finish();
         TLog::getInstance()->logLoad("加载完成");
     }
 
@@ -163,7 +163,7 @@ void TaskCenter::appendMedia(QList<MediaData> dataList)
     if (m_work == 0) {
         writeDataSQL();
         clearData();
-        emit MusicCore::getInstance()->finish();
+        emit DataActive::getInstance()->finish();
         TLog::getInstance()->logLoad("加载完成");
     }
 }

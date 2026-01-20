@@ -65,33 +65,21 @@ Item{
         text: qsTr("共 ") +
               (musicList.length.toString()) +
               qsTr(" 首歌曲，共计 ") +
-              Base.timeToString(duration)
+              Base.durationToTimeStringNoMax(duration)
     }
 
     // 音乐列表
-    ListView {
+    MusicListView {
         id: musicListView
         anchors.top: albumDataCover.bottom
         anchors.left: parent.left
         anchors.margins: 30
         width: parent.width - 60
         height: parent.height - albumDataBack.height - 40
-        clip: true
-
-        model: ListModel {
-            id: albumMusicModel
-        }
-
-        delegate: CoreMusicLine {
-            width: musicListView.width
-            listId: musicListId
-            musicId: inMusicId
-            onPlayMusic: MediaPlayer.buildPlayingListByMusicList(musicList, listId)
-        }
     }
 
     Connections {
-        target: Core
+        target: DataActive
         function onBuildAlbumPlayer(){
             build()
         }
@@ -103,19 +91,10 @@ Item{
     }
 
     function build(){
-        var json = Core.getAlbumJson(albumId)
+        var json = DataActive.getAlbumJson(albumId)
         name = json.album
         duration = json.duration
         musicList = Base.stringToIntList(json.musicList)
-
-        albumMusicModel.clear()
-        if (albumId === -1)
-            return
-        for (let i=0; i<musicList.length; i++) {
-            albumMusicModel.append({
-                                       inMusicId: musicList[i],
-                                       musicListId: i
-                                   })
-        }
+        musicListView.buildMusicList(musicList)
     }
 }

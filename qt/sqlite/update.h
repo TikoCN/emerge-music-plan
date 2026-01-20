@@ -1,11 +1,10 @@
 #ifndef UPDATE_H
 #define UPDATE_H
 
-#include "core.h"
-#include "base/music.h"
-#include "base/album.h"
-#include "base/artist.h"
-#include "base/playlist.h"
+#include "baseclass/music.h"
+#include "baseclass/album.h"
+#include "baseclass/artist.h"
+#include "baseclass/playlist.h"
 #include "append.h"
 
 class Update : public Append

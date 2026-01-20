@@ -1,8 +1,8 @@
 #ifndef MEDIAPLAYER_H
 #define MEDIAPLAYER_H
 
-#include "musiccore.h"
-#include "base/lrcdata.h"
+#include "datacore/dataactive.h"
+#include "baseclass/lrcdata.h"
 #include <QMediaPlayer>
 #include <QAudioBufferOutput>
 #include <QAudioOutput>
@@ -21,14 +21,14 @@ private:
 
     QList<int> m_musicList;//正在播放列表
     QVector<double> m_allSamples;//处理之后的音乐样本
-    QList<LrcData *> m_lrcList;//歌词
+    QList<LrcDataPtr> m_lrcList;//歌词
+    int m_playingLrcId;
 
-    MusicCore *m_core;//音乐数据中心
+    DataActive *m_dataActive;//音乐数据中心
     int m_loopType;//播放种类
     int m_PlayingListId;//正在播放歌曲的列表id
     int m_playingMusicId;// 正在播放音乐id
     MusicPtr m_playingMusic;
-    LrcData *m_playingLrc;// 正在播放歌词行
 
     Q_PROPERTY(QMediaPlayer *player READ getPlayer CONSTANT)
 
@@ -38,13 +38,11 @@ private:
 
     Q_PROPERTY(QAudioOutput *audioOutput READ getAudioOutput CONSTANT)
 
-    Q_PROPERTY(QList<LrcData *> lrcList READ getLrcList CONSTANT)
-
-    Q_PROPERTY(LrcData *playingLrc READ getPlayingLrc CONSTANT)
-
     Q_PROPERTY(int playingMusicId READ playingMusicId CONSTANT)
 
     Q_PROPERTY(QList<int> musicList READ musicList CONSTANT)
+
+    Q_PROPERTY(int playingLrcId READ playingLrcId CONSTANT)
 
 public:
     static MediaPlayer* getInstance(){
@@ -82,8 +80,11 @@ public:
 
     //加载歌词
     void loadLrcList();
-
+    //跳转到目标歌词
+    Q_INVOKABLE void turnToLrc(int lrcId);
+    Q_INVOKABLE QJsonObject getLrcJsonObject(int lrcId);
     Q_INVOKABLE void playMusicByListId(int musicListId);
+    Q_INVOKABLE int getLrcListLength();
 
     //播放下一首
     Q_INVOKABLE void playNext(int forward);
@@ -93,9 +94,6 @@ public:
 
     //选择当前播放歌词
     void selectPlayLrc(qint64 time);
-
-    //跳转到目标歌词
-    Q_INVOKABLE void turnToLrc(int lrcId);
 
     //计算音频
     void buildFrequencySpectrum(QAudioBuffer buffer);
@@ -109,13 +107,14 @@ public:
 
     QAudioOutput *getAudioOutput() const;
 
-    QList<LrcData *> getLrcList() const;
-
-    LrcData *getPlayingLrc() const;
+    LrcDataPtr getPlayingLrc() const;
 
     int playingMusicId() const;
 
     QList<int> musicList() const;
+
+    int playingLrcId() const;
+    void setPlayingLrcId(int newPlayingLrcId);
 
 signals:
 
@@ -134,15 +133,11 @@ signals:
     //绘制音频波形
     void cppDrawLine(QVector<double>);
 
-    //歌词加载完成
-    void lrcLoaded();
-
-    // 清空歌词界面
-    void clearLrc();
-
     void loopTypeChanged();
 
-    void playingLrcIdChange();
+    //歌词加载完成
+    void lrcLoaded();
+    void playingLrcIdChange(int);
     void playingMusicIdChanged();
     void musicListChanged();
 };

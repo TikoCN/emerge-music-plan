@@ -1,8 +1,6 @@
 #ifndef SQLITE_H
 #define SQLITE_H
 #include "get.h"
-#include "append.h"
-#include "update.h"
 #include <sqlite3.h>
 #include <QObject>
 

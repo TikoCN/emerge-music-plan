@@ -10,6 +10,7 @@ Item {
     id: playerPlayList
     property int sort: -1
     property int playlistId: -1
+    property int duration: -1
     property string name: ""
     property var musicList: []
 
@@ -89,7 +90,7 @@ Item {
                 text: qsTr("歌曲") + musicList.length.toString()
                 iconSource: "qrc:/image/music.png"
                 onClickLeft: {
-                    musicList = Core.playListShowAllMusic(playlistId)
+                    musicList = DataActive.playListShowAllMusic(playlistId)
                     build()
                 }
             }
@@ -100,7 +101,7 @@ Item {
                 text: qsTr("喜爱")
                 iconSource: "qrc:/image/love.png"
                 onClickLeft: {
-                    musicList = Core.playListShowLoveMusic(playlistId)
+                    musicList = DataActive.playListShowLoveMusic(playlistId)
                     build()
                 }
             }
@@ -117,6 +118,10 @@ Item {
                     MenuPlayListSort {
                         playlistId: playerPlayList.playlistId
                         sort: playerPlayList.sort
+                        onNewSortChanged: {
+                            playerPlayList.sort = newSort
+                            build()
+                        }
                     }
                 }
 
@@ -164,7 +169,7 @@ Item {
                 Layout.maximumWidth: 0
                 show.text: qsTr("搜索")
                 onFinish: {
-                    musicList = Core.playListShowSearchMusic(playlistId, input.text)
+                    musicList = DataActive.playListShowSearchMusic(playlistId, input.text)
                     build()
                     closeWidthAnimation.start()
                 }
@@ -186,7 +191,7 @@ Item {
         }
     }
 
-    ListView{
+    MusicListView{
         id: musicListView
         width: playerPlayList.width - 40
         height: playerPlayList.height - showView.height - 20
@@ -194,57 +199,29 @@ Item {
         anchors.topMargin: 20
         anchors.left: playerPlayList.left
         anchors.leftMargin: 5
-        interactive: true
-        spacing: 15
-        clip: true
-
-
-        ScrollBar.vertical: TikoBarV{
-        }
-
-
-        model: ListModel{
-            id: musicModel
-        }
-
-        delegate: CoreMusicLine{
-            width: musicListView.width - 20
-            listId: musicListId
-            playlistId: playerPlayList.playlistId
-            musicId: inMusicId
-            onPlayMusic: MediaPlayer.buildPlayingListByMusicList(musicList, listId)
-        }
     }
 
     function setPlayListId(id){
         if (playlistId === id)
             return
         playlistId = id
-        var json = Core.getPlayListJson(id)
+
+        var json = DataActive.getPlayListJson(id)
         musicList = Base.stringToIntList(json.musicList)
         sort = json.sort
-
-        //调整列表展示信息
-        var duration = 0
-
-        duration = json.duraiton
-        playlistHelp.text = musicList.length.toString()+" "+qsTr("首歌曲") +"-"+
-                Base.timeToString(duration)+" "+qsTr("歌曲长度")
+        duration = json.duration
+        playlistHelp.text = musicList.length.toString()+" "+qsTr("首歌曲   ") +
+                Base.durationToTimeStringNoMax(duration)
         build()
     }
 
     function build() {
-        musicModel.clear()
-        for(var i=0; i<musicList.length; i++){
-            musicModel.append({
-                                  musicListId: i,
-                                  inMusicId: musicList[i]
-                              })
-        }
+        musicList = DataActive.musicListSort(musicList, sort)
+        musicListView.buildMusicList(musicList)
     }
 
     Connections {
-        target: Core
+        target: DataActive
         function onBuildPlayListPlayer(){
             build()
         }

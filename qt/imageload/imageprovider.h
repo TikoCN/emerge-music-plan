@@ -7,7 +7,7 @@
 #include <QQuickAsyncImageProvider>
 #include <QQuickImageResponse>
 #include "imageload/imagecontrol.h"
-#include "musiccore.h"
+#include "datacore/dataactive.h"
 
 class ImageResponse : public QQuickImageResponse, public QRunnable{
     Q_OBJECT
@@ -56,7 +56,7 @@ private:
     QSize m_requestedSize;
 
     ImageControl *ctr;
-    MusicCore *core;
+    DataActive *data;
 
     int m_loadId;
     int m_loadMusicId;

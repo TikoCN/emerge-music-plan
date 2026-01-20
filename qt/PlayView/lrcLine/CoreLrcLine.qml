@@ -10,13 +10,30 @@ Item {
 
     property color playingColor: "#ffffffff"
     property color normalColor: "#80ffffff"
-    property var core
     property bool isUse: false
+    property int lrcId: -1
+    property var wordList: []
+    property int startTime: -1
+    property int duration: -1
+    property var startList: []
+    property var endList: []
+    property var textList: []
+    property var helpTextList: []
+
+    Component.onCompleted: {
+           var json = MediaPlayer.getLrcJsonObject(lrcId)
+           startList = Base.stringToLongList(json.startList)
+           endList = Base.stringToLongList(json.endList)
+           textList = Base.stringToStringList(json.textList)
+           helpTextList = Base.stringToStringList(json.helpTextList)
+           startTime = Number(json.startTime)
+           duration = Number(json.endTime - json.startTime)
+    }
 
    Loader {
        id: loader
        anchors.fill: parent
-       sourceComponent: core.textList.length > 0 ? drawLrcLineCom : drawLoadLineCom
+       sourceComponent: textList.length > 0 ? drawLrcLineCom : drawLoadLineCom
    }
 
    Component {
@@ -24,7 +41,11 @@ Item {
        DrawLrcLine {
            width: coreLrcLine.width
            id: drawLrcLine
-           core: coreLrcLine.core
+           lrcId: coreLrcLine.lrcId
+           startList: coreLrcLine.startList
+           endList: coreLrcLine.endList
+           textList: coreLrcLine.textList
+           helpTextList: coreLrcLine.helpTextList
        }
    }
 
@@ -33,7 +54,9 @@ Item {
        DrawLoadLine {
            width: coreLrcLine.width
            id: drawLoadLine
-           core: coreLrcLine.core
+           lrcId: coreLrcLine.lrcId
+           startTime: coreLrcLine.startTime
+           duration: coreLrcLine.duration
        }
    }
 }

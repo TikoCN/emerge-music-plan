@@ -48,7 +48,7 @@ TikoMenu {
             id: addMenu
             TikoMenuItem {
                 text: name
-                onTriggered: Core.playlistAppendMusic(playlistId, musicList)
+                onTriggered: DataActive.playlistAppendMusic(playlistId, musicList)
                 enabled: !isDir
             }
         }

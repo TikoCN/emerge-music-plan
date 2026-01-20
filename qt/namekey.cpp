@@ -4,7 +4,7 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 NameKey::NameKey() {
-    QFile file(QDir(QDir::currentPath()).filePath("namekeyid.json"));
+    QFile file(QDir(QDir::currentPath()).filePath("namekey.json"));
     if (!file.open(QIODevice::ReadOnly))
         return;
 

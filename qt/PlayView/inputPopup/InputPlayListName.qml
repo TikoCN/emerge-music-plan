@@ -36,7 +36,7 @@ TikoPopupInput {
         }
     }
     onClosed: {
-        Core.decrementPlayList(playlistId)
+        DataActive.decrementPlayList(playlistId)
         destroy()
     }
 

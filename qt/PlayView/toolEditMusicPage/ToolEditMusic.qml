@@ -94,9 +94,9 @@ TikoFrameless {
         }
     }
 
-    function build(musicId, lrc){
+    function build(musicId){
         musicEditPage.init(musicId)
-        lrcEditPage.init(lrc, FileMan.getMusicLrcUrl(musicId))
+        lrcEditPage.init(musicId)
         stackEditMusicPage()
     }
 }

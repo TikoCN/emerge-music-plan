@@ -6,6 +6,7 @@ import PlayView
 Item {
     id: playerLrcPlayList
     property bool have: false
+    Component.onCompleted: buildLrcList()
 
     MouseArea{
         id: mouseHover
@@ -58,15 +59,13 @@ Item {
 
         delegate: CoreLrcLine{
             width: lrcList.width
-            core: MediaPlayer.lrcList[lrc]
+            lrcId: lrc
         }
 
         model:ListModel{
             id:lrcDataList
         }
     }
-
-    Component.onCompleted: buildLrcList()
 
     //关联
     Connections{
@@ -75,29 +74,19 @@ Item {
             playerLrcPlayList.buildLrcList()
         }
 
-        function onPlayingLrcIdChange(){
-            if(
-                    !show &&
-                    MediaPlayer.lrcList.length <= 1 &&
-                    MediaPlayer.playingLrc === null &&
-                    !mouseHover.containsMouse
-                    ){
+        function onPlayingLrcIdChange(playingLrcId){
+            if (!show &&
+                    !mouseHover.containsMouse){
                 return
             }
-
-            var playLine = MediaPlayer.playingLrc.id
-
-            lrcList.currentIndex = playLine
-        }
-
-        function onClearLrc(){
-            lrcDataList.clear()
+            lrcList.currentIndex = playingLrcId
         }
     }
 
     //插入歌词
     function buildLrcList(){
-        for(var i=0; i<MediaPlayer.lrcList.length; i++){
+        var length = MediaPlayer.getLrcListLength()
+        for(var i=0; i<length; i++){
             lrcDataList.append({lrc:i})
         }
     }

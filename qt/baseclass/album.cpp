@@ -17,7 +17,7 @@ QJsonObject Album::getJsonObject()
     json.insert("album_id", id);
     json.insert("musicList", Base::getInstance()->intListToString(musicList));
     json.insert("lineKey", lineKey);
-    json.insert("artistList", Base::getInstance()->stringSetToString(artistSet));
+    json.insert("artistList", Base::getInstance()->stringListToString(artistSet.values()));
     json.insert("duration", duration);
     return json;
 }

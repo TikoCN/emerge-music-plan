@@ -19,7 +19,7 @@ TikoMenu{
     property string fileUrl: ""
 
     Component.onCompleted:{
-        var Json = Core.getMusicJson(musicId)
+        var Json = DataActive.getMusicJson(musicId)
         musicTitle = Json.title
         artist = Json.artist
         album = Json.album
@@ -28,18 +28,18 @@ TikoMenu{
 
     TikoMenuItem {
         text: qsTr("播放")
-        onClicked: MediaPlayer.buildPlayingListByMusicList(musicId)
+        onClicked: MediaPlayer.buildPlayingListByMusicId(musicId)
         icon.source: "qrc:/image/play.png"
     }
 
     TikoMenuItem {
         text: qsTr("添加到播放队列")
-        onClicked: MediaPlayer.appendPlayingListByMusicList(musicId)
+        onClicked: MediaPlayer.appendPlayingListByMusicId(musicId)
     }
 
     TikoMenuItem {
         text: qsTr("添加到正在下一首播放")
-        onClicked: MediaPlayer.insertPlayingListByMusicList(musicId)
+        onClicked: MediaPlayer.insertPlayingListByMusicId(musicId)
     }
     TikoMenuSpeacer{}
 
@@ -63,20 +63,6 @@ TikoMenu{
             var url = Base.getBaseUrl(fileUrl) + ".jpg"
             Base.deskOpenFile(url)
         }
-    }
-
-    TikoMenuSpeacer{}
-
-    TikoMenuItem{
-        text: qsTr("删除")
-    }
-
-    TikoMenuItem{
-        text: qsTr("删除本地文件")
-    }
-
-    TikoMenuItem{
-        text: qsTr("更新数据")
     }
 
     TikoMenuSpeacer{}
@@ -175,6 +161,7 @@ TikoMenu{
             id: addMenu
             TikoMenuItem {
                 text: CoreData.playlist[aim]["name"]
+                enabled: !CoreData.playlist[aim].isDir
             }
         }
 

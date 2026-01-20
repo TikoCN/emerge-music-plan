@@ -11,14 +11,22 @@ Item {
     property color playingColor: "#ffffffff"
     property color normalColor: "#80ffffff"
     property font lrcFont: Setting.mainLrcFont
-    property var core
-    property int lrcId: core.id
+    property int lrcId: -1
     property int maxH: maxFontMetrics.boundingRect.height
-    property var startList: core.startList
-    property var endList: core.endList
-    property var textList: core.textList
-    property var helpTextList: core.helpTextList
-    property bool isPlay: MediaPlayer.playingLrc.id === lrcId
+    property var startList: []
+    property var endList: []
+    property var textList: []
+    property var helpTextList: []
+    property bool isPlay: MediaPlayer.playingLrcId === lrcId
+    property int playingPos: MediaPlayer.player.position
+
+    onMaxHChanged: setHeight()
+    onWidthChanged: setHeight()
+    Component.onCompleted: setHeight()
+    onPlayingPosChanged: {
+        if (isPlay)
+            lrcShow.requestPaint()
+    }
 
     MultiEffect {
         id: effct
@@ -47,7 +55,6 @@ Item {
             var startY = maxH * 1.8
             var length = 0
             var overF = 0.0//超出当前字长
-            var playingPos = MediaPlayer.player.position
 
             //计算主文本
             for(var i=0; i<lrc.length; i++){
@@ -109,28 +116,6 @@ Item {
                     ctx.fillText(text[i], startX, startY - overF * 3)
                     startX += length
                 }
-            }
-        }
-    }
-
-    onMaxHChanged: setHeight()
-    onWidthChanged: setHeight()
-    Component.onCompleted: setHeight()
-
-    Connections{
-        target: core
-        function onUpdate(){
-            lrcShow.requestPaint()
-        }
-    }
-
-    Connections{
-        target: MediaPlayer
-
-        function onPlayingLrcIdChange(){
-            if(isPlay != (MediaPlayer.playingLrc.id === lrcId)) {
-                isPlay = (MediaPlayer.playingLrc.id === lrcId)
-                lrcShow.requestPaint()
             }
         }
     }
@@ -197,5 +182,15 @@ Item {
         }
 
         drawLrcLine.height = (line + 1.6) * maxFontMetrics.boundingRect.height
+    }
+
+    Connections{
+        target: MediaPlayer
+        function onPlayingLrcIdChange(playingLrcId){
+            if (isPlay != (playingLrcId === lrcId)) {
+                isPlay = playingLrcId === lrcId
+                lrcShow.requestPaint()
+            }
+        }
     }
 }

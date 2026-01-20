@@ -61,5 +61,7 @@ qt_add_qml_module(PlayViewLib
     inputPopup/InputPlayListName.qml
     RESOURCES ui.qrc
     QML_FILES AutoCoverImage.qml
+    QML_FILES TextMode.qml
+    QML_FILES MusicListView.qml
 )
 

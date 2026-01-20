@@ -4,7 +4,7 @@
 #include <QObject>
 #include <QFileInfoList>
 #include <QThreadPool>
-#include "base/mediadata.h"
+#include "baseclass/mediadata.h"
 
 class TaskCenter : public QObject
 {

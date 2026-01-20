@@ -4,7 +4,7 @@
 #include <QObject>
 #include <QRunnable>
 #include <QFileInfo>
-#include "base/mediadata.h"
+#include "baseclass/mediadata.h"
 
 class BuildMusicCore : public QObject, public QRunnable
 {

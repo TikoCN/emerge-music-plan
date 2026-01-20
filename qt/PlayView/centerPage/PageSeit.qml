@@ -60,7 +60,7 @@ ScrollView{
                     text: qsTr("清除过时数据")
                     onClick: {
                         CoreData.clearData()
-                        Core.clearNullItem()
+                        DataActive.clearNullItem()
                     }
                 }
 
