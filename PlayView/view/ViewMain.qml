@@ -72,16 +72,17 @@ Item {
         visible: false
     }
 
-    PlayerAlbum {
+    ShowPageAlbum {
         id: albumPlayer
         visible: false
     }
 
-    PlayerArtist {
+    ShowPageArtist {
         id: artistPlayer
         visible: false
     }
 
+<<<<<<< Updated upstream:PlayView/view/ViewMain.qml
     PlayerTable {
         id: tablePlayer
         visible: false
@@ -92,6 +93,42 @@ Item {
         tablePlayer.tableId = page
         if(stackView.currentItem !== tablePlayer){
             stackView.replace(tablePlayer)
+=======
+    Component{
+        id: playlistListCom
+        ShowPagePlayList {
+            visible: false
+        }
+    }
+
+    //切换到列表
+    function turnToMusicList(page){
+
+        var list = null
+        for (var i=0;i<playList.length;i++) {
+            if (playList[i].playlistId === page)
+                list = playList[i]
+        }
+
+        if (list === null) {
+            if (playlistListCom.status === Component.Ready) {
+                list = playlistListCom.createObject(mainView)
+                list.setPlayListId(page)
+            }
+
+            if (playList.length >= 3) {
+                var newList = []
+                for (i=1;i<playList.length;i++) {
+                    newList.push(playList[i])
+                }
+                playList = newList
+                playList.push(list)
+            }
+        }
+
+        if(stackView.currentItem !== list){
+            stackView.replace(list)
+>>>>>>> Stashed changes:qt/PlayView/view/ViewMain.qml
         }
     }
 

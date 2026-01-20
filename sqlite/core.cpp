@@ -17,7 +17,9 @@ void Core::logError(QString error)
 void Core::stmtPrepare(sqlite3_stmt **stmt, const char *sql)
 {
     r = sqlite3_prepare_v2(db, sql, -1, stmt, nullptr);
-    if (r != SQLITE_OK) logError(QString("检测 %1 初始化失败").arg(QString(sql)));
+    if (r != SQLITE_OK) {
+        logError(QString("检测 %1 初始化失败").arg(QString(sql)));
+    }
 }
 
 void Core::stmtBindText(sqlite3_stmt *stmt, int pos, QString s)
@@ -63,6 +65,13 @@ void Core::stmtReset(sqlite3_stmt *stmt)
         QString error = QString("重置 %1 失败，当前为 %2").arg(sqlite3_sql(stmt), sql);
         sqlite3_free(sql);
         logError(error);
+    }
+}
+
+void Core::stmtFree(sqlite3_stmt *stmt)
+{
+    if (stmt) {
+        sqlite3_finalize(stmt);
     }
 }
 

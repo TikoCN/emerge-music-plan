@@ -21,11 +21,11 @@ protected:
     void stmtBindInt(sqlite3_stmt *stmt, int pos, long long i);
     bool stmtStep(sqlite3_stmt *stmt);
     void stmtReset(sqlite3_stmt *stmt);
+    void stmtFree(sqlite3_stmt *stmt);
 
     void sqlExec(const char *sql, sqlite3_callback back, void *data);
 
 public:
-
     bool commit();
 
     bool begin();

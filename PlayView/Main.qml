@@ -85,20 +85,20 @@ TikoFrameless{
             }
         }
 
-        ViewLeftBar{
-            id: barView
-            height: parent.height - bottomView.height - 10
-            width: 200
-            x: 10
-            y: showType === 0 ? 10 : -height
-        }
-
         //中间内容导航
         ViewMain{
             id: mainView
             width: parent.width - barView.width - 20
             height: barView.height
             anchors.left: barView.right
+            y: showType === 0 ? 10 : -height
+        }
+
+        ViewLeftBar{
+            id: barView
+            height: parent.height - bottomView.height - 10
+            width: 200
+            x: 10
             y: showType === 0 ? 10 : -height
         }
 
@@ -210,8 +210,8 @@ TikoFrameless{
         }
     }
 
-    ViewPlayingTable {
-        id: playingTable
+    ViewPlayingList {
+        id: playingPlayList
         width: parent.width * 2 / 3
         height: parent.height - bottomView.height
         y:10
@@ -259,7 +259,7 @@ TikoFrameless{
 
     //清理数据
     function clearData(){
-        playingTable.clearData()
+        playingPlayList.clearData()
         mainView.turnToSeit()
     }
 
@@ -275,8 +275,38 @@ TikoFrameless{
     Connections{
         target: Core
         function onFinish(){
+<<<<<<< Updated upstream:PlayView/Main.qml
             CoreData.table = JSON.parse(SQLData.getAllList())
             mainView.buildData()
+=======
+            load()
+        }
+    }
+
+    Component.onCompleted: {
+        load()
+        CoreData.clearData.connect(clearData)
+        CoreData.sendErrorMsg.connect(sendErroMsg)
+    }
+
+    function load(){
+        CoreData.playlist = JSON.parse(SQLData.getAllList())
+        mainView.buildData()
+    }
+
+    Component {
+        id: errorMsgCom
+        TikoMessageLittle {
+            type: 1
+            anchors.centerIn: Overlay.overlay
+        }
+    }
+
+    function sendErroMsg(msg) {
+        if (errorMsgCom.status === Component.Ready) {
+            var view = errorMsgCom.createObject(window, {message:msg})
+            view.open()
+>>>>>>> Stashed changes:qt/PlayView/Main.qml
         }
     }
 }

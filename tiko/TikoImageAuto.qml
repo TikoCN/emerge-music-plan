@@ -1,5 +1,6 @@
 import QtQuick
 
+<<<<<<< Updated upstream:tiko/TikoImageAuto.qml
 Image{
     id: image
     sourceSize.width: imgWidth
@@ -23,24 +24,83 @@ Image{
             deleteImag.start()
         }
     }
+=======
+TikoImageColorAuto{
+    id: imageAutoView
+    source: normalUrl
+    isAutoColor: String(source) === normalUrl
+
+    property int loadMsTime: 100
+    property int freeMsTime: 100
+    property string normalUrl: ""
+    property string loadUrl: ""
+    property bool extraLoadFlag: true
+    property bool keepNormal: false
+    property bool loadFlag: extraLoadFlag &&
+                            TikoSeit.isShowFramChange &&
+                            imageAutoView.visible
+
+    onLoadFlagChanged: loadImage()
+    onLoadUrlChanged: loadImage()
+    onKeepNormalChanged: loadImage()
+>>>>>>> Stashed changes:qt/Tiko/TikoImageAuto.qml
 
     Timer {
-        id: deleteImag
+        id: deleteImageTimer
         interval: freeMsTime
-        onTriggered: {
-            if (!loadFlag) {
-                image.source = normalUrl
-            }
-        }
+        onTriggered: switchToNormalImage()
+        triggeredOnStart: false
+        running: false
+        repeat: false
     }
 
     Timer {
-        id: loadImag
+        id: loadImageTimer
         interval: loadMsTime
-        onTriggered: {
-            if (loadFlag) {
-                image.source = loadUrl
+        onTriggered: switchToLoadImage()
+        triggeredOnStart: false
+        running: false
+        repeat: false
+    }
+
+    Component.onDestruction: {
+        loadImageTimer.stop();
+        deleteImageTimer.stop();
+        // 清理缓存，释放内存
+        source = "";
+    }
+
+    function loadImage() {
+        loadImageTimer.stop();
+        deleteImageTimer.stop();
+
+        if (keepNormal) {
+            if (String(source) !== normalUrl) {
+                switchToNormalImage()
             }
+            return
+        }
+
+        if (loadFlag && String(source) !== loadUrl) {
+            if (loadUrl !== "") loadImageTimer.start();
+        } else if (String(source) !== normalUrl) {
+            deleteImageTimer.start();
+        }
+    }
+
+    function switchToLoadImage() {
+        if (!loadFlag || loadUrl === "") return;
+
+        if (String(source) !== loadUrl) {
+            source = loadUrl;
+        }
+    }
+
+    function switchToNormalImage() {
+        if (!keepNormal && loadFlag) return;
+
+        if (String(source) !== normalUrl) {
+            source = normalUrl;
         }
     }
 

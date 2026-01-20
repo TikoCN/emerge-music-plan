@@ -11,8 +11,9 @@
 #include "mediadata.h"
 #include "sqlite/sqlite.h"
 
-bool Music::getIsLove() const
+QJsonObject Music::getJsonObject()
 {
+<<<<<<< Updated upstream:base/music.cpp
     return isLove;
 }
 
@@ -59,16 +60,30 @@ void Music::setPlayNumber(int newPlayNumber)
     emit playNumberChanged();
 
     SQLite::getInstance()->updateMusic(this);
+=======
+    QJsonObject json;
+    json.insert("title", title);
+    json.insert("album", album);
+    json.insert("artist", getArtist());
+    json.insert("level", level);
+    json.insert("isLove", isLove);
+    json.insert("playNumber", playNumber);
+    json.insert("url", url);
+    json.insert("lastEdit", lastEdit);
+    json.insert("duration", duration);
+    return json;
+>>>>>>> Stashed changes:qt/base/music.cpp
 }
 
 Music::Music() {
     url = "";
-    album = tr("未知专辑");
-    artistList.append(tr("未知歌手"));
-    title = tr("未知音乐");
+    album = QObject::tr("未知专辑");
+    artistList.append(QObject::tr("未知歌手"));
+    title = QObject::tr("未知音乐");
     level = 0;
     isLove = false;
     playNumber = 0;
+<<<<<<< Updated upstream:base/music.cpp
 }
 
 void Music::writeDataToFile(QStringList key, QStringList value)
@@ -82,6 +97,8 @@ void Music::writeDataToFile(QStringList key, QStringList value)
     else{
        Base::getInstance()->sendMessage(tr("写入歌曲信息失败"), 1);
     }
+=======
+>>>>>>> Stashed changes:qt/base/music.cpp
 }
 
 void Music::setMedia(MediaData data)
@@ -97,6 +114,7 @@ void Music::setMedia(MediaData data)
     insetTime = data.insetTime;
 }
 
+
 QString Music::getMediaJson()
 {
     return "";
@@ -107,129 +125,6 @@ void Music::fromFileInfo(QFileInfo info)
     url = info.filePath();
     lastEdit = info.lastModified().toString("yy-MM-dd hh:mm:ss");
     lastEditTime = info.lastModified().toMSecsSinceEpoch();
-}
-
-QString Music::getLrcUrl()
-{
-    QString lrc = url.split("." + url.split(".").last())[0];
-    QString hlrc = lrc + ".hlrc";
-
-    if(QFile::exists(hlrc)){
-        lrc = hlrc;
-    }
-    else {
-        lrc += ".lrc";
-    }
-    return lrc;
-}
-
-QList<LrcData *> Music::getLyricsData()
-{
-    QString lrc = getLrcUrl();
-    QList<LrcData *> lrcList;
-
-    QFile lrcFile(lrc);
-    if(!lrcFile.open(QIODevice::Text |QIODevice::ReadOnly)){
-        return lrcList;
-    }
-
-    QTextStream in(&lrcFile);
-    QRegularExpression rx;
-    QRegularExpressionMatch match;
-    QString line;
-    LrcData *lrcD = nullptr;
-
-    //读取高级歌词
-    if(lrc.split(".").last() == "hlrc"){
-        while(!in.atEnd()){
-            line = in.readLine();
-
-            //捕获开始时间和结束时间
-            rx.setPattern(R"(\[(\d+),(\d+)\])");
-            match = rx.match(line);
-            //初始化并设置开始结束时间
-            if(match.isValid()){
-                lrcD = new LrcData;
-                lrcList.append(lrcD);
-                lrcD->id = lrcList.size()-1;
-                lrcD->startTime = match.captured(1).toLong();
-                lrcD->endTime = match.captured(2).toLong();
-            }
-            else{//没有发现行头，下一行
-                continue;
-            }
-
-            //捕获主体
-            QStringList lrcText = line.split("/");
-            // 添加到其他文本
-            for (int i = 1; i < lrcText.size(); ++i) {
-                lrcD->helpTextList.append(lrcText[i]);
-            }
-
-            rx.setPattern(R"(\((\d+),(\d+)\)\s*([^(]*))");
-            QRegularExpressionMatchIterator it = rx.globalMatch(lrcText.first());
-            while(it.hasNext()){
-                match = it.next();
-                long long start = match.captured(1).toLong();
-                long long end = match.captured(2).toLong();
-                QString text = match.captured(3);
-                lrcD->append(start, end, text);
-            }
-        }
-    }
-    else{
-        rx.setPattern(R"(\[(\d+):(\d+).(\d+)\]([\s\S]*))");
-        QStringList lrcTextList;
-        //读取基本数据以及文本行
-        while (!in.atEnd()) {
-            line = in.readLine();
-            match = rx.match(line);
-            if(match.capturedTexts().size() == 5){
-                lrcD = new LrcData;
-                lrcD->id = lrcList.size();
-                lrcD->startTime = match.captured(1).toLong() * 60 * 1000 +
-                                  match.captured(2).toLong() * 1000 +
-                                  match.captured(3).toLong();
-                QStringList lrcText = match.captured(4).split("/");
-                // 添加到其他文本
-                for (int i = 1; i < lrcText.size(); ++i) {
-                    lrcD->helpTextList.append(lrcText[i]);
-                }
-
-                lrcTextList.append(lrcText.first());
-                lrcList.append(lrcD);
-            }
-            else{
-                continue;
-            }
-        }
-
-        //设置逐字时间戳
-        for(int i=0; i<lrcList.size(); i++){
-            long long start = lrcList[i]->startTime;
-            long long end;
-            if(i == lrcList.size() - 1){
-                end = this->duration;
-            }
-            else{
-                end = lrcList[i+1]->startTime;
-            }
-
-            lrcList[i]->endTime = end;
-            int length = lrcTextList[i].size() == 0 ? 1 : lrcTextList[i].size();
-            int wordTime = (end - start) / length;
-
-            //逐字遍历
-            QString text = lrcTextList[i];
-            for(int j=0; j<text.size(); j++){
-                lrcList[i]->append(start + j * wordTime,
-                                   start + (j + 1) * wordTime,
-                                   text[j]);
-            }
-        }
-    }
-
-    return lrcList;
 }
 
 /*
@@ -322,33 +217,8 @@ void Music::setSuffix(QString type)
     s = ffmpeg.transformCodec(url, suffix);
 }
 
-QString Music::getTitle() const
-{
-    return title;
-}
-
 QString Music::getArtist() const
 {
     return artistList.join(";");
-}
-
-QString Music::getUrl() const
-{
-    return url;
-}
-
-QString Music::getAlbum() const
-{
-    return album;
-}
-
-QString Music::getLastEdit() const
-{
-    return lastEdit;
-}
-
-int Music::getId() const
-{
-    return id;
 }
 

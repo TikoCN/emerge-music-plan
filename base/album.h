@@ -3,10 +3,16 @@
 
 #include <QObject>
 #include <QSet>
+<<<<<<< Updated upstream:base/album.h
 
 class Album : public QObject
+=======
+#include <QSharedPointer>
+using AlbumPtr = QSharedPointer<class Album>;
+
+class Album
+>>>>>>> Stashed changes:qt/base/album.h
 {
-    Q_OBJECT
 public:
     explicit Album(QString name, int id, QString lineKey);
 
@@ -17,6 +23,7 @@ public:
     long long duration;
     int id;
 
+<<<<<<< Updated upstream:base/album.h
     QString getName() const;
 
     int getId() const;
@@ -43,5 +50,9 @@ private:
     Q_PROPERTY(QList<int> musicList READ getMusicList CONSTANT FINAL)
     Q_PROPERTY(long long duration READ getDuration CONSTANT FINAL)
     Q_PROPERTY(QString name READ getName WRITE setName NOTIFY nameChanged FINAL)
+=======
+    QJsonObject getJsonObject();
+>>>>>>> Stashed changes:qt/base/album.h
 };
+
 #endif // ALBUM_H

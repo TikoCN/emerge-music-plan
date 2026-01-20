@@ -10,6 +10,7 @@ ScrollBar {
     anchors.right: parent.right
     snapMode: ScrollBar.SnapAlways
     policy: ScrollBar.AsNeeded
+    minimumSize: 0.2
 
     background: Rectangle {  // 背景
         id: background

@@ -6,6 +6,7 @@
 Album::Album(QString name, int id, QString lineKey)
     : name(name), id(id), lineKey(lineKey)
 {
+<<<<<<< Updated upstream:base/album.cpp
 
 }
 
@@ -47,5 +48,21 @@ int Album::getId() const
 QString Album::getName() const
 {
     return name;
+=======
+
+}
+
+
+QJsonObject Album::getJsonObject()
+{
+    QJsonObject json;
+    json.insert("album", name);
+    json.insert("album_id", id);
+    json.insert("musicList", Base::getInstance()->intListToString(musicList));
+    json.insert("lineKey", lineKey);
+    json.insert("artistList", Base::getInstance()->stringSetToString(artistSet));
+    json.insert("duration", duration);
+    return json;
+>>>>>>> Stashed changes:qt/base/album.cpp
 }
 

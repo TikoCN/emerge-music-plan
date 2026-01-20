@@ -12,9 +12,26 @@ Item{
     property int r: 160
     property int space: 5
     property int albumId: -1
+<<<<<<< Updated upstream:PlayView/core/CoreAlbumButton.qml
     property AlbumData album: visible ? Core.getAlbum(albumId) : null
+=======
+>>>>>>> Stashed changes:qt/PlayView/core/CoreAlbumButton.qml
     property int coverId: 0
+    property int duration: 0
+    property string name: ""
+    property string key: ""
+    property var musicList: []
 
+<<<<<<< Updated upstream:PlayView/core/CoreAlbumButton.qml
+=======
+    onAlbumIdChanged: {
+        var json = Core.getAlbumJson(albumId)
+        name = json.album
+        duration = json.duration
+        musicList = json.musicList
+    }
+
+>>>>>>> Stashed changes:qt/PlayView/core/CoreAlbumButton.qml
     // 整体背景
     Rectangle {
         anchors.fill: parent
@@ -36,12 +53,18 @@ Item{
             y: space
             width: r
 
-            TikoImageAuto {
+            AutoCoverImage {
                 id: albumCover
                 width: r
                 height: r
                 normalUrl: "qrc:/image/album.png"
+<<<<<<< Updated upstream:PlayView/core/CoreAlbumButton.qml
                 loadUrl: "image://cover/albumFile:" + albumId.toString()
+=======
+                loadUrl: "image://cover/albumFile?id=" +
+                         albumId.toString() +
+                         "&radius=10"
+>>>>>>> Stashed changes:qt/PlayView/core/CoreAlbumButton.qml
             }
 
             // 播放按钮
@@ -60,6 +83,7 @@ Item{
                 hover: 1
                 borderSize: 1.5
                 autoColor: Setting.backdropColor
+                onClicked: MediaPlayer.buildPlayingListByMusicList(musicList)
             }
 
             // 菜单按钮
@@ -87,7 +111,7 @@ Item{
                 anchors.top: albumCover.bottom
                 anchors.topMargin: 10
                 width: parent.width
-                text: album !== null ? album.name : qsTr("专辑")
+                text: name
             }
 
             // 专辑时长
@@ -96,8 +120,29 @@ Item{
                 anchors.top: textLine.bottom
                 width: parent.width
                 opacity: 0.4
-                text: album !== null ? Base.timeToString(album.duration) : qsTr("00:00")
+                text: Base.timeToString(duration)
             }
         }
     }
+<<<<<<< Updated upstream:PlayView/core/CoreAlbumButton.qml
+=======
+
+    Component {
+        id: menuComponent
+        MenuAlbum {
+            albumId: albumButton.albumId
+            musicList: albumButton.musicList
+            name: albumButton.name
+        }
+    }
+
+    function createMenu(parent){
+        if (menuComponent.status === Component.Ready){
+            let menu = menuComponent.createObject(parent)
+            menu.popup()
+        }
+        else
+            console.log(menuComponent.errorString())
+    }
+>>>>>>> Stashed changes:qt/PlayView/core/CoreAlbumButton.qml
 }

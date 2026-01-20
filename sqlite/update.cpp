@@ -1,14 +1,14 @@
 #include "update.h"
 
-bool Update::updateMusic(Music *music)
+bool Update::updateMusic(MusicPtr music)
 {
     if (music == nullptr)
         return false;
-    QList<Music *> list = {music};
+    QList<MusicPtr> list = {music};
     return updateMusic(list);
 }
 
-bool Update::updateMusic(QList<Music *> musicList)
+bool Update::updateMusic(QList<MusicPtr> musicList)
 {
     sqlite3_stmt *stmt = nullptr;
     try {
@@ -18,7 +18,7 @@ bool Update::updateMusic(QList<Music *> musicList)
                           "WHERE music_id = ?";
         stmtPrepare(&stmt, sql);
         for (int i = 0; i < musicList.size(); ++i) {
-            Music *music = musicList[i];
+            MusicPtr music = musicList[i];
             if (music == nullptr)
                 continue;
             stmtReset(stmt);
@@ -34,16 +34,17 @@ bool Update::updateMusic(QList<Music *> musicList)
             stmtStep(stmt);
         }
     } catch (QString e) {
-        return false;
     }
+
+    stmtFree(stmt);
     return true;
 }
 
-bool Update::updateTable(Table *table)
+bool Update::updatePlayList(PlayListPtr playlist)
 {
     sqlite3_stmt *stmt = nullptr;
     try {
-        if (table == nullptr)
+        if (playlist == nullptr)
             throw QString("指针错误");
 
         const char *sql = "UPDATE playlist "
@@ -51,23 +52,23 @@ bool Update::updateTable(Table *table)
                           "WHERE list_id = ?";
         stmtPrepare(&stmt, sql);
         stmtReset(stmt);
-        stmtBindText(stmt, 1, table->name);
-        stmtBindInt(stmt, 2, (int)table->sort);
-        stmtBindInt(stmt, 3, table->id);
+        stmtBindText(stmt, 1, playlist->name);
+        stmtBindInt(stmt, 2, (int)playlist->sort);
+        stmtBindInt(stmt, 3, playlist->id);
         stmtStep(stmt);
     } catch (QString e) {
-        return false;
     }
+    stmtFree(stmt);
     return true;
 }
 
-bool Update::updateTableMusic(int musicId, int tableNewId, int tableOldId)
+bool Update::updatePlayListMusic(int musicId, int playlistNewId, int playlistOldId)
 {
     QList<int> list = {musicId};
-    return updateTableMusic(list, tableNewId, tableOldId);
+    return updatePlayListMusic(list, playlistNewId, playlistOldId);
 }
 
-bool Update::updateTableMusic(QList<int> musicIdList, int newId, int oldId)
+bool Update::updatePlayListMusic(QList<int> musicIdList, int newId, int oldId)
 {
     sqlite3_stmt *stmt = nullptr;
     try {
@@ -87,12 +88,12 @@ bool Update::updateTableMusic(QList<int> musicIdList, int newId, int oldId)
             stmtStep(stmt);
         }
     } catch (QString e) {
-        return false;
     }
+    stmtFree(stmt);
     return true;
 }
 
-bool Update::updateArtist(Artist *artist)
+bool Update::updateArtist(ArtistPtr artist)
 {
     sqlite3_stmt *stmt = nullptr;
     try {
@@ -109,8 +110,8 @@ bool Update::updateArtist(Artist *artist)
         stmtBindInt(stmt, 3, artist->id);
         stmtStep(stmt);
     } catch (QString e) {
-        return false;
     }
+    stmtFree(stmt);
     return true;
 }
 
@@ -140,12 +141,12 @@ bool Update::updateArtistMusic(QList<int> musicIdList, int newId, int oldId)
             stmtStep(stmt);
         }
     } catch (QString e) {
-        return false;
     }
+    stmtFree(stmt);
     return true;
 }
 
-bool Update::updateAlbum(Album *album)
+bool Update::updateAlbum(AlbumPtr album)
 {
     sqlite3_stmt *stmt = nullptr;
     try {
@@ -162,8 +163,8 @@ bool Update::updateAlbum(Album *album)
         stmtBindInt(stmt, 3, album->id);
         stmtStep(stmt);
     } catch (QString e) {
-        return false;
     }
+    stmtFree(stmt);
     return true;
 }
 
@@ -193,7 +194,7 @@ bool Update::updateAlbumMusic(QList<int> musicIdList, int newId, int oldId)
             stmtStep(stmt);
         }
     } catch (QString e) {
-        return false;
     }
+    stmtFree(stmt);
     return true;
 }

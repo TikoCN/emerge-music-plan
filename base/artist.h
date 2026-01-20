@@ -2,10 +2,15 @@
 #define ARTIST_H
 
 #include <QObject>
+<<<<<<< Updated upstream:base/artist.h
 
 class Artist : public QObject
+=======
+using ArtistPtr = QSharedPointer<class Artist>;
+
+class Artist
+>>>>>>> Stashed changes:qt/base/artist.h
 {
-    Q_OBJECT
 public:
     explicit Artist(QString name, int id, QString linekey);
 
@@ -15,6 +20,7 @@ public:
     long long duration;
     int id;
 
+<<<<<<< Updated upstream:base/artist.h
     QString getName() const;
 
     int getId() const;
@@ -37,6 +43,9 @@ private:
     Q_PROPERTY(QList<int> musicList READ getMusicList CONSTANT FINAL)
     Q_PROPERTY(long long duration READ getDuration CONSTANT FINAL)
     Q_PROPERTY(QString name READ getName WRITE setName NOTIFY nameChanged FINAL)
+=======
+    QJsonObject getJsonObject();
+>>>>>>> Stashed changes:qt/base/artist.h
 };
 
 #endif // ARTIST_H

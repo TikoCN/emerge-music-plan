@@ -179,7 +179,7 @@ Item{
         height: style.height
 
         //滚动歌词
-        PlayerLrcTable{
+        ShowPageLrcList{
             id: lrcShow
             y: rightShow.height * 0.1
             anchors.horizontalCenter: rightShow.horizontalCenter
@@ -199,6 +199,7 @@ Item{
     Connections{
         target:MediaPlayer.player
         function onSourceChanged(){
+<<<<<<< Updated upstream:PlayView/playMusicShow/PlayStyle1.qml
             artist.text = MediaPlayer.playingMusic.artist
             title.text = MediaPlayer.playingMusic.title
             cover.source = "image://cover/musicOnLine:"+ MediaPlayer.playingMusic.id.toString()
@@ -209,5 +210,19 @@ Item{
         artist.text = MediaPlayer.playingMusic.artist
         title.text = MediaPlayer.playingMusic.title
         cover.source = "image://cover/musicOnLine:"+ MediaPlayer.playingMusic.id.toString()
+=======
+            loadPlaying()
+        }
+    }
+
+    Component.onCompleted: loadPlaying()
+    function loadPlaying() {
+        var json = Core.getMusicJson(MediaPlayer.playingMusicId)
+        artist.text = json.artist
+        title.text = json.title
+        cover.source = "image://cover/musicOnLine?id=" +
+                MediaPlayer.playingMusicId.toString() +
+                "&radius=10"
+>>>>>>> Stashed changes:qt/PlayView/playMusicShow/PlayStyle1.qml
     }
 }

@@ -21,7 +21,7 @@ SQLite::SQLite() {
         r = sqlite3_exec(db, enableFK, nullptr, nullptr, nullptr);
         if (r != SQLITE_OK) logError("启用外键失败");
 
-        const char *check = "SELECT count(*) FROM sqlite_master WHERE type='table' AND ("
+        const char *check = "SELECT count(*) FROM sqlite_master WHERE type='playlist' AND ("
                             "name='music' OR "
                             "name='playlist' OR "
                             "name='playlist_music' OR "
@@ -134,9 +134,14 @@ SQLite::~SQLite()
 
 bool SQLite::selectNewMusic(QFileInfoList infoList, QFileInfoList *newInfoList)
 {
+<<<<<<< Updated upstream:sqlite/sqlite.cpp
     sqlite3_stmt *checkUrlStmt = nullptr;
     sqlite3_stmt *checkMediaStmt = nullptr;
 
+=======
+    sqlite3_stmt *stmt = nullptr;
+    bool flag = true;
+>>>>>>> Stashed changes:qt/sqlite/sqlite.cpp
     try {
         const char *checkUrlSql = "SELECT count(*) FROM music WHERE url=?";
         const char *checkMediaSql = "SELECT count(*) FROM music "
@@ -185,6 +190,7 @@ bool SQLite::selectNewMusic(QFileInfoList infoList, QFileInfoList *newInfoList)
         }
 
     } catch (QString e) {
+<<<<<<< Updated upstream:sqlite/sqlite.cpp
         sqlite3_finalize(checkUrlStmt);
         sqlite3_finalize(checkMediaStmt);
         return false;
@@ -194,3 +200,75 @@ bool SQLite::selectNewMusic(QFileInfoList infoList, QFileInfoList *newInfoList)
     return true;
 }
 
+=======
+        TLog::getInstance()->logError(e);
+        flag = false;
+    }
+
+    stmtFree(stmt);
+    return flag;
+}
+
+QList<QString> SQLite::clearNullPlayListItem()
+{
+    sqlite3_stmt *stmt = nullptr;
+    QList<QString> removeList;
+    try {
+        QList<QString> urlList ;
+
+        // 判断删除文件
+        const char* sql = "DELETE FROM playlist WHERE url = ?";
+        stmtPrepare(&stmt, sql);
+        while (!urlList.isEmpty()) {
+            QString url = urlList.takeLast();
+            if (!QFile::exists(url)){
+                removeList.append(url);
+                stmtReset(stmt);
+                stmtBindText(stmt, 1, url);
+                stmtStep(stmt);
+            }
+        }
+    } catch (QString e) {
+        TLog::getInstance()->logError(e);
+    }
+
+    stmtFree(stmt);
+    return removeList;
+}
+
+QList<QString> SQLite::clearNullMusicItem()
+{
+    sqlite3_stmt *stmt = nullptr;
+    QList<QString> removeList;
+    try {
+        // 得到所有文件目录列表
+        const char* urlSql = "SELECT url FROM playlist";
+        QList<QString> urlList ;
+        sqlite3_callback callback = [](void *data, int argc, char **argv, char **azColName) -> int{
+            QList<QString> *list = static_cast<QList<QString> *>(data);
+            list->append(QString(argv[0]));
+            return SQLITE_OK;
+        };
+        sqlExec(urlSql, callback, &urlList);
+
+        // 判断删除文件
+        const char* sql = "DELETE FROM music WHERE url = ?";
+        stmtPrepare(&stmt, sql);
+        while (!urlList.isEmpty()) {
+            QString url = urlList.takeLast();
+            if (!QFile::exists(url)){
+                removeList.append(url);
+                stmtReset(stmt);
+                stmtBindText(stmt, 1, url);
+                stmtStep(stmt);
+            }
+        }
+    } catch (QString e) {
+        TLog::getInstance()->logError(e);
+    }
+
+    stmtFree(stmt);
+    return removeList;
+}
+
+>>>>>>> Stashed changes:qt/sqlite/sqlite.cpp

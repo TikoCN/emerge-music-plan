@@ -42,12 +42,10 @@ Item {
         color: Setting.transparentColor
     }
     //模糊背景
-    TikoImageAuto {
+    AutoCoverImage {
         id: backCover
         width: 100
         height: 100
-        sourceSize.width: backCover.width
-        sourceSize.height: backCover.height
         visible: false
         loadMsTime: 10
         loadFlag: show
@@ -206,7 +204,13 @@ Item {
     Connections{
         target: MediaPlayer.player
         function onSourceChanged(){
+<<<<<<< Updated upstream:PlayView/centerPage/PageMusicPlay.qml
             backCover.loadUrl = "image://cover/musicOnLine:" + MediaPlayer.playingMusic.id.toString()
+=======
+            backCover.loadUrl = "image://cover/musicOnLine?id=" +
+                    MediaPlayer.playingMusicId.toString() +
+                    "&radius=10"
+>>>>>>> Stashed changes:qt/PlayView/centerPage/PageMusicPlay.qml
         }
     }
 

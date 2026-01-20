@@ -32,7 +32,8 @@ Item {
             MouseArea {
                 anchors.fill: parent
                 onClicked: {
-                    window.stackMusicPaly()
+                    if (MediaPlayer.playingMusicId !== -1)
+                        window.stackMusicPaly()
                 }
             }
         }
@@ -222,11 +223,11 @@ Item {
             text: qsTr("播放列表")
 
             onClicked: {
-                if(playingTable.visible){
-                    playingTable.close()
+                if(playingPlayList.visible){
+                    playingPlayList.close()
                 }
                 else{
-                    playingTable.open()
+                    playingPlayList.open()
                 }
             }
         }
@@ -251,9 +252,18 @@ Item {
         target: MediaPlayer.player
         function onSourceChanged(){
             if(MediaPlayer.playingMusic !== null){
+<<<<<<< Updated upstream:PlayView/view/ViewBottomBar.qml
                 artist.text = MediaPlayer.playingMusic.artist
                 title.text = MediaPlayer.playingMusic.title
                 cover.source = "image://cover/musicOnLine:" + MediaPlayer.playingMusic.id.toString()
+=======
+                var Json = Core.getMusicJson(MediaPlayer.playingMusicId)
+                artist.text = Json.artist
+                title.text = Json.title
+                cover.source = "image://cover/musicOnLine?id=" +
+                        MediaPlayer.playingMusicId.toString() +
+                        "&radius=10"
+>>>>>>> Stashed changes:qt/PlayView/view/ViewBottomBar.qml
             }
         }
     }

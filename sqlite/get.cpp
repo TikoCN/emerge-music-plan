@@ -36,18 +36,18 @@ QList<int> Get::getArtist(QString key)
             artistList.append(id);
         }
     } catch (QString e) {
-        sqlite3_finalize(stmt);
         artistList.clear();
     }
-    sqlite3_finalize(stmt);
+
+    stmtFree(stmt);
     return artistList;
 }
 
-Artist *Get::getArtist(int id)
+ArtistPtr Get::getArtist(int id)
 {
     QList<int> idList;
     idList.append(id);
-    QHash<int, Artist *> hash = getArtist(idList);
+    QHash<int, ArtistPtr> hash = getArtist(idList);
 
     if (hash.contains(id)) {
         return hash.value(id);
@@ -55,9 +55,9 @@ Artist *Get::getArtist(int id)
     return nullptr;
 }
 
-QHash<int, Artist *> Get::getArtist(QList<int> idList)
+QHash<int, ArtistPtr> Get::getArtist(QList<int> idList)
 {
-    QHash<int, Artist *> artistHash;
+    QHash<int, ArtistPtr> artistHash;
     sqlite3_stmt *stmt = nullptr;
 
     try {
@@ -79,7 +79,7 @@ QHash<int, Artist *> Get::getArtist(QList<int> idList)
             QStringList list = QString::fromUtf8(sqlite3_column_text(stmt, 3)).split(",");
             long long duration = sqlite3_column_int64(stmt, 4);
 
-            Artist *artist = new Artist(name, id, key);
+            ArtistPtr artist(new Artist(name, id, key));
             artist->duration = duration;
             for (int j = 0; j < list.size(); ++j) {
                 artist->musicList.append(list[j].toInt());
@@ -87,13 +87,10 @@ QHash<int, Artist *> Get::getArtist(QList<int> idList)
             artistHash.insert(idList[i], artist);
         }
     } catch (QString e) {
-        sqlite3_finalize(stmt);
-        QList<Artist *> list = artistHash.values();
-        while (!list.isEmpty()) {
-            list.takeLast()->deleteLater();
-        }artistHash.clear();
+        artistHash.clear();
     }
-    sqlite3_finalize(stmt);
+
+    stmtFree(stmt);
     return artistHash;
 }
 
@@ -115,7 +112,7 @@ QList<int> Get::getArtistMusicList(int id)
     } catch (QString e) {
         list.clear();
     }
-    sqlite3_finalize(stmt);
+    stmtFree(stmt);
     return list;
 }
 
@@ -154,18 +151,17 @@ QList<int> Get::getAlbum(QString key)
             albumList.append(id);
         }
     } catch (QString e) {
-        sqlite3_finalize(stmt);
         albumList.clear();
     }
-    sqlite3_finalize(stmt);
+    stmtFree(stmt);
     return albumList;
 }
 
-Album *Get::getAlbum(int id)
+AlbumPtr Get::getAlbum(int id)
 {
     QList<int> idList;
     idList.append(id);
-    QHash<int, Album *> hash = getAlbum(idList);
+    QHash<int, AlbumPtr> hash = getAlbum(idList);
 
     if (hash.contains(id)) {
         return hash.value(id);
@@ -173,9 +169,9 @@ Album *Get::getAlbum(int id)
     return nullptr;
 }
 
-QHash<int, Album *> Get::getAlbum(QList<int> idList)
+QHash<int, AlbumPtr> Get::getAlbum(QList<int> idList)
 {
-    QHash<int, Album *> albumHash;
+    QHash<int, AlbumPtr> albumHash;
     sqlite3_stmt *stmt = nullptr;
 
     try {
@@ -196,7 +192,7 @@ QHash<int, Album *> Get::getAlbum(QList<int> idList)
             QStringList list = QString::fromUtf8(sqlite3_column_text(stmt, 3)).split(",");
             long long duration = sqlite3_column_int64(stmt, 4);
 
-            Album *album = new Album(name, id, key);
+            AlbumPtr album(new Album(name, id, key));
             album->duration = duration;
             for (int j = 0; j < list.size(); ++j) {
                 album->musicList.append(list[j].toInt());
@@ -204,13 +200,9 @@ QHash<int, Album *> Get::getAlbum(QList<int> idList)
             albumHash.insert(idList[i], album);
         }
     } catch (QString e) {
-        sqlite3_finalize(stmt);
-        QList<Album *> list = albumHash.values();
-        while (!list.isEmpty()) {
-            list.takeLast()->deleteLater();
-        }albumHash.clear();
+        albumHash.clear();
     }
-    sqlite3_finalize(stmt);
+    stmtFree(stmt);
     return albumHash;
 }
 
@@ -232,7 +224,7 @@ QList<int> Get::getAlbumMusicList(int id)
     } catch (QString e) {
         list.clear();
     }
-    sqlite3_finalize(stmt);
+    stmtFree(stmt);
     return list;
 }
 
@@ -248,15 +240,15 @@ QString Get::getMusicUrl(int id)
         url = QString::fromUtf8(sqlite3_column_text(stmt, 0));
     } catch (QString e) {
     }
-    sqlite3_finalize(stmt);
+    stmtFree(stmt);
     return url;
 }
 
-Music *Get::getMusic(int id)
+MusicPtr Get::getMusic(int id)
 {
     QList<int> idList;
     idList.append(id);
-    QHash<int, Music*> hash = getMusic(idList);
+    QHash<int, MusicPtr> hash = getMusic(idList);
 
     if (hash.contains(id)) {
         return hash.value(id);
@@ -264,9 +256,9 @@ Music *Get::getMusic(int id)
     return nullptr;
 }
 
-QHash<int, Music *> Get::getMusic(QList<int> idList)
+QHash<int, MusicPtr> Get::getMusic(QList<int> idList)
 {
-    QHash<int, Music *> hash;
+    QHash<int, MusicPtr> hash;
     sqlite3_stmt *stmt = nullptr;
     try {
         const char *sql = "SELECT music.music_id, music.title, music.duration, music.insert_time, "
@@ -283,19 +275,33 @@ QHash<int, Music *> Get::getMusic(QList<int> idList)
             stmtReset(stmt);
             stmtBindInt(stmt, 1, idList[i]);
             stmtStep(stmt);
+<<<<<<< Updated upstream:sqlite/get.cpp
             Music *music = new Music;
             MediaData data = getMediaFromStmt(stmt);
             music->setMedia(data);
+=======
+            MusicPtr music(new Music);
+
+            music->id = sqlite3_column_int(stmt, 0);
+            music->title = QString::fromUtf8(sqlite3_column_text(stmt, 1));
+            music->duration = sqlite3_column_int64(stmt, 2);
+            music->insetTime = sqlite3_column_int64(stmt, 3);
+            music->level = sqlite3_column_int(stmt, 4);
+            music->isLove = sqlite3_column_int(stmt, 5) == 1;
+            music->playNumber = sqlite3_column_int(stmt, 6);
+            music->url = QString::fromUtf8(sqlite3_column_text(stmt, 7));
+            music->album = QString::fromUtf8(sqlite3_column_text(stmt, 8));
+            music->artistList = QString::fromUtf8(sqlite3_column_text(stmt, 9)).split(",");
+            music->albumId = sqlite3_column_int(stmt, 10);
+
+>>>>>>> Stashed changes:qt/sqlite/get.cpp
             music->fromFileInfo(QFileInfo(music->url));
             hash.insert(idList[i], music);
         }
     } catch (QString e) {
-        QList<Music *> list = hash.values();
-        while (!list.isEmpty()) {
-            list.takeLast()->deleteLater();
-        }
         hash.clear();
     }
+    stmtFree(stmt);
     return hash;
 }
 
@@ -308,7 +314,11 @@ QString Get::getAllList()
         sqlite3_callback callback = [](void *data, int argc, char **argv, char **azColName)->int{
             QJsonArray *array = static_cast<QJsonArray *>(data);
             QJsonObject obj;
+<<<<<<< Updated upstream:sqlite/get.cpp
             obj.insert("tableId", QString(argv[0]));
+=======
+            obj.insert("playlistId", QString(argv[0]).toInt());
+>>>>>>> Stashed changes:qt/sqlite/get.cpp
             obj.insert("name", QString(argv[1]));
             array->append(obj);
             return SQLITE_OK;
@@ -318,13 +328,14 @@ QString Get::getAllList()
     } catch (QString e) {
         return " ";
     }
+
     QJsonDocument doc(array);
     return QString(doc.toJson());
 }
 
-Table *Get::getList(int id)
+PlayListPtr Get::getList(int id)
 {
-    Table *table = nullptr;
+    PlayListPtr playlist(new PlayList);
     sqlite3_stmt *stmt = nullptr;
     try {
         const char *sql = "SELECT l.list_id, l.name, l.sort, l.url, l.is_dir, GROUP_CONCAT(lm.music_id) AS music_ids "
@@ -336,26 +347,25 @@ Table *Get::getList(int id)
         stmtBindInt(stmt, 1, id);
         stmtStep(stmt);
 
-        table = new Table;
-        table->id = sqlite3_column_int(stmt, 0);
-        table->name = QString::fromUtf8(sqlite3_column_text(stmt, 1));
-        table->sort = (Table::SORT_TYPE)sqlite3_column_int(stmt, 2);
-        table->url  = QString::fromUtf8(sqlite3_column_text(stmt, 3));
-        table->isDir = sqlite3_column_int(stmt, 4) == 1;
+        playlist->id = sqlite3_column_int(stmt, 0);
+        playlist->name = QString::fromUtf8(sqlite3_column_text(stmt, 1));
+        playlist->sort = (PlayList::SORT_TYPE)sqlite3_column_int(stmt, 2);
+        playlist->url  = QString::fromUtf8(sqlite3_column_text(stmt, 3));
+        playlist->isDir = sqlite3_column_int(stmt, 4) == 1;
         QStringList list = QString::fromUtf8(sqlite3_column_text(stmt, 5)).split(",");
 
         for (int i = 0; i < list.size(); ++i) {
-            table->musicList.append(list[i].toInt());
+            playlist->musicList.append(list[i].toInt());
         }
 
     } catch (QString e) {
-        delete table;
-        table = nullptr;
+
     }
-    return table;
+    stmtFree(stmt);
+    return playlist;
 }
 
-QList<int> Get::getTableMusicList(int id)
+QList<int> Get::getPlayListMusicList(int id)
 {
     QList<int> list;
     sqlite3_stmt *stmt = nullptr;
@@ -373,7 +383,7 @@ QList<int> Get::getTableMusicList(int id)
     } catch (QString e) {
         list.clear();
     }
-    sqlite3_finalize(stmt);
+    stmtFree(stmt);
     return list;
 }
 
@@ -440,3 +450,65 @@ MediaData Get::getMediaFromStmt(sqlite3_stmt *stmt)
     return data;
 }
 
+<<<<<<< Updated upstream:sqlite/get.cpp
+=======
+int Get::checkArtistName(QString name)
+{
+    sqlite3_stmt *stmt = nullptr;
+    int r = -1;
+    try {
+        const char *sql = "SELECT COALESCE("
+                          "(SELECT artist_id FROM artist WHERE name = ? LIMIT 1), "
+                          "-1) AS artist_id";
+        stmtPrepare(&stmt, sql);
+        stmtBindText(stmt, 1, name);
+        stmtStep(stmt);
+        r = sqlite3_column_int(stmt, 0);
+    } catch (QString e) {
+        r = -2;
+    }
+
+    stmtFree(stmt);
+    return r;
+}
+
+int Get::checkAlbumName(QString name)
+{
+    sqlite3_stmt *stmt = nullptr;
+    int r = -1;
+    try {
+        const char *sql = "SELECT COALESCE("
+                          "(SELECT album_id FROM album WHERE name = ? LIMIT 1), "
+                          "-1) AS album_id";
+        stmtPrepare(&stmt, sql);
+        stmtBindText(stmt, 1, name);
+        stmtStep(stmt);
+        r = sqlite3_column_int(stmt, 0);
+    } catch (QString e) {
+        r = -2;
+    }
+
+    stmtFree(stmt);
+    return r;
+}
+
+int Get::checkPlayListName(QString name)
+{
+    sqlite3_stmt *stmt = nullptr;
+    int r = -1;
+    try {
+        const char *sql = "SELECT COALESCE("
+                          "(SELECT list_id FROM playlist WHERE name = ? LIMIT 1), "
+                          "-1) AS list_id";
+        stmtPrepare(&stmt, sql);
+        stmtBindText(stmt, 1, name);
+        stmtStep(stmt);
+        r = sqlite3_column_int(stmt, 0);
+    } catch (QString e) {
+        r = -2;
+    }
+    stmtFree(stmt);
+    return r;
+}
+
+>>>>>>> Stashed changes:qt/sqlite/get.cpp

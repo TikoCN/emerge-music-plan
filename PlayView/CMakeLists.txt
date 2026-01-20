@@ -19,19 +19,26 @@ qt_add_qml_module(PlayViewLib
     Main.qml
     CoreData.qml
     ToolDeskLrc.qml
-    player/PlayerLrcTable.qml
-    player/PlayerTable.qml
-    player/PlayerAlbum.qml
-    player/PlayerArtist.qml
+    player/ShowPageLrcList.qml
+    player/ShowPagePlayList.qml
+    player/ShowPageAlbum.qml
+    player/ShowPageArtist.qml
     view/ViewBottomBar.qml
     view/ViewLeftBar.qml
     view/ViewMain.qml
-    view/ViewPlayingTable.qml
+    view/ViewPlayingList.qml
     playMusicShow/PlayStyle1.qml
     playMusicShow/PlayStyle2.qml
-    menu/MenuTableSort.qml
+    menu/MenuPlayListSort.qml
     menu/MenuMusic.qml
+<<<<<<< Updated upstream:PlayView/CMakeLists.txt
     menu/MenuTable.qml
+=======
+    menu/MenuPlayList.qml
+    menu/MenuAlbum.qml
+    menu/MenuArtist.qml
+    menu/MenuMusicPlayList.qml
+>>>>>>> Stashed changes:qt/PlayView/CMakeLists.txt
     toolEditMusicPage/EditPageMusic.qml
     toolEditMusicPage/EditPageLrc.qml
     toolEditMusicPage/ToolEditMusic.qml
@@ -53,9 +60,17 @@ qt_add_qml_module(PlayViewLib
     core/CoreAlbumButton.qml
     core/CoreArtistButton.qml
     core/CoreMusicLine.qml
+<<<<<<< Updated upstream:PlayView/CMakeLists.txt
     menu/MenuAlbum.qml
     menu/MenuArtist.qml
     RESOURCES ui.qrc
     QML_FILES menu/MenuMusicTable.qml
+=======
+    inputPopup/InputArtistName.qml
+    inputPopup/InputAlbumName.qml
+    inputPopup/InputPlayListName.qml
+    RESOURCES ui.qrc
+    QML_FILES AutoCoverImage.qml
+>>>>>>> Stashed changes:qt/PlayView/CMakeLists.txt
 )
 

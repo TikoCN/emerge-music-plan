@@ -63,6 +63,11 @@ public:
     Q_INVOKABLE QString getFileName(QString url);
     Q_INVOKABLE QString getParentDir(QString url);
 
+    QString intListToString(QList<int> list);
+    QString stringSetToString(QSet<QString> set);
+
+    Q_INVOKABLE QList<int> stringToIntList(QString str);
+    Q_INVOKABLE QList<QString> stringToStringList(QString str);
 signals:
     void message(QString msg, int type);
 };

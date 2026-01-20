@@ -3,13 +3,17 @@
 #include "setting.h"
 #include "load/taskcenter.h"
 #include "mediaplayer.h"
-#include "imageprovider.h"
 #include "online.h"
 #include "base.h"
 #include "musiccore.h"
 #include "sqlite/sqlite.h"
+#include "filemanagement.h"
+#include "imageload/imagecontrol.h"
+#include "imageload/imageprovider.h"
 #include <QQmlContext>
 #include <QIcon>
+#include <QObject>
+#include <QProcess>
 
 SQLite *SQLite::instance = nullptr;
 Setting* Setting::instance = nullptr;
@@ -18,6 +22,12 @@ MediaPlayer* MediaPlayer::instance = nullptr;
 OnLine* OnLine::instance = nullptr;
 Base* Base::instance = nullptr;
 MusicCore *MusicCore::instance = nullptr;
+<<<<<<< Updated upstream:main.cpp
+=======
+TLog *TLog::instance = nullptr;
+FileManagement *FileManagement::instance = nullptr;
+ImageControl *ImageControl::instance = nullptr;
+>>>>>>> Stashed changes:qt/main.cpp
 
 int main(int argc, char *argv[])
 {
@@ -29,10 +39,12 @@ int main(int argc, char *argv[])
     MediaPlayer::buildInstance();
     Setting::buildInstance();
 
+    FileManagement::buildInstance();
     TaskCenter::buildInstance();
     Base::buildInstance();
     SQLite::buildInstance();
     OnLine::buildInstance();
+    ImageControl::buildInstance();
 
     //获得单例指针
     Setting *seit = Setting::getInstance();
@@ -42,6 +54,8 @@ int main(int argc, char *argv[])
     OnLine *onLine = OnLine::getInstance();
     Base *base = Base::getInstance();
     SQLite *sql = SQLite::getInstance();
+    FileManagement *fileMan = FileManagement::getInstance();
+    ImageControl *imgCtr = ImageControl::getInstance();
 
     // 注册单例
     qmlRegisterSingletonInstance<Setting>("MediaerAPI", 1, 0, "Setting", seit);
@@ -50,13 +64,11 @@ int main(int argc, char *argv[])
     qmlRegisterSingletonInstance<Base>("MediaerAPI", 1, 0, "Base", base);
     qmlRegisterSingletonInstance<MusicCore>("MediaerAPI", 1, 0, "Core", core);
     qmlRegisterSingletonInstance<SQLite>("MediaerAPI", 1, 0, "SQLData", sql);
+    qmlRegisterSingletonInstance<FileManagement>("MediaerAPI", 1, 0, "FileMan", fileMan);
+    qmlRegisterSingletonInstance<ImageControl>("MediaerAPI", 1, 0, "ImageControl", imgCtr);
 
     // 注册数据类
-    qmlRegisterType<Music>("DataType", 1, 0, "MusicData");
-    qmlRegisterType<Table>("DataType", 1, 0, "TableData");
     qmlRegisterType<LrcData>("DataType", 1, 0, "LrcData");
-    qmlRegisterType<Artist>("DataType", 1, 0, "ArtistData");
-    qmlRegisterType<Album>("DataType", 1, 0, "AlbumData");
 
     QObject::connect(seit, &Setting::loadMusics, center, &TaskCenter::start);
     QObject::connect(mediaPlayer, &MediaPlayer::downLrc, onLine, &OnLine::downLrc);

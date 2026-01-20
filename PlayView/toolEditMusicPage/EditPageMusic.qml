@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Layouts
 import Tiko
+import MediaerAPI
 
 Item{
     id: editMusicPage
@@ -25,13 +26,13 @@ Item{
                 width: musicData.width
                 show.text: key
                 show.width: musicData.showW
-                input.text: value
+                inputItem.text: value
             }
         }
     }
 
-    function init(music){
-        var dict = music.getAllKey()
+    function init(musicId){
+        var dict = FileMan.getMusicAllTaglib(musicId)
         for(var i=0; i<dict.length; i++){
             keyModel.append({key: dict[i].key, value: dict[i].value})
         }

@@ -17,16 +17,22 @@ public:
     bool appendArtist(QString artist);
     bool appendArtist(QStringList artistList);
 
-    bool appendDirTable(QString url);
-    bool appendDirTable(QStringList  urlList);
+    bool appendDirPlayList(QString url);
+    bool appendDirPlayList(QStringList  urlList);
 
-    bool appendUserTable(QString name);
+    bool appendUserPlayList(QString name);
 
     bool appendArtistMusic(QPair<QString, QString> pair);
     bool appendArtistMusic(QList<QPair<QString, QString>> pairList);
 
+<<<<<<< Updated upstream:sqlite/append.h
     bool appendListMusic(QPair<QString, QString> pair);
     bool appendListMusic(QList<QPair<QString, QString>> pairList);
+=======
+    bool appendPlayListMusic(QPair<QString, QString> pair);
+    bool appendPlayListMusic(QList<QPair<QString, QString>> pairList);
+    bool appendPlayListMusic(int id, QList<int> musicList);
+>>>>>>> Stashed changes:qt/sqlite/append.h
 
 };
 #endif // APPNED_H

@@ -42,13 +42,11 @@ bool Append::appendMusic(QList<MediaData> dataList)
             stmtStep(appendMusicStmt);
         }
     } catch (QString e) {
-        sqlite3_finalize(appendMusicStmt);
-        sqlite3_finalize(getAlbumIDStmt);
-        return false;
+
     }
 
-    sqlite3_finalize(appendMusicStmt);
-    sqlite3_finalize(getAlbumIDStmt);
+    stmtFree(appendMusicStmt);
+    stmtFree(getAlbumIDStmt);
     return true;
 }
 
@@ -74,11 +72,9 @@ bool Append::appendAlbum(QStringList albumList)
             stmtStep(stmt);
         }
     } catch (QString e) {
-        sqlite3_finalize(stmt);
-        return false;
     }
 
-    sqlite3_finalize(stmt);
+    stmtFree(stmt);
     return true;
 }
 
@@ -104,22 +100,20 @@ bool Append::appendArtist(QStringList artistList)
             stmtStep(stmt);
         }
     } catch (QString e) {
-        sqlite3_finalize(stmt);
-        return false;
     }
 
-    sqlite3_finalize(stmt);
+    stmtFree(stmt);
     return true;
 }
 
-bool Append::appendDirTable(QString url)
+bool Append::appendDirPlayList(QString url)
 {
     QList<QString> dataList;
     dataList.append(url);
-    return appendDirTable(dataList);
+    return appendDirPlayList(dataList);
 }
 
-bool Append::appendDirTable(QStringList urlList)
+bool Append::appendDirPlayList(QStringList urlList)
 {
     sqlite3_stmt *stmt = nullptr;
     const char *sql = "INSERT OR IGNORE INTO playlist(name, sort, url, is_dir) VALUES(?, ?, ?, ?)";
@@ -137,15 +131,13 @@ bool Append::appendDirTable(QStringList urlList)
             stmtStep(stmt);
         }
     } catch (QString e) {
-        sqlite3_finalize(stmt);
-        return false;
     }
 
-    sqlite3_finalize(stmt);
+    stmtFree(stmt);
     return true;
 }
 
-bool Append::appendUserTable(QString name)
+bool Append::appendUserPlayList(QString name)
 {
     sqlite3_stmt *stmt = nullptr;
     const char *sql = "INSERT OR IGNORE INTO playlist(name, sort, url, is_dir) VALUES(?, ?, ?, ?)";
@@ -158,11 +150,9 @@ bool Append::appendUserTable(QString name)
         stmtBindInt(stmt, 4, 1);
         stmtStep(stmt);
     } catch (QString e) {
-        sqlite3_finalize(stmt);
-        return false;
     }
 
-    sqlite3_finalize(stmt);
+    stmtFree(stmt);
     return true;
 }
 
@@ -201,16 +191,14 @@ bool Append::appendArtistMusic(QList<QPair<QString, QString> > pairList)
             stmtStep(appendStmt);
         }
     } catch (QString e) {
-        sqlite3_finalize(appendStmt);
-        sqlite3_finalize(getIdStmt);
-        return false;
     }
 
-    sqlite3_finalize(appendStmt);
-    sqlite3_finalize(getIdStmt);
+    stmtFree(appendStmt);
+    stmtFree(getIdStmt);
     return true;
 }
 
+<<<<<<< Updated upstream:sqlite/append.cpp
 bool Append::appendListMusic(QPair<QString, QString> pair)
 {
     QList<QPair<QString, QString>> dataList;
@@ -219,6 +207,53 @@ bool Append::appendListMusic(QPair<QString, QString> pair)
 }
 
 bool Append::appendListMusic(QList<QPair<QString, QString> > pairList)
+=======
+bool Append::appendArtistMusic(int id, QList<int> musicList)
+{
+    sqlite3_stmt *stmt = nullptr;
+    try {
+        const char *sql = "INSERT OR IGNORE INTO artist_music(artist_id, music_id) VALUES(?, ?)";
+        stmtPrepare(&stmt, sql);
+        for (int i = 0; i < musicList.size(); ++i) {
+            stmtReset(stmt);
+            stmtBindInt(stmt, 1, id);
+            stmtBindInt(stmt, 2, musicList[i]);
+            stmtStep(stmt);
+        }
+    } catch (QString e) {
+    }
+
+    stmtFree(stmt);
+    return true;
+}
+
+bool Append::appendPlayListMusic(int id, QList<int> musicList)
+{
+    sqlite3_stmt *stmt = nullptr;
+    try {
+        const char *sql = "INSERT OR IGNORE INTO list_music(list_id, music_id) VALUES(?, ?)";
+        stmtPrepare(&stmt, sql);
+        for (int i = 0; i < musicList.size(); ++i) {
+            stmtReset(stmt);
+            stmtBindInt(stmt, 1, id);
+            stmtBindInt(stmt, 2, musicList[i]);
+            stmtStep(stmt);
+        }
+    } catch (QString e) {
+    }
+    stmtFree(stmt);
+    return true;
+}
+
+bool Append::appendPlayListMusic(QPair<QString, QString> pair)
+{
+    QList<QPair<QString, QString>> dataList;
+    dataList.append(pair);
+    return appendPlayListMusic(dataList);
+}
+
+bool Append::appendPlayListMusic(QList<QPair<QString, QString> > pairList)
+>>>>>>> Stashed changes:qt/sqlite/append.cpp
 {
     sqlite3_stmt *appendStmt = nullptr;
     sqlite3_stmt *getIdStmt = nullptr;
@@ -246,12 +281,9 @@ bool Append::appendListMusic(QList<QPair<QString, QString> > pairList)
             stmtStep(appendStmt);
         }
     } catch (QString e) {
-        sqlite3_finalize(appendStmt);
-        sqlite3_finalize(getIdStmt);
-        return false;
     }
 
-    sqlite3_finalize(appendStmt);
-    sqlite3_finalize(getIdStmt);
+    stmtFree(appendStmt);
+    stmtFree(getIdStmt);
     return true;
 }

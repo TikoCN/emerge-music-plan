@@ -1,11 +1,15 @@
 #ifndef MUSIC_H
 #define MUSIC_H
 
+<<<<<<< Updated upstream:base/music.h
 #include "lrcdata.h"
+=======
+>>>>>>> Stashed changes:qt/base/music.h
 #include "mediadata.h"
 #include <QObject>
 #include <QFileInfo>
 
+<<<<<<< Updated upstream:base/music.h
 class Music : public QObject
 {
     Q_OBJECT
@@ -22,6 +26,12 @@ private:
     Q_PROPERTY(long long duration READ getDuration CONSTANT FINAL)
     Q_PROPERTY(int playNumber READ getPlayNumber WRITE setPlayNumber NOTIFY playNumberChanged FINAL)
 
+=======
+using MusicPtr = QSharedPointer<class Music>;
+
+class Music
+{
+>>>>>>> Stashed changes:qt/base/music.h
 public:
     QString title;
     QStringList artistList;
@@ -39,22 +49,14 @@ public:
 
     Music();
 
-    //将数据写入文件
-    Q_INVOKABLE void writeDataToFile(QStringList key, QStringList value);
-
     // 读取元数据
     void setMedia(MediaData data);
 
     // 读取所有标签
-    Q_INVOKABLE QString getMediaJson();
+    QString getMediaJson();
 
     //来自文件
     void fromFileInfo(QFileInfo info);
-
-    Q_INVOKABLE QString getLrcUrl();
-
-    //获得歌词文件路径
-    QList<LrcData *> getLyricsData();
 
     //加载封面
     static QImage loadCover(QString url);
@@ -66,11 +68,10 @@ public:
     bool isSearch(QString aim);
 
     //格式转换
-    Q_INVOKABLE void setSuffix(QString type);
-
-    QString getTitle() const;
+    void setSuffix(QString type);
 
     QString getArtist() const;
+<<<<<<< Updated upstream:base/music.h
 
     QString getUrl() const;
 
@@ -102,6 +103,9 @@ signals:
 
     void playNumberChanged();
 
+=======
+    QJsonObject getJsonObject();
+>>>>>>> Stashed changes:qt/base/music.h
 };
 
 #endif // MUSIC_H

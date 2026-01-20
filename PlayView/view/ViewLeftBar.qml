@@ -115,7 +115,7 @@ Item {
             //新建列表
             TikoButtonNormal{
                 width: parent.width
-                id: addTableButton
+                id: addPlayListButton
                 text: qsTr("新建列表")
                 anchors.horizontalCenter: parent.horizontalCenter
                 iconSource: "qrc:/image/new.png"
@@ -125,8 +125,23 @@ Item {
                     id: inputName
                     text: qsTr("新建列表，请输入列表名")
                     onAccept: {
+<<<<<<< Updated upstream:PlayView/view/ViewLeftBar.qml
                         Core.appendTable(inputName.inputText)
                         inputName.setNormalText()
+=======
+                        if (inputText === "") {
+                            CoreData.sendErrorMsg("列表名不能为空")
+                            return
+                        }
+
+                        if (SQLData.checkPlayListName(inputText)) {
+                            Core.appendPlayList(inputText)
+                            inputName.setNormalText()
+                        }
+                        else {
+                            CoreData.sendErrorMsg("列表名不可用")
+                        }
+>>>>>>> Stashed changes:qt/PlayView/view/ViewLeftBar.qml
                     }
                 }
             }
@@ -134,23 +149,35 @@ Item {
             // 插入的列表按钮
             ListView{
                 width: parent.width
-                id: userTableListView
+                id: userPlayListListView
                 implicitHeight: childrenRect.height
                 spacing: 5
 
                 delegate: TikoButtonNormal{
-                    width: userTableListView.width
+                    width: userPlayListListView.width
                     text: name
+<<<<<<< Updated upstream:PlayView/view/ViewLeftBar.qml
                     iconSource: "image://cover/tableFile:" + tableId.toString()
+=======
+                    iconSource: "image://cover/playlistFile?id=" +
+                                playlistId.toString() +
+                                "&radius=3"
+>>>>>>> Stashed changes:qt/PlayView/view/ViewLeftBar.qml
                     iconWidth: 30
                     iconHeight: 30
                     cache: false
                     useAutoColor: false
                     onClickLeft: {
                         root.showText = text
+<<<<<<< Updated upstream:PlayView/view/ViewLeftBar.qml
                         mainView.stackTable(tableId)
                     }
                     onClickRight: tableMenu.open()
+=======
+                        CoreData.mainTurnMusicList(playlistId)
+                    }
+                    onClickRight: openPlayListMenu(playlistId, isDir, name)
+>>>>>>> Stashed changes:qt/PlayView/view/ViewLeftBar.qml
 
                     Rectangle {
                         color: TikoSeit.transparentColor
@@ -162,22 +189,54 @@ Item {
                 }
 
                 model: ListModel{
-                    id: userTableModel
+                    id: userPlayListModel
                 }
             }
         }
     }
 
+<<<<<<< Updated upstream:PlayView/view/ViewLeftBar.qml
+=======
+    // 菜单
+    Component{
+        id: editMusicListMenu
+        MenuPlayList {
+
+        }
+    }
+
+    function openPlayListMenu(playlistId, isDir, name){
+        if (editMusicListMenu.status === Component.Ready) {
+            var menu = editMusicListMenu.createObject(parent, {
+                                                          playlistId: playlistId,
+                                                          isDir:isDir,
+                                                          name:name
+                                                      })
+            menu.popup()
+        }
+        else {
+            console.log(editMusicListMenu.errorString())
+        }
+    }
+
+>>>>>>> Stashed changes:qt/PlayView/view/ViewLeftBar.qml
     Connections{
         target: CoreData
-        function onTableChanged(){
-            userTableModel.clear()
-            var length = CoreData.table.length
+        function onPlaylistChanged(){
+            userPlayListModel.clear()
+            var length = CoreData.playlist.length
 
             for (var i=0; i<length; i++){
+<<<<<<< Updated upstream:PlayView/view/ViewLeftBar.qml
                 userTableModel.append({
                                           tableId: CoreData.table[i]["tableId"],
                                           name: CoreData.table[i]["name"]
+=======
+                userPlayListModel.append({
+                                          playlistId: CoreData.playlist[i]["playlistId"],
+                                          name: CoreData.playlist[i]["name"],
+                                          isDir: CoreData.playlist[i]["isDir"]
+>>>>>>> Stashed changes:qt/PlayView/view/ViewLeftBar.qml
                                       })
 
             }

@@ -24,7 +24,6 @@ qt_add_qml_module(appmusicPlay
     SOURCES
     mediaplayer.h mediaplayer.cpp
     setting.h setting.cpp
-    imageprovider.h imageprovider.cpp
     online.h online.cpp
     ffmpeg.h ffmpeg.cpp
     base.h base.cpp
@@ -37,12 +36,22 @@ qt_add_qml_module(appmusicPlay
     base/album.h base/album.cpp
     base/lrcdata.h base/lrcdata.cpp
     base/music.h base/music.cpp
-    base/table.h base/table.cpp
+    base/playlist.h base/playlist.cpp
     base/artist.h base/artist.cpp
     load/taskcenter.h load/taskcenter.cpp
     load/selectmusicurl.h load/selectmusicurl.cpp
     load/buildmusiccore.h load/buildmusiccore.cpp
     base/mediadata.h
+<<<<<<< Updated upstream:CMakeLists.txt
+=======
+
+    tlog.h tlog.cpp
+    namekey.h namekey.cpp
+    filemanagement.h filemanagement.cpp
+    imageload/imagecontrol.h imageload/imagecontrol.cpp
+    imageload/imageprovider.h imageload/imageprovider.cpp
+
+>>>>>>> Stashed changes:qt/CMakeLists.txt
 )
 
 # link fftw3

@@ -205,3 +205,42 @@ QString Base::getParentDir(QString url)
 {
     return url.split("/" + url.split("/").last()).last();
 }
+<<<<<<< Updated upstream:base.cpp
+=======
+
+QString Base::intListToString(QList<int> list)
+{
+    QStringList strList;
+    for (int num : list) {
+        strList.append(QString::number(num));
+    }
+    return "Int:" + strList.join(";");
+}
+
+QString Base::stringSetToString(QSet<QString> set)
+{
+    QStringList strList = set.values();
+    return "String:" + strList.join(";");
+}
+
+QList<int> Base::stringToIntList(QString str)
+{
+    if(!str.contains("Int:"))
+        return QList<int> ();
+
+    QStringList strList = str.split("Int:")[1].split(";");
+
+    QList<int> list;
+    for (int i = 0; i < strList.length(); i++) {
+        list.append(strList[i].toInt());
+    }
+    return list;
+}
+
+QList<QString> Base::stringToStringList(QString str)
+{
+    return str.split(";").toList();
+}
+
+
+>>>>>>> Stashed changes:qt/base.cpp
