@@ -7,7 +7,7 @@
 #include <QImageReader>
 #include "sqlite/sqlite.h"
 #include "ffmpeg.h"
-#include "base.h"
+#include "basetool/basetool.h"
 #include "datacore/dataactive.h"
 
 namespace {
@@ -45,7 +45,7 @@ void ImageResponse::loadMusicCover(bool isOnline)
     QString musicUrl = SQLite::getInstance()->getMusicUrl(m_loadMusicId);
     QString errorId = tr("歌曲ID: ") +
                       QString::number(m_loadMusicId);
-    QString coverUrl = Base::getInstance()->getBaseUrl(musicUrl) +
+    QString coverUrl = BaseTool::getInstance()->getFileManagement()->getBaseUrl(musicUrl) +
                        ".jpg";
 
     //提取附加封面
@@ -56,7 +56,7 @@ void ImageResponse::loadMusicCover(bool isOnline)
     //加载独立封面
     if (m_img.isNull() && !loadImageFile(coverUrl) && isOnline) {
         //独立封面不存在，下载独立封面
-        OnLine::getInstance()->downMusicCover(Base::getInstance()->getFileName(musicUrl), coverUrl);
+        OnLine::getInstance()->downMusicCover(BaseTool::getInstance()->getFileManagement()->getFileName(musicUrl), coverUrl);
         loadImageFile(coverUrl);
     }
 }
@@ -79,7 +79,7 @@ void ImageResponse::loadArtistCover(bool isOnline)
     }
 
     QString name = artist->name;
-    QString url = Base::getInstance()->getArtistCoverUrl(name);
+    QString url = BaseTool::getInstance()->getFileManagement()->getArtistCoverUrl(name);
 
     if (!loadImageFile(url) && isOnline) {
         TLog::getInstance()->logIgnore(
@@ -100,7 +100,7 @@ void ImageResponse::loadAlbumCover(bool isOnline)
     }
 
     QString name = album->name;
-    QString url = Base::getInstance()->getAlbumCoverUrl(name);
+    QString url = BaseTool::getInstance()->getFileManagement()->getAlbumCoverUrl(name);
 
     if (!loadImageFile(url) && isOnline){
         TLog::getInstance()->logIgnore(

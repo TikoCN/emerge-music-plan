@@ -32,7 +32,7 @@ Item{
     }
 
     function init(musicId){
-        var dict = FileMan.getMusicAllTaglib(musicId)
+        var dict = BaseTool.fileManagement.getMusicAllTaglib(musicId)
         for(var i=0; i<dict.length; i++){
             keyModel.append({key: dict[i].key, value: dict[i].value})
         }

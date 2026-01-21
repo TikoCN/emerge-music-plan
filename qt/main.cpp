@@ -7,13 +7,12 @@
 
 #include "setting.h"
 #include "load/taskcenter.h"
-#include "mediaplayer.h"
+#include "mediaplay/mediaplayer.h"
 #include "online.h"
-#include "base.h"
 #include "datacore/dataactive.h"
 #include "datacore/dataactive.h"
 #include "sqlite/sqlite.h"
-#include "filemanagement.h"
+#include "basetool/basetool.h"
 #include "imageload/imagecontrol.h"
 #include "imageload/imageprovider.h"
 
@@ -23,9 +22,8 @@ TaskCenter* TaskCenter::instance = nullptr;
 MediaPlayer* MediaPlayer::instance = nullptr;
 DataActive* DataActive::instance = nullptr;
 OnLine* OnLine::instance = nullptr;
-Base* Base::instance = nullptr;
 TLog *TLog::instance = nullptr;
-FileManagement *FileManagement::instance = nullptr;
+BaseTool *BaseTool::instance = nullptr;
 ImageControl *ImageControl::instance = nullptr;
 
 int main(int argc, char *argv[])
@@ -34,41 +32,42 @@ int main(int argc, char *argv[])
     app.setWindowIcon(QIcon(":/image/exe.png"));
 
     //建立
-    TLog::buildInstance();                   // 0
-    Base::buildInstance();                   // 1
-    SQLite::buildInstance();                 // 1
-    DataActive::buildInstance();             // 2
-    MediaPlayer::buildInstance();
-    Setting::buildInstance();
+    TLog::buildInstance();                                      // 0
+    SQLite::buildInstance();                                    // 1
+    BaseTool::buildInstance();                                  // 1
+    BaseTool *baseTool = BaseTool::getInstance();
 
-    FileManagement::buildInstance();
-    TaskCenter::buildInstance();
-    OnLine::buildInstance();
-    ImageControl::buildInstance();
+    DataActive::buildInstance();                                 // 2
+    DataActive *dataActive = DataActive::getInstance();
+
+    MediaPlayer::buildInstance(baseTool, dataActive);            // 3
+    Setting::buildInstance();                                    // 3
+    TaskCenter::buildInstance();                                 // 3
+    OnLine::buildInstance();                                     // 3
+    ImageControl::buildInstance();                               // 3
 
     //获得单例指针
     SQLite *sql = SQLite::getInstance();
     Setting *seit = Setting::getInstance();
-    DataActive *dataActive = DataActive::getInstance();
     MediaPlayer *mediaPlayer = MediaPlayer::getInstance();
     TaskCenter *center = TaskCenter::getInstance();
     OnLine *onLine = OnLine::getInstance();
-    Base *base = Base::getInstance();
-    FileManagement *fileMan = FileManagement::getInstance();
     ImageControl *imgCtr = ImageControl::getInstance();
 
     // 注册单例
+    qmlRegisterSingletonInstance<BaseTool>("MediaerAPI", 1, 0, "BaseTool", baseTool);  // 0
     qmlRegisterSingletonInstance<Setting>("MediaerAPI", 1, 0, "Setting", seit);
     qmlRegisterSingletonInstance<MediaPlayer>("MediaerAPI", 1, 0, "MediaPlayer", mediaPlayer);
     qmlRegisterSingletonInstance<OnLine>("MediaerAPI", 1, 0, "OnLine", onLine);
-    qmlRegisterSingletonInstance<Base>("MediaerAPI", 1, 0, "Base", base);
     qmlRegisterSingletonInstance<DataActive>("MediaerAPI", 1, 0, "DataActive", dataActive);
     qmlRegisterSingletonInstance<SQLite>("MediaerAPI", 1, 0, "SQLData", sql);
-    qmlRegisterSingletonInstance<FileManagement>("MediaerAPI", 1, 0, "FileMan", fileMan);
     qmlRegisterSingletonInstance<ImageControl>("MediaerAPI", 1, 0, "ImageControl", imgCtr);
 
     // 注册数据类
     qmlRegisterType<LrcData>("DataType", 1, 0, "LrcData");
+    qmlRegisterType<FileManagement>("DataType", 1, 0, "FileMan");
+    qmlRegisterType<TypeConversion>("DataType", 1, 0, "TypeConversion");
+    qmlRegisterType<QmlActive>("DataType", 1, 0, "QmlActive");
 
     QObject::connect(seit, &Setting::loadMusics, center, &TaskCenter::start);
     QObject::connect(mediaPlayer, &MediaPlayer::downLrc, onLine, &OnLine::downLrc);

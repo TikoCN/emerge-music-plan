@@ -82,9 +82,9 @@ Canvas {
 
     function load () {
         var json = MediaPlayer.getLrcJsonObject(lrcId)
-        startList = Base.stringToLongList(json.startList)
-        endList = Base.stringToLongList(json.endList)
-        textList = Base.stringToStringList(json.textList)
+        startList = BaseTool.typeConversion.stringToLongList(json.startList)
+        endList = BaseTool.typeConversion.stringToLongList(json.endList)
+        textList = BaseTool.typeConversion.stringToStringList(json.textList)
 
         setWidth()
     }

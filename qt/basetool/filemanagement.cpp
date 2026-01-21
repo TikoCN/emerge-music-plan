@@ -1,37 +1,34 @@
 #include "filemanagement.h"
-#include "base.h"
 #include "ffmpeg.h"
 #include "datacore/dataactive.h"
+#include <QDir>
+#include <QDesktopServices>
 
 FileManagement::FileManagement() {}
 
-void FileManagement::writeMusicToFile(QStringList key, QStringList value, int musicId)
+void FileManagement::writeMusicToFile(QStringList key, QStringList value, int musicId) const
 {
     DataActive *core = DataActive::getInstance();
     MusicPtr music = core->getMusicCore(musicId);
     if (music == NULL)
-        return Base::getInstance()->sendMessage(QObject::tr("写入歌曲信息失败"), 1);;
+        return ;
 
     QString url = music->url;
 
-    QString baseName = Base::getInstance()->getFileName(url);
+    QString baseName = getFileName(url);
     QString newUrl = url.replace(baseName, "new"+baseName);
     FFmpeg ff;
     if(ff.writeDict(key, value, url, newUrl)){
-        Base::getInstance()->writeFileText(url, newUrl);
-    }
-    else{
-        Base::getInstance()->sendMessage(QObject::tr("获取歌曲信息失败"), 1);
+        writeFileText(url, newUrl);
     }
 }
 
-QString FileManagement::getMusicLrcUrl(int musicId)
+QString FileManagement::getMusicLrcUrl(int musicId) const
 {
     DataActive *core = DataActive::getInstance();
     MusicPtr music = core->getMusicCore(musicId);
 
     if (music == NULL) {
-        Base::getInstance()->sendMessage(QObject::tr("获取歌曲信息失败"), 1);;
         return "";
     }
 
@@ -49,7 +46,7 @@ QString FileManagement::getMusicLrcUrl(int musicId)
     return lrc;
 }
 
-QString FileManagement::getMusicLrcData(int musicId)
+QString FileManagement::getMusicLrcData(int musicId) const
 {
     QString lrc = getMusicLrcUrl(musicId);
     QFile lrcFile(lrc);
@@ -63,7 +60,7 @@ QString FileManagement::getMusicLrcData(int musicId)
     return lrcData;
 }
 
-void FileManagement::wrtiLrcData(int musicId, QString lrcData)
+void FileManagement::wrtiLrcData(int musicId, QString lrcData) const
 {
     QString lrc = getMusicLrcUrl(musicId);
     QFile lrcFile(lrc);
@@ -75,7 +72,7 @@ void FileManagement::wrtiLrcData(int musicId, QString lrcData)
     lrcFile.close();
 }
 
-QList<LrcDataPtr > FileManagement::getMusicLyricsData(int musicId)
+QList<LrcDataPtr > FileManagement::getMusicLyricsData(int musicId) const
 {
     TLog::getInstance()->logError(tr("开始读取歌曲歌词") +
                                   tr("歌曲ID:%1").arg(musicId));
@@ -196,7 +193,7 @@ QList<LrcDataPtr > FileManagement::getMusicLyricsData(int musicId)
     return lrcList;
 }
 
-QJsonArray FileManagement::getMusicAllTaglib(int musicId)
+QJsonArray FileManagement::getMusicAllTaglib(int musicId) const
 {
     DataActive *core = DataActive::getInstance();
     MusicPtr music = core->getMusicCore(musicId);
@@ -216,7 +213,136 @@ QJsonArray FileManagement::getMusicAllTaglib(int musicId)
     return array;
 }
 
-void FileManagement::openPlayListDir(int playListId)
+void FileManagement::openPlayListDir(int playListId) const
 {
 
+}
+
+QString FileManagement::getArtistCoverUrl(QString name) const
+{
+    return QDir::currentPath() + "/artist/" + name + ".jpg";
+}
+
+QString FileManagement::getAlbumCoverUrl(QString name) const
+{
+    return QDir::currentPath() + "/artist/" + name + ".jpg";
+}
+
+void FileManagement::replaceFile(QString inUrl, QString outUrl) const
+{
+    bool r = false;
+    QFile file(inUrl);
+    if(file.exists()){
+        r = file.remove();
+        if(!r){
+            //sendMessage(inUrl + tr("无法删除"), 1);
+        }
+        return;
+    }
+    file.close();
+
+    QFile out(outUrl);
+    if(out.exists()){
+        r = out.rename(inUrl);
+        if(!r){
+            //sendMessage(outUrl + tr("重命名"), 1);
+        }
+    }
+    out.close();
+}
+
+QString FileManagement::readFileText(QString url) const
+{
+    QString data = "";
+    QFile file(url);
+    if(!file.exists()){
+        //todo sendMessage(url + tr(" 文件不存在"),1);
+        return data;
+    }
+
+    if(!file.open(QIODevice::Text |QIODevice::ReadOnly)){
+        //todo sendMessage(url + tr(" 打开文件失败"),1);
+        return data;
+    }
+
+    QTextStream in(&file);
+    data = in.readAll();
+    file.close();
+    return data;
+}
+
+bool FileManagement::writeFileText(QString url, QString data) const
+{
+    QFile file(url);
+    if(!file.open(QIODevice::Text |QIODevice::WriteOnly)){
+        //sendMessage(url + tr(" 打开文件失败"),1);
+        return false;
+    }
+
+    QTextStream in(&file);
+    in << data;
+    file.close();
+    return true;
+}
+
+void FileManagement::deskOpenFile(QString url, bool local) const
+{
+    //检验本地文件
+    if(!url.contains("file:///") && local){
+        url = "file:///" + url;
+    }
+
+    QDesktopServices::openUrl(QUrl(url));
+}
+
+bool FileManagement::renameFile(QString oldUrl, QString newUrl) const
+{
+    try{
+        QFile oldFile(oldUrl);
+        QFile newFile(newUrl);
+
+        if(!oldFile.exists()){
+            throw QString(oldUrl + tr("文件不存在"));
+        }
+
+        if (!oldFile.setPermissions(QFile::WriteOther)) {
+            throw QString(oldUrl + "获取权限失败," + oldFile.errorString());
+        }
+
+        // 移除以及存在文件
+        if (newFile.exists()) {
+
+            if (!newFile.setPermissions(QFile::WriteOther)) {
+                throw QString(newUrl + "获取权限失败," + newFile.errorString());
+            }
+
+            if(!newFile.remove()){
+                throw QString(newUrl + tr("文件已经存在且无法删除,") + newFile.errorString());
+            }
+        }
+
+        if(!oldFile.rename(oldUrl, newUrl)){
+            throw QString(oldUrl + tr("重命名失败,") + oldFile.errorString());
+        }
+    }
+    catch(QString e){
+        return false;
+    }
+    return true;
+}
+
+QString FileManagement::getBaseUrl(QString url) const
+{
+    return url.split("." + url.split(".").last()).first();
+}
+
+QString FileManagement::getFileName(QString url) const
+{
+    QString FileManagementUrl = getBaseUrl(url);
+    return FileManagementUrl.split("/").last();
+}
+
+QString FileManagement::getParentDir(QString url) const
+{
+    return url.split("/" + url.split("/").last()).last();
 }

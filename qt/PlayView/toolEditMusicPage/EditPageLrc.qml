@@ -90,7 +90,7 @@ Item{
                 width: 150
                 iconSource: "qrc:/image/yes.png"
                 text: qsTr("保存.hlrc")
-                onClick: Base.writeFileText(editLrcPage.getBaseUrl + ".hlrc", lrcShow.text)
+                onClick: BaseTool.fileManagement.writeFileText(editLrcPage.getBaseUrl + ".hlrc", lrcShow.text)
             }
         }
 
@@ -134,7 +134,7 @@ Item{
                 width: 150
                 iconSource: "qrc:/image/yes.png"
                 text: qsTr("保存.lrc")
-                onClick: FileMan.wrtiLrcData(musicId, lrcShow.text)
+                onClick: BaseTool.fileManagement.wrtiLrcData(musicId, lrcShow.text)
             }
         }
     }
@@ -182,8 +182,8 @@ Item{
 
     function init(musicId){
         editLrcPage.musicId = musicId
-        lrcShow.text = FileMan.getMusicLrcData(musicId)
-        editLrcPage.lrcUrl = FileMan.getMusicLrcUrl(musicId)
+        lrcShow.text = BaseTool.fileManagement.getMusicLrcData(musicId)
+        editLrcPage.lrcUrl = BaseTool.fileManagement.getMusicLrcUrl(musicId)
     }
 
     function insertString(pos, input){

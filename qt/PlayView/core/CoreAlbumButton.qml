@@ -120,7 +120,7 @@ Item{
                 anchors.left: showItem.left
                 width: parent.width
                 opacity: 0.4
-                text: Base.timeToString(duration)
+                text: BaseTool.typeConversion.timeToString(duration)
             }
         }
     }

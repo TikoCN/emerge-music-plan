@@ -47,8 +47,8 @@ Item {
         height: parent.height - y
         anchors.top: artistButtonList.bottom
         anchors.margins: 30
-        cellWidth: 180
-        cellHeight: 210
+        cellWidth: CoreData.cellItemWidth
+        cellHeight: CoreData.cellItemWidth
         clip: true
         currentIndex: 0
         highlightRangeMode: ListView.StrictlyEnforceRange

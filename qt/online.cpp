@@ -225,11 +225,11 @@ void OnLine::writeCoverToFile(QString url, QString fileUrl)
     file.close();
 }
 
-void OnLine::downLrc(QString key, QString url)
+void OnLine::downLrc(QString key, QString url, int musicId)
 {
     Setting *seit = Setting::getInstance();
     if(!seit->isOnLine){ //未开启网络模块，退出
-        emit lrcDowned();
+        emit lrcDowned(musicId);
         return;
     }
 
@@ -240,7 +240,7 @@ void OnLine::downLrc(QString key, QString url)
     if(seit->isGetCoverFromNetEase && !QFile::exists(url)){
         downLrcFromNetEase(key, url);
     }
-    emit lrcDowned();
+    emit lrcDowned(musicId);
 }
 
 void OnLine::downLrcFromNetEase(QString key, QString url)

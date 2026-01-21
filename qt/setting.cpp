@@ -1,7 +1,5 @@
 #include "setting.h"
-#include "base.h"
-#include "mediaplayer.h"
-#include "datacore/dataactive.h"
+#include "mediaplay/mediaplayer.h"
 #include <QSettings>
 #include <QDir>
 #include <QGuiApplication>
@@ -68,7 +66,7 @@ void Setting::removeUrl(QString url)
         sourceList.remove(i);
     }
 
-    emit Base::getInstance()->sendMessage(url + tr(" 路径移除成功，将在下次加载时生效"), 0);
+    //todo emit Base::getInstance()->sendMessage(url + tr(" 路径移除成功，将在下次加载时生效"), 0);
 }
 
 template<typename T>

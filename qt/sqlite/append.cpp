@@ -1,7 +1,6 @@
 #include "append.h"
 #include <QDateTime>
 #include <QDir>
-#include "base.h"
 #include "namekey.h"
 
 bool Append::appendMusic(MediaData data)

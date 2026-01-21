@@ -22,12 +22,9 @@ qt_add_qml_module(appmusicPlay
     URI musicPlay
     VERSION 1.0
     SOURCES
-    mediaplayer.h mediaplayer.cpp
     setting.h setting.cpp
     online.h online.cpp
     ffmpeg.h ffmpeg.cpp
-    base.h base.cpp
-
     sqlite/sqlite.h sqlite/sqlite.cpp
     sqlite/append.h sqlite/append.cpp
     sqlite/update.h sqlite/update.cpp
@@ -44,13 +41,17 @@ qt_add_qml_module(appmusicPlay
     load/buildmusiccore.h load/buildmusiccore.cpp
     tlog.h tlog.cpp
     namekey.h namekey.cpp
-    filemanagement.h filemanagement.cpp
+    basetool/filemanagement.h basetool/filemanagement.cpp
     imageload/imagecontrol.h imageload/imagecontrol.cpp
     imageload/imageprovider.h imageload/imageprovider.cpp
-    SOURCES datacore/datamanager.h datacore/datamanager.cpp
-    SOURCES datacore/dataactive.h datacore/dataactive.cpp
-    SOURCES basetool/typeconversion.h basetool/typeconversion.cpp
-
+    datacore/datamanager.h datacore/datamanager.cpp
+    datacore/dataactive.h datacore/dataactive.cpp
+    basetool/typeconversion.h basetool/typeconversion.cpp
+    SOURCES basetool/basetool.h basetool/basetool.cpp
+    SOURCES basetool/qmlactive.h basetool/qmlactive.cpp
+    SOURCES mediaplay/mediaplaydata.h mediaplay/mediaplaydata.cpp
+    SOURCES mediaplay/lrcdatacontrol.h mediaplay/lrcdatacontrol.cpp
+    mediaplay/mediaplayer.h mediaplay/mediaplayer.cpp
 )
 
 # link fftw3
@@ -99,6 +100,29 @@ target_link_libraries(appmusicPlay PRIVATE Qt6::Multimedia)
 target_link_libraries(appmusicPlay PRIVATE Qt6::Quick)
 target_link_libraries(appmusicPlay PRIVATE Qt6::Network)
 
+# 设置应用程序图标
+if(WIN32)
+    # Windows：使用 .ico 文件
+    set_target_properties(appmusicPlay PROPERTIES
+        WIN32_EXECUTABLE TRUE
+        RC_ICONS "${CMAKE_CURRENT_SOURCE_DIR}/assets/icon.ico"
+    )
+
+elseif(APPLE)
+    # macOS：设置 bundle 图标
+    set_target_properties(appmusicPlay PROPERTIES
+        MACOSX_BUNDLE TRUE
+        MACOSX_BUNDLE_ICON_FILE icon.icns
+    )
+
+    # 添加 .icns 文件到资源
+    set_source_files_properties("${CMAKE_CURRENT_SOURCE_DIR}/assets/icon.icns"
+        PROPERTIES MACOSX_PACKAGE_LOCATION Resources
+    )
+
+    target_sources(appmusicPlay PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/assets/icon.icns")
+
+endif()
 
 include(GNUInstallDirs)
 install(TARGETS appmusicPlay

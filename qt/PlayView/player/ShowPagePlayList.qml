@@ -207,11 +207,11 @@ Item {
         playlistId = id
 
         var json = DataActive.getPlayListJson(id)
-        musicList = Base.stringToIntList(json.musicList)
+        musicList = BaseTool.typeConversion.stringToIntList(json.musicList)
         sort = json.sort
         duration = json.duration
         playlistHelp.text = musicList.length.toString()+" "+qsTr("首歌曲   ") +
-                Base.durationToTimeStringNoMax(duration)
+                BaseTool.typeConversion.durationToTimeStringNoMax(duration)
         build()
     }
 

@@ -1,6 +1,4 @@
 #include "sqlite.h"
-#include "ffmpeg.h"
-#include "base.h"
 #include <QDebug>
 #include <QDir>
 

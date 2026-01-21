@@ -46,22 +46,22 @@ TikoMenu{
     TikoMenuItem{
         text: qsTr("打开文件夹")
         onTriggered: {
-            var url = Base.getParentDir(fileUrl)
-            Base.deskOpenFile(url)
+            var url = BaseTool.fileManagement.getParentDir(fileUrl)
+            BaseTool.fileManagement.deskOpenFile(url)
         }
         icon.source: "qrc:/image/dir.png"
     }
 
     TikoMenuItem{
         text: qsTr("打开歌词")
-        onTriggered: Base.deskOpenFile(FileMan.getMusicLrcUrl(musicId))
+        onTriggered: BaseTool.fileManagement.deskOpenFile(BaseTool.fileManagement.getMusicLrcUrl(musicId))
     }
 
     TikoMenuItem{
         text: qsTr("打开封面")
         onTriggered: {
-            var url = Base.getBaseUrl(fileUrl) + ".jpg"
-            Base.deskOpenFile(url)
+            var url = BaseTool.fileManagement.getBaseUrl(fileUrl) + ".jpg"
+            BaseTool.fileManagement.deskOpenFile(url)
         }
     }
 
@@ -69,7 +69,7 @@ TikoMenu{
 
     TikoMenuItem{
         text: qsTr("复制 文件路径")
-        onTriggered: Base.copyString(fileUrl)
+        onTriggered: BaseTool.copyString(fileUrl)
     }
 
     TikoMenuItem{
@@ -78,7 +78,7 @@ TikoMenu{
             var str = qsTr("标题") +" " + musicTitle +
                     qsTr("专辑") +" " + album +
                     qsTr("作曲家") +" " + artist
-            Base.copyString(str)
+            BaseTool.copyString(str)
         }
     }
 
@@ -93,36 +93,36 @@ TikoMenu{
         title: qsTr("从网络中下载")
         TikoMenuItem{
             text: qsTr("从 网络中下载 封面")
-            onTriggered: OnLine.downMusicCover(Base.getFileName(fileUrl), fileUrl);
+            onTriggered: OnLine.downMusicCover(BaseTool.fileManagement.getFileName(fileUrl), fileUrl);
         }
         TikoMenuItem{
             text: qsTr("从 QQ音乐 下载 封面")
-            onTriggered: OnLine.downMusicCoverQQMusic(Base.getFileName(fileUrl), fileUrl);
+            onTriggered: OnLine.downMusicCoverQQMusic(BaseTool.fileManagement.getFileName(fileUrl), fileUrl);
         }
         TikoMenuItem{
             text: qsTr("从 网易云 下载 封面")
-            onTriggered: OnLine.downMusicCoverNetEase(Base.getFileName(fileUrl), fileUrl);
+            onTriggered: OnLine.downMusicCoverNetEase(BaseTool.fileManagement.getFileName(fileUrl), fileUrl);
         }
         TikoMenuItem{
             text: qsTr("从 Bing搜索 下载 封面")
-            onTriggered: OnLine.downMusicCoverBing(Base.getFileName(fileUrl), fileUrl);
+            onTriggered: OnLine.downMusicCoverBing(BaseTool.fileManagement.getFileName(fileUrl), fileUrl);
         }
         TikoMenuItem{
             text: qsTr("从 Baidu搜索 下载 封面")
-            onTriggered: OnLine.downCoverBaidu(Base.getFileName(fileUrl), fileUrl);
+            onTriggered: OnLine.downCoverBaidu(BaseTool.fileManagement.getFileName(fileUrl), fileUrl);
         }
         TikoMenuSpeacer{}
         TikoMenuItem{
             text: qsTr("从 网络中下载 歌词")
-            onTriggered: OnLine.downLrc(Base.getFileName(fileUrl), fileUrl);
+            onTriggered: OnLine.downLrc(BaseTool.fileManagement.getFileName(fileUrl), fileUrl);
         }
         TikoMenuItem{
             text: qsTr("从 QQ音乐 下载 歌词")
-            onTriggered: OnLine.downLrcFromQQMusic(Base.getFileName(fileUrl), fileUrl);
+            onTriggered: OnLine.downLrcFromQQMusic(BaseTool.fileManagement.getFileName(fileUrl), fileUrl);
         }
         TikoMenuItem{
             text: qsTr("从 网易云 下载 歌词")
-            onTriggered: OnLine.downLrcFromNetEase(Base.getFileName(fileUrl), fileUrl);
+            onTriggered: OnLine.downLrcFromNetEase(BaseTool.fileManagement.getFileName(fileUrl), fileUrl);
         }
     }
 

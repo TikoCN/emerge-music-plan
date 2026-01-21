@@ -1,6 +1,6 @@
 #include "lrcdata.h"
 #include <QJsonObject>
-#include "base.h"
+#include "basetool/basetool.h"
 
 LrcData::LrcData(){
     id = 0;
@@ -11,7 +11,7 @@ LrcData::LrcData(){
 
 QJsonObject LrcData::getJsonObject()
 {
-    Base* base = Base::getInstance();
+    const TypeConversion* base = BaseTool::getInstance()->getTypeConversion();
     QJsonObject json;
     json.insert("startTime", startTime);
     json.insert("endTime", endTime);

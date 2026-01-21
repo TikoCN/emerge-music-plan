@@ -7,7 +7,7 @@ TypeConversion::TypeConversion(QObject *parent)
 
 }
 
-QString TypeConversion::durationToTimeStringNoMax(long long duration)
+QString TypeConversion::durationToTimeStringNoMax(long long duration) const
 {
     qint64 totalSeconds = duration / 1000;
 
@@ -21,7 +21,7 @@ QString TypeConversion::durationToTimeStringNoMax(long long duration)
         .arg(seconds, 2, 10, QChar('0'));
 }
 
-QString TypeConversion::timeToString(long long time)
+QString TypeConversion::timeToString(long long time) const
 {
     QDateTime dataTime;
     dataTime.setMSecsSinceEpoch(time);
@@ -29,7 +29,7 @@ QString TypeConversion::timeToString(long long time)
     return dataTime.toString("hh:mm:ss");
 }
 
-QString TypeConversion::intListToString(QList<int> list)
+QString TypeConversion::intListToString(QList<int> list) const
 {
     QStringList strList;
     for (int num : list) {
@@ -38,7 +38,7 @@ QString TypeConversion::intListToString(QList<int> list)
     return "Int:" + strList.join(";");
 }
 
-QString TypeConversion::intListToString(QList<long long> list)
+QString TypeConversion::intListToString(QList<long long> list) const
 {
     QStringList strList;
     for (long long num : list) {
@@ -47,12 +47,12 @@ QString TypeConversion::intListToString(QList<long long> list)
     return "Int:" + strList.join(";");
 }
 
-QString TypeConversion::stringListToString(QStringList list)
+QString TypeConversion::stringListToString(QStringList list) const
 {
     return "String:" + list.join(";");
 }
 
-QList<int> TypeConversion::stringToIntList(QString str)
+QList<int> TypeConversion::stringToIntList(QString str) const
 {
     if(!str.contains("Int:"))
         return QList<int> ();
@@ -66,7 +66,7 @@ QList<int> TypeConversion::stringToIntList(QString str)
     return list;
 }
 
-QList<long long> TypeConversion::stringToLongList(QString str)
+QList<long long> TypeConversion::stringToLongList(QString str) const
 {
     if(!str.contains("Int:"))
         return QList<long long> ();
@@ -80,7 +80,7 @@ QList<long long> TypeConversion::stringToLongList(QString str)
     return list;
 }
 
-QList<QString> TypeConversion::stringToStringList(QString str)
+QList<QString> TypeConversion::stringToStringList(QString str) const
 {
     if(!str.contains("String:"))
         return QList<QString> ();

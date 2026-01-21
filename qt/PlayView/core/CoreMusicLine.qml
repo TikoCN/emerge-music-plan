@@ -179,7 +179,7 @@ Item {
             //时间参数
             TikoTextLine{
                 id: durationTextView
-                text: Base.timeToString(duration)
+                text: BaseTool.typeConversion.timeToString(duration)
                 width: CoreData.fontW * 3
                 height: 50
             }

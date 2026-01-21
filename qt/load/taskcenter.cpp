@@ -6,7 +6,6 @@
 #include "setting.h"
 #include "sqlite/sqlite.h"
 #include "datacore/dataactive.h"
-#include "base.h"
 #include "tlog.h"
 
 TaskCenter::TaskCenter()

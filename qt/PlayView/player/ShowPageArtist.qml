@@ -63,7 +63,7 @@ Item{
         text: qsTr("共 ") +
               (musicList.length.toString()) +
               qsTr(" 首歌曲，共计 ") +
-              Base.durationToTimeStringNoMax(duration)
+              BaseTool.typeConversion.durationToTimeStringNoMax(duration)
     }
 
     // 音乐列表
@@ -93,7 +93,7 @@ Item{
         var json = DataActive.getArtistJson(artistId)
         name = json.artist
         duration = json.duration
-        musicList = Base.stringToIntList(json.musicList)
+        musicList = BaseTool.typeConversion.stringToIntList(json.musicList)
         musicListView.buildMusicList(musicList)
     }
 }

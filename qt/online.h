@@ -45,7 +45,7 @@ public:
     void writeCoverToFile(QString url, QString file);
 
     //下载歌词
-    Q_INVOKABLE void downLrc(QString key, QString url);
+    Q_INVOKABLE void downLrc(QString key, QString url, int musicId);
 
     Q_INVOKABLE void downLrcFromNetEase(QString key, QString url);
 
@@ -57,7 +57,7 @@ public:
     Q_INVOKABLE void downMediaFromQQMusic(QString search, QString musicUrl);
 
 signals:
-    void lrcDowned();
+    void lrcDowned(int musicId);
 };
 
 #endif // ONLINE_H

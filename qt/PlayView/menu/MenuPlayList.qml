@@ -19,7 +19,7 @@ TikoMenu{
     TikoMenuItem{
         text: qsTr("打开本地文件夹")
         enabled: isDir
-        onClicked: Base.deskOpenFile(playlist.url)
+        onClicked: BaseTool.fileManagement.deskOpenFile(playlist.url)
     }
 
     TikoMenuItem{

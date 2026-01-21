@@ -259,15 +259,6 @@ TikoFrameless{
         mainView.turnToSeit()
     }
 
-    //关联
-    Connections{
-        target: Base
-
-        function onMessage(text, type){
-            TikoSeit.sendMessage(window, text, type)
-        }
-    }
-
     Connections{
         target: DataActive
         function onFinish(){

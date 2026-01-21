@@ -22,10 +22,10 @@ Item {
 
     Component.onCompleted: {
            var json = MediaPlayer.getLrcJsonObject(lrcId)
-           startList = Base.stringToLongList(json.startList)
-           endList = Base.stringToLongList(json.endList)
-           textList = Base.stringToStringList(json.textList)
-           helpTextList = Base.stringToStringList(json.helpTextList)
+           startList = BaseTool.typeConversion.stringToLongList(json.startList)
+           endList = BaseTool.typeConversion.stringToLongList(json.endList)
+           textList = BaseTool.typeConversion.stringToStringList(json.textList)
+           helpTextList = BaseTool.typeConversion.stringToStringList(json.helpTextList)
            startTime = Number(json.startTime)
            duration = Number(json.endTime - json.startTime)
     }

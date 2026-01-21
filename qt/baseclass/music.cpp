@@ -1,7 +1,6 @@
 #include "music.h"
 #include "ffmpeg.h"
-#include "base.h"
-#include "lrcdata.h"
+#include "basetool/basetool.h"
 #include <QDesktopServices>
 #include <QJsonObject>
 #include <QGuiApplication>
@@ -9,7 +8,6 @@
 #include <QImageReader>
 #include <QPixmap>
 #include "mediadata.h"
-#include "sqlite/sqlite.h"
 
 QJsonObject Music::getJsonObject()
 {
@@ -67,7 +65,7 @@ QImage Music::loadCover(QString url)
 {
     FFmpeg ffmpeg;
 
-    QString coverUrl = Base::getInstance()->getBaseUrl(url) + ".jpg";
+    QString coverUrl = BaseTool::getInstance()->getFileManagement()->getBaseUrl(url) + ".jpg";
     //提取附加封面
     QImage img = ffmpeg.getInlayCover(url);
 
@@ -87,7 +85,7 @@ QImage Music::loadCover(QString url)
 QImage Music::loadAloneCover(QString url)
 {
     QImage img;
-    QString coverUrl = Base::getInstance()->getBaseUrl(url) + ".jpg";
+    QString coverUrl = BaseTool::getInstance()->getFileManagement()->getBaseUrl(url) + ".jpg";
 
     //如果存在 独立封面
     if(QFile::exists(coverUrl))
