@@ -5,23 +5,21 @@
  * 加载歌词
  */
 LrcDataControl::LrcDataControl(BaseTool *baseTool, DataActive *dataActive)
-    :MediaPlayData(baseTool, dataActive)
-{
-    connect(m_player, &QMediaPlayer::positionChanged, this, [=](qint64 time){
+    : MediaPlayData(baseTool, dataActive)
+      , m_playingLrcId(-1) {
+    connect(m_player, &QMediaPlayer::positionChanged, this, [this](const qint64 time) {
         selectPlayLrc(time);
     });
 }
 
-void LrcDataControl::loadLrcList(int musicId)
-{
-    m_lrcList = m_baseTool->getFileManagement()->getMusicLyricsData(musicId);
+void LrcDataControl::loadLrcList(const int musicId) {
+    m_lrcList = FileManagement::getMusicLyricsData(musicId);
     m_playingLrcId = -1;
     emit lrcLoaded();
 }
 
-void LrcDataControl::selectPlayLrc(qint64 time)
-{
-    if (m_lrcList.size() == 0){
+void LrcDataControl::selectPlayLrc(const qint64 time) {
+    if (m_lrcList.empty()) {
         return;
     }
 
@@ -29,11 +27,10 @@ void LrcDataControl::selectPlayLrc(qint64 time)
          m_playingLrcId > m_lrcList.size()) ||
         (m_lrcList[m_playingLrcId]->startTime > time ||
          m_lrcList[m_playingLrcId]->endTime < time)
-        ){
-
+    ) {
         // 重新筛选
-        for(int i=0; i<m_lrcList.size(); i++){
-            if(m_lrcList[i]->startTime <= time && m_lrcList[i]->endTime >= time){
+        for (int i = 0; i < m_lrcList.size(); i++) {
+            if (m_lrcList[i]->startTime <= time && m_lrcList[i]->endTime >= time) {
                 m_playingLrcId = i;
                 emit playingLrcIdChange(i);
                 break;
@@ -41,22 +38,20 @@ void LrcDataControl::selectPlayLrc(qint64 time)
         }
     }
 }
-void LrcDataControl::turnToLrc(int lrcId)
-{
-    if(lrcId >=0 && lrcId < m_lrcList.size()){
+
+void LrcDataControl::turnToLrc(const int lrcId) {
+    if (lrcId >= 0 && lrcId < m_lrcList.size()) {
         m_player->setPosition(m_lrcList[lrcId]->startTime);
     }
 }
 
-QJsonObject LrcDataControl::getLrcJsonObject(int lrcId)
-{
+QJsonObject LrcDataControl::getLrcJsonObject(const int lrcId) {
     if (lrcId < 0 || lrcId > m_lrcList.size()) {
-        return QJsonObject();
+        return {};
     }
     return m_lrcList[lrcId]->getJsonObject();
 }
 
-int LrcDataControl::getLrcListLength()
-{
-    return m_lrcList.size();
+int LrcDataControl::getLrcListLength() const {
+    return static_cast<int>(m_lrcList.size());
 }

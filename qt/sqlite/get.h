@@ -7,32 +7,32 @@
 #include "baseclass/playlist.h"
 #include "baseclass/mediadata.h"
 #include "update.h"
-#include <QJsonObject>
 #include <QJsonArray>
 
 class Get : public Update
 {
     Q_OBJECT
 public:
+    explicit Get(TLog *log) : Update(log) {};
     Q_INVOKABLE QStringList getArtistKeyList();
-    Q_INVOKABLE QList<int> getArtist(QString key);
+    Q_INVOKABLE QList<int> getArtist(const QString& key);
 
     // 歌手
     ArtistPtr getArtist(int id);
-    QHash<int, ArtistPtr> getArtist(QList<int> idList);
+    QHash<int, ArtistPtr> getArtist(const QList<int>& idList);
     QList<int> getArtistMusicList(int id);
 
     Q_INVOKABLE QStringList getAlbumKeyList();
-    Q_INVOKABLE QList<int> getAlbum(QString key);
+    Q_INVOKABLE QList<int> getAlbum(const QString& key);
 
     // 专辑
     AlbumPtr getAlbum(int id);
-    QHash<int, AlbumPtr> getAlbum(QList<int> idList);
+    QHash<int, AlbumPtr> getAlbum(const QList<int>& idList);
     QList<int> getAlbumMusicList(int id);
 
     // 音乐
     MusicPtr getMusic(int id);
-    QHash<int, MusicPtr> getMusic(QList<int> idList);
+    QHash<int, MusicPtr> getMusic(const QList<int>& idList);
     QString getMusicUrl(int id);
 
     // 播放列表
@@ -50,11 +50,11 @@ public:
     Q_INVOKABLE QList<int> getReadMoreList();
 
     QList<int> getIntList(const char *sql);
-    MediaData getMediaFromStmt(sqlite3_stmt *stmt);
+    static MediaData getMediaFromStmt(sqlite3_stmt *stmt);
 
-    Q_INVOKABLE int checkArtistName(QString name);
-    Q_INVOKABLE int checkAlbumName(QString name);
-    Q_INVOKABLE int checkPlayListName(QString name);
+    Q_INVOKABLE int checkArtistName(const QString& name);
+    Q_INVOKABLE int checkAlbumName(const QString& name);
+    Q_INVOKABLE int checkPlayListName(const QString& name);
 
     int getArtistSize();
     int getAlbumSize();

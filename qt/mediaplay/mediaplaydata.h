@@ -1,12 +1,11 @@
 #ifndef MEDIAPLAYDATA_H
 #define MEDIAPLAYDATA_H
 
-#include <QObject>
 #include <QMediaPlayer>
 #include <QAudioBuffer>
-#include <QAudioOutput>
 #include <QAudioDevice>
 #include <QAudioBufferOutput>
+#include <QAudioOutput>
 
 #include "basetool/basetool.h"
 #include "datacore/dataactive.h"
@@ -35,12 +34,12 @@ public:
     //删除以及加载的数据
     Q_INVOKABLE void clearData();
     //更新播放设备
-    void updateAudioOutPut();
+    void updateAudioOutPut() const;
     //计算音频
-    void buildFrequencySpectrum(QAudioBuffer buffer);
-    QMediaPlayer *getPlayer() const;
-    QVector<double> getAllSamples() const;
-    QAudioOutput *getAudioOutput() const;
+    void buildFrequencySpectrum(const QAudioBuffer& buffer);
+    [[nodiscard]] QMediaPlayer *getPlayer() const;
+    [[nodiscard]] QVector<double> getAllSamples() const;
+    [[nodiscard]] QAudioOutput *getAudioOutput() const;
 
 signals:
 

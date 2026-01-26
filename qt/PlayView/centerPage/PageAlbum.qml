@@ -15,7 +15,7 @@ Item {
         id: albumButtonList
         orientation: ListView.Horizontal
         width: parent.width - 60
-        currentIndex: keyList.indexOf(key)
+        currentIndex: albumPage.keyList.indexOf(albumPage.key)
         height: 40
         anchors.left: parent.left
         anchors.margins: 30
@@ -71,21 +71,21 @@ Item {
 
     function build () {
         albumModel.clear()
-        var list = SQLData.getAlbumKeyList()
+        const list = SQLData.getAlbumKeyList();
         if (list.length > 0) {
             keyList = list
             key = list[0]
         }
 
-        for (var i=0; i<list.length; i++) {
+        for (let i=0; i<list.length; i++) {
             albumButtonModel.append({keyString: list[i]})
         }
     }
 
     onKeyChanged: {
         albumModel.clear()
-        var list = SQLData.getAlbum(key)
-        for (var i=0; i<list.length; i++) {
+        const list = SQLData.getAlbum(key);
+        for (let i=0; i<list.length; i++) {
             albumModel.append({inAlbumId: list[i]})
         }
     }

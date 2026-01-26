@@ -2,9 +2,7 @@
 #include "mediaplay/mediaplayer.h"
 #include <QSettings>
 #include <QDir>
-#include <QGuiApplication>
 #include <QScreen>
-#include <QJsonDocument>
 
 void Setting::loadMusicCores(){
     emit loadMusics();
@@ -19,36 +17,35 @@ bool Setting::getParameterList()
     if(!QFile::exists(QDir::currentPath() + "/setting.ini")){
         return false;
     }
-    MediaPlayer* player = MediaPlayer::getInstance();
-    QSettings *ini = new QSettings(QDir::currentPath() + "/setting.ini", QSettings::IniFormat);
+    const MediaPlayer* player = MediaPlayer::getInstance();
+    auto *ini = new QSettings(QDir::currentPath() + "/setting.ini",QSettings::IniFormat);
     ini->beginGroup("seit");
 
-    isOnLine = ini->value("isOnLine").toBool();
-    isGetCoverFromNetEase = ini->value("isGetCoverFromNetEase").toBool();
-    isGetCoverFromQQMusic = ini->value("isGetCoverFromQQMusic").toBool();
-    isGetCoverFromBing = ini->value("isGetCoverFromBing").toBool();
-    isGetCoverFromBaidu = ini->value("isGetCoverFromBaidu").toBool();
-    isGetLrcFromNetEase = ini->value("isGetLrcFromNetEase").toBool();
-    isGetLrcFromQQMusic = ini->value("isGetLrcFromQQMusic").toBool();
+    m_isOnLine = ini->value(m_isOnLineKey).toBool();
+    m_isGetCoverFromNetEase = ini->value(m_isGetCoverFromNetEaseKey).toBool();
+    m_isGetCoverFromQQMusic = ini->value(m_isGetCoverFromQQMusicKey).toBool();
+    m_isGetCoverFromBing = ini->value(m_isGetCoverFromBingKey).toBool();
+    m_isGetCoverFromBaidu = ini->value(m_isGetCoverFromBaiduKey).toBool();
+    
+    m_isGetLrcFromNetEase = ini->value(m_isGetLrcFromNetEaseKey).toBool();
+    m_isGetLrcFromQQMusic = ini->value(m_isGetLrcFromQQMusicKey).toBool();
 
-    sourceList = ini->value("sourceList").toStringList();
+    m_sourceList = ini->value(m_sourceListKey).toStringList();
 
-    maxThreadNumber = ini->value("maxThreadNumber").toInt();
+    m_maxThreadNumber = ini->value(m_maxThreadNumberKey).toInt();
 
-    transparentColor = QColor::fromString(ini->value("transparentColor").toString());
-    backdropColor = QColor::fromString(ini->value("backdropColor").toString());
-    themeColor = QColor::fromString(ini->value("themeColor").toString());
-    deskLrcColor = QColor::fromString(ini->value("deskLrcColor").toString());
+    m_transparentColor = QColor::fromString(ini->value(m_transparentColorKey).toString());
+    m_backdropColor = QColor::fromString(ini->value(m_backdropColorKey).toString());
+    m_themeColor = QColor::fromString(ini->value(m_themeColorKey).toString());
+    m_deskLrcColor = QColor::fromString(ini->value(m_deskLrcColorKey).toString());
 
-    deskFont.fromString(ini->value("deskFont").toString());
-    mainFont.fromString(ini->value("mainFont").toString());
-    mainLrcFont.fromString(ini->value("mainLrcFont").toString());
+    m_deskFont.fromString(ini->value(m_deskFontKey).toString());
+    m_mainFont.fromString(ini->value(m_mainFontKey).toString());
+    m_mainLrcFont.fromString(ini->value(m_mainLrcFontKey).toString());
 
-    lrcTopPoint.setX(ini->value("lrcTopPointX").toDouble());
-    lrcTopPoint.setY(ini->value("lrcTopPointY").toDouble());
+    m_lrcTopPoint = ini->value(m_lrcTopPointKey).toPoint();
 
-    windowRect.setRect(ini->value("windowRectX").toDouble(), ini->value("windowRectY").toDouble(),
-                       ini->value("windowRectW").toDouble(), ini->value("windowRectH").toDouble());
+    m_windowRect = ini->value(m_windowRectKey).toRectF();
     player->getAudioOutput()->setVolume(ini->value("volume").toFloat());
 
     ini->endGroup();
@@ -59,65 +56,47 @@ bool Setting::getParameterList()
     return true;
 }
 
-void Setting::removeUrl(QString url)
+void Setting::removeUrl(const QString &url)
 {
-    int i = sourceList.indexOf(url);
-    if(i >= 0){
-        sourceList.remove(i);
+    if(const long long i = m_sourceList.indexOf(url); i >= 0){
+        m_sourceList.remove(i);
     }
 
     //todo emit Base::getInstance()->sendMessage(url + tr(" 路径移除成功，将在下次加载时生效"), 0);
 }
 
-template<typename T>
-void Setting::setParameter(QString key, T value)
+void Setting::writeData() const
 {
-    QSettings *ini = new QSettings(QDir::currentPath() + "/setting.ini", QSettings::IniFormat);
+    const MediaPlayer* player = MediaPlayer::getInstance();
+    auto *ini = new QSettings(QDir::currentPath() + "/setting.ini",QSettings::IniFormat);
     ini->beginGroup("seit");
 
-    ini->setValue(key, value);
+    ini->setValue(m_isOnLineKey,m_isOnLine);
+    ini->setValue(m_isGetCoverFromNetEaseKey,m_isGetCoverFromNetEase);
+    ini->setValue(m_isGetCoverFromQQMusicKey,m_isGetCoverFromQQMusic);
+    ini->setValue(m_isGetCoverFromBingKey,m_isGetCoverFromBing);
+    ini->setValue(m_isGetCoverFromBaiduKey,m_isGetCoverFromBaidu);
+    ini->setValue(m_isGetLrcFromNetEaseKey,m_isGetLrcFromNetEase);
+    ini->setValue(m_isGetLrcFromQQMusicKey,m_isGetLrcFromQQMusic);
 
-    ini->endGroup();
-    ini->sync();//写入磁盘
-    delete ini;
-}
+    ini->setValue(m_sourceListKey,m_sourceList);
 
-void Setting::writeData()
-{
-    MediaPlayer* player = MediaPlayer::getInstance();
-    QSettings *ini = new QSettings(QDir::currentPath() + "/setting.ini", QSettings::IniFormat);
-    ini->beginGroup("seit");
+    ini->setValue(m_maxThreadNumberKey,m_maxThreadNumber);
 
-    ini->setValue("isOnLine", isOnLine);
-    ini->setValue("isGetCoverFromNetEase", isGetCoverFromNetEase);
-    ini->setValue("isGetCoverFromQQMusic", isGetCoverFromQQMusic);
-    ini->setValue("isGetCoverFromBing", isGetCoverFromBing);
-    ini->setValue("isGetCoverFromBaidu", isGetCoverFromBaidu);
-    ini->setValue("isGetLrcFromNetEase", isGetLrcFromNetEase);
-    ini->setValue("isGetLrcFromQQMusic", isGetLrcFromQQMusic);
+    ini->setValue(m_themeColorKey,m_themeColor);
+    ini->setValue(m_transparentColorKey,m_transparentColor);
+    ini->setValue(m_backdropColorKey,m_backdropColor);
+    ini->setValue(m_deskLrcColorKey,m_deskLrcColor);
 
-    ini->setValue("sourceList", sourceList);
+    ini->setValue(m_mainFontKey,m_mainFont);
+    ini->setValue(m_mainLrcFontKey,m_mainLrcFont);
+    ini->setValue(m_deskFontKey,m_deskFont);
 
-    ini->setValue("maxThreadNumber", maxThreadNumber);
+    ini->setValue(m_lrcTopPointKey,m_lrcTopPoint.x());
 
-    ini->setValue("themeColor", themeColor.name());
-    ini->setValue("transparentColor", transparentColor.name());
-    ini->setValue("backdropColor", backdropColor.name());
-    ini->setValue("deskLrcColor", deskLrcColor.name());
+    ini->setValue(m_windowRectKey,m_windowRect);
 
-    ini->setValue("mainFont", mainFont.toString());
-    ini->setValue("mainLrcFont", mainLrcFont.toString());
-    ini->setValue("deskFont", deskFont.toString());
-
-    ini->setValue("lrcTopPointX", lrcTopPoint.x());
-    ini->setValue("lrcTopPointY", lrcTopPoint.y());
-
-    ini->setValue("windowRectX", windowRect.x());
-    ini->setValue("windowRectY", windowRect.y());
-    ini->setValue("windowRectW", windowRect.width());
-    ini->setValue("windowRectH", windowRect.height());
-
-    ini->setValue("volume", player->getAudioOutput()->volume());
+    ini->setValue("volume",player->getAudioOutput()->volume());
 
     ini->endGroup();
     ini->sync();//写入磁盘
@@ -127,321 +106,46 @@ void Setting::writeData()
 Setting::Setting()
 {
     if(!getParameterList()){
-        isOnLine = true;
-        isGetCoverFromNetEase = true;
-        isGetCoverFromQQMusic = true;
-        isGetCoverFromBing = true;
-        isGetCoverFromBaidu = true;
-        isGetLrcFromNetEase = true;
-        isGetLrcFromQQMusic = true;
+        m_isOnLine = true;
+        m_isGetCoverFromNetEase = true;
+        m_isGetCoverFromQQMusic = true;
+        m_isGetCoverFromBing = true;
+        m_isGetCoverFromBaidu = true;
+        m_isGetLrcFromNetEase = true;
+        m_isGetLrcFromQQMusic = true;
 
-        maxThreadNumber = 10;
+        m_maxThreadNumber = 10;
 
-        themeColor = Qt::red;
-        transparentColor = Qt::black;
-        backdropColor = Qt::white;
-        deskLrcColor = Qt::red;
+        m_themeColor = Qt::red;
+        m_transparentColor = Qt::black;
+        m_backdropColor = Qt::white;
+        m_deskLrcColor = Qt::red;
 
-        mainFont.setFamily("Microsoft YaHei");
-        mainFont.setPixelSize(12);
-        mainLrcFont.setFamily("Microsoft YaHei");
-        mainLrcFont.setPixelSize(18);
-        mainLrcFont.setBold(1);
-        deskFont.setFamily("Microsoft YaHei");
-        deskFont.setPixelSize(20);
-        deskFont.setBold(1);
+        m_mainFont.setFamily("Microsoft YaHei");
+        m_mainFont.setPixelSize(12);
+        m_mainLrcFont.setFamily("Microsoft YaHei");
+        m_mainLrcFont.setPixelSize(18);
+        m_mainLrcFont.setBold(true);
+        m_deskFont.setFamily("Microsoft YaHei");
+        m_deskFont.setPixelSize(20);
+        m_deskFont.setBold(true);
 
-        QRectF screen = QGuiApplication::primaryScreen()->geometry();
-        lrcTopPoint.setX(screen.width()/2);
-        lrcTopPoint.setY(screen.height()/2);
-
-        windowRect.setRect(screen.width() * 0.2, screen.height() * 0.2,
+        const QRectF screen = QGuiApplication::primaryScreen()->geometry();
+        m_windowRect.setRect(screen.width() * 0.2, screen.height() * 0.2,
                            screen.width() * 0.6, screen.height() * 0.6);
+        m_lrcTopPoint.setX(m_windowRect.x());
+        m_lrcTopPoint.setY(m_windowRect.y() + m_windowRect.height()/2);
 
         writeData();
     }
 
-    MediaPlayer* player = MediaPlayer::getInstance();
+    const MediaPlayer* player = MediaPlayer::getInstance();
     //额外读写数据
-    connect(player->getAudioOutput(), &QAudioOutput::volumeChanged, this, [=](float volume){
-        setParameter("volume", volume);
+    connect(player->getAudioOutput(), &QAudioOutput::volumeChanged, this, [=](const float volume){
+        setParameter("volume",volume);
     });
 
-    connect(player->getPlayer(), &QMediaPlayer::playbackRateChanged, this, [=](float rate){
-        setParameter("playRate", rate);
+    connect(player->getPlayer(), &QMediaPlayer::playbackRateChanged, this, [=](const float rate){
+        setParameter("playRate",rate);
     });
-}
-
-bool Setting::getIsGetLrcFromQQMusic() const
-{
-    return isGetLrcFromQQMusic;
-}
-
-void Setting::setIsGetLrcFromQQMusic(bool newIsGetLrcFromQQMusic)
-{
-    if (isGetLrcFromQQMusic == newIsGetLrcFromQQMusic)
-        return;
-    isGetLrcFromQQMusic = newIsGetLrcFromQQMusic;
-    emit isGetLrcFromQQMusicChanged();
-    //
-    setParameter("isGetLrcFromQQMusic", isGetLrcFromQQMusic);
-}
-
-bool Setting::getIsGetCoverFromQQMusic() const
-{
-    return isGetCoverFromQQMusic;
-}
-
-void Setting::setIsGetCoverFromQQMusic(bool newIsGetCoverFromQQMusic)
-{
-    if (isGetCoverFromQQMusic == newIsGetCoverFromQQMusic)
-        return;
-    isGetCoverFromQQMusic = newIsGetCoverFromQQMusic;
-    emit isGetCoverFromQQMusicChanged();
-    //
-    setParameter("isGetCoverFromQQMusic", isGetCoverFromQQMusic);
-}
-
-bool Setting::getIsGetLrcFromNetEase() const
-{
-    return isGetLrcFromNetEase;
-}
-
-void Setting::setIsGetLrcFromNetEase(bool newIsGetLrcFromNetEase)
-{
-    if (isGetLrcFromNetEase == newIsGetLrcFromNetEase)
-        return;
-    isGetLrcFromNetEase = newIsGetLrcFromNetEase;
-    emit isGetLrcFromNetEaseChanged();
-    //
-    setParameter("isGetLrcFromNetEase", isGetLrcFromNetEase);
-}
-
-bool Setting::getIsGetCoverFromBaidu() const
-{
-    return isGetCoverFromBaidu;
-}
-
-void Setting::setIsGetCoverFromBaidu(bool newIsGetCoverFromBaidu)
-{
-    if (isGetCoverFromBaidu == newIsGetCoverFromBaidu)
-        return;
-    isGetCoverFromBaidu = newIsGetCoverFromBaidu;
-    emit isGetCoverFromBaiduChanged();
-    //
-    setParameter("isGetCoverFromBaidu", isGetCoverFromBaidu);
-
-}
-
-bool Setting::getIsGetCoverFromBing() const
-{
-    return isGetCoverFromBing;
-}
-
-void Setting::setIsGetCoverFromBing(bool newIsGetCoverFromBing)
-{
-    if (isGetCoverFromBing == newIsGetCoverFromBing)
-        return;
-    isGetCoverFromBing = newIsGetCoverFromBing;
-    emit isGetCoverFromBingChanged();
-    //
-    setParameter("isGetCoverFromBing", isGetCoverFromBing);
-}
-
-bool Setting::getIsGetCoverFromNetEase() const
-{
-    return isGetCoverFromNetEase;
-}
-
-void Setting::setIsGetCoverFromNetEase(bool newIsGetCoverFromNetEase)
-{
-    if (isGetCoverFromNetEase == newIsGetCoverFromNetEase)
-        return;
-    isGetCoverFromNetEase = newIsGetCoverFromNetEase;
-    emit isGetCoverFromNetEaseChanged();
-    //
-    setParameter("isGetCoverFromNetEase", isGetCoverFromNetEase);
-}
-
-bool Setting::getIsOnLine() const
-{
-    return isOnLine;
-}
-
-void Setting::setIsOnLine(bool newIsOnLine)
-{
-    if (isOnLine == newIsOnLine)
-        return;
-    isOnLine = newIsOnLine;
-    emit isOnLineChanged();
-    //
-    setParameter("isOnLine", isOnLine);
-}
-
-QPoint Setting::getLrcTopPoint() const
-{
-    return lrcTopPoint;
-}
-
-void Setting::setLrcTopPoint(QPoint newLrcTopPoint)
-{
-    if (lrcTopPoint == newLrcTopPoint)
-        return;
-    lrcTopPoint = newLrcTopPoint;
-    emit lrcTopPointChanged();
-    setParameter("lrcTopPointX", lrcTopPoint.x());
-    setParameter("lrcTopPointY", lrcTopPoint.y());
-}
-
-QRectF Setting::getWindowRect() const
-{
-    return windowRect;
-}
-
-void Setting::setWindowRect(const QRectF &newWindowRect)
-{
-    if (windowRect == newWindowRect)
-        return;
-    windowRect = newWindowRect;
-    emit windowRectChanged();
-    //写入设置
-    setParameter("windowRectX", windowRect.x());
-    setParameter("windowRectY", windowRect.y());
-    setParameter("windowRectW", windowRect.width());
-    setParameter("windowRectH", windowRect.height());
-}
-
-QFont Setting::getDeskFont() const
-{
-    return deskFont;
-}
-
-void Setting::setDeskFont(const QFont &newdeskFont)
-{
-    if (deskFont == newdeskFont)
-        return;
-    deskFont = newdeskFont;
-    emit deskFontChanged();
-    //写入设置文件
-    setParameter("deskFont", deskFont.toString());
-}
-
-QFont Setting::getMainFont() const
-{
-    return mainFont;
-}
-
-void Setting::setMainFont(const QFont &newmainFont)
-{
-    if (mainFont == newmainFont)
-        return;
-    mainFont = newmainFont;
-    emit mainFontChanged();
-    //写入设置文件
-    setParameter("mainFont", mainFont.toString());
-}
-
-QFont Setting::getMainLrcFont() const
-{
-    return mainLrcFont;
-}
-
-void Setting::setMainLrcFont(const QFont &newMainLrcFont)
-{
-    if (mainLrcFont == newMainLrcFont)
-        return;
-    mainLrcFont = newMainLrcFont;
-    emit mainLrcFontChanged();
-    //写入设置文件
-    setParameter("mainLrcFont", mainLrcFont.toString());
-}
-
-QColor Setting::getBackdropColor() const
-{
-    return backdropColor;
-}
-
-void Setting::setBackdropColor(const QColor &newbackdropColor)
-{
-    if (backdropColor == newbackdropColor)
-        return;
-    backdropColor = newbackdropColor;
-    emit backdropColorChanged();
-    //写入设置文件
-    setParameter("backdropColor", backdropColor);
-}
-
-QColor Setting::getTransparentColor() const
-{
-    return transparentColor;
-}
-
-void Setting::setTransparentColor(const QColor &newtransparentColor)
-{
-    if (transparentColor == newtransparentColor)
-        return;
-    transparentColor = newtransparentColor;
-    emit transparentColorChanged();
-    //写入设置文件
-    setParameter("transparentColor", transparentColor);
-}
-
-QColor Setting::getThemeColor() const
-{
-    return themeColor;
-}
-
-void Setting::setThemeColor(const QColor &newthemeColor)
-{
-    if (themeColor == newthemeColor)
-        return;
-    themeColor = newthemeColor;
-    emit themeColorChanged();
-    //写入设置文件
-    setParameter("themeColor", themeColor);
-}
-
-QColor Setting::getDeskLrcColor() const
-{
-    return deskLrcColor;
-}
-
-void Setting::setDeskLrcColor(const QColor &newDeskLrcColor)
-{
-    if (deskLrcColor == newDeskLrcColor)
-        return;
-    deskLrcColor = newDeskLrcColor;
-    emit deskLrcColorChanged();
-    //写入设置文件
-    setParameter("deskLrcColor", deskLrcColor);
-}
-
-int Setting::getMaxThreadNumber() const
-{
-    return maxThreadNumber;
-}
-
-void Setting::setMaxThreadNumber(int newMaxThreadNumber)
-{
-    if (maxThreadNumber == newMaxThreadNumber)
-        return;
-    maxThreadNumber = newMaxThreadNumber;
-    emit maxThreadNumberChanged();
-    //写入设置文件
-    setParameter("maxThreadNumber", maxThreadNumber);
-}
-
-QStringList Setting::getSourceList() const
-{
-    return sourceList;
-}
-
-void Setting::setSourceList(const QStringList &newSourceList)
-{
-    if (sourceList == newSourceList)
-        return;
-    sourceList = newSourceList;
-    emit sourceListChanged();
-    //写入设置文件
-    setParameter("sourceList", sourceList);
 }

@@ -6,8 +6,7 @@
 #include <QSharedPointer>
 using AlbumPtr = QSharedPointer<class Album>;
 
-class Album
-{
+class Album{
 public:
     explicit Album(QString name, int id, QString lineKey);
 
@@ -18,7 +17,7 @@ public:
     long long duration;
     int id;
 
-    QJsonObject getJsonObject();
+    [[nodiscard]] QJsonObject getJsonObject() const;
 };
 
 #endif // ALBUM_H

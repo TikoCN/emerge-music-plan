@@ -1,11 +1,30 @@
 #ifndef SETTING_H
 #define SETTING_H
 
-#include <QObject>
 #include <QColor>
+#include <QDir>
 #include <QFont>
 #include <QRectF>
 #include <QJsonObject>
+#include <QSettings>
+
+#define QT_SETTING_PROPERTY(TYPE, PROP, PROP_CAMEL) \
+/* 1. 生成Q_PROPERTY声明 */ \
+Q_PROPERTY(TYPE PROP READ get##PROP_CAMEL WRITE set##PROP_CAMEL NOTIFY PROP##Changed FINAL) \
+/* 2. 私有成员变量（命名规范：m_ + 小写属性名） */ \
+private: \
+TYPE m_##PROP; \
+const QString m_##PROP##Key = #PROP; \
+static const bool m_##PROP##_registered; \
+/* 3. 公共GETTER方法 */ \
+public: \
+TYPE get##PROP_CAMEL() const { return m_##PROP; } \
+/* 4. 带校验的SETTER方法（信号+INI持久化） */ \
+void set##PROP_CAMEL(const TYPE &new##PROP_CAMEL) { \
+if (m_##PROP == new##PROP_CAMEL) return; /* 值未变化则直接返回 */ \
+m_##PROP = new##PROP_CAMEL; \
+Setting::setParameter(m_##PROP##Key, m_##PROP); /* 基础类型直接写入 */ \
+}
 
 class Setting :public QObject
 {
@@ -14,41 +33,31 @@ private:
     static Setting* instance;
     Setting();
 
-    Q_PROPERTY(int maxThreadNumber READ getMaxThreadNumber WRITE setMaxThreadNumber NOTIFY maxThreadNumberChanged FINAL)
+    QT_SETTING_PROPERTY(int, maxThreadNumber, MaxThreadNumber);
 
-    Q_PROPERTY(QStringList sourceList READ getSourceList WRITE setSourceList NOTIFY sourceListChanged FINAL)
+    QT_SETTING_PROPERTY(QStringList, sourceList, SourceList);
 
-    Q_PROPERTY(QColor themeColor READ getThemeColor WRITE setThemeColor NOTIFY themeColorChanged FINAL)
+    QT_SETTING_PROPERTY(QColor, themeColor, ThemeColor);
+    QT_SETTING_PROPERTY(QColor, transparentColor, TransparentColor);
+    QT_SETTING_PROPERTY(QColor, backdropColor, BackdropColor);
+    QT_SETTING_PROPERTY(QColor, deskLrcColor, DeskLrcColor);
 
-    Q_PROPERTY(QColor transparentColor READ getTransparentColor WRITE setTransparentColor NOTIFY transparentColorChanged FINAL)
+    QT_SETTING_PROPERTY(QFont, mainFont, MainFont);
+    QT_SETTING_PROPERTY(QFont, deskFont, DeskFont);
+    QT_SETTING_PROPERTY(QFont, mainLrcFont, MainLrcFont);
 
-    Q_PROPERTY(QColor backdropColor READ getBackdropColor WRITE setBackdropColor NOTIFY backdropColorChanged FINAL)
+    QT_SETTING_PROPERTY(QRectF, windowRect, WindowRect);
 
-    Q_PROPERTY(QFont mainFont READ getMainFont WRITE setMainFont NOTIFY mainFontChanged FINAL)
+    QT_SETTING_PROPERTY(QPointF, lrcTopPoint, LrcTopPoint);
 
-    Q_PROPERTY(QFont deskFont READ getDeskFont WRITE setDeskFont NOTIFY deskFontChanged FINAL)
+    QT_SETTING_PROPERTY(bool, isOnLine, IsOnLine);
+    QT_SETTING_PROPERTY(bool, isGetCoverFromNetEase, IsGetCoverFromNetEase);
+    QT_SETTING_PROPERTY(bool, isGetCoverFromBing, IsGetCoverFromBing);
+    QT_SETTING_PROPERTY(bool, isGetCoverFromBaidu, IsGetCoverFromBaidu);
+    QT_SETTING_PROPERTY(bool, isGetCoverFromQQMusic, IsGetCoverFromQQMusic);
 
-    Q_PROPERTY(QRectF windowRect READ getWindowRect WRITE setWindowRect NOTIFY windowRectChanged FINAL)
-
-    Q_PROPERTY(QFont mainLrcFont READ getMainLrcFont WRITE setMainLrcFont NOTIFY mainLrcFontChanged FINAL)
-
-    Q_PROPERTY(QPoint lrcTopPoint READ getLrcTopPoint WRITE setLrcTopPoint NOTIFY lrcTopPointChanged FINAL)
-
-    Q_PROPERTY(bool isOnLine READ getIsOnLine WRITE setIsOnLine NOTIFY isOnLineChanged FINAL)
-
-    Q_PROPERTY(bool isGetCoverFromNetEase READ getIsGetCoverFromNetEase WRITE setIsGetCoverFromNetEase NOTIFY isGetCoverFromNetEaseChanged FINAL)
-
-    Q_PROPERTY(bool isGetCoverFromBing READ getIsGetCoverFromBing WRITE setIsGetCoverFromBing NOTIFY isGetCoverFromBingChanged FINAL)
-
-    Q_PROPERTY(bool isGetCoverFromBaidu READ getIsGetCoverFromBaidu WRITE setIsGetCoverFromBaidu NOTIFY isGetCoverFromBaiduChanged FINAL)
-
-    Q_PROPERTY(bool isGetLrcFromNetEase READ getIsGetLrcFromNetEase WRITE setIsGetLrcFromNetEase NOTIFY isGetLrcFromNetEaseChanged FINAL)
-
-    Q_PROPERTY(bool isGetCoverFromQQMusic READ getIsGetCoverFromQQMusic WRITE setIsGetCoverFromQQMusic NOTIFY isGetCoverFromQQMusicChanged FINAL)
-
-    Q_PROPERTY(bool isGetLrcFromQQMusic READ getIsGetLrcFromQQMusic WRITE setIsGetLrcFromQQMusic NOTIFY isGetLrcFromQQMusicChanged FINAL)
-
-    Q_PROPERTY(QColor deskLrcColor READ getDeskLrcColor WRITE setDeskLrcColor NOTIFY deskLrcColorChanged FINAL)
+    QT_SETTING_PROPERTY(bool, isGetLrcFromNetEase, IsGetLrcFromNetEase);
+    QT_SETTING_PROPERTY(bool, isGetLrcFromQQMusic, IsGetLrcFromQQMusic);
 
 public:
     static Setting* getInstance(){
@@ -61,126 +70,54 @@ public:
         }
     }
 
-    static void freeInstance(){
-        if(instance != nullptr){
+    static void freeInstance(){\
             delete instance;
-        }
     }
-
-    bool isOnLine;
-    bool isGetCoverFromNetEase;
-    bool isGetCoverFromQQMusic;
-    bool isGetCoverFromBing;
-    bool isGetCoverFromBaidu;
-    bool isGetLrcFromNetEase;
-    bool isGetLrcFromQQMusic;
-
-    int maxThreadNumber;//最大线程数量
-    int recomItemNumber; // 推荐条目数量
-
-    QStringList sourceList;//资源地址列表
-
-    QColor themeColor;//主题颜色
-    QColor transparentColor;//透明层颜色
-    QColor backdropColor;//背景颜色
-    QColor deskLrcColor; //桌面歌词颜色
-
-    QPoint lrcTopPoint;//桌面歌词位置
-    QRectF windowRect;//主界面
-
-    QFont deskFont;//桌面字体
-    QFont mainLrcFont;//主页歌词颜色
-    QFont mainFont;//主界面字体
-
     //设置参数
     template <typename T>
-    void setParameter(QString key, T value);
+    static void setParameter(const QString& key, const T& value) {
+        auto *ini = new QSettings(QDir::currentPath() + "/setting.ini", QSettings::IniFormat);
+        ini->beginGroup("seit");
+
+        ini->setValue(key, value);
+
+        ini->endGroup();
+        ini->sync();//写入磁盘
+        delete ini;
+    }
 
     //读取参数
     bool getParameterList();
 
     //将路径移除
-    Q_INVOKABLE void removeUrl(QString url);
+    Q_INVOKABLE void removeUrl(const QString &url);
 
-    Q_INVOKABLE void writeData();
+    Q_INVOKABLE void writeData() const;
 
     //加载音乐资源
     Q_INVOKABLE void loadMusicCores();
 
-    QStringList getSourceList() const;
-    void setSourceList(const QStringList &newSourceList);
-
-    int getMaxThreadNumber() const;
-    void setMaxThreadNumber(int newMaxThreadNumber);
-
-    QColor getThemeColor() const;
-    void setThemeColor(const QColor &newthemeColor);
-
-    QColor getTransparentColor() const;
-    void setTransparentColor(const QColor &newtransparentColor);
-
-    QColor getBackdropColor() const;
-    void setBackdropColor(const QColor &newbackdropColor);
-
-    QFont getMainFont() const;
-    void setMainFont(const QFont &newmainFont);
-
-    QFont getDeskFont() const;
-    void setDeskFont(const QFont &newdeskFont);
-
-    QRectF getWindowRect() const;
-    void setWindowRect(const QRectF &newWindowRect);
-
-    QFont getMainLrcFont() const;
-    void setMainLrcFont(const QFont &newMainLrcFont);
-
-    QPoint getLrcTopPoint() const;
-    void setLrcTopPoint(QPoint newLrcTopPoint);
-
-    bool getIsOnLine() const;
-    void setIsOnLine(bool newIsOnLine);
-
-    bool getIsGetCoverFromNetEase() const;
-    void setIsGetCoverFromNetEase(bool newIsGetCoverFromNetEase);
-
-    bool getIsGetCoverFromBing() const;
-    void setIsGetCoverFromBing(bool newIsGetCoverFromBing);
-
-    bool getIsGetCoverFromBaidu() const;
-    void setIsGetCoverFromBaidu(bool newIsGetCoverFromBaidu);
-
-    bool getIsGetLrcFromNetEase() const;
-    void setIsGetLrcFromNetEase(bool newIsGetLrcFromNetEase);
-
-    bool getIsGetCoverFromQQMusic() const;
-    void setIsGetCoverFromQQMusic(bool newIsGetCoverFromQQMusic);
-
-    bool getIsGetLrcFromQQMusic() const;
-    void setIsGetLrcFromQQMusic(bool newIsGetLrcFromQQMusic);
-
-    QColor getDeskLrcColor() const;
-    void setDeskLrcColor(const QColor &newDeskLrcColor);
-
 signals:
     //加载资源
     void loadMusics();
+
+    void isOnLineChanged();
+    void isGetCoverFromNetEaseChanged();
+    void isGetCoverFromQQMusicChanged();
+    void isGetCoverFromBingChanged();
+    void isGetCoverFromBaiduChanged();
+    void isGetLrcFromNetEaseChanged();
+    void isGetLrcFromQQMusicChanged();
     void maxThreadNumberChanged();
     void sourceListChanged();
     void themeColorChanged();
     void transparentColorChanged();
     void backdropColorChanged();
+    void deskLrcColorChanged();
     void mainFontChanged();
     void deskFontChanged();
-    void windowRectChanged();
     void mainLrcFontChanged();
     void lrcTopPointChanged();
-    void isOnLineChanged();
-    void isGetCoverFromNetEaseChanged();
-    void isGetCoverFromBingChanged();
-    void isGetCoverFromBaiduChanged();
-    void isGetLrcFromNetEaseChanged();
-    void isGetCoverFromQQMusicChanged();
-    void isGetLrcFromQQMusicChanged();
-    void deskLrcColorChanged();
+    void windowRectChanged();
 };
 #endif // SETTING_H

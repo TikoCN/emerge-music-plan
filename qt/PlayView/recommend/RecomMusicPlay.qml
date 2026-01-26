@@ -42,8 +42,8 @@ Item {
     }
 
     function build(){
-        var playMoreMusicList = SQLData.getReadMoreList()
-        for (var i in playMoreMusicList) {
+        const playMoreMusicList = SQLData.getReadMoreList();
+        for (const i in playMoreMusicList) {
             playMoreMusicModel.append({inMusicId: playMoreMusicList[i]})
         }
     }

@@ -1,8 +1,6 @@
 #ifndef SQLITE_H
 #define SQLITE_H
 #include "get.h"
-#include <sqlite3.h>
-#include <QObject>
 
 class SQLite : public Get
 {
@@ -11,28 +9,26 @@ public:
     static SQLite *instance;
     static SQLite *getInstance();
 
-    static void buildInstance(){
+    static void buildInstance(TLog *tlog){
         if (instance == nullptr) {
-            instance = new SQLite;
+            instance = new SQLite(tlog);
         }
     }
 
     static void freeInstance(){
-        if(instance != nullptr){
             delete instance;
-        }
     }
 
     // 获得新的条目
-    bool selectNewMusic(QFileInfoList infoList, QFileInfoList *newInfoList);
+    bool selectNewMusic(const QFileInfoList& infoList, QFileInfoList *newInfoList);
 
     // 清除不存在的条目
     QList<QString> clearNullMusicItem();
     QList<QString> clearNullPlayListItem();
 
 private:
-    SQLite();
-    ~SQLite();
+    explicit SQLite(TLog *log);
+    ~SQLite() override;
 
 };
 

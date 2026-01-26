@@ -1,41 +1,41 @@
 #ifndef BASETOOL_H
 #define BASETOOL_H
 
-#include <QObject>
 #include "filemanagement.h"
 #include "typeconversion.h"
 #include "qmlactive.h"
 
-class BaseTool : public QObject
-{
+class BaseTool : public QObject {
     Q_OBJECT
+
 public:
-    static BaseTool* getInstance(){
+    static BaseTool *getInstance() {
         return instance;
     }
 
-    static void buildInstance(){
-        if(instance == nullptr){
+    static void buildInstance() {
+        if (instance == nullptr) {
             instance = new BaseTool;
         }
     }
 
-    static void freeInstance(){
-        if(instance != nullptr){
-            delete instance;
-        }
+    static void freeInstance() {
+        delete instance;
     }
 
-    Q_INVOKABLE void copyString(QString data);
+    Q_INVOKABLE static void copyString(const QString &data);
 
-    const TypeConversion *getTypeConversion() const;
+    static QString getErrorMsg(const QThread *thread, const QString &errorMsg);
 
-    const FileManagement *getFileManagement() const;
+    [[nodiscard]] const TypeConversion *getTypeConversion() const;
 
-    const QmlActive *getQmlActive() const;
+    [[nodiscard]] const FileManagement *getFileManagement() const;
+
+    [[nodiscard]] const QmlActive *getQmlActive() const;
 
 private:
-    static BaseTool* instance;
+    static BaseTool *instance;
+
     explicit BaseTool();
 
     const TypeConversion *typeConversion;

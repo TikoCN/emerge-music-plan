@@ -1,6 +1,5 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
-#include <QQmlContext>
 #include <QIcon>
 #include <QObject>
 #include <QProcess>
@@ -9,7 +8,6 @@
 #include "load/taskcenter.h"
 #include "mediaplay/mediaplayer.h"
 #include "online.h"
-#include "datacore/dataactive.h"
 #include "datacore/dataactive.h"
 #include "sqlite/sqlite.h"
 #include "basetool/basetool.h"
@@ -28,12 +26,15 @@ ImageControl *ImageControl::instance = nullptr;
 
 int main(int argc, char *argv[])
 {
-    QGuiApplication app(argc, argv);
-    app.setWindowIcon(QIcon(":/image/exe.png"));
+    qputenv("QT_QML_DEBUG_UNHANDLED_ERRORS", "1");
+    qputenv("QT_LOGGING_RULES", "qt.qml.core=true;qt.qml.engine=true");
+
+    const QGuiApplication app(argc, argv);
 
     //建立
     TLog::buildInstance();                                      // 0
-    SQLite::buildInstance();                                    // 1
+    TLog *tlog = TLog::getInstance();
+    SQLite::buildInstance(tlog);                                // 1
     BaseTool::buildInstance();                                  // 1
     BaseTool *baseTool = BaseTool::getInstance();
 
@@ -50,7 +51,7 @@ int main(int argc, char *argv[])
     SQLite *sql = SQLite::getInstance();
     Setting *seit = Setting::getInstance();
     MediaPlayer *mediaPlayer = MediaPlayer::getInstance();
-    TaskCenter *center = TaskCenter::getInstance();
+    const TaskCenter *center = TaskCenter::getInstance();
     OnLine *onLine = OnLine::getInstance();
     ImageControl *imgCtr = ImageControl::getInstance();
 
@@ -83,8 +84,8 @@ int main(int argc, char *argv[])
         &app,
         []() { QCoreApplication::exit(-1); },
         Qt::QueuedConnection);
-    engine.loadFromModule("PlayView", "Main");
     engine.addImageProvider("cover", new ImageProvider);
+    engine.loadFromModule("PlayView", "Main");
 
     return app.exec();
 }

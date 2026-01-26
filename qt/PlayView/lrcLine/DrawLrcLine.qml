@@ -43,21 +43,22 @@ Item {
         anchors.fill: drawLrcLine
         visible: false
         onPaint: {
-            var ctx = lrcShow.getContext("2d")
-            var width = lrcShow.width
-            var height = lrcShow.height
+            const ctx = lrcShow.getContext("2d");
+            const width = lrcShow.width;
+            const height = lrcShow.height;
             // 清除画布
             ctx.clearRect(0, 0, width, height);
             ctx.font = "bold "+ lrcFont.pixelSize.toString() +"px 'Microsoft YaHei', SimSun, sans-serif"
-            var maxH = drawLrcLine.maxH
-            var lrc = drawLrcLine.textList
-            var startX = 20
-            var startY = maxH * 1.8
-            var length = 0
-            var overF = 0.0//超出当前字长
+            const maxH = drawLrcLine.maxH;
+            const lrc = drawLrcLine.textList;
+            let startX = 20;
+            let startY = maxH * 1.8;
+            let length = 0;
+            let overF = 0.0;//超出当前字长
+            let i =0;
 
             //计算主文本
-            for(var i=0; i<lrc.length; i++){
+            for(i=0; i<lrc.length; i++){
                 //计算字长
                 oneFontMetrics.text = lrc[i]
                 length = oneFontMetrics.advanceWidth + 3
@@ -80,7 +81,7 @@ Item {
                             (drawLrcLine.endList[i] - drawLrcLine.startList[i])
                     overF = overF || 0
                     // 创建线性渐变（从左到右）
-                    var gradient = ctx.createLinearGradient(startX, startY, startX + length - 3, startY);
+                    const gradient = ctx.createLinearGradient(startX, startY, startX + length - 3, startY);
 
                     // 添加颜色停止点（0~1 范围）
                     gradient.addColorStop(0, drawLrcLine.playingColor);
@@ -99,8 +100,8 @@ Item {
             //计算辅助文本
             ctx.fillStyle = drawLrcLine.normalColor;
 
-            for (var j=0; j<helpTextList.length; j++){
-                var text = helpTextList[j]
+            for (let j=0; j<helpTextList.length; j++){
+                const text = helpTextList[j];
                 startX = 20
                 startY += maxH
 
@@ -148,12 +149,13 @@ Item {
     }
 
     function setHeight(){
-        var startX = 20
-        var length = 0
-        var line = 1
-        var lrc = drawLrcLine.textList
+        let i;
+        let startX = 20;
+        let length = 0;
+        let line = 1;
+        const lrc = drawLrcLine.textList;
 
-        for(var i=0; i<lrc.length; i++){
+        for(i = 0; i<lrc.length; i++){
             //计算字长
             oneFontMetrics.text = lrc[i]
             length = oneFontMetrics.advanceWidth + 3
@@ -164,8 +166,8 @@ Item {
             startX += length
         }
 
-        for (var j=0; j<helpTextList.length; j++){
-            var helpLine = helpTextList[j]
+        for (let j=0; j<helpTextList.length; j++){
+            const helpLine = helpTextList[j];
             startX = 20
             line++
 

@@ -5,28 +5,25 @@
 
 using LrcDataPtr = QSharedPointer<class LrcData>;
 
-class LrcData
-{
-
+class LrcData {
 private:
     QList<long long> startList;
     QList<long long> endList;
     QList<QString> textList;
 
-
 public:
     int id;
     long long startTime;
     long long endTime;
-    bool isPlay;
     QList<QString> helpTextList;
+
     LrcData();
 
-    QJsonObject getJsonObject();
+    [[nodiscard]] QJsonObject getJsonObject() const;
 
-    void append(long long start, long long end, QString text);
+    void append(long long start, long long end, const QString &text);
 
-    void copy(LrcDataPtr aim);
+    void copy(const LrcDataPtr &aim);
 };
 
 #endif // LRCDATA_H

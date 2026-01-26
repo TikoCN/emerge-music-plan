@@ -19,7 +19,7 @@ TikoMenu{
     property string fileUrl: ""
 
     Component.onCompleted:{
-        var Json = DataActive.getMusicJson(musicId)
+        const Json = DataActive.getMusicJson(musicId);
         musicTitle = Json.title
         artist = Json.artist
         album = Json.album
@@ -46,7 +46,7 @@ TikoMenu{
     TikoMenuItem{
         text: qsTr("打开文件夹")
         onTriggered: {
-            var url = BaseTool.fileManagement.getParentDir(fileUrl)
+            const url = BaseTool.fileManagement.getParentDir(fileUrl);
             BaseTool.fileManagement.deskOpenFile(url)
         }
         icon.source: "qrc:/image/dir.png"
@@ -60,7 +60,7 @@ TikoMenu{
     TikoMenuItem{
         text: qsTr("打开封面")
         onTriggered: {
-            var url = BaseTool.fileManagement.getBaseUrl(fileUrl) + ".jpg"
+            const url = BaseTool.fileManagement.getBaseUrl(fileUrl) + ".jpg";
             BaseTool.fileManagement.deskOpenFile(url)
         }
     }
@@ -75,9 +75,9 @@ TikoMenu{
     TikoMenuItem{
         text: qsTr("复制 歌曲信息")
         onTriggered: {
-            var str = qsTr("标题") +" " + musicTitle +
-                    qsTr("专辑") +" " + album +
-                    qsTr("作曲家") +" " + artist
+            const str = qsTr("标题") + " " + musicTitle +
+                qsTr("专辑") + " " + album +
+                qsTr("作曲家") + " " + artist;
             BaseTool.copyString(str)
         }
     }
@@ -167,7 +167,7 @@ TikoMenu{
 
         onOpened: {
             addMenuData.clear()
-            for(var i=0; i<CoreData.playlist.length; i++){
+            for(let i=0; i<CoreData.playlist.length; i++){
                 addMenuData.append({aim: i})
             }
         }

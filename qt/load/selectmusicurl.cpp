@@ -1,7 +1,9 @@
 #include "selectmusicurl.h"
 
+#include <utility>
+
 SelectMusicUrl::SelectMusicUrl(QFileInfoList list)
-    : _list(list)
+    : m_list(std::move(list))
 {
     setAutoDelete(true);
 }
@@ -9,11 +11,11 @@ SelectMusicUrl::SelectMusicUrl(QFileInfoList list)
 void SelectMusicUrl::run()
 {
     QFileInfoList musicList;
-    for(int i=0; i<_list.size(); i++){
-        QString suffix = _list[i].suffix();
-        if (!_musicSuffix.contains(suffix)) continue;
+    for(const QFileInfo & i : m_list){
+        if (QString suffix = i.suffix(); !m_musicSuffix.contains(suffix))
+            continue;
 
-        musicList.append(_list[i]);
+        musicList.append(i);
     }
     emit fileSelected(musicList);
 }

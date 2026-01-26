@@ -21,7 +21,7 @@ TikoPopupInput {
     onInput: isCheck = false
     onAccept: {
         if (!isCheck) {
-            var checkMsg = checkMsgCom.createObject(artistNameInput)
+            const checkMsg = checkMsgCom.createObject(artistNameInput);
             checkMsg.open()
         }
         else if (newArtistId === -1) {
@@ -32,7 +32,7 @@ TikoPopupInput {
         }
         else {
             isDClick = true
-            var errorMsg = checkMsgCom.createObject(artistNameInput)
+            const errorMsg = checkMsgCom.createObject(artistNameInput);
             errorMsg.open()
         }
     }

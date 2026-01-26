@@ -8,28 +8,31 @@ class Append : public Core
 {
     Q_OBJECT
 public:
+    explicit Append(TLog *log)
+        :Core(log) {}
+
     // 附加条目
-    bool appendMusic(MediaData data);
-    bool appendMusic(QList<MediaData> data);
+    bool appendMusic(const MediaData &data);
+    bool appendMusic(const QList<MediaData>& data);
 
-    bool appendAlbum(QString album);
-    bool appendAlbum(QStringList albumList);
+    bool appendAlbum(const QString& album);
+    bool appendAlbum(const QStringList& albumList);
 
-    bool appendArtist(QString artist);
-    bool appendArtist(QStringList artistList);
+    bool appendArtist(const QString& artist);
+    bool appendArtist(const QStringList& artistList);
 
-    bool appendDirPlayList(QString url);
-    bool appendDirPlayList(QStringList  urlList);
+    bool appendDirPlayList(const QString& url);
+    bool appendDirPlayList(const QStringList&  urlList);
 
-    bool appendUserPlayList(QString name);
+    bool appendUserPlayList(const QString &name);
 
-    bool appendArtistMusic(QPair<QString, QString> pair);
-    bool appendArtistMusic(QList<QPair<QString, QString>> pairList);
-    bool appendArtistMusic(int id, QList<int> musicList);
+    bool appendArtistMusic(const QPair<QString, QString>& pair);
+    bool appendArtistMusic(const QList<QPair<QString, QString>>& pairList);
+    bool appendArtistMusic(int id, const QList<int>& musicList);
 
-    bool appendPlayListMusic(QPair<QString, QString> pair);
-    bool appendPlayListMusic(QList<QPair<QString, QString>> pairList);
-    bool appendPlayListMusic(int id, QList<int> musicList);
+    bool appendPlayListMusic(const QPair<QString, QString>& pair);
+    bool appendPlayListMusic(const QList<QPair<QString, QString>>& pairList);
+    bool appendPlayListMusic(int id, const QList<int>& musicList);
 
 };
 #endif // APPNED_H

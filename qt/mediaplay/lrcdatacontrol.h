@@ -1,9 +1,9 @@
 #ifndef LRCDATACONTROL_H
 #define LRCDATACONTROL_H
 
-#include <QObject>
 #include "mediaplaydata.h"
 #include "baseclass/lrcdata.h"
+#include <QJsonObject>
 
 class LrcDataControl : public MediaPlayData
 {
@@ -24,13 +24,10 @@ public:
 
     Q_INVOKABLE QJsonObject getLrcJsonObject(int lrcId);
 
-    Q_INVOKABLE int getLrcListLength();
+    Q_INVOKABLE [[nodiscard]] int getLrcListLength() const;
 
     //选择当前播放歌词
     void selectPlayLrc(qint64 time);
-
-    int playingLrcId() const;
-    void setPlayingLrcId(int newPlayingLrcId);
 
 signals:
     //下载歌词

@@ -6,7 +6,7 @@ class NameKey
 public:
     NameKey();
 
-    QString find(QString name);
+    QString find(QString name) const;
 private:
     QHash<QString, QString> m_NameKeyHash;
 };

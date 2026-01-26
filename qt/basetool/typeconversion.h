@@ -9,16 +9,17 @@ class TypeConversion : public QObject
 public:
     explicit TypeConversion(QObject *parent = nullptr);
 
-    Q_INVOKABLE QString durationToTimeStringNoMax(long long duration) const;
-    Q_INVOKABLE QString timeToString(long long time) const;
+    Q_INVOKABLE static QString durationToTimeStringNoMax(long long duration) ;
+    Q_INVOKABLE static QString timeToString(long long time) ;
 
-    QString intListToString(QList<int> list) const;
-    QString intListToString(QList<long long> list) const;
-    QString stringListToString(QStringList list) const;
+    static QString intListToString(const QList<int>& list);
 
-    Q_INVOKABLE QList<int> stringToIntList(QString str) const;
-    Q_INVOKABLE QList<long long> stringToLongList(QString str) const;
-    Q_INVOKABLE QList<QString> stringToStringList(QString str) const;
+    static QString intListToString(const QList<long long>& list);
+    static QString stringListToString(const QStringList& list) ;
+
+    Q_INVOKABLE static QList<int> stringToIntList(const QString& str);
+    Q_INVOKABLE static QList<long long> stringToLongList(const QString& str);
+    Q_INVOKABLE static QList<QString> stringToStringList(const QString &str) ;
 signals:
 };
 

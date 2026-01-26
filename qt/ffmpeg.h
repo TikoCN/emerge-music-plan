@@ -1,7 +1,6 @@
 #ifndef FFMPEG_H
 #define FFMPEG_H
 
-#include <QObject>
 #include <QDebug>
 #include "baseclass/mediadata.h"
 extern "C" {
@@ -13,57 +12,57 @@ extern "C" {
 class FFmpeg : public QObject
 {
 public:
-    int r = 0;
+    int m_r = 0;
 
     enum Suffix{MP3, FLAC, AAC, WMA, PCM16, PCM32, ALAC}suffix;
 
-    QString suffixToString(Suffix s);
+    static QString suffixToString(Suffix s);
 
     //打开输出文件
-    AVFormatContext *getOutFormatContext(QString url);
+    AVFormatContext *getOutFormatContext(const QString& url);
 
     //打开输入文件
-    AVFormatContext *getInputFormatContext(QString url);
+    AVFormatContext *getInputFormatContext(const QString& url);
 
     //得到解码器文本
-    AVCodecContext *getDecodecContext(AVCodecID id, AVCodecParameters *para);
+    AVCodecContext *getDecodecContext(AVCodecID id, const AVCodecParameters *para);
 
     //得到编码器文本
-    AVCodecContext *getEncodecContext(AVCodecID id, AVCodecParameters *para, bool defult);
+    AVCodecContext *getEncodecContext(AVCodecID id, const AVCodecParameters *para, bool defaultCodeFlag);
 
     //生成数据包
-    AVPacket *getAVPacket();
+    static AVPacket *getAVPacket();
 
     //生成重采样指针
-    SwrContext *getSwrContext(AVCodecContext *out, AVCodecContext *in);
+    static SwrContext *getSwrContext(const AVCodecContext *out, const AVCodecContext *in);
 
     //生成数据指针
-    AVFrame *getAVFrame();
+    static AVFrame *getAVFrame();
 
     //打印错误
-    void logError(QString text);
+    void logError(const QString &text) const;
 
     //从音乐文件中提取独立封面
-    QImage getInlayCover(QString url);
+    QImage getInlayCover(const QString& url);
 
     //将音乐文件内嵌的音乐文件中
-    void setInlayCover(QString musicUrl, QString coverUrl);
+    void setInlayCover(const QString& musicUrl, const QString& coverUrl);
 
     //得到输出路径
-    QString getOutUrl(QString inUrl);
+    [[nodiscard]] QString getOutUrl(QString inUrl) const;
 
     //转码装格式
-    bool transformCodec(QString url, enum Suffix);
+    bool transformCodec(const QString& url, enum Suffix);
 
     //加载变化输出帧
-    QList<AVFrame *>changeFrame(AVFrame *swrFrm);
+    QList<AVFrame *>changeFrame(AVFrame *swrFrm) const;
 
     //写入标签
-    bool writeDict(QStringList key, QStringList value, QString inUrl, QString outUrl);
+    bool writeDict(QStringList key, QStringList value, const QString& inUrl, const QString& outUrl);
 
     //得到标签
-    bool getDict(QStringList *keys, QStringList *values, QString url);
-    bool getDict(MediaData *data, QString url);
+    bool getDict(QStringList *keys, QStringList *values, const QString& url);
+    bool getDict(MediaData *data, const QString& url);
 };
 
 #endif // FFMPEG_H

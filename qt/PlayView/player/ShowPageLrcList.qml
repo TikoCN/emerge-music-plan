@@ -15,7 +15,7 @@ Item {
         hoverEnabled: true
         onClicked: (mouse)=>{
                        if (mouse.button === Qt.RightButton){
-                           var menu = comMenu.createObject(mouseHover)
+                           const menu = comMenu.createObject(mouseHover);
                            menu.popup()
                        }
                    }
@@ -85,8 +85,8 @@ Item {
 
     //插入歌词
     function buildLrcList(){
-        var length = MediaPlayer.getLrcListLength()
-        for(var i=0; i<length; i++){
+        const length = MediaPlayer.getLrcListLength();
+        for(let i=0; i<length; i++){
             lrcDataList.append({lrc:i})
         }
     }

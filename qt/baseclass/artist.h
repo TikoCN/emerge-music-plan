@@ -4,8 +4,7 @@
 #include <QObject>
 using ArtistPtr = QSharedPointer<class Artist>;
 
-class Artist
-{
+class Artist {
 public:
     explicit Artist(QString name, int id, QString linekey);
 
@@ -16,7 +15,7 @@ public:
     int id;
     bool isNoCover;
 
-    QJsonObject getJsonObject();
+    [[nodiscard]] QJsonObject getJsonObject() const;
 };
 
 #endif // ARTIST_H

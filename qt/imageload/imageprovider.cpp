@@ -3,8 +3,8 @@
 #include "online.h"
 #include <QPainter>
 #include <QPainterPath>
-#include <QThread>
 #include <QImageReader>
+#include <utility>
 #include "sqlite/sqlite.h"
 #include "ffmpeg.h"
 #include "basetool/basetool.h"
@@ -22,7 +22,7 @@ const QRegularExpression RX_RADIUS_PATTERN(R"(radius=(\d+))");
  */
 void ImageResponse::buildRoundImage()
 {
-    QRect rect = m_img.rect();//得到大小
+    const QRect rect = m_img.rect();//得到大小
     QImage destImage(rect.width(), rect.height(), QImage::Format_ARGB32);//目标结果
     destImage.fill(Qt::transparent);
 
@@ -39,13 +39,13 @@ void ImageResponse::buildRoundImage()
     m_img = destImage;
 }
 
-void ImageResponse::loadMusicCover(bool isOnline)
+void ImageResponse::loadMusicCover(const bool isOnline)
 {
     FFmpeg ffmpeg;
-    QString musicUrl = SQLite::getInstance()->getMusicUrl(m_loadMusicId);
+    const QString musicUrl = SQLite::getInstance()->getMusicUrl(m_loadMusicId);
     QString errorId = tr("歌曲ID: ") +
                       QString::number(m_loadMusicId);
-    QString coverUrl = BaseTool::getInstance()->getFileManagement()->getBaseUrl(musicUrl) +
+    const QString coverUrl = FileManagement::getBaseUrl(musicUrl) +
                        ".jpg";
 
     //提取附加封面
@@ -56,58 +56,56 @@ void ImageResponse::loadMusicCover(bool isOnline)
     //加载独立封面
     if (m_img.isNull() && !loadImageFile(coverUrl) && isOnline) {
         //独立封面不存在，下载独立封面
-        OnLine::getInstance()->downMusicCover(BaseTool::getInstance()->getFileManagement()->getFileName(musicUrl), coverUrl);
+        OnLine::downMusicCover(FileManagement::getFileName(musicUrl), coverUrl);
         loadImageFile(coverUrl);
     }
 }
 
-void ImageResponse::loadPlayListCover(bool isOnline)
+void ImageResponse::loadPlayListCover(const bool isOnline)
 {
-    PlayListPtr playlist = data->getPlayListCore(m_loadId);
-
-    if (playlist != nullptr && playlist->musicList.size() > 0) {
+    if (const PlayListPtr playlist = data->getPlayListCore(m_loadId);
+        playlist != nullptr && !playlist->musicList.empty()) {
         m_loadMusicId = playlist->musicList[0];
         loadMusicCover(isOnline);
     }
 }
 
-void ImageResponse::loadArtistCover(bool isOnline)
+void ImageResponse::loadArtistCover(const bool isOnline)
 {
-    ArtistPtr artist = data->getArtistCore(m_loadId);
+    const ArtistPtr artist = data->getArtistCore(m_loadId);
     if (artist.isNull()) {
         return;
     }
 
-    QString name = artist->name;
-    QString url = BaseTool::getInstance()->getFileManagement()->getArtistCoverUrl(name);
+    const QString name = artist->name;
 
-    if (!loadImageFile(url) && isOnline) {
+    if (const QString url = FileManagement::getArtistCoverUrl(name);
+        !loadImageFile(url) && isOnline) {
         TLog::getInstance()->logIgnore(
             tr("歌手") +
             tr("封面加载失败") +
             tr("开始下载封面"));
 
-        OnLine::getInstance()->downArtistCover(name, url);
+        OnLine::downArtistCover(name, url);
         loadImageFile(url);
     }
 }
 
-void ImageResponse::loadAlbumCover(bool isOnline)
+void ImageResponse::loadAlbumCover(const bool isOnline)
 {
-    AlbumPtr album = data->getAlbumCore(m_loadId);
+    const AlbumPtr album = data->getAlbumCore(m_loadId);
     if (album.isNull()) {
         return;
     }
 
-    QString name = album->name;
-    QString url = BaseTool::getInstance()->getFileManagement()->getAlbumCoverUrl(name);
+    const QString name = album->name;
 
-    if (!loadImageFile(url) && isOnline){
+    if (const QString url = FileManagement::getAlbumCoverUrl(name); !loadImageFile(url) && isOnline){
         TLog::getInstance()->logIgnore(
             tr("专辑") +
             tr("封面加载失败") +
             tr("开始下载封面"));
-        OnLine::getInstance()->downAlbumCover(name, url);
+        OnLine::downAlbumCover(name, url);
         // 重新加载
         loadImageFile(url);
     }
@@ -118,9 +116,9 @@ QString ImageResponse::errorString() const
     return m_errorString;
 }
 
-ImageResponse::ImageType ImageResponse::typeFromStringToEnum(QString type)
+ImageResponse::ImageType ImageResponse::typeFromStringToEnum(const QString& type)
 {
-    QStringList typeList = {
+    const QStringList typeList = {
         "musicFile", "musicOnLine",
         "artistFile", "artistOnline",
         "albumFile", "albumOnline",
@@ -129,7 +127,7 @@ ImageResponse::ImageType ImageResponse::typeFromStringToEnum(QString type)
     return static_cast<ImageType>(typeList.indexOf(type));
 }
 
-bool ImageResponse::loadImageFile(QString url)
+bool ImageResponse::loadImageFile(const QString& url)
 {
     //加载封面文件
     if(QFile::exists(url))
@@ -146,8 +144,8 @@ bool ImageResponse::loadImageFile(QString url)
     return false;
 }
 
-ImageResponse::ImageResponse(const QString &url, const QSize &requestedSize)
-    :m_url(url), m_requestedSize(requestedSize)
+ImageResponse::ImageResponse(QString url, const QSize &requestedSize)
+    :m_url(std::move(url)), m_requestedSize(requestedSize)
 {
     setAutoDelete(false);
     ctr = ImageControl::getInstance();
@@ -230,7 +228,7 @@ void ImageResponse::run()
 }
 
 QQuickImageResponse *ImageProvider::requestImageResponse(const QString &id, const QSize &requestedSize) {
-    class ImageResponse *res = new class ImageResponse(id, requestedSize);
+    auto *res = new class ImageResponse(id, requestedSize);
     pool.start(res);
     return res;
 }

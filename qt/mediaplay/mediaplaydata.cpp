@@ -1,6 +1,6 @@
 #include "mediaplaydata.h"
 #include "fftw3.h"
-
+#include <QAudioOutput>
 
 MediaPlayData::MediaPlayData(BaseTool *baseTool, DataActive *dataActive)
     :m_baseTool(baseTool), m_dataActive(dataActive)
@@ -16,7 +16,7 @@ MediaPlayData::MediaPlayData(BaseTool *baseTool, DataActive *dataActive)
 
     connect(m_bufferOutput, &QAudioBufferOutput::audioBufferReceived, this, &MediaPlayData::buildFrequencySpectrum);
 
-    connect(m_player, &QMediaPlayer::positionChanged, this, [=](qint64 time){
+    connect(m_player, &QMediaPlayer::positionChanged, this, [this](qint64 time){
         updateAudioOutPut();
     });
 }
@@ -31,9 +31,8 @@ void MediaPlayData::clearData()
     emit finishClearData();
 }
 
-void MediaPlayData::updateAudioOutPut()
-{
-    QAudioOutput* nowOut = new QAudioOutput;
+void MediaPlayData::updateAudioOutPut() const {
+    const auto* nowOut = new QAudioOutput;
     if(m_audioOutput->device().id() != nowOut->device().id())
     {
         m_audioOutput->setDevice(nowOut->device());
@@ -59,15 +58,15 @@ QMediaPlayer *MediaPlayData::getPlayer() const
     return m_player;
 }
 
-void MediaPlayData::buildFrequencySpectrum(QAudioBuffer buffer)
+void MediaPlayData::buildFrequencySpectrum(const QAudioBuffer& buffer)
 {
     //得到所有音频样本
-    const qint16* samples = buffer.constData<qint16>();
-    int all = buffer.frameCount();//采样单元
-    int sample = buffer.sampleCount();//总频道数
+    const auto* samples = buffer.constData<qint16>();
+    const int all = static_cast<int>(buffer.frameCount());//采样单元
+    const int sample = static_cast<int>(buffer.sampleCount());//总频道数
 
     if(all != 0){
-        int alone = sample/all;
+        const long long alone = sample/all;
         QVector<double>data(all);
 
         for (int i = 0; i < all; i++)
@@ -75,15 +74,15 @@ void MediaPlayData::buildFrequencySpectrum(QAudioBuffer buffer)
             data[i] = 0.0;
             for(int j=0; j<alone && i*alone+j<sample; j++)
             {
-                data[i] += samples[i*alone+j]/alone;
+                data[i] += static_cast<double>(samples[i*alone+j]) / static_cast<double>(alone);
             }
         }
 
         //计算傅里叶变换
         QVector<double>out(all);
         // 创建一个FFTW计划
-        fftw_complex *in_ptr = reinterpret_cast<fftw_complex*>(fftw_malloc(sizeof(fftw_complex) * all));
-        fftw_complex *out_ptr = reinterpret_cast<fftw_complex*>(fftw_malloc(sizeof(fftw_complex) * all));
+        auto *in_ptr = static_cast<fftw_complex*>(fftw_malloc(sizeof(fftw_complex) * all));
+        auto *out_ptr = static_cast<fftw_complex*>(fftw_malloc(sizeof(fftw_complex) * all));
 
         // 将std::vector数据复制到fftw_complex数组中
         for (int i = 0; i < all; ++i) {
@@ -92,6 +91,7 @@ void MediaPlayData::buildFrequencySpectrum(QAudioBuffer buffer)
         }
 
         // 创建计划并计算DFT
+        // ReSharper disable once CppLocalVariableMayBeConst
         fftw_plan plan = fftw_plan_dft_1d(all, in_ptr, out_ptr, FFTW_FORWARD, FFTW_ESTIMATE);
         fftw_execute(plan);
 
@@ -133,21 +133,21 @@ void MediaPlayData::buildFrequencySpectrum(QAudioBuffer buffer)
         }
 
         //时间平滑函数
-        const double smoothConstantDown = 0.08;
-        const double smoothConstantUp = 0.8;
         for(int i=0; i<sampleList.size() && i<m_allSamples.size(); i++){
             if(std::isfinite(sampleList[i])){//判断是不是有理数
-                if(sampleList[i] > m_allSamples[i]){
+                if(sampleList[i] > m_allSamples[i]) {
+                    constexpr double smoothConstantUp = 0.8;
                     m_allSamples[i] = smoothConstantUp * sampleList[i] + (1-smoothConstantUp) * m_allSamples[i];
                 }
-                else{
+                else {
+                    constexpr double smoothConstantDown = 0.08;
                     m_allSamples[i] = smoothConstantDown * sampleList[i] + (1-smoothConstantDown) * m_allSamples[i];
                 }
             }
         }
 
-        int aim = 120;
-        int cell = m_allSamples.size() / aim;
+        constexpr int aim = 120;
+        long long cell = m_allSamples.size() / aim;
         QVector<double> outSamples;//处理之后的音乐样本
         outSamples.fill(0, aim);
         cell = cell <= 0 ? 1 : cell;

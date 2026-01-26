@@ -1,7 +1,7 @@
 import QtQuick
 import QtQuick.Controls.Basic
 import QtQuick.Effects
-import MediaerAPI   
+import MediaerAPI
 import Tiko
 
 Item {
@@ -21,43 +21,43 @@ Item {
     property var helpTextList: []
 
     Component.onCompleted: {
-           var json = MediaPlayer.getLrcJsonObject(lrcId)
-           startList = BaseTool.typeConversion.stringToLongList(json.startList)
-           endList = BaseTool.typeConversion.stringToLongList(json.endList)
-           textList = BaseTool.typeConversion.stringToStringList(json.textList)
-           helpTextList = BaseTool.typeConversion.stringToStringList(json.helpTextList)
-           startTime = Number(json.startTime)
-           duration = Number(json.endTime - json.startTime)
+        const json = MediaPlayer.getLrcJsonObject(lrcId);
+        startList = BaseTool.typeConversion.stringToLongList(json.startList)
+        endList = BaseTool.typeConversion.stringToLongList(json.endList)
+        textList = BaseTool.typeConversion.stringToStringList(json.textList)
+        helpTextList = BaseTool.typeConversion.stringToStringList(json.helpTextList)
+        startTime = Number(json.startTime)
+        duration = Number(json.endTime - json.startTime)
     }
 
-   Loader {
-       id: loader
-       anchors.fill: parent
-       sourceComponent: textList.length > 0 ? drawLrcLineCom : drawLoadLineCom
-   }
+    Loader {
+        id: loader
+        anchors.fill: parent
+        sourceComponent: textList.length > 0 ? drawLrcLineCom : drawLoadLineCom
+    }
 
-   Component {
-       id: drawLrcLineCom
-       DrawLrcLine {
-           width: coreLrcLine.width
-           id: drawLrcLine
-           lrcId: coreLrcLine.lrcId
-           startList: coreLrcLine.startList
-           endList: coreLrcLine.endList
-           textList: coreLrcLine.textList
-           helpTextList: coreLrcLine.helpTextList
-       }
-   }
+    Component {
+        id: drawLrcLineCom
+        DrawLrcLine {
+            width: coreLrcLine.width
+            id: drawLrcLine
+            lrcId: coreLrcLine.lrcId
+            startList: coreLrcLine.startList
+            endList: coreLrcLine.endList
+            textList: coreLrcLine.textList
+            helpTextList: coreLrcLine.helpTextList
+        }
+    }
 
-   Component {
-       id: drawLoadLineCom
-       DrawLoadLine {
-           width: coreLrcLine.width
-           id: drawLoadLine
-           lrcId: coreLrcLine.lrcId
-           startTime: coreLrcLine.startTime
-           duration: coreLrcLine.duration
-       }
-   }
+    Component {
+        id: drawLoadLineCom
+        DrawLoadLine {
+            width: coreLrcLine.width
+            id: drawLoadLine
+            lrcId: coreLrcLine.lrcId
+            startTime: coreLrcLine.startTime
+            duration: coreLrcLine.duration
+        }
+    }
 }
 

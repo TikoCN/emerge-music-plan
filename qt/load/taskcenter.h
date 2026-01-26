@@ -23,14 +23,14 @@ private:
     QList<QPair<QString, QString>> m_playlistMusicList;
 
     QThreadPool *m_pool;
-    int m_work;                      //工作单元数量
+    int m_work{};                      //工作单元数量
 
     // 写入数据库
     void writeDataSQL();
 
     //遍历文件夹得到所有子文件
-    void filterFileInfo(QStringList dirPath);
-    void filterFileInfo(QFileInfoList dir);
+    void filterFileInfo(const QStringList& dirPath);
+    void filterFileInfo(const QFileInfoList& dir);
 
     void selectFile();
     void loadMedia();
@@ -47,12 +47,10 @@ public:
     }
 
     static void freeInstance(){
-        if(instance != nullptr){
             delete instance;
-        }
     }
 
-    ~TaskCenter();
+    ~TaskCenter() override;
 
 
     //删除数据
@@ -60,7 +58,7 @@ public:
 
     void start();
 
-    void appendInfo(QFileInfoList fileInfoList);
+    void appendInfo(const QFileInfoList& fileInfoList);
     void appendMedia(QList<MediaData> dataList);
 };
 

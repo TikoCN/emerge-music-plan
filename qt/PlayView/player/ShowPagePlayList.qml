@@ -127,7 +127,7 @@ Item {
 
                 function sort(){
                     if (sortMenuComponent.status === Component.Ready){
-                        var menu = sortMenuComponent.createObject(this)
+                        const menu = sortMenuComponent.createObject(this);
                         menu.popup()
                     }
                 }
@@ -206,7 +206,7 @@ Item {
             return
         playlistId = id
 
-        var json = DataActive.getPlayListJson(id)
+        const json = DataActive.getPlayListJson(id);
         musicList = BaseTool.typeConversion.stringToIntList(json.musicList)
         sort = json.sort
         duration = json.duration

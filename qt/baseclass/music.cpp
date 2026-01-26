@@ -2,15 +2,12 @@
 #include "ffmpeg.h"
 #include "basetool/basetool.h"
 #include <QDesktopServices>
-#include <QJsonObject>
-#include <QGuiApplication>
-#include <QClipboard>
 #include <QImageReader>
 #include <QPixmap>
 #include "mediadata.h"
+#include "tlog.h"
 
-QJsonObject Music::getJsonObject()
-{
+QJsonObject Music::getJsonObject() const {
     QJsonObject json;
     json.insert("title", title);
     json.insert("album", album);
@@ -24,18 +21,17 @@ QJsonObject Music::getJsonObject()
     return json;
 }
 
-Music::Music() {
-    url = "";
-    album = QObject::tr("未知专辑");
-    artistList.append(QObject::tr("未知歌手"));
-    title = QObject::tr("未知音乐");
-    level = 0;
-    isLove = false;
-    playNumber = 0;
+Music::Music()
+    : title(QObject::tr("未知音乐"))
+      , artistList{QObject::tr("未知歌手")}
+      , url("")
+      , album(QObject::tr("未知专辑"))
+      , level(0)
+      , playNumber(0)
+      , isLove(false) {
 }
 
-void Music::setMedia(MediaData data)
-{
+void Music::setMedia(const MediaData &data) {
     title = data.title;
     artistList = data.artistList;
     album = data.album;
@@ -46,13 +42,11 @@ void Music::setMedia(MediaData data)
 }
 
 
-QString Music::getMediaJson()
-{
+QString Music::getMediaJson() {
     return "";
 }
 
-void Music::fromFileInfo(QFileInfo info)
-{
+void Music::fromFileInfo(const QFileInfo &info) {
     url = info.filePath();
     lastEdit = info.lastModified().toString("yy-MM-dd hh:mm:ss");
     lastEditTime = info.lastModified().toMSecsSinceEpoch();
@@ -61,17 +55,16 @@ void Music::fromFileInfo(QFileInfo info)
 /*
 加载封面
 */
-QImage Music::loadCover(QString url)
-{
+QImage Music::loadCover(const QString &url) {
     FFmpeg ffmpeg;
 
-    QString coverUrl = BaseTool::getInstance()->getFileManagement()->getBaseUrl(url) + ".jpg";
+    const QString coverUrl = FileManagement::getBaseUrl(url) + ".jpg";
     //提取附加封面
     QImage img = ffmpeg.getInlayCover(url);
 
-    if(img.isNull()){
+    if (img.isNull()) {
         //如果存在 独立封面
-        if(QFile::exists(coverUrl)){
+        if (QFile::exists(coverUrl)) {
             img = loadAloneCover(url);
         }
     }
@@ -82,18 +75,15 @@ QImage Music::loadCover(QString url)
 /*
  * 加载独立的封面文件
 */
-QImage Music::loadAloneCover(QString url)
-{
+QImage Music::loadAloneCover(const QString &url) {
     QImage img;
-    QString coverUrl = BaseTool::getInstance()->getFileManagement()->getBaseUrl(url) + ".jpg";
 
     //如果存在 独立封面
-    if(QFile::exists(coverUrl))
-    {
+    if (const QString coverUrl = FileManagement::getBaseUrl(url) + ".jpg"; QFile::exists(coverUrl)) {
         QImageReader reader;
         reader.setFileName(coverUrl);
         QSize aim = reader.size();
-        aim.scale(QSize(300,300), Qt::KeepAspectRatioByExpanding);
+        aim.scale(QSize(300, 300), Qt::KeepAspectRatioByExpanding);
         reader.setScaledSize(aim);
         img = reader.read();
     }
@@ -103,9 +93,8 @@ QImage Music::loadAloneCover(QString url)
 /*
  * 判断是否符合搜索条件
 */
-bool Music::isSearch(QString aim)
-{
-    if(title.contains(aim) || artistList.contains(aim) || album.contains(aim)){
+bool Music::isSearch(const QString &aim) const {
+    if (title.contains(aim) || artistList.contains(aim) || album.contains(aim)) {
         return true;
     }
     return false;
@@ -114,42 +103,39 @@ bool Music::isSearch(QString aim)
 /*
  * 格式转换
 */
-void Music::setSuffix(QString type)
-{
+void Music::setSuffix(const QString &type) const {
     FFmpeg ffmpeg;
     FFmpeg::Suffix suffix = FFmpeg::MP3;
-    QStringList list = {"MP3", "FLAC", "ALAC", "AAC", "WMA", "PCM16", "PCM32"};
-    switch (list.indexOf(type)) {
-    case 0:
-        suffix = FFmpeg::MP3;
-        break;
-    case 1:
-        suffix = FFmpeg::FLAC;
-        break;
-    case 2:
-        suffix = FFmpeg::ALAC;
-        break;
-    case 3:
-        suffix = FFmpeg::AAC;
-        break;
-    case 4:
-        suffix = FFmpeg::WMA;
-        break;
-    case 5:
-        suffix = FFmpeg::PCM16;
-        break;
-    case 6:
-        suffix = FFmpeg::PCM32;
-        break;
-    default:
-        break;
+    switch (const QStringList list = {"MP3", "FLAC", "ALAC", "AAC", "WMA", "PCM16", "PCM32"}; list.indexOf(type)) {
+        case 0:
+            suffix = FFmpeg::MP3;
+            break;
+        case 1:
+            suffix = FFmpeg::FLAC;
+            break;
+        case 2:
+            suffix = FFmpeg::ALAC;
+            break;
+        case 3:
+            suffix = FFmpeg::AAC;
+            break;
+        case 4:
+            suffix = FFmpeg::WMA;
+            break;
+        case 5:
+            suffix = FFmpeg::PCM16;
+            break;
+        case 6:
+            suffix = FFmpeg::PCM32;
+            break;
+        default:
+            break;
     }
-    bool s = false;
-    s = ffmpeg.transformCodec(url, suffix);
+    if (ffmpeg.transformCodec(url, suffix)) {
+        TLog::getInstance()->logInfo(QObject::tr("转换完成"));
+    }
 }
 
-QString Music::getArtist() const
-{
+QString Music::getArtist() const {
     return artistList.join(";");
 }
-

@@ -38,8 +38,8 @@ Item {
 
 
     function build(){
-        var albumList = SQLData.getAlbumRandList()
-        for (var i in albumList) {
+        const albumList = SQLData.getAlbumRandList();
+        for (const i in albumList) {
             albumRandModel.append({inAlbumId: albumList[i]})
         }
     }

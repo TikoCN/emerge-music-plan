@@ -1,15 +1,13 @@
 #ifndef DATAMANAGER_H
 #define DATAMANAGER_H
 
-#include <QObject>
-#include <QObject>
-#include <QJsonObject>
 #include <QMutex>
 #include "baseclass/music.h"
 #include "baseclass/playlist.h"
 #include "baseclass/album.h"
 #include "baseclass/artist.h"
 #include "sqlite/sqlite.h"
+#include <QJsonObject>
 
 class DataManager : public QObject
 {
@@ -35,7 +33,7 @@ public:
     Q_INVOKABLE QJsonObject getArtistJson(int id);
 
     MusicPtr getMusicCore(int id);
-    QList<MusicPtr> getMusicCoreList(QList<int> idList);
+    QList<MusicPtr> getMusicCoreList(const QList<int>& idList);
     Q_INVOKABLE QJsonObject getMusicJson(int id);
 
     PlayListPtr getPlayListCore(int id);
@@ -46,12 +44,9 @@ public:
     void releaseMusic(int id);
     void releasePlayList(int id);
 
-signals:
-    void finish();
-
 private:
 
-    void deleteOutChace(CORE_TYPE type, int id);
+    void deleteOutCache(CORE_TYPE type, int id);
 
     QHash<int, AlbumPtr> m_albumHash;      // 专辑列表
     QHash<int, ArtistPtr> m_artistHash;     // 歌手列表

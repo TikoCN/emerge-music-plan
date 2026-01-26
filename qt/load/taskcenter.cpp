@@ -1,6 +1,5 @@
 #include "taskcenter.h"
 #include <QDir>
-#include <QUrl>
 #include "buildmusiccore.h"
 #include "selectmusicurl.h"
 #include "setting.h"
@@ -27,10 +26,10 @@ TaskCenter::~TaskCenter()
 /*
  *遍历文件夹得到所有子文件
  */
-void TaskCenter::filterFileInfo(QStringList dirPath)
+void TaskCenter::filterFileInfo(const QStringList& dirPath)
 {
-    for (int i = 0; i < dirPath.size(); ++i) {
-        QDir dir(QUrl(dirPath[i]).toLocalFile());
+    for (const auto & i : dirPath) {
+        QDir dir(QUrl(i).toLocalFile());
 
         //得到子文件
         dir.setFilter(QDir::Files |QDir::NoDotAndDotDot);
@@ -46,10 +45,10 @@ void TaskCenter::filterFileInfo(QStringList dirPath)
 }
 
 // 变量文件夹，捕获所有的音乐文件
-void TaskCenter::filterFileInfo(QFileInfoList dirs)
+void TaskCenter::filterFileInfo(const QFileInfoList& fileInfoList)
 {
-    for (int i = 0; i < dirs.size(); ++i) {
-        QDir dir(dirs[i].filePath());
+    for (const QFileInfo & i : fileInfoList) {
+        QDir dir(i.filePath());
 
         //得到子文件
         dir.setFilter(QDir::Files |QDir::NoDotAndDotDot);
@@ -64,16 +63,16 @@ void TaskCenter::filterFileInfo(QFileInfoList dirs)
 
 void TaskCenter::selectFile()
 {
-    int cell = 0;
+    long long cell = 0;
     m_pool->setMaxThreadCount(Setting::getInstance()->getMaxThreadNumber());
     m_work = 0;
 
-    for (int i = 0; i < m_fileInfoList.size(); i+=cell) {
+    for (long long i = 0; i < m_fileInfoList.size(); i+=cell) {
         m_work++;
         cell = 20;
         if (i + cell >= m_fileInfoList.size()) cell = m_fileInfoList.size() - i;
-        SelectMusicUrl *task = new SelectMusicUrl(m_fileInfoList.mid(i, cell));
-        task->connect(task, &SelectMusicUrl::fileSelected, this, &TaskCenter::appendInfo);
+        auto *task = new SelectMusicUrl(m_fileInfoList.mid(i, cell));
+        connect(task, &SelectMusicUrl::fileSelected, this, &TaskCenter::appendInfo);
 
         m_pool->start(task);
     }
@@ -82,21 +81,21 @@ void TaskCenter::selectFile()
 
 void TaskCenter::loadMedia()
 {
-    int cell = 0;
+    long long cell = 0;
     m_pool->setMaxThreadCount(Setting::getInstance()->getMaxThreadNumber());
     m_work = 0;
 
-    if (m_fileInfoList.size() == 0) {
+    if (m_fileInfoList.empty()) {
         emit DataActive::getInstance()->finish();
         TLog::getInstance()->logLoad("加载完成");
     }
 
-    for (int i = 0; i < m_fileInfoList.size(); i+=cell) {
+    for (long long i = 0; i < m_fileInfoList.size(); i+=cell) {
         m_work++;
         cell = 20;
         if (i + cell >= m_fileInfoList.size()) cell = m_fileInfoList.size() - i;
-        BuildMusicCore *task = new BuildMusicCore(m_fileInfoList.mid(i, cell));
-        task->connect(task, &BuildMusicCore::dataLoaded, this, &TaskCenter::appendMedia);
+        auto *task = new BuildMusicCore(m_fileInfoList.mid(i, cell));
+        connect(task, &BuildMusicCore::dataLoaded, this, &TaskCenter::appendMedia);
 
         m_pool->start(task);
     }
@@ -117,11 +116,11 @@ void TaskCenter::clearData()
 
 void TaskCenter::start()
 {
-    filterFileInfo(Setting::getInstance()->sourceList);
+    filterFileInfo(Setting::getInstance()->getSourceList());
     selectFile();
 }
 
-void TaskCenter::appendInfo(QFileInfoList fileInfoList)
+void TaskCenter::appendInfo(const QFileInfoList& fileInfoList)
 {
     m_fileInfoList.append(fileInfoList);
     m_work--;
@@ -140,8 +139,8 @@ void TaskCenter::appendInfo(QFileInfoList fileInfoList)
 void TaskCenter::appendMedia(QList<MediaData> dataList)
 {
     m_dataList.append(dataList);
-    for (int i = 0; i < dataList.size(); ++i) {
-        MediaData *data = &dataList[i];
+    for (MediaData &i : dataList) {
+        MediaData *data = &i;
         for (int j = 0; j < data->artistList.size(); ++j) {
             m_artistSet.insert(data->artistList[j]);
             QPair<QString, QString> pair;

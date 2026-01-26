@@ -20,7 +20,7 @@ TikoPopupInput {
     onInput: isCheck = false
     onAccept: {
         if (!isCheck) {
-            var checkMsg = checkMsgCom.createObject(playlistNameInput)
+            const checkMsg = checkMsgCom.createObject(playlistNameInput);
             checkMsg.open()
         }
         else if (newPlayListId === -1) {
@@ -31,7 +31,7 @@ TikoPopupInput {
         }
         else {
             isDClick = true
-            var errorMsg = checkMsgCom.createObject(playlistNameInput)
+            const errorMsg = checkMsgCom.createObject(playlistNameInput);
             errorMsg.open()
         }
     }

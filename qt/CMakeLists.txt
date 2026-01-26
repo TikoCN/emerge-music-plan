@@ -1,6 +1,12 @@
 cmake_minimum_required(VERSION 3.16)
-project(musicPlay VERSION 0.1 LANGUAGES CXX)
+
+# windeployqt.exe
 set(CMAKE_TOOLCHAIN_FILE "C:/vcpkg/scripts/buildsystems/vcpkg.cmake")
+project(musicPlay VERSION 0.1 LANGUAGES CXX)
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_PREFIX_PATH "D:/qt/6.10.1/msvc2022_64")
+set(VCPKG_INSTALL_DIR "C:/vcpkg/installed/x64-windows")
+set(CMAKE_PREFIX_PATH ${VCPKG_INSTALL_DIR} ${CMAKE_PREFIX_PATH})
 set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
@@ -19,40 +25,48 @@ add_subdirectory(Tiko)
 add_subdirectory(PlayView)
 
 qt_add_qml_module(appmusicPlay
-    URI musicPlay
-    VERSION 1.0
-    SOURCES
-    setting.h setting.cpp
-    online.h online.cpp
-    ffmpeg.h ffmpeg.cpp
-    sqlite/sqlite.h sqlite/sqlite.cpp
-    sqlite/append.h sqlite/append.cpp
-    sqlite/update.h sqlite/update.cpp
-    sqlite/get.h sqlite/get.cpp
-    sqlite/core.h sqlite/core.cpp
-    baseclass/album.h baseclass/album.cpp
-    baseclass/lrcdata.h baseclass/lrcdata.cpp
-    baseclass/music.h baseclass/music.cpp
-    baseclass/playlist.h baseclass/playlist.cpp
-    baseclass/artist.h baseclass/artist.cpp
-    baseclass/mediadata.h
-    load/taskcenter.h load/taskcenter.cpp
-    load/selectmusicurl.h load/selectmusicurl.cpp
-    load/buildmusiccore.h load/buildmusiccore.cpp
-    tlog.h tlog.cpp
-    namekey.h namekey.cpp
-    basetool/filemanagement.h basetool/filemanagement.cpp
-    imageload/imagecontrol.h imageload/imagecontrol.cpp
-    imageload/imageprovider.h imageload/imageprovider.cpp
-    datacore/datamanager.h datacore/datamanager.cpp
-    datacore/dataactive.h datacore/dataactive.cpp
-    basetool/typeconversion.h basetool/typeconversion.cpp
-    SOURCES basetool/basetool.h basetool/basetool.cpp
-    SOURCES basetool/qmlactive.h basetool/qmlactive.cpp
-    SOURCES mediaplay/mediaplaydata.h mediaplay/mediaplaydata.cpp
-    SOURCES mediaplay/lrcdatacontrol.h mediaplay/lrcdatacontrol.cpp
-    mediaplay/mediaplayer.h mediaplay/mediaplayer.cpp
+        URI musicPlay
+        VERSION 1.0
+        SOURCES
+        setting.h setting.cpp
+        online.h online.cpp
+        ffmpeg.h ffmpeg.cpp
+        sqlite/sqlite.h sqlite/sqlite.cpp
+        sqlite/append.h sqlite/append.cpp
+        sqlite/update.h sqlite/update.cpp
+        sqlite/get.h sqlite/get.cpp
+        sqlite/core.h sqlite/core.cpp
+        baseclass/album.h baseclass/album.cpp
+        baseclass/lrcdata.h baseclass/lrcdata.cpp
+        baseclass/music.h baseclass/music.cpp
+        baseclass/playlist.h baseclass/playlist.cpp
+        baseclass/artist.h baseclass/artist.cpp
+        baseclass/mediadata.h
+        load/taskcenter.h load/taskcenter.cpp
+        load/selectmusicurl.h load/selectmusicurl.cpp
+        load/buildmusiccore.h load/buildmusiccore.cpp
+        tlog.h tlog.cpp
+        namekey.h namekey.cpp
+        basetool/filemanagement.h basetool/filemanagement.cpp
+        imageload/imagecontrol.h imageload/imagecontrol.cpp
+        imageload/imageprovider.h imageload/imageprovider.cpp
+        datacore/datamanager.h datacore/datamanager.cpp
+        datacore/dataactive.h datacore/dataactive.cpp
+        basetool/typeconversion.h basetool/typeconversion.cpp
+        basetool/basetool.h basetool/basetool.cpp
+        basetool/qmlactive.h basetool/qmlactive.cpp
+        mediaplay/mediaplaydata.h mediaplay/mediaplaydata.cpp
+        mediaplay/lrcdatacontrol.h mediaplay/lrcdatacontrol.cpp
+        mediaplay/mediaplayer.h mediaplay/mediaplayer.cpp
+        baseclass/dataexception.h
+
+        RESOURCES
+        ui.qrc  # 资源文件（图片/字体等）
 )
+
+
+target_link_libraries(appmusicPlay PRIVATE TikoLib)
+target_link_libraries(appmusicPlay PRIVATE PlayViewLib)
 
 # link fftw3
 find_package(FFTW3 CONFIG REQUIRED)
@@ -100,29 +114,9 @@ target_link_libraries(appmusicPlay PRIVATE Qt6::Multimedia)
 target_link_libraries(appmusicPlay PRIVATE Qt6::Quick)
 target_link_libraries(appmusicPlay PRIVATE Qt6::Network)
 
-# 设置应用程序图标
-if(WIN32)
-    # Windows：使用 .ico 文件
-    set_target_properties(appmusicPlay PROPERTIES
-        WIN32_EXECUTABLE TRUE
-        RC_ICONS "${CMAKE_CURRENT_SOURCE_DIR}/assets/icon.ico"
-    )
-
-elseif(APPLE)
-    # macOS：设置 bundle 图标
-    set_target_properties(appmusicPlay PROPERTIES
-        MACOSX_BUNDLE TRUE
-        MACOSX_BUNDLE_ICON_FILE icon.icns
-    )
-
-    # 添加 .icns 文件到资源
-    set_source_files_properties("${CMAKE_CURRENT_SOURCE_DIR}/assets/icon.icns"
-        PROPERTIES MACOSX_PACKAGE_LOCATION Resources
-    )
-
-    target_sources(appmusicPlay PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/assets/icon.icns")
-
-endif()
+get_target_property(PLAYVIEW_QML_PATH PlayViewLib IMPORTED_QML_MODULE_DIRECTORY)
+get_target_property(TIKO_QML_MODULE_IMPORT_PATH TikoLib IMPORTED_QML_MODULE_DIRECTORY)
+list(APPEND QML_IMPORT_PATH ${TIKO_QML_MODULE_IMPORT_PATH})
 
 include(GNUInstallDirs)
 install(TARGETS appmusicPlay

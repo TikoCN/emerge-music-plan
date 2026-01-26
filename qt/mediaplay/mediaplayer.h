@@ -2,8 +2,6 @@
 #define MEDIAPLAYER_H
 
 #include <QMediaPlayer>
-#include <QAudioBufferOutput>
-#include <QAudioOutput>
 #include <QPixmap>
 #include "mediaplay/lrcdatacontrol.h"
 
@@ -17,8 +15,8 @@ private:
     int m_loopType;//播放种类
 
     QList<int> m_musicList;//正在播放列表
-    int m_PlayingListId;//正在播放歌曲的列表id
-    int m_playingMusicId;// 正在播放音乐id
+    int m_PlayingListId{};//正在播放歌曲的列表id
+    int m_playingMusicId{};// 正在播放音乐id
     MusicPtr m_playingMusic;
 
     Q_PROPERTY(int playingMusicId READ playingMusicId CONSTANT)
@@ -37,16 +35,14 @@ public:
     }
 
     static void freeInstance(){
-        if(instance != nullptr){
             delete instance;
-        }
     }
 
     //播放下一首
     Q_INVOKABLE void playNext(int forward);
     //获得时间文本
-    Q_INVOKABLE QString getTimeString();
-    int getLoopType() const;
+    Q_INVOKABLE [[nodiscard]] QString getTimeString() const;
+    [[nodiscard]] int getLoopType() const;
     void setLoopType(int newLoopType);
     void playMusicByListId(int musicListId);
 
@@ -54,12 +50,12 @@ public:
     Q_INVOKABLE void buildPlayingListByMusicList(QList<int> list, int playMusicId = 0);
     Q_INVOKABLE void buildPlayingListByMusicId(int musicId);
     // 播放列表插入歌曲
-    Q_INVOKABLE void insertPlayingListByMusicList(QList<int> list);
+    Q_INVOKABLE void insertPlayingListByMusicList(const QList<int>& list);
     Q_INVOKABLE void insertPlayingListByMusicId(int musicId);
-    Q_INVOKABLE void appendPlayingListByMusicList(QList<int> list);
+    Q_INVOKABLE void appendPlayingListByMusicList(const QList<int>& list);
     Q_INVOKABLE void appendPlayingListByMusicId(int musicId);
-    int playingMusicId() const;
-    QList<int> musicList() const;
+    [[nodiscard]] int playingMusicId() const;
+    [[nodiscard]] QList<int> musicList() const;
 
 signals:
 

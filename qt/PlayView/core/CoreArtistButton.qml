@@ -15,7 +15,7 @@ Item{
     property int duration: -1
 
     Component.onCompleted: {
-        var json = DataActive.getArtistJson(artistId)
+        const json = DataActive.getArtistJson(artistId);
         name = json.artist
         duration = json.duration
     }

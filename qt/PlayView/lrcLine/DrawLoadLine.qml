@@ -19,21 +19,21 @@ Canvas {
     property font lrcFont: Setting.mainLrcFont
 
     onPaint: {
-        var ctx = drawLoadLine.getContext("2d")
-        var width = drawLoadLine.width
-        var height = drawLoadLine.height
+        const ctx = drawLoadLine.getContext("2d");
+        const width = drawLoadLine.width;
+        const height = drawLoadLine.height;
         // 清除画布
-        var r = drawLoadLine.r
-        var centerY = height / 2
-        var space = 10
-        var boreder = 20
+        const r = drawLoadLine.r;
+        const centerY = height / 2;
+        const space = 10;
+        const boreder = 20;
         ctx.clearRect(0, 0, width, height);
 
         // 渐变色
-        var overF = (playingPos - startTime)/(duration - startTime)
+        let overF = (playingPos - startTime) / (duration - startTime);
         overF = overF || 0
         overF = overF > 1 || 1
-        var gradient = ctx.createLinearGradient(boreder, centerY - r, boreder + (space + 2*r)*3 + 2*r, centerY - r);
+        const gradient = ctx.createLinearGradient(boreder, centerY - r, boreder + (space + 2 * r) * 3 + 2 * r, centerY - r);
 
         // 添加颜色停止点
         gradient.addColorStop(0, drawLoadLine.playingColor);
@@ -42,8 +42,8 @@ Canvas {
         gradient.addColorStop(1, drawLoadLine.normalColor)
 
         ctx.beginPath()
-        for(var i=0; i<3; i++){
-            var startX = boreder + (space + 2 * r) * i
+        for(let i=0; i<3; i++){
+            const startX = boreder + (space + 2 * r) * i;
             ctx.ellipse(startX, centerY - r, 2 * r, 2 * r)
         }
         ctx.fillStyle = gradient

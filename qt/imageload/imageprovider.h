@@ -3,8 +3,6 @@
 
 #include <QThreadPool>
 #include <QRunnable>
-#include <QObject>
-#include <QQuickAsyncImageProvider>
 #include <QQuickImageResponse>
 #include "imageload/imagecontrol.h"
 #include "datacore/dataactive.h"
@@ -28,25 +26,25 @@ public:
         Unknown
     };
 
-    ImageResponse(const QString &url, const QSize &requestedSize);
-    ~ImageResponse();
+    ImageResponse(QString url, const QSize &requestedSize);
+    ~ImageResponse() override;
 
-    QQuickTextureFactory *textureFactory() const override;
+    [[nodiscard]] QQuickTextureFactory *textureFactory() const override;
 
     void run() override;
 
     //计算圆角图片
     void buildRoundImage();
-    bool loadImageFile(QString url);
+    bool loadImageFile(const QString& url);
 
     void loadMusicCover(bool isOnline);
     void loadPlayListCover(bool isOnline);
     void loadArtistCover(bool isOnline);
     void loadAlbumCover(bool isOnline);
 
-    ImageType typeFromStringToEnum(QString type);
+    static ImageType typeFromStringToEnum(const QString& type);
 
-    QString errorString() const override;
+    [[nodiscard]] QString errorString() const override;
 
 private:
     QImage m_img;
@@ -58,9 +56,9 @@ private:
     ImageControl *ctr;
     DataActive *data;
 
-    int m_loadId;
-    int m_loadMusicId;
-    int m_radius;
+    int m_loadId{};
+    int m_loadMusicId{};
+    int m_radius{};
 
 };
 

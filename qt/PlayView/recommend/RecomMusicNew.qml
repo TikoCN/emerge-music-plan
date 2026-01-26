@@ -42,8 +42,8 @@ Item {
     }
 
     function build(){
-        var newMusicList = SQLData.getNewMusicList()
-        for (var i in newMusicList) {
+        const newMusicList = SQLData.getNewMusicList();
+        for (const i in newMusicList) {
             newMusicModel.append({inMusicId: newMusicList[i]})
         }
     }

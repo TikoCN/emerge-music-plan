@@ -1,8 +1,10 @@
 #include "buildmusiccore.h"
+
+#include <utility>
 #include "ffmpeg.h"
 
 BuildMusicCore::BuildMusicCore(QFileInfoList infoList)
-    : _infoList(infoList)
+    : m_infoList(std::move(infoList))
 {
     setAutoDelete(true);
 }
@@ -10,12 +12,12 @@ BuildMusicCore::BuildMusicCore(QFileInfoList infoList)
 void BuildMusicCore::run()
 {
     FFmpeg ff;
-    for (int i = 0; i < _infoList.size(); ++i) {
+    for (const auto & i : m_infoList) {
         MediaData data;
-        ff.getDict(&data, _infoList[i].filePath());
-        _musicList.append(data);
+        ff.getDict(&data, i.filePath());
+        m_musicList.append(data);
     }
-    emit dataLoaded(_musicList);
+    emit dataLoaded(m_musicList);
 }
 
 

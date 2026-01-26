@@ -7,48 +7,48 @@
 
 using MusicPtr = QSharedPointer<class Music>;
 
-class Music
-{
+class Music {
 public:
     QString title;
     QStringList artistList;
     QString url;
     QString album;
     QString lastEdit;
-    long long duration;
-    long long lastEditTime;
-    long long insetTime;
-    int id;
+    long long duration{};
+    long long lastEditTime{};
+    long long insetTime{};
+    int id{};
     int level;
     int playNumber;
-    int albumId;
+    int albumId{};
     bool isLove;
 
     Music();
 
     // 读取元数据
-    void setMedia(MediaData data);
+    void setMedia(const MediaData &data);
 
     // 读取所有标签
-    QString getMediaJson();
+    static QString getMediaJson();
 
     //来自文件
-    void fromFileInfo(QFileInfo info);
+    void fromFileInfo(const QFileInfo &info);
 
     //加载封面
-    static QImage loadCover(QString url);
+    static QImage loadCover(const QString &url);
 
     //加载封面·
-    static QImage loadAloneCover(QString url);
+    static QImage loadAloneCover(const QString &url);
 
     //判断是否符合搜索条件
-    bool isSearch(QString aim);
+    [[nodiscard]] bool isSearch(const QString &aim) const;
 
     //格式转换
-    void setSuffix(QString type);
+    void setSuffix(const QString &type) const;
 
-    QString getArtist() const;
-    QJsonObject getJsonObject();
+    [[nodiscard]] QString getArtist() const;
+
+    [[nodiscard]] QJsonObject getJsonObject() const;
 };
 
 #endif // MUSIC_H

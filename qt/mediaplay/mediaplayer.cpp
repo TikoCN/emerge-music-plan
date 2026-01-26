@@ -1,8 +1,9 @@
 #include "mediaplayer.h"
 #include <QRandomGenerator>
 #include <QTimer>
+#include <utility>
 
-void MediaPlayer::playMusicByListId(int musicListId)
+void MediaPlayer::playMusicByListId(const int musicListId)
 {
     if (musicListId >= m_musicList.size() || musicListId < 0)
         return;
@@ -19,10 +20,10 @@ void MediaPlayer::playMusicByListId(int musicListId)
 /*
  * 下一目标
  */
-void MediaPlayer::playNext(int forward)
+void MediaPlayer::playNext(const int forward)
 {
-    int max = m_musicList.size();
-    int aim = -1;
+    const long long max = m_musicList.size();
+    long long aim;
 
     if(max == 0){
         return;
@@ -49,8 +50,7 @@ void MediaPlayer::playNext(int forward)
     playMusicByListId(aim);
 }
 
-QString MediaPlayer::getTimeString()
-{
+QString MediaPlayer::getTimeString() const {
     QDateTime time;
     time.setMSecsSinceEpoch(m_player->position());
     return time.toString("mm:ss.zzz");
@@ -83,7 +83,7 @@ int MediaPlayer::getLoopType() const
     return m_loopType;
 }
 
-void MediaPlayer::setLoopType(int newLoopType)
+void MediaPlayer::setLoopType(const int newLoopType)
 {
     if (m_loopType == newLoopType)
         return;
@@ -91,25 +91,25 @@ void MediaPlayer::setLoopType(int newLoopType)
     emit loopTypeChanged();
 }
 
-void MediaPlayer::buildPlayingListByMusicList(QList<int> list, int playMusicListId)
+void MediaPlayer::buildPlayingListByMusicList(QList<int> list, const int playMusicInListId)
 {
-    m_musicList = list;
+    m_musicList = std::move(list);
     emit musicListBuild();
 
-    playMusicByListId(playMusicListId);
+    playMusicByListId(playMusicInListId);
 }
 
-void MediaPlayer::buildPlayingListByMusicId(int musicId)
+void MediaPlayer::buildPlayingListByMusicId(const int musicId)
 {
     QList<int> list;
     list.append(musicId);
     buildPlayingListByMusicList(list);
 }
 
-void MediaPlayer::insertPlayingListByMusicList(QList<int> list)
+void MediaPlayer::insertPlayingListByMusicList(const QList<int>& list)
 {
-    QList<int> leftList = m_musicList.sliced(0, m_PlayingListId);
-    QList<int> rightList = m_musicList.sliced(m_PlayingListId);
+    const QList<int> leftList = m_musicList.sliced(0, m_PlayingListId);
+    const QList<int> rightList = m_musicList.sliced(m_PlayingListId);
 
     m_musicList.clear();
     m_musicList.append(leftList);
@@ -119,20 +119,20 @@ void MediaPlayer::insertPlayingListByMusicList(QList<int> list)
     emit musicListBuild();
 }
 
-void MediaPlayer::insertPlayingListByMusicId(int musicId)
+void MediaPlayer::insertPlayingListByMusicId(const int musicId)
 {
     QList<int> list;
     list.append(musicId);
     insertPlayingListByMusicList(list);
 }
 
-void MediaPlayer::appendPlayingListByMusicList(QList<int> list)
+void MediaPlayer::appendPlayingListByMusicList(const QList<int>& list)
 {
     m_musicList.append(list);
     emit musicListBuild();
 }
 
-void MediaPlayer::appendPlayingListByMusicId(int musicId)
+void MediaPlayer::appendPlayingListByMusicId(const int musicId)
 {
     QList<int> list;
     list.append(musicId);

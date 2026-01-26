@@ -47,7 +47,7 @@ TikoMenu{
 
         onOpened: {
             addMenuData.clear()
-            for(var i=0; i<CoreData.playlist.length; i++){
+            for(let i=0; i<CoreData.playlist.length; i++){
                 addMenuData.append({aim: i})
             }
         }

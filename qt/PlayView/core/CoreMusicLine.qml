@@ -26,7 +26,7 @@ Item {
     signal playMusic()
 
     Component.onCompleted:{
-        var json = DataActive.getMusicJson(musicId)
+        const json = DataActive.getMusicJson(musicId);
         musicTitle = json.title
         artist = json.artist
         album = json.album

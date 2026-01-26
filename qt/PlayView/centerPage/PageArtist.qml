@@ -70,21 +70,21 @@ Item {
 
     function build () {
         artistModel.clear()
-        var list = SQLData.getArtistKeyList()
+        const list = SQLData.getArtistKeyList();
         if (list.length > 0) {
             keyList = list
             key = list[0]
         }
 
-        for (var i=0; i<list.length; i++) {
+        for (let i=0; i<list.length; i++) {
             artistButtonModel.append({keyString: list[i]})
         }
     }
 
     onKeyChanged: {
         artistModel.clear()
-        var list = SQLData.getArtist(key)
-        for (var i=0; i<list.length; i++) {
+        const list = SQLData.getArtist(key);
+        for (let i=0; i<list.length; i++) {
             artistModel.append({inArtistId: list[i]})
         }
     }

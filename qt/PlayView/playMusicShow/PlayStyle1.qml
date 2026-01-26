@@ -20,8 +20,8 @@ Item{
             y: leftShow.height * 0.1
             width: min
             height: min
-            sourceSize.width: width
-            sourceSize.height: height
+            sourceSize.width: min
+            sourceSize.height: min
             asynchronous: true
             source: "qrc:/image/cover.png"
             property double min: Math.min(leftShow.height * 0.5, leftShow.width * 0.8)
@@ -150,19 +150,19 @@ Item{
             anchors.horizontalCenter: leftShow.horizontalCenter
 
             onPaint: {
-                var ctx = getContext("2d")
+                const ctx = getContext("2d");
                 // 清除画布
                 ctx.clearRect(0, 0, width, height);
-                var inList = MediaPlayer.allSamples
-                var w = 3
-                var length = width / w
+                const inList = MediaPlayer.allSamples;
+                const w = 3;
+                const length = width / w;
 
-                var mainColor = Qt.rgba(Setting.backdropColor.r, Setting.backdropColor.g, Setting.backdropColor.b, 0.5)
+                const mainColor = Qt.rgba(Setting.backdropColor.r, Setting.backdropColor.g, Setting.backdropColor.b, 0.5);
 
                 ctx.fillStyle = mainColor
                 ctx.strokeStyle = mainColor
                 //上半部分方形
-                for(var i=0; i<length && i<inList.length; i++){
+                for(let i=0; i<length && i<inList.length; i++){
                     ctx.fillRect(i*(w + 3), height,
                                 w, -height/3 * inList[i])
                 }
@@ -205,11 +205,11 @@ Item{
 
     Component.onCompleted: loadPlaying()
     function loadPlaying() {
-        var json = DataActive.getMusicJson(MediaPlayer.playingMusicId)
+        const json = DataActive.getMusicJson(MediaPlayer.playingMusicId);
         artist.text = json.artist
         title.text = json.title
         cover.source = "image://cover/musicOnLine?id=" +
                 MediaPlayer.playingMusicId.toString() +
-                "&radius=10"
+                "&radius=10&highLight"
     }
 }

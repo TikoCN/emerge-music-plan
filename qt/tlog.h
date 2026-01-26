@@ -21,17 +21,17 @@ public:
         }
     }
 
-    void logDebug(QString str);
-    void logLoad(QString str);
-    void logUser(QString str);
-    void logError(QString str);
-    void logRelease(QString str);
-    void logInfo(QString str);
-    void logIgnore(QString str);
+    void logDebug(const QString &str);
+    void logLoad(const QString &str);
+    void logUser(const QString &str);
+    void logError(const QString &str);
+    void logRelease(const QString &str);
+    void logInfo(const QString &str);
+    void logIgnore(const QString &str);
 
 private:
     TLog();
-    ~TLog();
+    ~TLog() override;
 
     static TLog* instance;
     QThread *m_thread;

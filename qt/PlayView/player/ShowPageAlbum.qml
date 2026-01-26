@@ -91,7 +91,7 @@ Item{
     }
 
     function build(){
-        var json = DataActive.getAlbumJson(albumId)
+        const json = DataActive.getAlbumJson(albumId);
         name = json.album
         duration = json.duration
         musicList = BaseTool.typeConversion.stringToIntList(json.musicList)

@@ -25,7 +25,7 @@ MenuMusic {
 
         onOpened: {
             moveMenuData.clear()
-            for(var i=0; i<CoreData.playlist.length; i++){
+            for(let i=0; i<CoreData.playlist.length; i++){
                 moveMenuData.append({aim: i})
             }
         }

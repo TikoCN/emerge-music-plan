@@ -23,7 +23,7 @@ TikoPopupInput {
 
     onAccept: {
         if (!isCheck) {
-            var checkMsg = checkMsgCom.createObject(albumNameInput)
+            const checkMsg = checkMsgCom.createObject(albumNameInput);
             checkMsg.open()
         }
         else if (newAlbumId === -1) {
@@ -34,7 +34,7 @@ TikoPopupInput {
         }
         else {
             isDClick = true
-            var errorMsg = checkMsgCom.createObject(albumNameInput)
+            const errorMsg = checkMsgCom.createObject(albumNameInput);
             errorMsg.open()
         }
     }
@@ -49,7 +49,7 @@ TikoPopupInput {
 
     function sendMsg(){
         if (msgCom.status === Component.Ready){
-            var msg = msgCom.createObject(albumNameInput)
+            const msg = msgCom.createObject(albumNameInput);
             msg.open()
         }
     }

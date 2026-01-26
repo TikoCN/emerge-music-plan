@@ -2,7 +2,6 @@
 #define IMAGECONTROL_H
 
 #include <QObject>
-#include <QHash>
 #include <QImage>
 #include <QDebug>
 #include <QMutex>
@@ -23,7 +22,7 @@ private:
     const int MAX_HASH_SIZE = 50;
 
     explicit ImageControl();
-    ~ImageControl();
+    ~ImageControl() override;
 public:
 
     static ImageControl* getInstance(){
@@ -37,18 +36,16 @@ public:
     }
 
     static void freeInstance(){
-        if(instance != nullptr){
             delete instance;
-        }
     }
 
-    Q_INVOKABLE const bool getUrlNullFlag(QString url);
+    Q_INVOKABLE bool getUrlNullFlag(QString url);
 
-    const QImage getImgCache(QString url);
+    QImage getImgCache(const QString& url);
 
-    void writeImgCache(QString url, const QImage img);
+    void writeImgCache(const QString& url, const QImage &img);
 
-    void writeUrlNullFlag(QString url, const bool flag);
+    void writeUrlNullFlag(const QString& url, bool flag);
 };
 
 #endif // IMAGECONTROL_H

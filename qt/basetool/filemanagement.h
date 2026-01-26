@@ -1,7 +1,6 @@
 #ifndef FILEMANAGEMENT_H
 #define FILEMANAGEMENT_H
 
-#include <QObject>
 #include "baseclass/lrcdata.h"
 #include <QJsonArray>
 
@@ -12,34 +11,34 @@ public:
     explicit FileManagement();
 
     // MUSIC FILE
-    Q_INVOKABLE void writeMusicToFile(QStringList key, QStringList value, int musicId) const;
-    Q_INVOKABLE QJsonArray getMusicAllTaglib(int musicId) const;
+    Q_INVOKABLE static void writeMusicToFile(const QStringList &key, const QStringList &value, int musicId) ;
+    Q_INVOKABLE [[nodiscard]] static QJsonArray getMusicAllTaglib(int musicId);
 
     // LRC FILE
-    Q_INVOKABLE QString getMusicLrcUrl(int musicId) const;
-    Q_INVOKABLE QString getMusicLrcData(int musicId) const;
-    Q_INVOKABLE void wrtiLrcData(int musicId, QString lrcData) const;
-    QList<LrcDataPtr> getMusicLyricsData(int musicId) const;
+    Q_INVOKABLE [[nodiscard]] static QString getMusicLrcUrl(int musicId);
+    Q_INVOKABLE [[nodiscard]] static QString getMusicLrcData(int musicId);
+    Q_INVOKABLE static void wrtiLrcData(int musicId, const QString& lrcData);
+    [[nodiscard]] static QList<LrcDataPtr> getMusicLyricsData(int musicId) ;
 
     // DIR
-    Q_INVOKABLE void openPlayListDir(int playListId) const;
+    Q_INVOKABLE static void openPlayListDir(int playListId);
 
-    QString getArtistCoverUrl(QString name) const;
-    QString getAlbumCoverUrl(QString name) const;
+    [[nodiscard]] static QString getArtistCoverUrl(const QString& name);
+    static [[nodiscard]] QString getAlbumCoverUrl(const QString& name) ;
     // 替换文件
-    void replaceFile(QString inUrl, QString outUrl) const;
+    static void replaceFile(const QString& inUrl, const QString& outUrl) ;
 
-    QString readFileText(QString url) const;
-    Q_INVOKABLE bool writeFileText(QString url, QString data) const;
+    [[nodiscard]] static QString readFileText(const QString &url) ;
+    Q_INVOKABLE [[nodiscard]] static bool writeFileText(const QString& url, const QString& data) ;
 
     //打开文件
-    Q_INVOKABLE void deskOpenFile(QString url, bool local = false) const;
+    Q_INVOKABLE static void deskOpenFile(QString url, bool local = false) ;
     // 重命名文件
-    bool renameFile(QString oldUrl, QString newUrl) const;
+    [[nodiscard]] static bool renameFile(const QString& oldUrl, const QString& newUrl);
 
-    Q_INVOKABLE QString getBaseUrl(QString url) const;
-    Q_INVOKABLE QString getFileName(QString url) const;
-    Q_INVOKABLE QString getParentDir(QString url) const;
+    Q_INVOKABLE [[nodiscard]] static QString getBaseUrl(const QString& url);
+    Q_INVOKABLE static [[nodiscard]] QString getFileName(const QString& url) ;
+    Q_INVOKABLE static [[nodiscard]] QString getParentDir(const QString& url) ;
 };
 
 #endif // FILEMANAGEMENT_H

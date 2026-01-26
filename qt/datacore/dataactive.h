@@ -18,23 +18,20 @@ public:
     }
 
     static void freeInstance() {
-        if (instance != nullptr) {
             delete instance;
-        }
     }
 
     Q_INVOKABLE QList<int> playListShowAllMusic(int playListId);
     Q_INVOKABLE QList<int> playListShowLoveMusic(int playListId);
-    Q_INVOKABLE QList<int> playListShowSearchMusic(int playListId, QString e);
-    Q_INVOKABLE QList<int> musicListSort(QList<int>, PlayList::SORT_TYPE sort);
+    Q_INVOKABLE QList<int> playListShowSearchMusic(int playListId, const QString& e);
+    Q_INVOKABLE QList<int> musicListSort(const QList<int> &, PlayList::SORT_TYPE sort);
 
-    Q_INVOKABLE void appendPlayList(QString name);
-    Q_INVOKABLE void clearNullItem();
-    Q_INVOKABLE void playlistAppendMusic(int id, QList<int> musicList);
+    Q_INVOKABLE void appendPlayList(const QString &name) const;
+    Q_INVOKABLE void clearNullItem() const;
+    Q_INVOKABLE void playlistAppendMusic(int id, const QList<int>& musicList);
 
     Q_INVOKABLE void updateMusicLove(int musicId, bool isLove);
     Q_INVOKABLE void updateMusicLevel(int musicId, bool level);
-    Q_INVOKABLE void updateAllNameKey();
 
 signals:
     void buildAlbumPlayer();
@@ -44,7 +41,7 @@ signals:
 
 private:
     explicit DataActive();
-    ~DataActive();
+    ~DataActive() override;
 
     static DataActive *instance;
 };

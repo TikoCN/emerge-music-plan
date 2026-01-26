@@ -38,8 +38,8 @@ Item {
     }
 
     function build () {
-        var musicList = SQLData.getMusicRandList()
-        for (var i in musicList) {
+        const musicList = SQLData.getMusicRandList();
+        for (const i in musicList) {
             musicRandModel.append({inMusicId: musicList[i]})
         }
     }

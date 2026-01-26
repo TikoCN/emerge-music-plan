@@ -22,39 +22,37 @@ public:
         }
     }
 
-    static void freeInstance(){
-        if(instance != nullptr){
+    static void freeInstance() {
             delete instance;
-        }
     }
 
     //下载封面
-    Q_INVOKABLE void downMusicCover(QString key, QString url);
-    Q_INVOKABLE void downArtistCover(QString key, QString url);
-    Q_INVOKABLE void downAlbumCover(QString key, QString url);
+    Q_INVOKABLE static void downMusicCover(const QString& key, const QString& url);
+    Q_INVOKABLE static void downArtistCover(const QString& key, const QString& url);
+    Q_INVOKABLE static void downAlbumCover(const QString& key, const QString& url);
 
-    Q_INVOKABLE void downMusicCoverNetEase(QString key, QString url);
+    Q_INVOKABLE static void downMusicCoverNetEase(const QString& key, const QString &url);
 
-    Q_INVOKABLE void downMusicCoverQQMusic(QString key, QString url);
+    Q_INVOKABLE static void downMusicCoverQQMusic(const QString& key, const QString &url);
 
-    Q_INVOKABLE void downCoverBing(QString key, QString url);
+    Q_INVOKABLE static void downCoverBing(const QString &key, const QString &url);
 
-    Q_INVOKABLE void downCoverBaidu(QString key, QString url);
+    Q_INVOKABLE static void downCoverBaidu(const QString& key, const QString &url);
 
     //加载图片写入文件
-    void writeCoverToFile(QString url, QString file);
+    static void writeCoverToFile(const QString& url, const QString& file);
 
     //下载歌词
-    Q_INVOKABLE void downLrc(QString key, QString url, int musicId);
+    Q_INVOKABLE void downLrc(const QString& key, const QString &url, int musicId);
 
-    Q_INVOKABLE void downLrcFromNetEase(QString key, QString url);
+    Q_INVOKABLE static void downLrcFromNetEase(const QString& key, const QString &url);
 
-    Q_INVOKABLE void downLrcFromQQMusic(QString key, QString url);
+    Q_INVOKABLE static void downLrcFromQQMusic(const QString& key, const QString &url);
 
     // 下载音乐元数据
-    Q_INVOKABLE void downMediaFromNetEase(QString search, QString musicUrl);
+    Q_INVOKABLE static void downMediaFromNetEase(const QString& search, const QString& musicUrl);
 
-    Q_INVOKABLE void downMediaFromQQMusic(QString search, QString musicUrl);
+    Q_INVOKABLE static void downMediaFromQQMusic(const QString& search, const QString& musicUrl);
 
 signals:
     void lrcDowned(int musicId);

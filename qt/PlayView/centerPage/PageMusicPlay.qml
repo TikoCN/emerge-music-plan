@@ -70,13 +70,13 @@ Item {
         }
 
         function move(){
-            var minX = pageMain.width - effectCover.width
-            var minY = pageMain.height - effectCover.height
-            var maxX = 0
-            var maxY = 0
+            const minX = pageMain.width - effectCover.width;
+            const minY = pageMain.height - effectCover.height;
+            const maxX = 0;
+            const maxY = 0;
 
-            var moveX = addX ? effectCover.stepX : -effectCover.stepX
-            var moveY = addY ? effectCover.stepY : -effectCover.stepY
+            let moveX = addX ? effectCover.stepX : -effectCover.stepX;
+            let moveY = addY ? effectCover.stepY : -effectCover.stepY;
 
             // 计算x方向
             if (effectCover.x === minX){

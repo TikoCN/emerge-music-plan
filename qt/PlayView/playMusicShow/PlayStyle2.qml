@@ -14,36 +14,36 @@ Item{
         property var samples: []
         property int startAngle: 0
         onPaint: {
-            var min = Math.min(canvas.width, canvas.height)
-            var r = min * 0.4
-            var ctx = getContext("2d")
+            const min = Math.min(canvas.width, canvas.height);
+            const r = min * 0.4;
+            const ctx = getContext("2d");
             ctx.clearRect(0, 0, width, height)
 
             ctx.lineWidth = 3
-            var ringColor = Qt.rgba(Setting.themeColor.r, Setting.themeColor.g, Setting.themeColor.b, 0.3)
+            const ringColor = Qt.rgba(Setting.themeColor.r, Setting.themeColor.g, Setting.themeColor.b, 0.3);
             ctx.strokeStyle = ringColor
 
             ctx.beginPath()
 
             canvas.startAngle += 1
-            var angleStep = 3// 每3度一个样本
-            var totalSteps = 360 / angleStep
-            var amplitude = 100
+            const angleStep = 3;// 每3度一个样本
+            const totalSteps = 360 / angleStep;
+            const amplitude = 100;
 
             // 确保样本数量足够，不足时补零
-            for (var i = 0; i < totalSteps; i++) {
-                var angle = i * angleStep + canvas.startAngle
-                var radians = angle * Math.PI / 180
+            for (let i = 0; i < totalSteps; i++) {
+                const angle = i * angleStep + canvas.startAngle;
+                const radians = angle * Math.PI / 180;
 
                 // 获取样本值（假设samples是0~1的归一化数组）
-                var sampleValue = (samples[i] || 0) * amplitude // 放大样本效果
+                let sampleValue = (samples[i] || 0) * amplitude; // 放大样本效果
                 if(Math.abs(sampleValue) < amplitude * 0.1){
                     sampleValue = 0
                 }
 
                 // 极坐标转笛卡尔坐标
-                var x = canvas.width/2 + Math.cos(radians) * (r + sampleValue)
-                var y = canvas.height/2 + Math.sin(radians) * (r + sampleValue)
+                const x = canvas.width / 2 + Math.cos(radians) * (r + sampleValue);
+                const y = canvas.height / 2 + Math.sin(radians) * (r + sampleValue);
 
                 if (i === 0) {
                     ctx.moveTo(x, y) // 路径起点
