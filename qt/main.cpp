@@ -24,12 +24,10 @@ TLog *TLog::instance = nullptr;
 BaseTool *BaseTool::instance = nullptr;
 ImageControl *ImageControl::instance = nullptr;
 
-int main(int argc, char *argv[])
-{
-    qputenv("QT_QML_DEBUG_UNHANDLED_ERRORS", "1");
-    qputenv("QT_LOGGING_RULES", "qt.qml.core=true;qt.qml.engine=true");
-
+int main(int argc, char *argv[]) {
     const QGuiApplication app(argc, argv);
+
+    FileManagement::makeAllDir();
 
     //建立
     TLog::buildInstance();                                      // 0
@@ -41,7 +39,7 @@ int main(int argc, char *argv[])
     DataActive::buildInstance();                                 // 2
     DataActive *dataActive = DataActive::getInstance();
 
-    MediaPlayer::buildInstance(baseTool, dataActive);            // 3
+    MediaPlayer::buildInstance(baseTool, dataActive, tlog);      // 3
     Setting::buildInstance();                                    // 3
     TaskCenter::buildInstance();                                 // 3
     OnLine::buildInstance();                                     // 3

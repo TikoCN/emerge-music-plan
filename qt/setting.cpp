@@ -14,11 +14,11 @@ void Setting::loadMusicCores(){
 bool Setting::getParameterList()
 {
     //读取成功
-    if(!QFile::exists(QDir::currentPath() + "/setting.ini")){
+    if(!QFile::exists(m_iniUrl)){
         return false;
     }
     const MediaPlayer* player = MediaPlayer::getInstance();
-    auto *ini = new QSettings(QDir::currentPath() + "/setting.ini",QSettings::IniFormat);
+    auto *ini = new QSettings(m_iniUrl,QSettings::IniFormat);
     ini->beginGroup("seit");
 
     m_isOnLine = ini->value(m_isOnLineKey).toBool();
@@ -68,7 +68,7 @@ void Setting::removeUrl(const QString &url)
 void Setting::writeData() const
 {
     const MediaPlayer* player = MediaPlayer::getInstance();
-    auto *ini = new QSettings(QDir::currentPath() + "/setting.ini",QSettings::IniFormat);
+    auto *ini = new QSettings(m_iniUrl,QSettings::IniFormat);
     ini->beginGroup("seit");
 
     ini->setValue(m_isOnLineKey,m_isOnLine);
@@ -104,6 +104,7 @@ void Setting::writeData() const
 }
 
 Setting::Setting()
+    :m_iniUrl(QDir::currentPath() + "/data/setting.ini")
 {
     if(!getParameterList()){
         m_isOnLine = true;

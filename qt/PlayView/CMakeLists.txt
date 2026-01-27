@@ -85,6 +85,8 @@ qt_add_qml_module(PlayViewLib
         AutoCoverImage.qml
         TextMode.qml
         MusicListView.qml
+        QML_FILES core/CoreAlbumNameGrid.qml
+        QML_FILES core/CoreArtistNameGrid.qml
 )
 
 # 链接 QtQuick 依赖（纯 QML 模块也需要显式链接）

@@ -22,15 +22,6 @@ void BaseTool::copyString(const QString &data) {
     copy->setText(data);
 }
 
-QString BaseTool::getErrorMsg(const QThread *thread, const QString &errorMsg) {
-    QString result = QString("threadid: %1 threadName %2, msg: %3")
-            .arg(reinterpret_cast<quint64>(QThread::currentThreadId()))
-            .arg(thread->objectName())
-            .arg(errorMsg);
-
-    return result;
-}
-
 const TypeConversion *BaseTool::getTypeConversion() const {
     return typeConversion;
 }

@@ -15,7 +15,7 @@ Item {
         id: albumButtonList
         orientation: ListView.Horizontal
         width: parent.width - 60
-        currentIndex: albumPage.keyList.indexOf(albumPage.key)
+        currentIndex: 0
         height: 40
         anchors.left: parent.left
         anchors.margins: 30
@@ -39,38 +39,48 @@ Item {
                 onClicked: key = keyString
             }
         }
+
+        onCurrentIndexChanged: {
+            if (albumNameList.currentIndex !== currentIndex) {
+                albumNameList.currentIndex = currentIndex
+            }
+        }
     }
 
-    GridView {
-        id: albumShow
-        width: parent.width
-        height: parent.height - y
+    ListView {
+        id: albumNameList
+        width: albumButtonList.width
         anchors.top: albumButtonList.bottom
         anchors.margins: 30
-        cellWidth: CoreData.cellItemWidth
-        cellHeight: CoreData.cellItemWidth
+        anchors.bottom: parent.bottom
         clip: true
-        currentIndex: 0
+        currentIndex: albumButtonList.currentIndex
+        highlightMoveDuration: 1000
         highlightRangeMode: ListView.StrictlyEnforceRange
         preferredHighlightBegin: 0
         preferredHighlightEnd: 0
+        flickDeceleration: 100
 
         model: ListModel {
-            id: albumModel
+            id: albumNameModel
         }
 
-        delegate: CoreAlbumButton {
-            y: 10
+        delegate: CoreAlbumNameGrid {
             x: 10
+            width: albumNameList.width - 20
             id: albumButton
-            albumId: inAlbumId
+            albumName: keyString
         }
 
+        onCurrentIndexChanged: {
+            if (albumButtonList.currentIndex !== currentIndex) {
+                albumButtonList.currentIndex = currentIndex
+            }
+        }
     }
 
 
     function build () {
-        albumModel.clear()
         const list = SQLData.getAlbumKeyList();
         if (list.length > 0) {
             keyList = list
@@ -79,15 +89,12 @@ Item {
 
         for (let i=0; i<list.length; i++) {
             albumButtonModel.append({keyString: list[i]})
+            albumNameModel.append({keyString: list[i]})
         }
     }
 
     onKeyChanged: {
-        albumModel.clear()
-        const list = SQLData.getAlbum(key);
-        for (let i=0; i<list.length; i++) {
-            albumModel.append({inAlbumId: list[i]})
-        }
+        albumButtonList.currentIndex = keyList.indexOf(key)
     }
 }
 

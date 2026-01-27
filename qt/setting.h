@@ -33,6 +33,8 @@ private:
     static Setting* instance;
     Setting();
 
+    const QString m_iniUrl;
+
     QT_SETTING_PROPERTY(int, maxThreadNumber, MaxThreadNumber);
 
     QT_SETTING_PROPERTY(QStringList, sourceList, SourceList);

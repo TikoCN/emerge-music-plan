@@ -25,8 +25,6 @@ public:
 
     Q_INVOKABLE static void copyString(const QString &data);
 
-    static QString getErrorMsg(const QThread *thread, const QString &errorMsg);
-
     [[nodiscard]] const TypeConversion *getTypeConversion() const;
 
     [[nodiscard]] const FileManagement *getFileManagement() const;

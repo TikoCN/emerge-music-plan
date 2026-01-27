@@ -17,6 +17,7 @@ class MediaPlayData : public QObject
 protected:
     BaseTool *m_baseTool;
     DataActive *m_dataActive;
+    TLog *m_loger;
 
     QMediaPlayer *m_player;//播放设备
     QAudioOutput *m_audioOutput;//音频输出
@@ -29,7 +30,7 @@ protected:
 
 public:
 
-    explicit MediaPlayData(BaseTool *baseTool, DataActive *dataActive);
+    explicit MediaPlayData(BaseTool *baseTool, DataActive *dataActive, TLog *logger, QObject *parent = nullptr);
 
     //删除以及加载的数据
     Q_INVOKABLE void clearData();

@@ -15,7 +15,7 @@ Item {
         id: artistButtonList
         orientation: ListView.Horizontal
         width: parent.width - 60
-        currentIndex: keyList.indexOf(key)
+        currentIndex: 0
         height: 40
         anchors.left: parent.left
         anchors.margins: 30
@@ -39,37 +39,48 @@ Item {
                 onClicked: key = keyString
             }
         }
+
+        onCurrentIndexChanged: {
+            if (artistNameList.currentIndex !== currentIndex) {
+                artistNameList.currentIndex = currentIndex
+            }
+        }
     }
 
-    GridView {
-        id: artistShow
-        width: parent.width
-        height: parent.height - y
+    ListView {
+        id: artistNameList
+        width: artistButtonList.width
         anchors.top: artistButtonList.bottom
         anchors.margins: 30
-        cellWidth: CoreData.cellItemWidth
-        cellHeight: CoreData.cellItemWidth
+        anchors.bottom: parent.bottom
         clip: true
-        currentIndex: 0
+        currentIndex: artistButtonList.currentIndex
+        highlightMoveDuration: 1000
         highlightRangeMode: ListView.StrictlyEnforceRange
         preferredHighlightBegin: 0
         preferredHighlightEnd: 0
+        flickDeceleration: 100
 
         model: ListModel {
-            id: artistModel
+            id: artistNameModel
         }
 
-        delegate: CoreArtistButton {
-            y: 10
+        delegate: CoreArtistNameGrid {
             x: 10
+            width: artistNameList.width - 20
             id: artistButton
-            artistId: inArtistId
+            artistName: keyString
+        }
+
+        onCurrentIndexChanged: {
+            if (artistButtonList.currentIndex !== currentIndex) {
+                artistButtonList.currentIndex = currentIndex
+            }
         }
     }
 
 
     function build () {
-        artistModel.clear()
         const list = SQLData.getArtistKeyList();
         if (list.length > 0) {
             keyList = list
@@ -78,15 +89,11 @@ Item {
 
         for (let i=0; i<list.length; i++) {
             artistButtonModel.append({keyString: list[i]})
+            artistNameModel.append({keyString: list[i]})
         }
     }
 
     onKeyChanged: {
-        artistModel.clear()
-        const list = SQLData.getArtist(key);
-        for (let i=0; i<list.length; i++) {
-            artistModel.append({inArtistId: list[i]})
-        }
+        artistButtonList.currentIndex = keyList.indexOf(key)
     }
 }
-

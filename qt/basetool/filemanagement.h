@@ -24,7 +24,7 @@ public:
     Q_INVOKABLE static void openPlayListDir(int playListId);
 
     [[nodiscard]] static QString getArtistCoverUrl(const QString& name);
-    static [[nodiscard]] QString getAlbumCoverUrl(const QString& name) ;
+    [[nodiscard]] static QString getAlbumCoverUrl(const QString& name) ;
     // 替换文件
     static void replaceFile(const QString& inUrl, const QString& outUrl) ;
 
@@ -37,8 +37,10 @@ public:
     [[nodiscard]] static bool renameFile(const QString& oldUrl, const QString& newUrl);
 
     Q_INVOKABLE [[nodiscard]] static QString getBaseUrl(const QString& url);
-    Q_INVOKABLE static [[nodiscard]] QString getFileName(const QString& url) ;
-    Q_INVOKABLE static [[nodiscard]] QString getParentDir(const QString& url) ;
+    Q_INVOKABLE [[nodiscard]] static QString getFileName(const QString& url) ;
+    Q_INVOKABLE [[nodiscard]] static QString getParentDir(const QString& url) ;
+
+    static void makeAllDir();
 };
 
 #endif // FILEMANAGEMENT_H

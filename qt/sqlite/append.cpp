@@ -62,8 +62,9 @@ bool Append::appendAlbum(const QStringList &albumList) {
     try {
         const auto sql = "INSERT OR IGNORE INTO album(name, key) VALUES(?, ?)";
         stmtPrepare(&stmt, sql);
+        NameKey key;
+
         for (const QString &i: albumList) {
-            NameKey key;
             stmtReset(stmt);
             stmtBindText(stmt, 1, i);
             stmtBindText(stmt, 2, key.find(i));
@@ -91,8 +92,9 @@ bool Append::appendArtist(const QStringList &artistList) {
     try {
         const auto sql = "INSERT OR IGNORE INTO artist(name, key) VALUES(?, ?)";
         stmtPrepare(&stmt, sql);
+        NameKey key;
+
         for (const QString &i: artistList) {
-            NameKey key;
             stmtReset(stmt);
             stmtBindText(stmt, 1, i);
             stmtBindText(stmt, 2, key.find(i));

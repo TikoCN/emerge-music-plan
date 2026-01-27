@@ -1,36 +1,54 @@
 #include "namekey.h"
 #include <QDir>
 #include <QJsonObject>
+#include <QJsonDocument>
 NameKey::NameKey() {
-    QFile file(QDir(QDir::currentPath()).filePath("namekey.json"));
-    if (!file.open(QIODevice::ReadOnly))
-        return;
+    const QDir dir(QDir(QDir::currentPath()).filePath("namekey"));
+    m_fileInfoList = dir.entryInfoList(QDir::Files | QDir::NoDotAndDotDot);
+};
 
-    const QJsonDocument doc = QJsonDocument::fromJson(file.readAll());
-    const QJsonObject json = doc.object();
-    QStringList keys = json.keys();
+QString NameKey::find(const QString& name) {
+    m_findName = name;
+    const int size = name.size() >= 3 ? 3 : static_cast<int>(name.size());
 
-    for (const QString & key : keys) {
-        QStringList name = json.value(key).toString().split(",");
-
-        for (const QString & j : name) {
-            m_NameKeyHash.insert(j, key);
-        }
+    if (m_NameKeyHash.contains(m_findName)) {
+        m_resultKey = m_NameKeyHash.value(m_findName);
     }
-    file.close();
+    else if (!readFileNameKey()) {
+        m_resultKey = "未知";
+    }
+
+    return m_resultKey;
 }
 
-QString NameKey::find(QString name) const {
-    const long long size = name.size() >= 3 ? 3 : name.size();
+bool NameKey::readFileNameKey() {
 
-    for (long long i = size; i > 0; --i) {
-        if (QString s = name.left(i); m_NameKeyHash.contains(s))
-            return m_NameKeyHash.value(s);
+    while (!m_fileInfoList.isEmpty()) {
+        QFile file(m_fileInfoList.takeFirst().absolutePath());
+        if (!file.open(QIODevice::ReadOnly))
+            continue;
+
+        const QJsonDocument doc = QJsonDocument::fromJson(file.readAll());
+        const QJsonObject json = doc.object();
+
+        QStringList keys = json.keys();
+        for (const QString & key : keys) {
+            if (keys.contains(m_findName)) {
+                m_NameKeyHash.insert(m_findName, key);
+                m_resultKey = key;
+
+                file.close();
+                return true;
+            }
+
+            for (QStringList name = json.value(key).toString().split(","); const QString & j : name) {
+                m_NameKeyHash.insert(j, key);
+            }
+        }
+
+        file.close();
     }
-
-    if (size > 0)
-        return name[0];
-    return "未知";
+    return  false;
 }
 
 

@@ -14,7 +14,7 @@ protected:
     int m_playingLrcId;
 
 public:
-    explicit LrcDataControl(BaseTool *baseTool, DataActive *dataActive);
+    explicit LrcDataControl(BaseTool *baseTool, DataActive *dataActive, TLog *log, QObject *parent = nullptr);
 
     //加载歌词
     void loadLrcList(int musicId);
@@ -38,5 +38,7 @@ signals:
     void playingMusicIdChanged();
     void musicListChanged();
 };
+
+
 
 #endif // LRCDATACONTROL_H

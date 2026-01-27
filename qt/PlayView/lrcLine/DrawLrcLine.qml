@@ -141,7 +141,7 @@ Item {
 
         onClicked:(mouse)=>{
                       //跳转到当前时间
-                      if(mouse.button === Qt.LeftButton && isUse){
+                      if(mouse.button === Qt.LeftButton){
                           MediaPlayer.turnToLrc(drawLrcLine.lrcId)
                       }
                       mouse.accepted = false

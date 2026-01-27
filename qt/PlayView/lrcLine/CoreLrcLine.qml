@@ -10,7 +10,6 @@ Item {
 
     property color playingColor: "#ffffffff"
     property color normalColor: "#80ffffff"
-    property bool isUse: false
     property int lrcId: -1
     property var wordList: []
     property int startTime: -1

@@ -10,7 +10,7 @@ class MediaPlayer :public LrcDataControl
     Q_OBJECT
 private:
     static MediaPlayer* instance;
-    MediaPlayer(BaseTool *baseTool, DataActive *dataActive);
+    MediaPlayer(BaseTool *baseTool, DataActive *dataActive, TLog *log, QObject *parent = nullptr);
 
     int m_loopType;//播放种类
 
@@ -28,9 +28,9 @@ public:
         return instance;
     }
 
-    static void buildInstance(BaseTool *baseTool, DataActive *dataActive){
+    static void buildInstance(BaseTool *baseTool, DataActive *dataActive, TLog *log){
         if(instance == nullptr){
-            instance = new MediaPlayer(baseTool, dataActive);
+            instance = new MediaPlayer(baseTool, dataActive, log);
         }
     }
 

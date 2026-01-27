@@ -10,7 +10,7 @@ class TLog : public QObject
     Q_OBJECT
 public:
     enum TYPE {DEBUG, USER_DO, LOAD, RELEASE, ERROR, INFO, IGNORE};
-    void log(TYPE type, QString str);
+    void log(TYPE type, QString str, const QString& threadName, qint64 threadId);
     static TLog* getInstance(){
         return instance;
     }
@@ -49,7 +49,7 @@ private:
     };
 
 signals:
-    void doLog(TLog::TYPE type, QString str);
+    void doLog(TLog::TYPE type, QString str, QString threadName, qint64 threadId);
 };
 
 #endif // TLOG_H

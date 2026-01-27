@@ -55,9 +55,6 @@ public:
     Q_INVOKABLE int checkArtistName(const QString& name);
     Q_INVOKABLE int checkAlbumName(const QString& name);
     Q_INVOKABLE int checkPlayListName(const QString& name);
-
-    int getArtistSize();
-    int getAlbumSize();
 };
 
 #endif // GET_H

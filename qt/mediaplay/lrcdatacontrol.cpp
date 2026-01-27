@@ -4,8 +4,8 @@
 /*
  * 加载歌词
  */
-LrcDataControl::LrcDataControl(BaseTool *baseTool, DataActive *dataActive)
-    : MediaPlayData(baseTool, dataActive)
+LrcDataControl::LrcDataControl(BaseTool *baseTool, DataActive *dataActive, TLog *log, QObject *parent)
+    : MediaPlayData(baseTool, dataActive, log, parent)
       , m_playingLrcId(-1) {
     connect(m_player, &QMediaPlayer::positionChanged, this, [this](const qint64 time) {
         selectPlayLrc(time);
@@ -40,6 +40,8 @@ void LrcDataControl::selectPlayLrc(const qint64 time) {
 }
 
 void LrcDataControl::turnToLrc(const int lrcId) {
+    m_loger->logUser(tr("跳转到歌词,lrcId: %1").arg(lrcId));
+
     if (lrcId >= 0 && lrcId < m_lrcList.size()) {
         m_player->setPosition(m_lrcList[lrcId]->startTime);
     }

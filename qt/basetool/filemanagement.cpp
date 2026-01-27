@@ -319,10 +319,22 @@ QString FileManagement::getBaseUrl(const QString &url) {
 }
 
 QString FileManagement::getFileName(const QString &url) {
-    QString FileManagementUrl = getBaseUrl(url);
+    const QString FileManagementUrl = getBaseUrl(url);
     return FileManagementUrl.split("/").last();
 }
 
 QString FileManagement::getParentDir(const QString &url) {
     return url.split("/" + url.split("/").last()).last();
+}
+
+void FileManagement::makeAllDir() {
+    if (!QDir().mkpath("log")) {
+        qDebug()<<"創建log文件夹失敗";
+    }
+    if (!QDir().mkpath("data")) {
+        qDebug()<<"創建data文件夹失敗";
+    }
+    if (!QDir().mkpath("namekey")) {
+        qDebug()<<"創建namekey文件夹失敗";
+    }
 }
