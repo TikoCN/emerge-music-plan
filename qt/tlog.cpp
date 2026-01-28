@@ -7,7 +7,7 @@ TLog::TLog() {
     m_thread->start();
 
     const QDateTime t = QDateTime::currentDateTime();
-    m_file.setFileName(QString("log/%1.txt").arg(t.toString("yyyy-MM-dd")));
+    m_file.setFileName(QString("data/log/%1.txt").arg(t.toString("yyyy-MM-dd")));
 
     if(m_file.open(QIODevice::WriteOnly |QIODevice::Text)) {
 

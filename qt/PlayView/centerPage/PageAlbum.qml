@@ -3,12 +3,17 @@ import QtQuick.Controls
 import Tiko
 import MediaerAPI
 import PlayView
+import QtQuick.Layouts
 
 Item {
     id: albumPage
 
     property string key: ""
-    property string keyList: []
+    property var keyList: []
+    property var keyInGirdIdList: []
+    property int nameKeyId: -1
+    property int albumStartPos: 0
+    property bool isLoading: false
 
     // 跳转按钮列表
     ListView {
@@ -20,9 +25,10 @@ Item {
         anchors.left: parent.left
         anchors.margins: 30
         spacing: 10
-        highlightRangeMode: ListView.StrictlyEnforceRange
+        highlightRangeMode: ListView.ApplyRange
         preferredHighlightBegin: width / 4
         preferredHighlightEnd: width / 4
+        snapMode: ListView.SnapToItem
 
         model: ListModel {
             id: albumButtonModel
@@ -39,48 +45,61 @@ Item {
                 onClicked: key = keyString
             }
         }
-
-        onCurrentIndexChanged: {
-            if (albumNameList.currentIndex !== currentIndex) {
-                albumNameList.currentIndex = currentIndex
-            }
-        }
     }
 
-    ListView {
-        id: albumNameList
+    GridView {
+        id: albumCoreList
         width: albumButtonList.width
         anchors.top: albumButtonList.bottom
         anchors.margins: 30
         anchors.bottom: parent.bottom
         clip: true
-        currentIndex: albumButtonList.currentIndex
-        highlightMoveDuration: 1000
-        highlightRangeMode: ListView.StrictlyEnforceRange
         preferredHighlightBegin: 0
         preferredHighlightEnd: 0
         flickDeceleration: 100
+        reuseItems: true
+        cellWidth: CoreData.cellItemWidth
+        cellHeight: CoreData.cellItemHeight
 
         model: ListModel {
-            id: albumNameModel
+            id: albumCoreModel
         }
 
-        delegate: CoreAlbumNameGrid {
-            x: 10
-            width: albumNameList.width - 20
-            id: albumButton
-            albumName: keyString
+        delegate: Loader {
+            sourceComponent: model.isTextLine ? textLineCom : albumCellCom
+
+            Component {
+                id: textLineCom
+                TikoTextLine {
+                    width: CoreData.cellItemWidth
+                    height: CoreData.cellItemHeight
+                    text: model.name
+                    exSize: 25
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                }
+            }
+
+            Component {
+                id: albumCellCom
+                CoreAlbumButton {
+                    albumId: model.albumId
+                }
+            }
         }
 
-        onCurrentIndexChanged: {
-            if (albumButtonList.currentIndex !== currentIndex) {
-                albumButtonList.currentIndex = currentIndex
+        onFlickEnded: {
+            if (contentY + height >= contentHeight - 100) {
+                loadMoreData();
             }
         }
     }
 
 
     function build () {
+        albumButtonModel.clear()
+        albumCoreModel.clear()
+
         const list = SQLData.getAlbumKeyList();
         if (list.length > 0) {
             keyList = list
@@ -89,12 +108,51 @@ Item {
 
         for (let i=0; i<list.length; i++) {
             albumButtonModel.append({keyString: list[i]})
-            albumNameModel.append({keyString: list[i]})
         }
+
+        loadMoreData()
+    }
+
+    function loadMoreData() {
+        if(isLoading) return
+        isLoading = true
+
+        if (loadMoreCore()) {
+            loadNewNameKey()
+        }
+
+        isLoading = false
+    }
+
+    function loadMoreCore() {
+        let size = 50
+        const nameKey = keyList[nameKeyId]
+        let list = SQLData.getAlbumIdByNameKey(nameKey, size, albumStartPos)
+
+        if (list.length === 0) return true
+
+        list.forEach(albumId =>{
+            albumCoreModel.append({isTextLine: false, albumId:albumId})
+        })
+
+        albumStartPos += list.length
+        return false
+    }
+
+    function loadNewNameKey() {
+        if (nameKeyId === keyList.length - 1) return
+        nameKeyId++
+        albumStartPos = 0
+        const nameKey = keyList[nameKeyId]
+        albumCoreModel.append({isTextLine: true, name:nameKey})
+        keyInGirdIdList.push(albumCoreList.count)
+        loadMoreCore()
     }
 
     onKeyChanged: {
-        albumButtonList.currentIndex = keyList.indexOf(key)
+        let index = keyList.indexOf(key)
+        albumButtonList.currentIndex = index
+        if(index < keyInGirdIdList.length && index >= 0) albumCoreList.currentIndex = keyInGirdIdList[index]
     }
 }
 

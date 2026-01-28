@@ -218,3 +218,57 @@ bool Update::updateAlbumMusic(const QList<int>& musicIdList, const int albumNewI
     stmtFree(stmt);
     return result;
 }
+
+bool Update::updateAlbumNameKey(const QStringList &albumName, const QStringList &albumNameKey) {
+    bool result = true;
+    sqlite3_stmt *stmt = nullptr;
+    try {
+        const auto sql = "UPDATE album "
+                         "SET key = ? "
+                         "WHERE name = ? ";
+        stmtPrepare(&stmt, sql);
+
+        auto name = albumName.cbegin();
+        auto key = albumNameKey.cbegin();
+        while (name != albumName.cend() && key != albumNameKey.cend()) {
+            stmtReset(stmt);
+            stmtBindText(stmt, 1, *key);
+            stmtBindText(stmt, 2, *name);
+            stmtStep(stmt);
+            ++name;
+            ++key;
+        }
+    } catch (const DataException &e) {
+        tlog->logError(e.errorMessage());
+        result = false;
+    }
+    stmtFree(stmt);
+    return result;
+}
+
+bool Update::updateArtistNameKey(const QStringList &artistName, const QStringList &artistNameKey) {
+    bool result = true;
+    sqlite3_stmt *stmt = nullptr;
+    try {
+        const auto sql = "UPDATE artist "
+                         "SET key = ? "
+                         "WHERE name = ? ";
+        stmtPrepare(&stmt, sql);
+
+        auto name = artistName.cbegin();
+        auto key = artistNameKey.cbegin();
+        while (name != artistName.cend() && key != artistNameKey.cend()) {
+            stmtReset(stmt);
+            stmtBindText(stmt, 1, *key);
+            stmtBindText(stmt, 2, *name);
+            stmtStep(stmt);
+            ++name;
+            ++key;
+        }
+    } catch (const DataException &e) {
+        tlog->logError(e.errorMessage());
+        result = false;
+    }
+    stmtFree(stmt);
+    return result;
+}

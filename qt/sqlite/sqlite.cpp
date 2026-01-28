@@ -13,7 +13,8 @@ SQLite::SQLite(TLog *log)
 
     try{
         constexpr int flags =  SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE | SQLITE_OPEN_URI | SQLITE_OPEN_FULLMUTEX;
-        m_r = sqlite3_open_v2("file:data.m_db", &m_db, flags, nullptr);
+        const QString &fileUrl = QDir::currentPath() + "/data/data.db";
+        m_r = sqlite3_open_v2(fileUrl.toUtf8().constData(), &m_db, flags, nullptr);
         if (m_r != SQLITE_OK) throwError("打开数据库文件失败");
         int value = 0;
 

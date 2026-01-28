@@ -11,6 +11,7 @@ ListView{
     interactive: true
     spacing: 15
     clip: true
+    reuseItems: true
 
     ScrollBar.vertical: TikoBarV{
     }

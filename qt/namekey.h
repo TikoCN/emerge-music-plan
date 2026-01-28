@@ -2,10 +2,11 @@
 #define NAMEKEY_H
 #include <QHash>
 #include <QFileInfo>
+#include "tlog.h"
 class NameKey
 {
 public:
-    NameKey();
+    NameKey(TLog *log);
 
     [[nodiscard]] QString find(const QString& name);
 
@@ -15,6 +16,7 @@ private:
     QString m_findName;
     QString m_resultKey;
     QFileInfoList m_fileInfoList;
+    TLog *m_log;
 };
 
 #endif // NAMEKEY_H

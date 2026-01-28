@@ -31,6 +31,8 @@ public:
     Q_INVOKABLE bool updateAlbumMusic(const QList<int>& musicIdList, int albumNewId, int albumOldId);
 
     explicit Update(TLog * log) : Append(log) {};
+    bool updateAlbumNameKey(const QStringList& albumName, const QStringList& albumNameKey);
+    bool updateArtistNameKey(const QStringList& artistName, const QStringList& artistNameKey);
 };
 
 #endif // UPDATE_H

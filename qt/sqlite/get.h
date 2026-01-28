@@ -15,7 +15,7 @@ class Get : public Update
 public:
     explicit Get(TLog *log) : Update(log) {};
     Q_INVOKABLE QStringList getArtistKeyList();
-    Q_INVOKABLE QList<int> getArtist(const QString& key);
+    Q_INVOKABLE QList<int> getArtistIdByNameKey(const QString& key, int size, int start);
 
     // 歌手
     ArtistPtr getArtist(int id);
@@ -23,7 +23,7 @@ public:
     QList<int> getArtistMusicList(int id);
 
     Q_INVOKABLE QStringList getAlbumKeyList();
-    Q_INVOKABLE QList<int> getAlbum(const QString& key);
+    Q_INVOKABLE QList<int> getAlbumIdByNameKey(const QString& key, int size, int start);
 
     // 专辑
     AlbumPtr getAlbum(int id);
@@ -55,6 +55,9 @@ public:
     Q_INVOKABLE int checkArtistName(const QString& name);
     Q_INVOKABLE int checkAlbumName(const QString& name);
     Q_INVOKABLE int checkPlayListName(const QString& name);
+
+    QStringList getAlbumNameList(int size, int start);
+    QStringList getArtistNameList(int size, int start);
 };
 
 #endif // GET_H

@@ -1,6 +1,7 @@
 #include "get.h"
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <qscreen_platform.h>
 
 #include "baseclass/dataexception.h"
 
@@ -24,7 +25,7 @@ QStringList Get::getArtistKeyList()
     return keyList;
 }
 
-QList<int> Get::getArtist(const QString& key)
+QList<int> Get::getArtistIdByNameKey(const QString& key, int size, int start)
 {
     QList<int> artistList;
     sqlite3_stmt *stmt = nullptr;
@@ -32,9 +33,12 @@ QList<int> Get::getArtist(const QString& key)
     try {
         const auto sql = "SELECT artist_id "
                           "FROM artist "
-                          "WHERE key = ? ";
+                          "WHERE key = ? "
+                         "LIMIT ? OFFSET ?";
         stmtPrepare(&stmt, sql);
         stmtBindText(stmt, 1, key);
+        stmtBindInt(stmt, 2, size);
+        stmtBindInt(stmt, 3, start);
         while (stmtStep(stmt)) {
             const int id = sqlite3_column_int(stmt, 0);
             artistList.append(id);
@@ -142,7 +146,7 @@ QStringList Get::getAlbumKeyList()
     return keyList;
 }
 
-QList<int> Get::getAlbum(const QString& key)
+QList<int> Get::getAlbumIdByNameKey(const QString& key, int size, int start)
 {
     QList<int> albumList;
     sqlite3_stmt *stmt = nullptr;
@@ -150,9 +154,12 @@ QList<int> Get::getAlbum(const QString& key)
     try {
         const char *sql = "SELECT album_id "
                           "FROM album "
-                          "WHERE key = ? ";
+                          "WHERE key = ? "
+                          "LIMIT ? OFFSET ?";
         stmtPrepare(&stmt, sql);
         stmtBindText(stmt, 1, key);
+        stmtBindInt(stmt, 2, size);
+        stmtBindInt(stmt, 3, start);
         while (stmtStep(stmt)) {
             const int id = sqlite3_column_int(stmt, 0);
             albumList.append(id);
@@ -519,5 +526,53 @@ int Get::checkPlayListName(const QString& name)
     }
     stmtFree(stmt);
     return r;
+}
+
+QStringList Get::getAlbumNameList(const int size, const int start) {
+    QStringList albumNameList;
+    sqlite3_stmt *stmt = nullptr;
+    try {
+        const auto sql = "SELECT name "
+                         "FROM album "
+                         "ORDER by name "
+                         "LIMIT ? OFFSET ?";
+        stmtPrepare(&stmt, sql);
+        stmtBindInt(stmt, 1, size);
+        stmtBindInt(stmt, 2, start);
+        while (stmtStep(stmt)) {
+            const QString name = QString::fromUtf8(sqlite3_column_text(stmt, 0));
+            albumNameList.append(name);
+        };
+
+    } catch (const DataException &e) {
+        tlog->logError(e.errorMessage());
+    }
+    
+    stmtFree(stmt);
+    return albumNameList;
+}
+
+QStringList Get::getArtistNameList(const int size, const int start) {
+    QStringList artistNameList;
+    sqlite3_stmt *stmt = nullptr;
+    try {
+        const auto sql = "SELECT name "
+                         "FROM artist "
+                         "ORDER by name "
+                         "LIMIT ? OFFSET ?";
+        stmtPrepare(&stmt, sql);
+        stmtBindInt(stmt, 1, size);
+        stmtBindInt(stmt, 2, start);
+        while (stmtStep(stmt)) {
+            const QString name = QString::fromUtf8(sqlite3_column_text(stmt, 0));
+            artistNameList.append(name);
+        };
+
+    } catch (const DataException &e) {
+        tlog->logError(e.errorMessage());
+    }
+    
+    stmtFree(stmt);
+    return artistNameList;
 }
 

@@ -9,7 +9,6 @@ import PlayView
 Item {
     id: mainView
 
-    property PageSeit seitPage: PageSeit{visible: false}
     property var playList: []
     property var playListId: []
 
@@ -54,6 +53,7 @@ Item {
     }
 
     PageSeit {
+        width: parent.width
         id: seitPage
         visible: false
     }

@@ -47,6 +47,7 @@ QtObject {
         }
     }
 
+
     function setCellSize(parent) {
 
         //临时控件

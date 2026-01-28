@@ -2,6 +2,7 @@
 #include "sqlite/sqlite.h"
 #include <QDir>
 #include <algorithm>
+#include "namekey.h"
 
 void DataActive::appendPlayList(const QString &name) const {
     sql->appendUserPlayList(name);
@@ -166,6 +167,44 @@ void DataActive::updateMusicLevel(const int musicId, const bool level)
 
     music->level = level;
     sql->updateMusic(music);
+}
+
+void DataActive::updateALLNameKey() const {
+
+    NameKey nameKey(log);
+
+    int startPos = 0;
+    constexpr int maxSize = 50;
+    int resultSize = maxSize;
+    while (resultSize == maxSize) {
+        const QStringList &nameList = sql->getAlbumNameList(maxSize, startPos);
+        QStringList nameKeyList;
+        resultSize = static_cast<int>(nameList.size());
+        startPos += resultSize;
+
+        for (const QString &name : nameList) {
+            const QString &key = nameKey.find(name);
+            nameKeyList.append(key);
+        }
+
+        sql->updateAlbumNameKey(nameList, nameKeyList);
+    }
+
+    startPos = 0;
+    resultSize = maxSize;
+    while (resultSize == maxSize) {
+        const QStringList &nameList = sql->getArtistNameList(maxSize, startPos);
+        QStringList nameKeyList;
+        resultSize = static_cast<int>(nameList.size());
+        startPos += resultSize;
+
+        for (const QString &name : nameList) {
+            const QString &key = nameKey.find(name);
+            nameKeyList.append(key);
+        }
+
+        sql->updateArtistNameKey(nameList, nameKeyList);
+    }
 }
 
 DataActive::DataActive()

@@ -33,6 +33,8 @@ public:
     Q_INVOKABLE void updateMusicLove(int musicId, bool isLove);
     Q_INVOKABLE void updateMusicLevel(int musicId, bool level);
 
+    Q_INVOKABLE void updateALLNameKey() const;
+
 signals:
     void buildAlbumPlayer();
     void buildArtistPlayer();

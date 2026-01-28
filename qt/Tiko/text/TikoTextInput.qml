@@ -5,7 +5,7 @@ import Tiko
 Item {
     id: inputText
     implicitHeight: 40
-    implicitWidth: 200
+    implicitWidth: 300
 
     property Text show: show
     property TextField inputItem: inputItem
@@ -28,7 +28,7 @@ Item {
         id: inputItem
         placeholderText: qsTr("在这里输入")
         anchors.right: inputText.right
-        width: inputText.width - show.width - 10
+        width: 200
         height: inputText.height
         onFocusChanged: {
             if(inputItem.focus){
