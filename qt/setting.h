@@ -24,6 +24,7 @@ void set##PROP_CAMEL(const TYPE &new##PROP_CAMEL) { \
 if (m_##PROP == new##PROP_CAMEL) return; /* 值未变化则直接返回 */ \
 m_##PROP = new##PROP_CAMEL; \
 Setting::setParameter(m_##PROP##Key, m_##PROP); /* 基础类型直接写入 */ \
+emit PROP##Changed();\
 }
 
 class Setting :public QObject

@@ -63,7 +63,6 @@ int main(int argc, char *argv[]) {
     qmlRegisterSingletonInstance<ImageControl>("MediaerAPI", 1, 0, "ImageControl", imgCtr);
 
     // 注册数据类
-    qmlRegisterType<LrcData>("DataType", 1, 0, "LrcData");
     qmlRegisterType<FileManagement>("DataType", 1, 0, "FileMan");
     qmlRegisterType<TypeConversion>("DataType", 1, 0, "TypeConversion");
     qmlRegisterType<QmlActive>("DataType", 1, 0, "QmlActive");
@@ -85,5 +84,5 @@ int main(int argc, char *argv[]) {
     engine.addImageProvider("cover", new ImageProvider);
     engine.loadFromModule("PlayView", "Main");
 
-    return app.exec();
+    return QGuiApplication::exec();
 }

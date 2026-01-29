@@ -52,14 +52,6 @@ Item {
                            break
                        }
                    }
-        onContainsMouseChanged: {
-            if(mouseArea.containsMouse){
-                background.opacity = 0.2
-            }
-            else{
-                setBackgroundColor()
-            }
-        }
 
         //主体
         Row{
@@ -112,7 +104,7 @@ Item {
                 height: 50
 
                 // 只在鼠标悬停时加载组件
-                active: mouseArea.containsMouse
+                active: mouseArea.containsMouse && !musicLine.isLittle
 
                 sourceComponent: Component {
                     Row {
@@ -235,15 +227,5 @@ Item {
             console.log(menuComponent.errorString())
     }
 
-    //根据次序间替设置背景颜色
-    function setBackgroundColor()
-    {
-        if(musicLine.listId % 2 === 1){
-            background.opacity = 0.1
-        }
-        else{
-            background.opacity = 0.05
-        }
-    }
 }
 

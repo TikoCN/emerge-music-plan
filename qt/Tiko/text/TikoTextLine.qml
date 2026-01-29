@@ -1,5 +1,6 @@
 import QtQuick
 import QtQuick.Controls
+import Tiko
 
 Text {
     property Rectangle background: background
@@ -11,6 +12,7 @@ Text {
     color: TikoSeit.transparentColor
     font.family: TikoSeit.fontFamily
     font.pixelSize: TikoSeit.fontPixelSize + exSize
+    height: font.pixelSize * 1.3 + 2 * TikoSeit.normalMargins
 
     Rectangle {
         id: background

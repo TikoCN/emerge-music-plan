@@ -107,8 +107,7 @@ Item{
             TikoTextLine {
                 id: textLine
                 anchors.top: albumCover.bottom
-                anchors.topMargin: CoreData.cellItemSpace
-                anchors.left: showItem.left
+                anchors.left: albumCover.left
                 width: parent.width
                 text: name
             }
@@ -117,7 +116,7 @@ Item{
             TikoTextLine {
                 id: timeLine
                 anchors.top: textLine.bottom
-                anchors.left: showItem.left
+                anchors.left: albumCover.left
                 width: parent.width
                 opacity: 0.4
                 text: BaseTool.typeConversion.timeToString(duration)

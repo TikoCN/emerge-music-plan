@@ -83,7 +83,7 @@ qt_add_qml_module(PlayViewLib
         inputPopup/InputPlayListName.qml
         # 其他 QML 文件
         AutoCoverImage.qml
-        TextMode.qml
+
         MusicListView.qml
         QML_FILES
         QML_FILES

@@ -11,41 +11,25 @@ TikoRightVessel{
     Layout.preferredHeight: this.height
     show.text: qsTr("字体管理")
 
-    vessel: Column{
-        spacing: 10
-        property double itemWidth: 300
+    vessel: GridLayout {
 
-        TikoSelectFont{
-            width: parent.itemWidth
-            height: 30
-            text: qsTr("ui字体")
-            selectedFont: Setting.mainFont
+        columns: width / 500
+        property var fontDataMode: [
+            {text:qsTr("ui字体"), prop:"mainFont"},
+            {text:qsTr("桌面滚动歌词字体"), prop:"deskFont"},
+            {text:qsTr("主页滚动歌词字体"), prop:"mainLrcFont"}
+        ]
+        Repeater {
+            model: fontDataMode
+            delegate: TikoSelectFont {
+                width: 400
+                height: 70
+                text: modelData.text
+                selectedFont: Setting[modelData.prop]
 
-            onSelectedFontChanged:{
-                Setting.mainFont = selectedFont
-                CoreData.setCellSize(this)
-            }
-        }
-
-        TikoSelectFont{
-            width: parent.itemWidth
-            height: 30
-            text: qsTr("桌面滚动歌词字体")
-            selectedFont: Setting.deskFont
-
-            onSelectedFontChanged:{
-                Setting.deskFont = selectedFont
-            }
-        }
-
-        TikoSelectFont{
-            width: parent.itemWidth
-            height: 30
-            text: qsTr("主页滚动歌词字体")
-            selectedFont: Setting.mainLrcFont
-
-            onSelectedFontChanged:{
-                Setting.mainLrcFont = selectedFont
+                onSelectedFontChanged:{
+                    Setting[modelData.prop] = selectedFont
+                }
             }
         }
     }

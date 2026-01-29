@@ -13,6 +13,7 @@ Item {
     property var keyInGirdIdList: []
     property int nameKeyId: -1
     property int albumStartPos: 0
+    property int loadNumber: 0
     property bool isLoading: false
 
     // 跳转按钮列表
@@ -116,9 +117,17 @@ Item {
     function loadMoreData() {
         if(isLoading) return
         isLoading = true
+        const loadAim = 100
+        loadNumber = 0
 
-        if (loadMoreCore()) {
-            loadNewNameKey()
+        while(loadNumber <= loadAim){
+            let isCoreOver = loadMoreCore()
+            if (isCoreOver) {
+                let isNameKeyOver = loadNewNameKey()
+                if (isNameKeyOver) {
+                    break
+                }
+            }
         }
 
         isLoading = false
@@ -136,17 +145,21 @@ Item {
         })
 
         albumStartPos += list.length
+        loadNumber += list.length
         return false
     }
 
     function loadNewNameKey() {
-        if (nameKeyId === keyList.length - 1) return
+        if (nameKeyId === keyList.length - 1) return true
         nameKeyId++
         albumStartPos = 0
+
         const nameKey = keyList[nameKeyId]
         albumCoreModel.append({isTextLine: true, name:nameKey})
         keyInGirdIdList.push(albumCoreList.count)
-        loadMoreCore()
+
+        loadNumber++
+        return false
     }
 
     onKeyChanged: {

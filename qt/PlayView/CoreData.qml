@@ -15,9 +15,9 @@ QtObject {
     //大小尺寸
     property int fontH: 0
     property int fontW: 0
-    property int cellItemHeight: cellImageHeight + 2 * fontH
-    property int cellItemWidth: cellImageWidth + 14
-    property int cellItemSpace: 7
+    property int cellItemHeight: cellImageHeight + TikoSeit.normalLineHeight * 2
+    property int cellItemWidth: cellImageWidth + 2 * cellItemSpace
+    property int cellItemSpace: 3
     property int cellImageHeight: 160
     property int cellImageWidth: 160
     property int recomLineHeight: cellItemHeight + 20
@@ -45,29 +45,5 @@ QtObject {
         else {
             console.log(component.errorString())
         }
-    }
-
-
-    function setCellSize(parent) {
-
-        //临时控件
-        const metrics = Qt.createQmlObject(`
-                                           import QtQuick 2.15
-                                           TextMetrics {
-                                           font.pixelSize: ${Setting.mainFont.pixelSize}
-                                           font.family: "${Setting.mainFont.family}"
-                                           // 包含上下延伸字符，确保最大高度
-                                           text: "Ágḿ･高"
-                                           }
-                                           `, parent);
-
-        //获取纯文本高度（边界矩形高度）
-        cellTextHeight = metrics.boundingRect.height;
-
-        cellItemHeight = cellImageHeight + cellTextHeight * 2 + cellItemSpace * 3
-        cellImageWidth = cellImageWidth + cellItemSpace * 2
-        recomLineHeight = cellItemHeight + cellItemSpace * 2
-
-        metrics.destroy();
     }
 }

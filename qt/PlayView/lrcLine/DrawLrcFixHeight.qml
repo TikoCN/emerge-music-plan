@@ -25,25 +25,30 @@ Canvas {
         var ctx = getContext("2d")
         var width = drawLrcFixHeight.width
         var height = drawLrcFixHeight.height
+
+        oneFontMetrics.text = textList.join("")
+        const fonstSpace = 3
+        const allWith = oneFontMetrics.advanceWidth + textList.length * fonstSpace
         // 清除画布
-        var centerY = height / 2
-        var space = 10
-        var boreder = 20
-        var startY = height / 2
-        var startX = 20
-        var playingPos = MediaPlayer.player.position
-        var overF = 0
-        var playColor = Setting.deskLrcColor
-        var normalColor = Qt.rgba(playColor.r, playColor.g, playColor.b, 0.4)
+        let centerY = height / 2
+        let space = 10
+        let boreder = 20
+        let startY = height / 2
+        let startX = allWith >= width ? 0 : (width - allWith) / 2
+        let playingPos = MediaPlayer.player.position
+        let overF = 0
+        const playColor = Setting.deskLrcColor
+        const normalColor = Qt.rgba(playColor.r, playColor.g, playColor.b, 0.4)
 
         ctx.clearRect(0, 0, width, height);
         ctx.font = "bold "+ oneFontMetrics.font.pixelSize.toString() +
                 "px " + oneFontMetrics.font.family +
                 ", 'Microsoft YaHei', SimSun, sans-serif"
 
-        for (var i=0; i<textList.length; i++) {
+
+        for (let i=0; i<textList.length; i++) {
             oneFontMetrics.text = textList[i]
-            var length = oneFontMetrics.advanceWidth + 3
+            let length = oneFontMetrics.advanceWidth + fonstSpace
             if(playingPos < startList[i]){
                 overF = 0
                 ctx.fillStyle = drawLrcFixHeight.normalColor;
@@ -57,7 +62,7 @@ Canvas {
                         (endList[i] - startList[i])
                 overF = overF || 0
                 // 创建线性渐变（从左到右）
-                var gradient = ctx.createLinearGradient(startX, startY, startX + length - 3, startY);
+                let gradient = ctx.createLinearGradient(startX, startY, startX + length - 3, startY);
 
                 // 添加颜色停止点（0~1 范围）
                 gradient.addColorStop(0, playColor);
@@ -85,22 +90,11 @@ Canvas {
         startList = BaseTool.typeConversion.stringToLongList(json.startList)
         endList = BaseTool.typeConversion.stringToLongList(json.endList)
         textList = BaseTool.typeConversion.stringToStringList(json.textList)
-
-        setWidth()
-    }
-
-    function setWidth () {
-        var space = 10
-        var boreder = 20
-        var startX = 20
-
-        for (var i=0; i<textList.length; i++) {
-            oneFontMetrics.text = textList[i]
-            startX += oneFontMetrics.advanceWidth + 3
+        if (textList.length === 0 || textList.join("") === "") {
+            textList = ["♪♪♪"]
         }
-
-        width = startX + 20
     }
+
 
     Connections{
         target: MediaPlayer

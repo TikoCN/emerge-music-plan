@@ -19,37 +19,6 @@ TikoFrameless{
     title: qsTr("尘星音乐")
     property int showType: 0
 
-    Binding{
-        target: TikoSeit
-        property: "themeColor"
-        value: Setting.themeColor
-    }
-    Binding{
-        target: TikoSeit
-        property: "transparentColor"
-        value: Setting.transparentColor
-    }
-    Binding{
-        target: TikoSeit
-        property: "backdropColor"
-        value: Setting.backdropColor
-    }
-    Binding{
-        target: TikoSeit
-        property: "fontFamily"
-        value: Setting.mainFont.family
-    }
-    Binding{
-        target: TikoSeit
-        property: "fontPixelSize"
-        value: Setting.mainFont.pixelSize
-    }
-    Binding {
-        target: CoreData
-        property: "sizeChange"
-        value: window.sizeChange
-    }
-
     Component.onDestruction:{
         //写入配置
         var mousePos = editPage.mapToGlobal(0, 0)
@@ -217,25 +186,6 @@ TikoFrameless{
         y:10
     }
 
-
-    FontMetrics {
-        id: fontMetrics
-        font.family: TikoSeit.fontFamily
-        font.pixelSize: TikoSeit.fontPixelSize
-    }
-
-    Binding {
-        target: CoreData
-        property: "fontH"
-        value: fontMetrics.height
-    }
-
-    Binding {
-        target: CoreData
-        property: "fontW"
-        value: fontMetrics.maximumCharacterWidth
-    }
-
     //切换到主页
     function stackMusicPaly(){
         if(MediaPlayer.playingMusic === null){
@@ -287,7 +237,7 @@ TikoFrameless{
 
     function sendErroMsg(msg) {
         if (errorMsgCom.status === Component.Ready) {
-            var view = errorMsgCom.createObject(window, {message:msg})
+            const view = errorMsgCom.createObject(window, {message:msg});
             view.open()
         }
     }

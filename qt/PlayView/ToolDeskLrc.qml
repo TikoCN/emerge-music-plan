@@ -10,9 +10,9 @@ Window{
     y: Setting.lrcTopPoint.y
 
     color:"#00000000"
-    flags: Qt.Window | Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint
+    flags: Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint | Qt.Tool
     title: qsTr("桌面歌词")
-    width: playingLine.width > 600 ? playingLine.width+40 : 640
+    width: (Setting.deskFont.pixelSize * 20 > 600 ? Setting.deskFont.pixelSize * 20: 600) + 40
     height: tool.height + playingLine.height + 30
 
     Component.onDestruction: {
@@ -100,20 +100,13 @@ Window{
             }
         }
 
-        TextMetrics{
-            id: lenth
-            text: qsTr("这用于计算桌面歌词长度文本")
-            font.family: Setting.deskFont.family
-            font.pixelSize: Setting.deskFont.pixelSize
-            font.bold: true
-        }
-
         DrawLrcFixHeight {
             id: playingLine
             anchors.top: tool.bottom
             anchors.topMargin: 10
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.leftMargin: 20
+            width: Setting.deskFont.pixelSize * 20
             height: Setting.deskFont.pixelSize * 3
             fontFamily: Setting.deskFont.family
             fontPixelSize: Setting.deskFont.pixelSize

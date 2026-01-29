@@ -1,8 +1,9 @@
 import QtQuick
+import Tiko
 
 Item {
     id: buttonBase
-
+    height: TikoSeit.normalLineHeight
     property bool hovered: mouseArea.containsMouse
     signal clickLeft()
     signal clickRight()

@@ -4,7 +4,7 @@ import Tiko
 
 Item {
     id: inputText
-    implicitHeight: 40
+    height: TikoSeit.normalLineHeight
     implicitWidth: 300
 
     property Text show: show
