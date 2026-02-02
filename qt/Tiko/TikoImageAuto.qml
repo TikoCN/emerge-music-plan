@@ -13,7 +13,6 @@ TikoImageColorAuto{
     property bool extraLoadFlag: true
     property bool keepNormal: false
     property bool loadFlag: extraLoadFlag &&
-                            TikoSeit.isShowFramChange &&
                             imageAutoView.visible
 
     onLoadFlagChanged: loadImage()

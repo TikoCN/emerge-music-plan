@@ -1,10 +1,10 @@
 import QtQuick
 import QtQuick.Controls.Basic
+import Tiko
 
 Menu {
     implicitWidth: 300
-    font.family: TikoSeit.fontFamily
-    font.pixelSize: TikoSeit.fontPixelSize
+    font: TikoSeit.textNormlFont
     topPadding: 5
     bottomPadding: 5
 

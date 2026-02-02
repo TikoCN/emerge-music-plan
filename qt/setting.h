@@ -16,6 +16,7 @@ private: \
 TYPE m_##PROP; \
 const QString m_##PROP##Key = #PROP; \
 static const bool m_##PROP##_registered; \
+Q_SIGNAL void PROP##Changed(); \
 /* 3. 公共GETTER方法 */ \
 public: \
 TYPE get##PROP_CAMEL() const { return m_##PROP; } \
@@ -37,20 +38,40 @@ private:
     const QString m_iniUrl;
 
     QT_SETTING_PROPERTY(int, maxThreadNumber, MaxThreadNumber);
-
+    
     QT_SETTING_PROPERTY(QStringList, sourceList, SourceList);
 
+    // 颜色管理
     QT_SETTING_PROPERTY(QColor, themeColor, ThemeColor);
     QT_SETTING_PROPERTY(QColor, transparentColor, TransparentColor);
     QT_SETTING_PROPERTY(QColor, backdropColor, BackdropColor);
-    QT_SETTING_PROPERTY(QColor, deskLrcColor, DeskLrcColor);
+    // 歌词相关
+    QT_SETTING_PROPERTY(QColor, lrcNormalColor, LrcNormalColor);
+    QT_SETTING_PROPERTY(QColor, lrcPlayingColor, LrcPlayingColor);
+    // 字体相关
+    QT_SETTING_PROPERTY(QColor, textNormalColor, TextNormalColor);
+    QT_SETTING_PROPERTY(QColor, textTitleColor, TextTitleColor);
+    QT_SETTING_PROPERTY(QColor, textSubtitleColor, TextSubtitleColor);
+    QT_SETTING_PROPERTY(QColor, textInformationColor, TextInformationColor);
+    QT_SETTING_PROPERTY(QColor, textAssistanceColor, TextAssistanceColor);
+    QT_SETTING_PROPERTY(QColor, textDisabledColor, TextDisabledColor);
+    // 按钮相关
+    QT_SETTING_PROPERTY(QColor, buttonNormalColor, ButtonNormalColor);
+    QT_SETTING_PROPERTY(QColor, buttonHoverColor, ButtonHoverColor);
+    QT_SETTING_PROPERTY(QColor, buttonPressedColor, ButtonPressedColor);
+    QT_SETTING_PROPERTY(QColor, buttonDisabledColor, ButtonDisabledColor);
 
-    QT_SETTING_PROPERTY(QFont, mainFont, MainFont);
-    QT_SETTING_PROPERTY(QFont, deskFont, DeskFont);
-    QT_SETTING_PROPERTY(QFont, mainLrcFont, MainLrcFont);
+    // 字体管理
+    QT_SETTING_PROPERTY(QFont, lrcFont, lrcFont);
+    QT_SETTING_PROPERTY(QFont, deskLrcFont, DeskLrcFont);
+    QT_SETTING_PROPERTY(QFont, textNormalFont, TextNormalFont);
+    QT_SETTING_PROPERTY(QFont, titleFont, TitleFont);
+    QT_SETTING_PROPERTY(QFont, subtitleFont, SubtitleFont);
+    QT_SETTING_PROPERTY(QFont, informationFont, InformationFont);
+    QT_SETTING_PROPERTY(QFont, assistanceFont, AssistanceFont);
 
+    // 定位
     QT_SETTING_PROPERTY(QRectF, windowRect, WindowRect);
-
     QT_SETTING_PROPERTY(QPointF, lrcTopPoint, LrcTopPoint);
 
     QT_SETTING_PROPERTY(bool, isOnLine, IsOnLine);
@@ -103,24 +124,5 @@ public:
 signals:
     //加载资源
     void loadMusics();
-
-    void isOnLineChanged();
-    void isGetCoverFromNetEaseChanged();
-    void isGetCoverFromQQMusicChanged();
-    void isGetCoverFromBingChanged();
-    void isGetCoverFromBaiduChanged();
-    void isGetLrcFromNetEaseChanged();
-    void isGetLrcFromQQMusicChanged();
-    void maxThreadNumberChanged();
-    void sourceListChanged();
-    void themeColorChanged();
-    void transparentColorChanged();
-    void backdropColorChanged();
-    void deskLrcColorChanged();
-    void mainFontChanged();
-    void deskFontChanged();
-    void mainLrcFontChanged();
-    void lrcTopPointChanged();
-    void windowRectChanged();
 };
 #endif // SETTING_H

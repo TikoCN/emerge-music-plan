@@ -5,8 +5,7 @@ import QtQuick.Effects
 
 MenuItem {
     id: root
-    font.family: TikoSeit.fontFamily
-    font.pixelSize: TikoSeit.fontPixelSize
+    font: TikoSeit.textNormlFont
     implicitHeight: 35
 
     property color autoColor: TikoSeit.transparentColor

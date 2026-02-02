@@ -37,11 +37,6 @@ bool Setting::getParameterList()
     m_transparentColor = QColor::fromString(ini->value(m_transparentColorKey).toString());
     m_backdropColor = QColor::fromString(ini->value(m_backdropColorKey).toString());
     m_themeColor = QColor::fromString(ini->value(m_themeColorKey).toString());
-    m_deskLrcColor = QColor::fromString(ini->value(m_deskLrcColorKey).toString());
-
-    m_deskFont.fromString(ini->value(m_deskFontKey).toString());
-    m_mainFont.fromString(ini->value(m_mainFontKey).toString());
-    m_mainLrcFont.fromString(ini->value(m_mainLrcFontKey).toString());
 
     m_lrcTopPoint = ini->value(m_lrcTopPointKey).toPoint();
 
@@ -86,11 +81,6 @@ void Setting::writeData() const
     ini->setValue(m_themeColorKey,m_themeColor);
     ini->setValue(m_transparentColorKey,m_transparentColor);
     ini->setValue(m_backdropColorKey,m_backdropColor);
-    ini->setValue(m_deskLrcColorKey,m_deskLrcColor);
-
-    ini->setValue(m_mainFontKey,m_mainFont);
-    ini->setValue(m_mainLrcFontKey,m_mainLrcFont);
-    ini->setValue(m_deskFontKey,m_deskFont);
 
     ini->setValue(m_lrcTopPointKey,m_lrcTopPoint.x());
 
@@ -120,16 +110,6 @@ Setting::Setting()
         m_themeColor = Qt::red;
         m_transparentColor = Qt::black;
         m_backdropColor = Qt::white;
-        m_deskLrcColor = Qt::red;
-
-        m_mainFont.setFamily("Microsoft YaHei");
-        m_mainFont.setPixelSize(12);
-        m_mainLrcFont.setFamily("Microsoft YaHei");
-        m_mainLrcFont.setPixelSize(18);
-        m_mainLrcFont.setBold(true);
-        m_deskFont.setFamily("Microsoft YaHei");
-        m_deskFont.setPixelSize(20);
-        m_deskFont.setBold(true);
 
         const QRectF screen = QGuiApplication::primaryScreen()->geometry();
         m_windowRect.setRect(screen.width() * 0.2, screen.height() * 0.2,

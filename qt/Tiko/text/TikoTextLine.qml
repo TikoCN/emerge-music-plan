@@ -10,8 +10,7 @@ Text {
     elide: Text.ElideRight
     verticalAlignment: Text.AlignVCenter
     color: TikoSeit.transparentColor
-    font.family: TikoSeit.fontFamily
-    font.pixelSize: TikoSeit.fontPixelSize + exSize
+    font: TikoSeit.textNormlFont
     height: font.pixelSize * 1.3 + 2 * TikoSeit.normalMargins
 
     Rectangle {
