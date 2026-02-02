@@ -48,6 +48,7 @@ private:
     // 歌词相关
     QT_SETTING_PROPERTY(QColor, lrcNormalColor, LrcNormalColor);
     QT_SETTING_PROPERTY(QColor, lrcPlayingColor, LrcPlayingColor);
+    QT_SETTING_PROPERTY(QColor, deskLrcColor, DeskLrcColor);
     // 字体相关
     QT_SETTING_PROPERTY(QColor, textNormalColor, TextNormalColor);
     QT_SETTING_PROPERTY(QColor, textTitleColor, TextTitleColor);
@@ -94,8 +95,8 @@ public:
         }
     }
 
-    static void freeInstance(){\
-            delete instance;
+    static void freeInstance(){
+        delete instance;
     }
     //设置参数
     template <typename T>

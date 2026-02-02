@@ -57,8 +57,13 @@ qt_add_qml_module(TikoLib
         select/TikoSelectFont.qml
         TikoImageAuto.qml
         TikoImageColorAuto.qml
-        QML_FILES text/TikoTextTitle.qml
-        QML_FILES text/TikoTextAssistance.qml
+        QML_FILES
+        QML_FILES
+        SOURCES
+        QML_FILES
+        QML_FILES
+        QML_FILES
+        QML_FILES button/TikoButtonTextBase.qml
 )
 
 # 链接 Qt 依赖（纯 QML 模块也需要链接 QtQuick）

@@ -34,9 +34,37 @@ bool Setting::getParameterList()
 
     m_maxThreadNumber = ini->value(m_maxThreadNumberKey).toInt();
 
+    // 颜色管理
     m_transparentColor = QColor::fromString(ini->value(m_transparentColorKey).toString());
     m_backdropColor = QColor::fromString(ini->value(m_backdropColorKey).toString());
     m_themeColor = QColor::fromString(ini->value(m_themeColorKey).toString());
+
+    // 歌词相关颜色
+    m_lrcNormalColor = QColor::fromString(ini->value(m_lrcNormalColorKey).toString());
+    m_lrcPlayingColor = QColor::fromString(ini->value(m_lrcPlayingColorKey).toString());
+
+    // 字体相关颜色
+    m_textNormalColor = QColor::fromString(ini->value(m_textNormalColorKey).toString());
+    m_textTitleColor = QColor::fromString(ini->value(m_textTitleColorKey).toString());
+    m_textSubtitleColor = QColor::fromString(ini->value(m_textSubtitleColorKey).toString());
+    m_textInformationColor = QColor::fromString(ini->value(m_textInformationColorKey).toString());
+    m_textAssistanceColor = QColor::fromString(ini->value(m_textAssistanceColorKey).toString());
+    m_textDisabledColor = QColor::fromString(ini->value(m_textDisabledColorKey).toString());
+
+    // 按钮相关颜色
+    m_buttonNormalColor = QColor::fromString(ini->value(m_buttonNormalColorKey).toString());
+    m_buttonHoverColor = QColor::fromString(ini->value(m_buttonHoverColorKey).toString());
+    m_buttonPressedColor = QColor::fromString(ini->value(m_buttonPressedColorKey).toString());
+    m_buttonDisabledColor = QColor::fromString(ini->value(m_buttonDisabledColorKey).toString());
+
+    // 字体管理
+    m_lrcFont.fromString(ini->value(m_lrcFontKey).toString());
+    m_deskLrcFont.fromString(ini->value(m_deskLrcFontKey).toString());
+    m_textNormalFont.fromString(ini->value(m_textNormalFontKey).toString());
+    m_titleFont.fromString(ini->value(m_titleFontKey).toString());
+    m_subtitleFont.fromString(ini->value(m_subtitleFontKey).toString());
+    m_informationFont.fromString(ini->value(m_informationFontKey).toString());
+    m_assistanceFont.fromString(ini->value(m_assistanceFontKey).toString());
 
     m_lrcTopPoint = ini->value(m_lrcTopPointKey).toPoint();
 
@@ -63,30 +91,53 @@ void Setting::removeUrl(const QString &url)
 void Setting::writeData() const
 {
     const MediaPlayer* player = MediaPlayer::getInstance();
-    auto *ini = new QSettings(m_iniUrl,QSettings::IniFormat);
+    auto *ini = new QSettings(m_iniUrl, QSettings::IniFormat);
     ini->beginGroup("seit");
 
-    ini->setValue(m_isOnLineKey,m_isOnLine);
-    ini->setValue(m_isGetCoverFromNetEaseKey,m_isGetCoverFromNetEase);
-    ini->setValue(m_isGetCoverFromQQMusicKey,m_isGetCoverFromQQMusic);
-    ini->setValue(m_isGetCoverFromBingKey,m_isGetCoverFromBing);
-    ini->setValue(m_isGetCoverFromBaiduKey,m_isGetCoverFromBaidu);
-    ini->setValue(m_isGetLrcFromNetEaseKey,m_isGetLrcFromNetEase);
-    ini->setValue(m_isGetLrcFromQQMusicKey,m_isGetLrcFromQQMusic);
+    ini->setValue(m_isOnLineKey, m_isOnLine);
+    ini->setValue(m_isGetCoverFromNetEaseKey, m_isGetCoverFromNetEase);
+    ini->setValue(m_isGetCoverFromQQMusicKey, m_isGetCoverFromQQMusic);
+    ini->setValue(m_isGetCoverFromBingKey, m_isGetCoverFromBing);
+    ini->setValue(m_isGetCoverFromBaiduKey, m_isGetCoverFromBaidu);
+    ini->setValue(m_isGetLrcFromNetEaseKey, m_isGetLrcFromNetEase);
+    ini->setValue(m_isGetLrcFromQQMusicKey, m_isGetLrcFromQQMusic);
 
-    ini->setValue(m_sourceListKey,m_sourceList);
+    ini->setValue(m_sourceListKey, m_sourceList);
 
-    ini->setValue(m_maxThreadNumberKey,m_maxThreadNumber);
+    ini->setValue(m_maxThreadNumberKey, m_maxThreadNumber);
 
-    ini->setValue(m_themeColorKey,m_themeColor);
-    ini->setValue(m_transparentColorKey,m_transparentColor);
-    ini->setValue(m_backdropColorKey,m_backdropColor);
+    // 颜色设置写入
+    ini->setValue(m_themeColorKey, m_themeColor.name(QColor::HexArgb));
+    ini->setValue(m_transparentColorKey, m_transparentColor.name(QColor::HexArgb));
+    ini->setValue(m_backdropColorKey, m_backdropColor.name(QColor::HexArgb));
+    ini->setValue(m_lrcNormalColorKey, m_lrcNormalColor.name(QColor::HexArgb));
+    ini->setValue(m_lrcPlayingColorKey, m_lrcPlayingColor.name(QColor::HexArgb));
+    ini->setValue(m_deskLrcColorKey, m_deskLrcColor.name(QColor::HexArgb));
+    ini->setValue(m_textNormalColorKey, m_textNormalColor.name(QColor::HexArgb));
+    ini->setValue(m_textTitleColorKey, m_textTitleColor.name(QColor::HexArgb));
+    ini->setValue(m_textSubtitleColorKey, m_textSubtitleColor.name(QColor::HexArgb));
+    ini->setValue(m_textInformationColorKey, m_textInformationColor.name(QColor::HexArgb));
+    ini->setValue(m_textAssistanceColorKey, m_textAssistanceColor.name(QColor::HexArgb));
+    ini->setValue(m_textDisabledColorKey, m_textDisabledColor.name(QColor::HexArgb));
+    ini->setValue(m_buttonNormalColorKey, m_buttonNormalColor.name(QColor::HexArgb));
+    ini->setValue(m_buttonHoverColorKey, m_buttonHoverColor.name(QColor::HexArgb));
+    ini->setValue(m_buttonPressedColorKey, m_buttonPressedColor.name(QColor::HexArgb));
+    ini->setValue(m_buttonDisabledColorKey, m_buttonDisabledColor.name(QColor::HexArgb));
 
-    ini->setValue(m_lrcTopPointKey,m_lrcTopPoint.x());
+    // 字体设置写入
+    ini->setValue(m_lrcFontKey, m_lrcFont.toString());
+    ini->setValue(m_deskLrcFontKey, m_deskLrcFont.toString());
+    ini->setValue(m_textNormalFontKey, m_textNormalFont.toString());
+    ini->setValue(m_titleFontKey, m_titleFont.toString());
+    ini->setValue(m_subtitleFontKey, m_subtitleFont.toString());
+    ini->setValue(m_informationFontKey, m_informationFont.toString());
+    ini->setValue(m_assistanceFontKey, m_assistanceFont.toString());
 
-    ini->setValue(m_windowRectKey,m_windowRect);
+    ini->setValue(m_lrcTopPointKey, m_lrcTopPoint.x());
 
-    ini->setValue("volume",player->getAudioOutput()->volume());
+    ini->setValue(m_windowRectKey, m_windowRect);
+
+    ini->setValue("volume", player->getAudioOutput()->volume());
 
     ini->endGroup();
     ini->sync();//写入磁盘
@@ -107,9 +158,38 @@ Setting::Setting()
 
         m_maxThreadNumber = 10;
 
-        m_themeColor = Qt::red;
-        m_transparentColor = Qt::black;
-        m_backdropColor = Qt::white;
+        // 颜色属性默认值
+        m_themeColor = Qt::red;                    // 主题颜色 - 红色
+        m_transparentColor = QColor(0, 0, 0, 100); // 透明层颜色 - 半透明黑色
+        m_backdropColor = Qt::white;               // 背景颜色 - 白色
+
+        // 歌词颜色默认值
+        m_lrcNormalColor = Qt::white;              // 歌词常规颜色 - 白色
+        m_lrcPlayingColor = Qt::red;               // 歌词播放颜色 - 红色
+        m_deskLrcColor = Qt::red;                  // 桌面歌词颜色 - 红色
+
+        // 文本颜色默认值
+        m_textNormalColor = Qt::black;             // 文本常规颜色 - 黑色
+        m_textTitleColor = QColor(0, 0, 0, 200);   // 标题文本颜色 - 深黑色
+        m_textSubtitleColor = QColor(100, 100, 100); // 副标题文本颜色 - 灰色
+        m_textInformationColor = QColor(150, 150, 150); // 信息文本颜色 - 浅灰色
+        m_textAssistanceColor = QColor(180, 180, 180);  // 辅助文本颜色 - 更浅的灰色
+        m_textDisabledColor = QColor(200, 200, 200);    // 禁用文本颜色 - 浅灰色
+
+        // 按钮颜色默认值
+        m_buttonNormalColor = QColor(240, 240, 240);    // 按钮常规颜色 - 浅灰色
+        m_buttonHoverColor = QColor(220, 220, 220);     // 按钮悬停颜色 - 稍深的灰色
+        m_buttonPressedColor = QColor(200, 200, 200);   // 按钮按下颜色 - 更深的灰色
+        m_buttonDisabledColor = QColor(230, 230, 230);  // 按钮禁用颜色 - 浅灰色
+
+        // 字体属性默认值
+        m_lrcFont = QFont("Microsoft YaHei", 16, QFont::Normal);      // 歌词字体
+        m_deskLrcFont = QFont("Microsoft YaHei", 20, QFont::Bold);    // 桌面歌词字体
+        m_textNormalFont = QFont("Microsoft YaHei", 12, QFont::Normal); // 常规文本字体
+        m_titleFont = QFont("Microsoft YaHei", 24, QFont::Bold);      // 标题字体
+        m_subtitleFont = QFont("Microsoft YaHei", 18, QFont::Normal); // 副标题字体
+        m_informationFont = QFont("Microsoft YaHei", 10, QFont::Normal); // 信息字体
+        m_assistanceFont = QFont("Microsoft YaHei", 9, QFont::Normal);  // 辅助字体
 
         const QRectF screen = QGuiApplication::primaryScreen()->geometry();
         m_windowRect.setRect(screen.width() * 0.2, screen.height() * 0.2,

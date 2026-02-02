@@ -9,15 +9,14 @@ Item {
     property Component vessel
     property bool itemShow: true
 
-    TikoButtonNormal{
+    TikoButtonNormal {
         id: show
         x: 10
         y: 25
-        autoText.exSize: 5
+        autoText.textType: Number(TikoTextLine.TextType.TITLE)
         implicitWidth: 100
         opacity: 0.3
         onClickLeft: rightVessel.itemShow = !rightVessel.itemShow
-
     }
 
     // 动态加载背景组件
