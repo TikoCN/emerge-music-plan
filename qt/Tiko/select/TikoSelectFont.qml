@@ -2,133 +2,67 @@ import QtQuick
 import QtQuick.Controls
 import Tiko
 
-Item{
+Rectangle {
     id: root
     property font selectedFont: Qt.font
     property string text
-
-    MouseArea{
-        anchors.fill: parent
-        onClicked: {
-            if (editFontCom.status === Component.Ready) {
-                var popup = editFontCom.createObject(root)
-                popup.open()
-            }
-        }
-    }
+    color: TikoSeit.backdropColor
+    border.color: TikoSeit.transparentColor
+    border.width: 3
+    radius: 10
+    implicitHeight: 300
 
     TikoTextLine{
-        font.family: selectedFont.family
-        font.pixelSize: selectedFont.pixelSize
-        anchors.fill: root
+        id: titleLine
         text: root.text
+        anchors.left: parent.left
+        anchors.top: parent.top
+        anchors.margins: TikoSeit.normalMargins
+        textType: TikoTextLine.TextType.TITLE
     }
 
-    Component {
-        id: editFontCom
 
-        TikoPopup{
-            id: editFont
-            width: 300
-            height: showItem.height + 20
-            onHide: destroy()
-            y: root.height
+    TikoButtonCombox {
+        id: fontFamiliesCombox
+        data: Qt.fontFamilies()
+        width: (parent.width - TikoSeit.normalMargins * 2) * 0.75 / 2
+        anchors.left: titleLine.left
+        anchors.top: titleLine.bottom
+        anchors.topMargin: TikoSeit.subitemSpace
+        helpText: qsTr("字体：")
+    }
 
-            Item{
-                id: showItem
-                width: editFont.width
-                height: childrenRect.height
 
-                TikoTextLine {
-                    id: textFamily
-                    text: qsTr("字体选择") + " : " + selectedFont.family
-                    font: selectedFont
-                }
+    TikoButtonCombox {
+        data: [12, 13, 14, 15, 16, 17, 18, 19, 20, 22, 24, 26 ,28, 30]
+        width: fontFamiliesCombox.width
+        anchors.right: parent.right
+        anchors.rightMargin: TikoSeit.normalMargins
+        anchors.top: fontFamiliesCombox.top
+        helpText: qsTr("字号：")
+    }
 
-                ListView{
-                    id: fontList
-                    anchors.top: textFamily.bottom
-                    anchors.topMargin: 10
-                    width: showItem.width - 20
-                    height: 200
-                    clip: true
-                    ScrollBar.vertical: TikoBarV{}
+    TikoTextLine {
+        font: selectedFont
+        height: 55 * 2
+        anchors.top: fontFamiliesCombox.bottom
+        anchors.topMargin: TikoSeit.subitemSpace
+        anchors.left: titleLine.left
+        anchors.right: parent.right
+        anchors.rightMargin: TikoSeit.normalMargins
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: TikoSeit.normalMargins
 
-                    model: ListModel{
-                        id: fontModel
-                    }
+        text: root.text + qsTr("预览文本")
+        horizontalAlignment: Text.AlignHCenter
+        verticalAlignment: Text.AlignVCenter
 
-                    delegate: TikoButtonNormal{
-                        width: fontList.width
-                        height: 30
-                        text: name
-                        autoText.font.family: name
-                        onClickLeft: {
-                            root.selectedFont.family = name
-                            editFont.close()
-                        }
-                    }
 
-                    Component.onCompleted:{
-                        var list = Qt.fontFamilies()
-                        var aim = 0
-                        for(var i=0; i<list.length; i++){
-                            fontModel.append({name:list[i]})
-                            if(list[i] === root.selectedFont.family){
-                                aim = i
-                            }
-                        }
-                        fontList.currentIndex = aim
-                        fontList.positionViewAtIndex(aim, ListView.Center)
-                    }
-                }
-
-                Rectangle{
-                    anchors.fill: fontList
-                    color: TikoSeit.transparentColor
-                    opacity: 0.03
-                }
-
-                TikoTextInput{
-                    id: fontSizeShow
-                    anchors.top: fontList.bottom
-                    anchors.topMargin: 10
-                    width: 150
-                    height: 30
-                    show.text: qsTr("文本大小")
-                    inputItem.width: 50
-                    inputItem.text: fontSize.value.toFixed(2).toString()
-                    onFinish: {
-                        root.selectedFont.pixelSize = inputNumber(input, root.selectedFont.pixelSize);
-                    }
-
-                    function inputNumber(input, number){
-                        var rx = /[^0-9.]/
-                        if(input.text.match(rx) !== null ){
-                            popupMessage.show(qsTr("请输入数字"))
-                            input.text = number.toFixed(2).toString()
-                        }
-                        else if(Number(input.text) !== number){
-                            return Number(input.text)
-                        }
-                        return number
-                    }
-                }
-
-                TikoSliderH{
-                    id: fontSize
-                    anchors.left: fontSizeShow.right
-                    anchors.leftMargin: 10
-                    anchors.verticalCenter: fontSizeShow.verticalCenter
-                    from: 10
-                    to: 30
-                    width: showItem.width - fontSizeShow.width - 30
-                    height: 15
-                    radius: 6
-                    value: root.selectedFont.pixelSize
-                    onMoved: root.selectedFont.pixelSize = value
-                }
-            }
+        Rectangle {
+            anchors.fill: parent
+            color: TikoSeit.transparentColor
+            opacity: 0.1
+            radius: 25
         }
     }
 }

@@ -7,10 +7,9 @@ import Tiko
 import PlayView
 
 TikoRightVessel{
-    Layout.fillWidth: true
     Layout.preferredHeight: this.height
     show.text: qsTr("参数管理")
-    show.width: seitPage.modeTextWidth
+
     vessel: ColumnLayout {
         property var paraDataModel: [
             {text:qsTr("最大加载线程"), prop:"maxThreadNumber"}

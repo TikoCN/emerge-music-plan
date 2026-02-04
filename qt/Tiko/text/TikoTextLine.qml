@@ -15,22 +15,22 @@ Text {
         ASSISTANCE = 4,
         DISABLE = 5
     }
-    property int textType: Number(TextType.NORMAL)
+    property var textType: TikoTextLine.TextType.NORMAL
     property Rectangle background: background
     property int exSize: 0
 
     color: {
         switch (textType) {
-        case TextType.TITLE:
+        case TikoTextLine.TextType.TITLE:
             return TikoSeit.textTitleColor
-        case TextType.SUBTITLE:
+        case TikoTextLine.TextType.SUBTITLE:
             return TikoSeit.textSubtitleColor
-        case TextType.DISABLE:
+        case TikoTextLine.TextType.DISABLE:
             return TikoSeit.textDisabledColor
-        case TextType.INFOR:
+        case TikoTextLine.TextType.INFOR:
             return TikoSeit.textInformationColor
-        case TextType.ASSISTANCE:
-        case TextType.NORMAL:
+        case TikoTextLine.TextType.ASSISTANCE:
+        case TikoTextLine.TextType.NORMAL:
         default:
             return TikoSeit.textNormalColor
         }
@@ -38,16 +38,16 @@ Text {
 
     font: {
         switch (textType) {
-        case TextType.TITLE:
+        case TikoTextLine.TextType.TITLE:
             return TikoSeit.titleFont
-        case TextType.SUBTITLE:
+        case TikoTextLine.TextType.SUBTITLE:
             return TikoSeit.subtitleFont
-        case TextType.INFOR:
+        case TikoTextLine.TextType.INFOR:
             return TikoSeit.informationFont
-        case TextType.ASSISTANCE:
+        case TikoTextLine.TextType.ASSISTANCE:
             return TikoSeit.assistanceFont
-        case TextType.DISABLE:
-        case TextType.NORMAL:
+        case TikoTextLine.TextType.DISABLE:
+        case TikoTextLine.TextType.NORMAL:
         default:
             return TikoSeit.textNormalFont
         }

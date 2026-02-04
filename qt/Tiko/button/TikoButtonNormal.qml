@@ -7,8 +7,8 @@ TikoButtonBase {
     id: button
     implicitWidth: 100
     implicitHeight: 40
-    onHoveredChanged: {
-        if(button.hovered){
+    onIsHoverChanged: {
+        if(button.isHover){
             hoveringAnimation.start()
         }
         else{

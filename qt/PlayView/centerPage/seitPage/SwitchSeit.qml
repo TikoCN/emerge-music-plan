@@ -7,10 +7,9 @@ import Tiko
 import PlayView
 
 TikoRightVessel{
-    Layout.fillWidth: true
     Layout.preferredHeight: this.height
     show.text: qsTr("选项管理")
-    show.width: seitPage.modeTextWidth
+
     vessel: GridLayout {
         anchors.margins: CoreData.cellItemSpace
         columns: width/300

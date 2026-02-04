@@ -7,7 +7,6 @@ import Tiko
 import PlayView
 
 TikoRightVessel {
-    Layout.fillWidth: true
     Layout.preferredHeight: this.height
     show.text: qsTr("更新数据")
 

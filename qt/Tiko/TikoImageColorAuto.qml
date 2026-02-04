@@ -11,13 +11,14 @@ Image{
     fillMode: Image.PreserveAspectFit
     smooth: true
     property bool isAutoColor: true
+    property Color autoColor: Qt.red
 
     MultiEffect {
         id: iconShow
         anchors.fill: imageColorAutoView
         source: imageColorAutoView
         colorization: isAutoColor ? 1 : 0
-        colorizationColor: TikoSeit.transparentColor
+        colorizationColor: autoColor
         enabled: imageColorAutoView.visible
     }
 }

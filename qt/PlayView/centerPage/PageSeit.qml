@@ -15,37 +15,44 @@ ScrollView{
     
     ColumnLayout{
         id: column
-        x: 10
-        y: 10
-        width: parent.width - 20
-        spacing: 10
+        anchors.left: parent.left
+        anchors.top: parent.top
+        anchors.right: parent.right
+        anchors.margins: TikoSeit.normalMargins
+        spacing: TikoSeit.normalMargins
 
         //资源文件管理
         SourceSeit {
+            width: parent.width * 0.75
             show.width: seitPage.modeTextWidth
         }
 
         //颜色管理
         ColorSeit {
+            width: parent.width * 0.75
             show.width: seitPage.modeTextWidth
         }
 
         //字体管理
         FontSeit {
+            width: parent.width * 0.75
             show.width: seitPage.modeTextWidth
         }
 
         //参数管理
         ParameterSeit {
+            width: parent.width * 0.75
             show.width: seitPage.modeTextWidth
         }
 
         //选项管理
         SwitchSeit {
+            width: parent.width * 0.75
             show.width: seitPage.modeTextWidth
         }
 
         UpdateDataSeit {
+            width: parent.width * 0.75
             show.width: seitPage.modeTextWidth
         }
     }

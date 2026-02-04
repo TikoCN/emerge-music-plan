@@ -3,8 +3,8 @@ import Tiko
 
 Item {
     id: rightVessel
-    height: rightVessel.itemShow && show.height < bgLoader.height ?
-                bgLoader.height + 50 : show.height + 50
+    height: rightVessel.itemShow && show.height < (bgLoader.height || 0) ?
+                (bgLoader.height || 0) + 50 : show.height + 50
     property TikoButtonNormal show: show
     property Component vessel
     property bool itemShow: true
@@ -13,7 +13,7 @@ Item {
         id: show
         x: 10
         y: 25
-        autoText.textType: Number(TikoTextLine.TextType.TITLE)
+        autoText.textType: TikoTextLine.TextType.TITLE
         implicitWidth: 100
         opacity: 0.3
         onClickLeft: rightVessel.itemShow = !rightVessel.itemShow
@@ -22,11 +22,20 @@ Item {
     // 动态加载背景组件
     Loader {
         id: bgLoader
-        x: show.x + show.width + 10
-        y: show.y
-        width: parent.width - x - 10
+        anchors.left: show.right
+        anchors.top: show.top
+        anchors.right: parent.right
+        anchors.rightMargin: TikoSeit.normalMargins
+        anchors.leftMargin: TikoSeit.normalMargins
+
         sourceComponent: rightVessel.vessel
         visible: rightVessel.itemShow
+
+        onItemChanged: {
+            if (item) {
+                item.width = bgLoader.width
+            }
+        }
     }
 
     //提示条

@@ -6,6 +6,7 @@ import MediaerAPI
 
 QtObject {
 
+    property int subitemSpace: 6
     property int normalMargins: 10
     property int normalLineHeight: textNormalFont.pixelSize * 1.3 + 2 * normalMargins
 

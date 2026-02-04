@@ -63,8 +63,6 @@ Item {
             text: qsTr("播放")
             width: 100
             onClick: MediaPlayer.playMusic(playlistId, 0)
-            backColor: TikoSeit.themeColor
-            textColor: TikoSeit.transparentColor
         }
 
         //批量操作

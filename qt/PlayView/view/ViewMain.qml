@@ -53,7 +53,6 @@ Item {
     }
 
     PageSeit {
-        width: parent.width
         id: seitPage
         visible: false
     }

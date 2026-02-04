@@ -7,7 +7,6 @@ import Tiko
 import PlayView
 
 TikoRightVessel {
-    Layout.fillWidth: true
     Layout.minimumHeight: height
     show.text: qsTr("颜色管理")
 

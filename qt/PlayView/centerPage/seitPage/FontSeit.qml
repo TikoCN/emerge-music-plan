@@ -7,13 +7,12 @@ import Tiko
 import PlayView
 
 TikoRightVessel{
-    Layout.fillWidth: true
     Layout.preferredHeight: this.height
     show.text: qsTr("字体管理")
+    id: fontSeit
 
-    vessel: GridLayout {
+    vessel: ColumnLayout {
 
-        columns: width / 500
         property var fontDataMode: [
             {text: qsTr("歌词字体"), prop: "lrcFont"},
             {text: qsTr("桌面歌词字体"), prop: "deskLrcFont"},
@@ -26,8 +25,7 @@ TikoRightVessel{
         Repeater {
             model: fontDataMode
             delegate: TikoSelectFont {
-                width: 400
-                height: 70
+                width: parent.width
                 text: modelData.text
                 selectedFont: Setting[modelData.prop]
 
