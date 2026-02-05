@@ -1,10 +1,10 @@
 import QtQuick
 import Tiko
 
-TikoButtonNormal {
+TikoButtonComplete {
     id: tikoComboxButton
-    text: tikoComboxButton.helpText + tikoComboxButton.showText
-    onClick: tikoPopup.open()
+    textLine.text: tikoComboxButton.helpText + tikoComboxButton.showText
+    onClicked: tikoPopup.open()
 
     // 属性定义
     property var data: ["文本1", "文本2"]  // 下拉选项数据
@@ -43,7 +43,7 @@ TikoButtonNormal {
 
             delegate: TikoButtonNormal {
                 radius: 0
-                text: tikoComboxButton.data[index]
+                textLine.text: tikoComboxButton.data[index]
                 width: tikoComboxButton.width
                 height: 40
 
@@ -56,7 +56,7 @@ TikoButtonNormal {
                     z: -1
                 }
 
-                onClick: {
+                onClicked: {
                     tikoComboxButton.show = index
                     tikoPopup.close()
                 }

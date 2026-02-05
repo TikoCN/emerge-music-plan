@@ -8,7 +8,7 @@ import PlayView
 
 TikoRightVessel{
     Layout.preferredHeight: this.height
-    show.text: qsTr("字体管理")
+    titleButton.textLine.text: qsTr("字体管理")
     id: fontSeit
 
     vessel: ColumnLayout {

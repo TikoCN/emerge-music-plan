@@ -117,7 +117,6 @@ Item{
         x: style.width * 0.5 + style.width * 0.5 * 0.1
         y: style.height * 0.2
         width: style.width * 0.5 * 0.8
-        exSize: 8
     }
 
     TikoTextLine{
@@ -125,7 +124,6 @@ Item{
         x: title.x
         width: title.width
         anchors.top: title.bottom
-        exSize: 8
     }
 
     Connections{

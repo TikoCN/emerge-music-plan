@@ -66,7 +66,6 @@ Item{
             TikoButtonIcon {
                 width: 30
                 height: width
-                radius: width / 2
                 icon.source: "qrc:/image/play.png"
                 icon.width: width / 2
                 icon.height: height / 2
@@ -74,10 +73,6 @@ Item{
                 anchors.left: artistCover.left
                 anchors.margins: artistCover.width * 0.05
                 visible: mouseArea.containsMouse
-                normal: 0.5
-                hover: 1
-                borderSize: 1.5
-                autoColor: Setting.backdropColor
                 onClicked: MediaPlayer.buildPlayingListByMusicList(musicList)
             }
 
@@ -85,7 +80,6 @@ Item{
             TikoButtonIcon {
                 width: 30
                 height: width
-                radius: width / 2
                 icon.source: "qrc:/image/more.png"
                 icon.width: width / 2
                 icon.height: height / 2
@@ -93,10 +87,6 @@ Item{
                 anchors.right: artistCover.right
                 anchors.margins: artistCover.width * 0.05
                 visible: mouseArea.containsMouse
-                normal: 0.5
-                hover: 1
-                borderSize: 1.5
-                autoColor: Setting.backdropColor
                 onClicked: createMenu(this)
             }
 

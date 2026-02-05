@@ -8,7 +8,7 @@ import PlayView
 
 TikoRightVessel{
     Layout.preferredHeight: this.height
-    show.text: qsTr("参数管理")
+    titleButton.textLine.text: qsTr("参数管理")
 
     vessel: ColumnLayout {
         property var paraDataModel: [

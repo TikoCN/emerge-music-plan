@@ -45,58 +45,58 @@ Window{
             TikoButtonIcon{
                 icon.source: "qrc:/image/music.png"
                 onClicked: window.show()
-                text: qsTr("显示主窗口")
+                //text: qsTr("显示主窗口")
             }
 
             TikoButtonIcon{
                 icon.source: "qrc:/image/size-.png"
                 onClicked: Setting.deskFont.pixelSize--
-                text: qsTr("字体减小")
+                //text: qsTr("字体减小")
             }
 
             TikoButtonIcon{
                 icon.source: "qrc:/image/leftArrow.png"
                 onClicked: MediaPlayer.player.position = MediaPlayer.player.position - 0.5 * 1000
-                text: qsTr("快退")
+                //text: qsTr("快退")
             }
 
             //播放上一首歌曲
             TikoButtonIcon{
                 icon.source: "qrc:/image/up.png"
                 onClicked: MediaPlayer.playNext(-1)
-                text: qsTr("播放上一首歌曲")
+                //text: qsTr("播放上一首歌曲")
             }
 
             //播放 暂停按钮
             TikoButtonIcon{
                 icon.source: MediaPlayer.player.playing ? "qrc:/image/stop.png" : "qrc:/image/play.png"
                 onClicked: MediaPlayer.player.playing ? MediaPlayer.player.pause() : MediaPlayer.player.play()
-                text: MediaPlayer.player.playing ? qsTr("暂停") : qsTr("播放")
+                //text: MediaPlayer.player.playing ? qsTr("暂停") : qsTr("播放")
             }
 
             //下一首
             TikoButtonIcon{
                 icon.source: "qrc:/image/down.png"
                 onClicked: MediaPlayer.playNext(1)
-                text: qsTr("播放下一首歌曲")
+                //text: qsTr("播放下一首歌曲")
             }
 
             TikoButtonIcon{
                 icon.source: "qrc:/image/rightArrow.png"
                 onClicked: MediaPlayer.player.position = MediaPlayer.player.position + 0.5 * 1000
-                text: qsTr("快进")
+                //text: qsTr("快进")
             }
 
             TikoButtonIcon{
                 icon.source: "qrc:/image/size+.png"
                 onClicked: Setting.deskFont.pixelSize++
-                text: qsTr("字体加大")
+                //text: qsTr("字体加大")
             }
 
             TikoButtonIcon{
                 icon.source: "qrc:/image/close.png"
                 onClicked: deskLrcTool.destroy()
-                text: qsTr("隐藏歌词")
+                //text: qsTr("隐藏歌词")
             }
         }
 

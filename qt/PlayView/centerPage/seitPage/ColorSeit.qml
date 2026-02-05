@@ -8,7 +8,7 @@ import PlayView
 
 TikoRightVessel {
     Layout.minimumHeight: height
-    show.text: qsTr("颜色管理")
+    titleButton.textLine.text: qsTr("颜色管理")
 
     vessel: GridLayout {
         columns: width / 320

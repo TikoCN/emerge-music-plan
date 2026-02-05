@@ -61,8 +61,7 @@ Item{
                 height: parent.height
                 icon.source: "qrc:/image/up.png"
                 onClicked: MediaPlayer.playNext(-1)
-                text: qsTr("播放上一首歌曲")
-                autoColor: Setting.backdropColor
+                //text: qsTr("播放上一首歌曲")
             }
 
             TikoButtonIcon{
@@ -71,8 +70,7 @@ Item{
                 height: parent.height
                 icon.source: MediaPlayer.player.playing ? "qrc:/image/stop.png" : "qrc:/image/play.png"
                 onClicked: MediaPlayer.player.playing ? MediaPlayer.player.pause() : MediaPlayer.player.play()
-                text: MediaPlayer.player.playing ? qsTr("暂停") : qsTr("播放")
-                autoColor: Setting.backdropColor
+                //text: MediaPlayer.player.playing ? qsTr("暂停") : qsTr("播放")
             }
 
             TikoButtonIcon{
@@ -81,8 +79,7 @@ Item{
                 height: parent.height
                 icon.source: "qrc:/image/down.png"
                 onClicked: MediaPlayer.playNext(1)
-                text: qsTr("播放下一首歌曲")
-                autoColor: Setting.backdropColor
+                //text: qsTr("播放下一首歌曲")
             }
         }
 

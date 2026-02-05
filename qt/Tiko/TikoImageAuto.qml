@@ -1,10 +1,10 @@
 import QtQuick.Effects
 import QtQuick
 
-TikoImageColorAuto{
+TikoImage{
     id: imageAutoView
     source: normalUrl
-    isAutoColor: String(source) === normalUrl
+    isUseAutoColor: String(source) === normalUrl
 
     property int loadMsTime: 100
     property int freeMsTime: 100

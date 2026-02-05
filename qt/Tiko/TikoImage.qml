@@ -5,21 +5,23 @@ Image{
     id: imageColorAutoView
     sourceSize.width: width
     sourceSize.height: height
+    width: 32
+    height: 32
     asynchronous: true
     cache: true
     mipmap: true
     fillMode: Image.PreserveAspectFit
     smooth: true
-    property bool isAutoColor: true
-    property Color autoColor: Qt.red
+
+    property bool isUseAutoColor: true
+    property color autoColor: Qt.red
 
     MultiEffect {
         id: iconShow
         anchors.fill: imageColorAutoView
         source: imageColorAutoView
-        colorization: isAutoColor ? 1 : 0
+        colorization: isUseAutoColor ? 1 : 0
         colorizationColor: autoColor
-        enabled: imageColorAutoView.visible
     }
 }
 

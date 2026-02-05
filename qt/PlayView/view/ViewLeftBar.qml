@@ -35,11 +35,11 @@ Item {
             TikoButtonNormal{
                 width: parent.width
                 id: mainPageButton
-                text: qsTr("推荐")
-                iconSource: "qrc:/image/main.png"
+                textLine.text: qsTr("推荐")
+                icon.source: "qrc:/image/main.png"
                 anchors.horizontalCenter: parent.horizontalCenter
-                onClickLeft: {
-                    root.showText = text
+                onLeftClicked: {
+                    root.showText = textLine.text
                     mainView.turnToMain()
                 }
 
@@ -55,11 +55,11 @@ Item {
             TikoButtonNormal{
                 id: artistButton
                 width: parent.width
-                text: qsTr("专辑")
-                iconSource: "qrc:/image/album.png"
+                textLine.text: qsTr("专辑")
+                icon.source: "qrc:/image/album.png"
                 anchors.horizontalCenter: parent.horizontalCenter
-                onClick: {
-                    root.showText = text
+                onClicked: {
+                    root.showText = textLine.text
                     mainView.turnToAlbum()
                 }
 
@@ -74,11 +74,11 @@ Item {
 
             TikoButtonNormal{
                 width: parent.width
-                text: qsTr("作曲家")
-                iconSource: "qrc:/image/artist.png"
+                textLine.text: qsTr("作曲家")
+                icon.source: "qrc:/image/artist.png"
                 anchors.horizontalCenter: parent.horizontalCenter
-                onClick: {
-                    root.showText = text
+                onClicked: {
+                    root.showText = textLine.text
                     mainView.turnToArtist()
                 }
 
@@ -95,13 +95,13 @@ Item {
             TikoButtonNormal{
                 width: parent.width
                 id: seitPageButton
-                text: qsTr("设置")
+                textLine.text: qsTr("设置")
                 anchors.horizontalCenter: parent.horizontalCenter
-                onClickLeft:{
-                    root.showText = text
+                onLeftClicked:{
+                    root.showText = textLine.text
                     mainView.turnToSeit();
                 }
-                iconSource: "qrc:/image/seit.png"
+                icon.source: "qrc:/image/seit.png"
 
                 Rectangle {
                     color: TikoSeit.transparentColor
@@ -116,10 +116,10 @@ Item {
             TikoButtonNormal{
                 width: parent.width
                 id: addPlayListButton
-                text: qsTr("新建列表")
+                textLine.text: qsTr("新建列表")
                 anchors.horizontalCenter: parent.horizontalCenter
-                iconSource: "qrc:/image/new.png"
-                onClickLeft: inputName.open()
+                icon.source: "qrc:/image/new.png"
+                onLeftClicked: inputName.open()
 
                 TikoPopupInput {
                     anchors.centerIn: Overlay.overlay
@@ -151,19 +151,15 @@ Item {
 
                 delegate: TikoButtonNormal{
                     width: userPlayListListView.width
-                    text: name
-                    iconSource: "image://cover/playlistFile?id=" +
+                    textLine.text: name
+                    icon.source: "image://cover/playlistFile?id=" +
                                 playlistId.toString() +
                                 "&radius=3"
-                    iconWidth: 30
-                    iconHeight: 30
-                    cache: false
-                    useAutoColor: false
-                    onClickLeft: {
-                        root.showText = text
+                    onLeftClicked: {
+                        root.showText = textLine.text
                         CoreData.mainTurnMusicList(playlistId)
                     }
-                    onClickRight: openPlayListMenu(playlistId, isDir, name)
+                    onRightClicked: openPlayListMenu(playlistId, isDir, name)
 
                     Rectangle {
                         color: TikoSeit.transparentColor

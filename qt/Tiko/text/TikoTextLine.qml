@@ -17,10 +17,9 @@ Text {
     }
     property var textType: TikoTextLine.TextType.NORMAL
     property Rectangle background: background
-    property int exSize: 0
-
-    color: {
-        switch (textType) {
+    property bool isUseAutoColor: false
+    property color autoColor: Qt.black
+    property color normalColor: { switch (textType) {
         case TikoTextLine.TextType.TITLE:
             return TikoSeit.textTitleColor
         case TikoTextLine.TextType.SUBTITLE:
@@ -35,6 +34,8 @@ Text {
             return TikoSeit.textNormalColor
         }
     }
+
+    color: isUseAutoColor ? autoColor : normalColor
 
     font: {
         switch (textType) {

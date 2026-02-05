@@ -50,7 +50,6 @@ Item{
         anchors.left: albumDataCover.right
         anchors.leftMargin: 30
         anchors.top: albumDataCover.top
-        exSize: 20
         text: name
     }
 
@@ -60,7 +59,6 @@ Item{
         anchors.top: albumText.bottom
         anchors.topMargin: 10
         anchors.left: albumText.left
-        exSize: 5
         opacity: 0.5
         text: qsTr("共 ") +
               (musicList.length.toString()) +

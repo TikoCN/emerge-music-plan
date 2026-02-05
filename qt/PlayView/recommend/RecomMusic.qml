@@ -7,7 +7,6 @@ Item {
 
     TikoTextLine {
         id: randMusicText
-        exSize: 9
         opacity: 0.8
         width: parent.width
         text: qsTr("随机推荐歌曲")

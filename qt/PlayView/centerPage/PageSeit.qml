@@ -24,36 +24,36 @@ ScrollView{
         //资源文件管理
         SourceSeit {
             width: parent.width * 0.75
-            show.width: seitPage.modeTextWidth
+            titleButton.width: seitPage.modeTextWidth
         }
 
         //颜色管理
         ColorSeit {
             width: parent.width * 0.75
-            show.width: seitPage.modeTextWidth
+            titleButton.width: seitPage.modeTextWidth
         }
 
         //字体管理
         FontSeit {
             width: parent.width * 0.75
-            show.width: seitPage.modeTextWidth
+            titleButton.width: seitPage.modeTextWidth
         }
 
         //参数管理
         ParameterSeit {
             width: parent.width * 0.75
-            show.width: seitPage.modeTextWidth
+            titleButton.width: seitPage.modeTextWidth
         }
 
         //选项管理
         SwitchSeit {
             width: parent.width * 0.75
-            show.width: seitPage.modeTextWidth
+            titleButton.width: seitPage.modeTextWidth
         }
 
         UpdateDataSeit {
             width: parent.width * 0.75
-            show.width: seitPage.modeTextWidth
+            titleButton.width: seitPage.modeTextWidth
         }
     }
 }

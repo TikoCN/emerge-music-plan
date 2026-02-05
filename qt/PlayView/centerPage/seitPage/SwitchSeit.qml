@@ -8,7 +8,7 @@ import PlayView
 
 TikoRightVessel{
     Layout.preferredHeight: this.height
-    show.text: qsTr("选项管理")
+    titleButton.textLine.text: qsTr("选项管理")
 
     vessel: GridLayout {
         anchors.margins: CoreData.cellItemSpace

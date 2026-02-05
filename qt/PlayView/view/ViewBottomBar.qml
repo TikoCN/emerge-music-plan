@@ -63,7 +63,7 @@ Item {
             id: loopButton
             anchors.right: nextMusicUp.left
             anchors.rightMargin: 15
-            text: qsTr("设置循环模式")
+            //text: qsTr("设置循环模式")
             onClicked: loopSelect.open()
             Component.onCompleted: setLoopType(MediaPlayer.loopType)
 
@@ -80,25 +80,25 @@ Item {
 
                     TikoButtonNormal {
                         id: loop0
-                        text: qsTr("顺序播放")
-                        iconSource: "qrc:/image/loop0.png"
-                        onClickLeft: loopButton.setLoopType(0)
+                        textLine.text: qsTr("顺序播放")
+                        icon.source: "qrc:/image/loop0.png"
+                        onLeftClicked: loopButton.setLoopType(0)
                         width: parent.width
                     }
 
                     TikoButtonNormal {
                         id: loop1
-                        text: qsTr("随机循环")
-                        iconSource: "qrc:/image/loop1.png"
-                        onClickLeft: loopButton.setLoopType(1)
+                        textLine.text: qsTr("随机循环")
+                        icon.source: "qrc:/image/loop1.png"
+                        onLeftClicked: loopButton.setLoopType(1)
                         width: parent.width
                     }
 
                     TikoButtonNormal {
                         id: loop2
-                        text: qsTr("单曲循环")
-                        iconSource: "qrc:/image/loop2.png"
-                        onClickLeft: loopButton.setLoopType(2)
+                        textLine.text: qsTr("单曲循环")
+                        icon.source: "qrc:/image/loop2.png"
+                        onLeftClicked: loopButton.setLoopType(2)
                         width: parent.width
                     }
                 }
@@ -107,13 +107,13 @@ Item {
             function setLoopType(loopType){
                 switch (loopType){
                 case 0:
-                    loopButton.icon.source = loop0.iconSource
+                    loopButton.icon.source = loop0.icon.source
                     break
                 case 1:
-                    loopButton.icon.source = loop1.iconSource
+                    loopButton.icon.source = loop1.icon.source
                     break
                 case 2:
-                    loopButton.icon.source = loop2.iconSource
+                    loopButton.icon.source = loop2.icon.source
                     break
                 }
                 MediaPlayer.loopType = loopType
@@ -127,7 +127,7 @@ Item {
             anchors.rightMargin: 10
             icon.source: "qrc:/image/up.png"
             onClicked: MediaPlayer.playNext(-1)
-            text: qsTr("播放上一首歌曲")
+            //text: qsTr("播放上一首歌曲")
         }
 
         //播放 暂停按钮背景
@@ -144,8 +144,7 @@ Item {
             id: playerControl
             icon.source: MediaPlayer.player.playing ? "qrc:/image/stop.png" : "qrc:/image/play.png"
             onClicked: MediaPlayer.player.playing ? MediaPlayer.player.pause() : MediaPlayer.player.play()
-            text: MediaPlayer.player.playing ? qsTr("暂停") : qsTr("播放")
-            autoColor: Setting.backdropColor
+            //text: MediaPlayer.player.playing ? qsTr("暂停") : qsTr("播放")
         }
 
         //下一首
@@ -155,7 +154,7 @@ Item {
             anchors.leftMargin: 10
             icon.source: "qrc:/image/down.png"
             onClicked: MediaPlayer.playNext(1)
-            text: qsTr("播放下一首歌曲")
+            //text: qsTr("播放下一首歌曲")
         }
 
         //音量
@@ -165,7 +164,7 @@ Item {
             anchors.leftMargin: 15
             icon.source: "qrc:/image/value.png"
             onClicked: volumePopup.open()
-            text: qsTr("控制音量")
+            //text: qsTr("控制音量")
 
             TikoPopup{
                 id: volumePopup
@@ -193,7 +192,7 @@ Item {
             anchors.right: playingListTabel.left
             anchors.rightMargin: 3
             icon.source: "qrc:/image/lrc.png"
-            text: qsTr("桌面歌词")
+            //text: qsTr("桌面歌词")
             onClicked: {
                 if(deskLrcTool === null){
                     deskLrcTool = deskLrcMake.createObject()
@@ -220,7 +219,7 @@ Item {
             anchors.right: parent.right
             anchors.rightMargin: 10
             icon.source: "qrc:/image/list.png"
-            text: qsTr("播放列表")
+            //text: qsTr("播放列表")
 
             onClicked: {
                 if(playingPlayList.visible){

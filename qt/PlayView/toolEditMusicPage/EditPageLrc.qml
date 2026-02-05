@@ -50,35 +50,35 @@ Item{
 
             TikoButtonNormal{
                 width: 150
-                iconSource: "qrc:/image/lineStart.png"
+                icon.source: "qrc:/image/lineStart.png"
                 text: qsTr("行开始") + " : " + editLrcPage.lineStart.toString()
                 onClick: editLrcPage.lineStart = MediaPlayer.player.position
             }
 
             TikoButtonNormal{
                 width: 150
-                iconSource: "qrc:/image/lineEnd.png"
+                icon.source: "qrc:/image/lineEnd.png"
                 text: qsTr("行结束")
                 onClick: editLrcPage.hlrcInsertLineTime()
             }
 
             TikoButtonNormal{
                 width: 150
-                iconSource: "qrc:/image/wordStart.png"
+                icon.source: "qrc:/image/wordStart.png"
                 text: qsTr("词开始") + " : " + editLrcPage.wordStart.toString()
                 onClick: editLrcPage.wordStart = MediaPlayer.player.position
             }
 
             TikoButtonNormal{
                 width: 150
-                iconSource: "qrc:/image/wordEnd.png"
+                icon.source: "qrc:/image/wordEnd.png"
                 text: qsTr("词结束")
                 onClick: editLrcPage.hlrcInsertWordTime()
             }
 
             TikoButtonNormal{
                 width: 150
-                iconSource: "qrc:/image/wordEnd.png"
+                icon.source: "qrc:/image/wordEnd.png"
                 text: qsTr("连续词结束")
                 onClick: {
                     editLrcPage.wordStart = MediaPlayer.player.position
@@ -88,7 +88,7 @@ Item{
 
             TikoButtonNormal{
                 width: 150
-                iconSource: "qrc:/image/yes.png"
+                icon.source: "qrc:/image/yes.png"
                 text: qsTr("保存.hlrc")
                 onClick: BaseTool.fileManagement.writeFileText(editLrcPage.getBaseUrl + ".hlrc", lrcShow.text)
             }
@@ -108,7 +108,7 @@ Item{
 
             TikoButtonNormal{
                 width: 150
-                iconSource:"qrc:/image/lineReplaceTime.png"
+                icon.source:"qrc:/image/lineReplaceTime.png"
                 text:qsTr("修正时间戳")
                 onClick: {
                     editLrcPage.timeWork(0)
@@ -118,21 +118,21 @@ Item{
 
             TikoButtonNormal{
                 width: 150
-                iconSource: "qrc:/image/lineAddTime.png"
+                icon.source: "qrc:/image/lineAddTime.png"
                 text: qsTr("添加时间戳")
                 onClick: editLrcPage.timeWork(1)
             }
 
             TikoButtonNormal{
                 width: 150
-                iconSource: "qrc:/image/lineDeleteTime.png"
+                icon.source: "qrc:/image/lineDeleteTime.png"
                 text: qsTr("删除时间戳")
                 onClick: editLrcPage.timeWork(2)
             }
 
             TikoButtonNormal{
                 width: 150
-                iconSource: "qrc:/image/yes.png"
+                icon.source: "qrc:/image/yes.png"
                 text: qsTr("保存.lrc")
                 onClick: BaseTool.fileManagement.wrtiLrcData(musicId, lrcShow.text)
             }

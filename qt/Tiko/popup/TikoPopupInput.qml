@@ -22,7 +22,7 @@ TikoPopup {
         anchors.verticalCenterOffset: height / 2 + parent.width / 20
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.horizontalCenterOffset: - width / 2 - parent.width / 20
-        onClick: {
+        onClicked: {
             popupInput.close()
             accept()
         }
@@ -35,7 +35,7 @@ TikoPopup {
         anchors.verticalCenterOffset: height / 2 + parent.width / 20
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.horizontalCenterOffset: width / 2 + parent.width / 20
-        onClick: {
+        onClicked: {
             cancel()
             popupInput.close()
         }

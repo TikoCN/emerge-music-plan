@@ -8,7 +8,7 @@ import PlayView
 
 TikoRightVessel {
     Layout.preferredHeight: this.height
-    show.text: qsTr("更新数据")
+    titleButton.textLine.text: qsTr("更新数据")
 
     vessel: Item{
         height: childrenRect.height
@@ -18,7 +18,7 @@ TikoRightVessel {
             width: 150
             height: 50
             text: qsTr("选择音乐文件地址")
-            onClick: selectMusicDir.open()
+            onClicked: selectMusicDir.open()
         }
 
         TikoButtonBorder{
@@ -28,7 +28,7 @@ TikoRightVessel {
             width: selectDirButton.width
             height: 50
             text: qsTr("加载音乐")
-            onClick: {
+            onClicked: {
                 CoreData.clearData()
                 Setting.loadMusicCores()
             }
@@ -41,7 +41,7 @@ TikoRightVessel {
             width: reloadButton.width
             height: 50
             text: qsTr("清除过时数据")
-            onClick: {
+            onClicked: {
                 CoreData.clearData()
                 DataActive.clearNullItem()
             }

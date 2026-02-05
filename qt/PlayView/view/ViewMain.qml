@@ -25,14 +25,14 @@ Item {
         anchors.right: parent.right
         icon.source: "qrc:/image/close.png"
         onClicked: window.close()
-        text: qsTr("关闭")
+        //qsTr("关闭")
     }
 
     TikoButtonIcon{
         id: maxButton
         anchors.right: closeButton.left
         icon.source: window.visibility === 4 ? "qrc:/image/normal.png" : "qrc:/image/max.png"
-        text: qsTr("最大化")
+        //qsTr("最大化")
         onClicked: window.visibility === 4 ? window.showNormal() : window.showMaximized()
     }
 
@@ -41,7 +41,7 @@ Item {
         anchors.right: maxButton.left
         icon.source: "qrc:/image/min.png"
         onClicked: window.showMinimized()
-        text: qsTr("最小化")
+        //qsTr("最小化")
     }
 
     StackView{

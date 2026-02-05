@@ -7,7 +7,6 @@ Item {
     height: childrenRect.height
 
     TikoTextLine {
-        exSize: 9
         opacity: 0.7
         id: artistRandText
         width: parent.width

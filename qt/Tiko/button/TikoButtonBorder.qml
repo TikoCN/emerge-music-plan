@@ -2,10 +2,10 @@ import QtQuick
 import QtQuick.Controls.Basic
 import Tiko
 
-TikoButtonBase {
+TikoButtonComplete {
     id: button
-    implicitWidth: textShow.font.pixelSize * 1.3 * 5
-    height: 32
+    implicitWidth: textLine.font.pixelSize * 1.3 * 5
+    isUseShowColor: true
 
     property string text: qsTr("TikoButtonBorder")
     property int radius: 20
@@ -27,7 +27,7 @@ TikoButtonBase {
     Rectangle {
         id: back
         radius: button.radius
-        color: button.showColor
+        border.color: showColor
         opacity: 0.3
         anchors.fill: parent
 
@@ -44,13 +44,5 @@ TikoButtonBase {
             to: 0
             duration: 500
         }
-    }
-
-    TikoTextLine {
-        id: textShow
-        anchors.fill: parent
-        text: button.text
-        horizontalAlignment: Text.AlignHCenter
-        verticalAlignment: Text.AlignVCenter
     }
 }

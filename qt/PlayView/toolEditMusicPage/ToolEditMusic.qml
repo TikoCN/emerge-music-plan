@@ -30,16 +30,16 @@ TikoFrameless {
             id: editLrcButton
             anchors.left: tool.left
             text: qsTr("编辑歌词")
-            onClickLeft: toolEditMusic.stackEditLrcPage()
-            iconSource: "qrc:/image/editLrc.png"
+            onLeftClicked: toolEditMusic.stackEditLrcPage()
+            icon.source: "qrc:/image/editLrc.png"
         }
 
         TikoButtonNormal{
             anchors.left: editLrcButton.right
             anchors.leftMargin: 10
             text: qsTr("编辑音乐")
-            onClickLeft: toolEditMusic.stackEditMusicPage()
-            iconSource: "qrc:/image/editMusic.png"
+            onLeftClicked: toolEditMusic.stackEditMusicPage()
+            icon.source: "qrc:/image/editMusic.png"
         }
 
         TikoButtonIcon{

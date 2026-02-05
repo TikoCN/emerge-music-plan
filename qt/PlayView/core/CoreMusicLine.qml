@@ -79,7 +79,6 @@ Item {
 
                 TikoTextLine{
                     text: musicTitle
-                    exSize: 3
                     font.bold: true
                     height: 30
                     width: parent.width
@@ -112,7 +111,6 @@ Item {
                         anchors.fill: parent
 
                         TikoButtonIcon{
-                            text: qsTr("喜爱")
                             width: 30
                             height: parent.height
                             onClicked: {
@@ -121,8 +119,6 @@ Item {
                             }
                             icon.source: musicLine.isLove ?
                                              "qrc:/image/love.png" : "qrc:/image/unlove.png"
-                            useAutoColor: !musicLine.isLove
-                            cache: true
                         }
 
                         // 评级
@@ -135,8 +131,6 @@ Item {
                                 delegate: TikoButtonIcon{
                                     width: 20
                                     height: 50
-                                    hover: 0
-                                    cache: true
                                     onClicked: {
                                         // 设置评级逻辑
                                         musicLine.musicLevel = level
@@ -144,7 +138,6 @@ Item {
                                     }
                                     icon.source: musicLine.musicLevel >= level ?
                                                      "qrc:/image/int.png" : "qrc:/image/unInt.png"
-                                    useAutoColor: !(musicLine.musicLevel >= level)
                                 }
                                 model: ListModel{
                                     ListElement{level: 1}
@@ -156,12 +149,10 @@ Item {
                             }
                         }
                         TikoButtonIcon{
-                            text: qsTr("更多")
                             width: 30
                             height: parent.height
                             onClicked: createMenu(musicLine)
                             icon.source: "qrc:/image/else.png"
-                            cache: true
                         }
                     }
                 }

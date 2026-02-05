@@ -8,7 +8,7 @@ import PlayView
 
 TikoRightVessel {
     Layout.preferredHeight: this.height
-    show.text: qsTr("更新数据")
+    titleButton.textLine.text: qsTr("更新数据")
 
     vessel: ColumnLayout {
         property var updateDataMode: [
@@ -20,7 +20,7 @@ TikoRightVessel {
             delegate: TikoButtonBorder {
                 Layout.preferredWidth: 300
                 text: modelData.text
-                onClick: modelData.doFunction()
+                onClicked: modelData.doFunction()
             }
         }
     }

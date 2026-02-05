@@ -147,12 +147,11 @@ Item {
     TikoButtonIcon{
         id: close
         anchors.right: parent.right
-        text: qsTr("关闭")
+        //text: qsTr("关闭")
         icon.source: "qrc:/image/close.png"
         onClicked: window.close()
         icon.width: 15
         icon.height: 15
-        autoColor: Setting.backdropColor
     }
 
     //最大化
@@ -160,11 +159,10 @@ Item {
         id: max
         anchors.right: close.left
         anchors.rightMargin: 6
-        text: qsTr("最大化")
+        //text: qsTr("最大化")
         icon.source: "qrc:/image/max.png"
         icon.width: 15
         icon.height: 15
-        autoColor: Setting.backdropColor
         onClicked: {
             if(window.visibility === 5){
                 window.showNormal()
@@ -180,11 +178,10 @@ Item {
         id: min
         anchors.right: max.left
         anchors.rightMargin: 6
-        text: qsTr("最小化")
+        //text: qsTr("最小化")
         icon.source: "qrc:/image/min.png"
         icon.width: 15
         icon.height: 15
-        autoColor: Setting.backdropColor
         onClicked: window.showMinimized()
     }
 
@@ -193,11 +190,10 @@ Item {
         id: back
         anchors.left: parent.left
         anchors.leftMargin: 20
-        text: qsTr("返回")
+        //text: qsTr("返回")
         icon.source: "qrc:/image/back.png"
         icon.width: 15
         icon.height: 15
-        autoColor: Setting.backdropColor
         onClicked: window.stackCenter()
     }
 

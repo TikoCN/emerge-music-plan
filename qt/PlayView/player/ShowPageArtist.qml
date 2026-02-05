@@ -48,7 +48,6 @@ Item{
         anchors.left: artistDataCover.right
         anchors.leftMargin: 30
         anchors.top: artistDataCover.top
-        exSize: 20
         text: name
     }
 
@@ -58,7 +57,6 @@ Item{
         anchors.top: artistText.bottom
         anchors.topMargin: 10
         anchors.left: artistText.left
-        exSize: 5
         opacity: 0.5
         text: qsTr("共 ") +
               (musicList.length.toString()) +

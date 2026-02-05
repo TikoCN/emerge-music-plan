@@ -41,7 +41,6 @@ Item {
             anchors.top: playlistCover.top
             text: name
             width: parent.width - playlistCover.width
-            exSize: 20
             font.bold: true
         }
 
@@ -52,7 +51,6 @@ Item {
             anchors.top: playlistName.bottom
             anchors.topMargin: 10
             width: parent.width - playlistCover.width
-            exSize: 5
         }
 
         //播放列表
@@ -62,7 +60,7 @@ Item {
             anchors.bottom: playlistCover.bottom
             text: qsTr("播放")
             width: 100
-            onClick: MediaPlayer.playMusic(playlistId, 0)
+            onClicked: MediaPlayer.playMusic(playlistId, 0)
         }
 
         //批量操作
@@ -85,9 +83,9 @@ Item {
             //显示所有歌曲列表
             TikoButtonNormal{
                 Layout.minimumWidth: 70
-                text: qsTr("歌曲") + musicList.length.toString()
-                iconSource: "qrc:/image/music.png"
-                onClickLeft: {
+                textLine.text: qsTr("歌曲") + musicList.length.toString()
+                icon.source: "qrc:/image/music.png"
+                onLeftClicked: {
                     musicList = DataActive.playListShowAllMusic(playlistId)
                     build()
                 }
@@ -96,9 +94,9 @@ Item {
             //显示喜爱歌曲列表
             TikoButtonNormal{
                 Layout.minimumWidth: 70
-                text: qsTr("喜爱")
-                iconSource: "qrc:/image/love.png"
-                onClickLeft: {
+                textLine.text: qsTr("喜爱")
+                icon.source: "qrc:/image/love.png"
+                onLeftClicked: {
                     musicList = DataActive.playListShowLoveMusic(playlistId)
                     build()
                 }
@@ -107,9 +105,9 @@ Item {
             //排序
             TikoButtonNormal{
                 Layout.minimumWidth: 70
-                onClickLeft: sort()
-                text: qsTr("排序")
-                iconSource: "qrc:/image/sort.png"
+                onLeftClicked: sort()
+                textLine.text: qsTr("排序")
+                icon.source: "qrc:/image/sort.png"
 
                 Component {
                     id: sortMenuComponent
@@ -134,7 +132,6 @@ Item {
             //搜索
             TikoButtonIcon{
                 id: searchButton
-                text: qsTr("搜索")
                 icon.source: "qrc:/image/search.png"
                 onClicked: rotAnimation.start()
 

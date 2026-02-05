@@ -3,11 +3,19 @@ import Tiko
 
 Item {
     id: buttonBase
-    height: TikoSeit.normalLineHeight
+    implicitHeight: 50
+    implicitWidth: 100
+
     property color showColor: Qt.red
-    property bool isPressed: mouseArea.containsPress
+    property color hoverColor: TikoSeit.buttonHoverColor
+    property color normalColor: TikoSeit.buttonNormalColor
+    property color pressedColor: TikoSeit.buttonPressedColor
+    property color disableColor: TikoSeit.buttonDisabledColor
+
+    property bool isPressed: false
     property bool isHover: mouseArea.containsMouse
     property bool isDisable: false
+
     property var buttonStates: ({
          NORMAL: "normal",
          HOVER: "hover",
@@ -15,9 +23,9 @@ Item {
          DISABLE: "disable"
      })
 
-    signal clickLeft()
-    signal clickRight()
-    signal click()
+    signal rightClicked()
+    signal leftClicked()
+    signal clicked()
 
     MouseArea{
         id: mouseArea
@@ -25,13 +33,13 @@ Item {
         anchors.fill: buttonBase
         acceptedButtons: Qt.LeftButton | Qt.RightButton
         onClicked: (mouse)=>{
-                       click()
+                       buttonBase.clicked()
                        switch(mouse.button){
                            case Qt.LeftButton:
-                           clickLeft()
+                           buttonBase.leftClicked()
                            break
                            case Qt.RightButton:
-                           clickRight()
+                           buttonBase.rightClicked()
                            break
                        }
                    }
@@ -40,23 +48,23 @@ Item {
     states: [
         State {
             name: buttonStates.HOVER
-            when: mouseArea.containsMouse && !isDisable && isPressed
-            PropertyChanges { target: buttonBase; showColor: TikoSeit.buttonHoverColor }
+            when: isHover && !isDisable && !isPressed
+            PropertyChanges { target: buttonBase; showColor: hoverColor }
         },
         State {
             name: buttonStates.NORMAL
-            when: !mouseArea.containsMouse && !isDisable && isPressed
-            PropertyChanges { target: buttonBase; showColor: TikoSeit.buttonNormalColor }
+            when: !isHover && !isDisable && !isPressed
+            PropertyChanges { target: buttonBase; showColor: normalColor }
         },
         State {
             name: buttonStates.PRESSED
             when: isPressed && !isDisable
-           PropertyChanges { target: buttonBase; showColor: TikoSeit.buttonPressedColor }
+           PropertyChanges { target: buttonBase; showColor: pressedColor }
         },
         State {
             name: buttonStates.DISABLE
             when: isDisable
-           PropertyChanges { target: buttonBase; showColor: TikoSeit.buttonDisabledColor }
+           PropertyChanges { target: buttonBase; showColor: disableColor }
         }
     ]
 }

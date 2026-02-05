@@ -8,7 +8,6 @@ Item {
 
     TikoTextLine {
         id: playMoreMusicText
-        exSize: 9
         opacity: 0.7
         width: parent.width
         text: qsTr("最爱的歌曲")

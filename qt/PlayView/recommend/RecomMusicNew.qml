@@ -8,7 +8,6 @@ Item {
 
     TikoTextLine {
         id: newMusicText
-        exSize: 9
         opacity: 0.7
         width: parent.width
         text: qsTr("新加入歌曲")

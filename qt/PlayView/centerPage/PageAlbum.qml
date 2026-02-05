@@ -39,7 +39,6 @@ Item {
             text: keyString
             height: 40
             opacity: ListView.isCurrentItem ? 1 : 0.3
-            exSize: ListView.isCurrentItem ? 5 : 3
 
             MouseArea {
                 anchors.fill: parent
@@ -75,7 +74,6 @@ Item {
                     width: CoreData.cellItemWidth
                     height: CoreData.cellItemHeight
                     text: model.name
-                    exSize: 25
                     horizontalAlignment: Text.AlignHCenter
                     verticalAlignment: Text.AlignVCenter
                 }
