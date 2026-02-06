@@ -6,9 +6,11 @@ import MediaerAPI
 
 QtObject {
 
+    property bool isLightTheme: true
+
     property int subitemSpace: 6
     property int normalMargins: 10
-    property int normalLineHeight: textNormalFont.pixelSize * 1.3 + 2 * normalMargins
+    property int normalLineHeight: textNormalFont.pointSize * 1.3 + 2 * normalMargins
 
     // 颜色管理
     property color themeColor: Setting.themeColor
@@ -21,25 +23,56 @@ QtObject {
     property color deskLrcColor: Setting.deskLrcColor
 
     // 字体颜色相关
-    property color textNormalColor: Setting.textNormalColor
-    property color textTitleColor: Setting.textTitleColor
-    property color textSubtitleColor: Setting.textSubtitleColor
-    property color textInformationColor: Setting.textInformationColor
-    property color textAssistanceColor: Setting.textAssistanceColor
-    property color textDisabledColor: Setting.textDisabledColor
+    property color textBenchmarkColor: Setting.textBenchmarkColor
+    onTextBenchmarkColorChanged: {
+        textNormalColor = Setting.textBenchmarkColor
+        let hsl = Qt.hsl(color)
+        let ratio = isLightTheme ? 0.1 : 0.05
+        hsl.lightness = Math.min(1.0, hsl.lightness + ratio)
+        textNormalColor = Qt.color(hsl)
+    }
 
+    property color textNormalColor: "#333333"
+    property color textTitleColor: "#1A1A1A"
+    property color textSubtitleColor: "#444444"
+    property color textInformationColor: "#666666"
+    property color textAssistanceColor: "#888888"
+    property color textDisabledColor: "#999999"
     // 按钮颜色相关
-    property color buttonNormalColor: Setting.buttonNormalColor
-    property color buttonHoverColor: Setting.buttonHoverColor
-    property color buttonPressedColor: Setting.buttonPressedColor
-    property color buttonDisabledColor: Setting.buttonDisabledColor
+    property color buttonBenchmarkColor: Setting.buttonBenchmarkColor
+
+    property color iconShowButtonColor: "#333333"
+    property color iconHoverButtonColor: "#1A1A1A"
+    property color iconNormalButtonColor: "#333333"
+    property color iconPressedButtonColor: "#0D0D0D"
+    property color iconDisabledButtonColor: "#999999"
+
+    property color textShowButtonColor: "#333333"
+    property color textHoverButtonColor: "#1A1A1A"
+    property color textNormalButtonColor: "#333333"
+    property color textPressedButtonColor: "#0D0D0D"
+    property color textDisabledButtonColor: "#999999"
+
+    property color backgroundShowButtonColor: "#F5F5F5"
+    property color backgroundHoverButtonColor: "#ECECEC"
+    property color backgroundNormalButtonColor: "#F5F5F5"
+    property color backgroundPressedButtonColor: "#E0E0E0"
+    property color backgroundDisabledButtonColor: "#F9F9F9"
+
+    property color borderShowButtonColor: "#E5E5E5"
+    property color borderHoverButtonColor: "#DCDCDC"
+    property color borderNormalButtonColor: "#E5E5E5"
+    property color borderPressedButtonColor: "#D0D0D0"
+    property color borderDisabledButtonColor: "#F0F0F0"
 
     // 字体管理
     property font lrcFont: Setting.lrcFont
     property font deskLrcFont: Setting.deskLrcFont
-    property font textNormalFont: Setting.textNormalFont
-    property font titleFont: Setting.titleFont
-    property font subtitleFont: Setting.subtitleFont
-    property font informationFont: Setting.informationFont
-    property font assistanceFont: Setting.assistanceFont
+
+    property font benchmarkFont: Setting.benchmarkFont
+    property font normalFont: null
+    property font titleFont: null
+    property font subtitleFont: null
+    property font informationFont: null
+    property font assistanceFont: null
 }

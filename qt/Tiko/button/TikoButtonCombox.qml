@@ -1,16 +1,16 @@
 import QtQuick
 import Tiko
 
-TikoButtonComplete {
+TikoButtonBorder {
     id: tikoComboxButton
-    textLine.text: tikoComboxButton.helpText + tikoComboxButton.showText
+    textLine.text: tikoComboxButton.helpText + tikoComboxButton.currentText
     onClicked: tikoPopup.open()
 
     // 属性定义
     property var data: ["文本1", "文本2"]  // 下拉选项数据
-    property int show: 0                  // 当前选中项的索引
+    property int currentIndex: 0                  // 当前选中项的索引
     property string helpText: ""          // 帮助文本（前缀）
-    property string showText: tikoComboxButton.data[show]  // 当前显示文本
+    property string currentText: tikoComboxButton.data[currentIndex]  // 当前显示文本
 
     // 背景装饰
     Rectangle {
@@ -18,7 +18,7 @@ TikoButtonComplete {
         color: TikoSeit.backdropColor
         border.color: TikoSeit.transparentColor
         border.width: 3
-        radius: 10
+        radius: 8
         z: -1  // 确保背景在按钮下方
     }
 
@@ -29,6 +29,7 @@ TikoButtonComplete {
         height: Math.min(200, listModel.count * 40)  // 动态高度
         padding: 0
         clip: true
+        y: tikoComboxButton.height + 10
 
         // 选项列表
         ListView {
@@ -57,7 +58,7 @@ TikoButtonComplete {
                 }
 
                 onClicked: {
-                    tikoComboxButton.show = index
+                    tikoComboxButton.currentIndex = index
                     tikoPopup.close()
                 }
             }
@@ -72,17 +73,18 @@ TikoButtonComplete {
     // 当data属性变化时更新模型
     onDataChanged: {
         updateModel()
-        // 确保show索引在有效范围内
-        if (show >= data.length) {
-            show = Math.max(0, data.length - 1)
+        if (currentIndex >= data.length) {
+            currentIndex = Math.max(0, data.length - 1)
         }
     }
 
     // 当show属性变化时更新显示文本
-    onShowChanged: {
-        // 确保索引有效
-        if (show >= 0 && show < data.length) {
-            showText = data[show]
+    onCurrentIndexChanged: {
+        if (currentIndex >= 0 && currentIndex < data.length) {
+            currentText = data[currentIndex]
+        }
+        if (column.currentIndex !== currentIndex) {
+            column.currentIndex = currentIndex
         }
     }
 

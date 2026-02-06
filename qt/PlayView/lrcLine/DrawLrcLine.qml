@@ -10,7 +10,7 @@ Item {
 
     property color playingColor: "#ffffffff"
     property color normalColor: "#80ffffff"
-    property font lrcFont: Setting.mainLrcFont
+    property font lrcFont: Setting.lrcFont
     property int lrcId: -1
     property int maxH: maxFontMetrics.boundingRect.height
     property var startList: []

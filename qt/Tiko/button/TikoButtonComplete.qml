@@ -2,7 +2,8 @@ import QtQuick
 import Tiko
 
 TikoButtonBase {
-
+    width: textLineItem.width + iconImg.width + TikoSeit.subitemSpace + TikoSeit.normalMargins * 2
+    height: Math.max(textLineItem.height+ TikoSeit.normalMargins * 2, 50)
     property bool isUseShowColor: true
     property TikoTextLine textLine: textLineItem
     property TikoImage icon: iconImg
@@ -16,10 +17,6 @@ TikoButtonBase {
         anchors.top: parent.top
         anchors.bottom: parent.bottom
         anchors.margins: TikoSeit.normalMargins
-
-
-        anchors.right: textLineItem.left
-        anchors.rightMargin: TikoSeit.subitemSpace
     }
 
     TikoTextLine {
@@ -27,7 +24,6 @@ TikoButtonBase {
         autoColor: showColor
         isUseAutoColor: isUseShowColor
 
-        anchors.right: parent.right
         anchors.top: parent.top
         anchors.bottom: parent.bottom
         anchors.margins: TikoSeit.normalMargins

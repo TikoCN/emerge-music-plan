@@ -17,7 +17,7 @@ TikoPopup {
 
     TikoButtonBorder{
         id: yes
-        text: qsTr("确定")
+        textLine.text: qsTr("确定")
         anchors.verticalCenter: parent.verticalCenter
         anchors.verticalCenterOffset: height / 2 + parent.width / 20
         anchors.horizontalCenter: parent.horizontalCenter
@@ -30,7 +30,7 @@ TikoPopup {
 
     TikoButtonBorder{
         id: no
-        text: qsTr("取消")
+        textLine.text: qsTr("取消")
         anchors.verticalCenter: parent.verticalCenter
         anchors.verticalCenterOffset: height / 2 + parent.width / 20
         anchors.horizontalCenter: parent.horizontalCenter

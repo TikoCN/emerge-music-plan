@@ -79,7 +79,6 @@ Item {
 
                 TikoTextLine{
                     text: musicTitle
-                    font.bold: true
                     height: 30
                     width: parent.width
                 }
@@ -87,6 +86,7 @@ Item {
                     text: artist
                     height: 20
                     width: parent.width
+                    textType: TikoTextLine.TextType.ASSISTANCE
                 }
             }
 

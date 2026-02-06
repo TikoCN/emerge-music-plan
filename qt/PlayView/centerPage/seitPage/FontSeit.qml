@@ -16,16 +16,11 @@ TikoRightVessel{
         property var fontDataMode: [
             {text: qsTr("歌词字体"), prop: "lrcFont"},
             {text: qsTr("桌面歌词字体"), prop: "deskLrcFont"},
-            {text: qsTr("常规文本字体"), prop: "textNormalFont"},
-            {text: qsTr("标题字体"), prop: "titleFont"},
-            {text: qsTr("副标题字体"), prop: "subtitleFont"},
-            {text: qsTr("信息字体"), prop: "informationFont"},
-            {text: qsTr("辅助字体"), prop: "assistanceFont"}
+            {text: qsTr("常规文本字体"), prop: "benchmarkFont"},
         ]
         Repeater {
             model: fontDataMode
             delegate: TikoSelectFont {
-                width: parent.width
                 text: modelData.text
                 selectedFont: Setting[modelData.prop]
 

@@ -11,48 +11,48 @@ ScrollView{
     ScrollBar.horizontal.visible: false
     ScrollBar.vertical: TikoBarV{}
 
-    property double modeTextWidth: 150
+    readonly property double modeTextWidth: 400
+    readonly property real itemWidth: seitPage.width * 0.9
     
     ColumnLayout{
         id: column
         anchors.left: parent.left
-        anchors.top: parent.top
-        anchors.right: parent.right
+        width: parent.width
         anchors.margins: TikoSeit.normalMargins
         spacing: TikoSeit.normalMargins
 
         //资源文件管理
         SourceSeit {
-            width: parent.width * 0.75
+            Layout.preferredWidth: seitPage.itemWidth
             titleButton.width: seitPage.modeTextWidth
         }
 
         //颜色管理
         ColorSeit {
-            width: parent.width * 0.75
+            Layout.preferredWidth: seitPage.itemWidth
             titleButton.width: seitPage.modeTextWidth
         }
 
         //字体管理
         FontSeit {
-            width: parent.width * 0.75
+            Layout.preferredWidth: seitPage.itemWidth
             titleButton.width: seitPage.modeTextWidth
         }
 
         //参数管理
         ParameterSeit {
-            width: parent.width * 0.75
+            Layout.preferredWidth: seitPage.itemWidth
             titleButton.width: seitPage.modeTextWidth
         }
 
         //选项管理
         SwitchSeit {
-            width: parent.width * 0.75
+            Layout.preferredWidth: seitPage.itemWidth
             titleButton.width: seitPage.modeTextWidth
         }
 
         UpdateDataSeit {
-            width: parent.width * 0.75
+            Layout.preferredWidth: seitPage.itemWidth
             titleButton.width: seitPage.modeTextWidth
         }
     }

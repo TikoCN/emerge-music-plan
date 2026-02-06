@@ -16,7 +16,7 @@ Canvas {
     property int duration: -1
     property bool isDraw: false
     property double r: lrcFont.pixelSize / 2
-    property font lrcFont: Setting.mainLrcFont
+    property font lrcFont: Setting.lrcFont
 
     onPaint: {
         const ctx = drawLoadLine.getContext("2d");

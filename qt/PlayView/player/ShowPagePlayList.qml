@@ -58,7 +58,7 @@ Item {
             id: playButton
             anchors.left: playlistHelp.left
             anchors.bottom: playlistCover.bottom
-            text: qsTr("播放")
+            textLine.text: qsTr("播放")
             width: 100
             onClicked: MediaPlayer.playMusic(playlistId, 0)
         }
@@ -68,7 +68,7 @@ Item {
             anchors.left: playButton.right
             anchors.leftMargin: 10
             anchors.bottom: playlistCover.bottom
-            text: qsTr("批量")
+            textLine.text: qsTr("批量")
             width: 100
         }
 

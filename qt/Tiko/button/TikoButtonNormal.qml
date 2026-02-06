@@ -5,8 +5,7 @@ import Tiko
 
 TikoButtonComplete {
     id: button
-    implicitWidth: 100
-    implicitHeight: 40
+
     onIsHoverChanged: {
         if(button.isHover){
             hoveringAnimation.start()

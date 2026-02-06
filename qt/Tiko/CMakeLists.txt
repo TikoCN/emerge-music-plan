@@ -65,6 +65,7 @@ qt_add_qml_module(TikoLib
         QML_FILES
         QML_FILES button/TikoButtonText.qml
         QML_FILES button/TikoButtonComplete.qml
+        QML_FILES
 )
 
 # 链接 Qt 依赖（纯 QML 模块也需要链接 QtQuick）

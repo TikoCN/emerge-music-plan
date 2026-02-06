@@ -46,35 +46,16 @@ private:
     QT_SETTING_PROPERTY(QColor, transparentColor, TransparentColor);
     QT_SETTING_PROPERTY(QColor, backdropColor, BackdropColor);
     QT_SETTING_PROPERTY(QColor, emphasizeColor, EmphasizeColor)
+    QT_SETTING_PROPERTY(QColor, buttonBenchmarklColor, ButtonBenchmarkColor);
+    QT_SETTING_PROPERTY(QColor, textBenchmarklColor, TextBenchmarkColor);
     // 歌词相关
     QT_SETTING_PROPERTY(QColor, lrcNormalColor, LrcNormalColor);
     QT_SETTING_PROPERTY(QColor, lrcPlayingColor, LrcPlayingColor);
     QT_SETTING_PROPERTY(QColor, deskLrcColor, DeskLrcColor);
-    // 字体相关
-    QT_SETTING_PROPERTY(QColor, textBenchmarklColor, TextBenchmarkColor);
-    QT_SETTING_PROPERTY(QColor, textNormalColor, TextNormalColor);
-    QT_SETTING_PROPERTY(QColor, textTitleColor, TextTitleColor);
-    QT_SETTING_PROPERTY(QColor, textSubtitleColor, TextSubtitleColor);
-    QT_SETTING_PROPERTY(QColor, textInformationColor, TextInformationColor);
-    QT_SETTING_PROPERTY(QColor, textAssistanceColor, TextAssistanceColor);
-    QT_SETTING_PROPERTY(QColor, textDisabledColor, TextDisabledColor);
-    // 按钮相关
-    QT_SETTING_PROPERTY(QColor, buttonNormalColor, ButtonNormalColor);
-    QT_SETTING_PROPERTY(QColor, buttonHoverColor, ButtonHoverColor);
-    QT_SETTING_PROPERTY(QColor, buttonPressedColor, ButtonPressedColor);
-    QT_SETTING_PROPERTY(QColor, buttonDisabledColor, ButtonDisabledColor);
 
-    // 字体管理
+    QT_SETTING_PROPERTY(QFont, benchmarkFont, benchmarkFont);
     QT_SETTING_PROPERTY(QFont, lrcFont, lrcFont);
     QT_SETTING_PROPERTY(QFont, deskLrcFont, DeskLrcFont);
-
-    QT_SETTING_PROPERTY(QFont, textBenchmarkFont, TextBenchmarkFont);
-    QT_SETTING_PROPERTY(QFont, textNormalFont, TextNormalFont);
-    QT_SETTING_PROPERTY(QFont, titleFont, TitleFont);
-    QT_SETTING_PROPERTY(QFont, subtitleFont, SubtitleFont);
-    QT_SETTING_PROPERTY(QFont, informationFont, InformationFont);
-    QT_SETTING_PROPERTY(QFont, assistanceFont, AssistanceFont);
-    QT_SETTING_PROPERTY(QFont, disableFont, DisableFont);
 
     // 定位
     QT_SETTING_PROPERTY(QRectF, windowRect, WindowRect);

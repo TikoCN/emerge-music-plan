@@ -19,7 +19,7 @@ TikoRightVessel {
             model: updateDataMode
             delegate: TikoButtonBorder {
                 Layout.preferredWidth: 300
-                text: modelData.text
+                textLine.text: modelData.text
                 onClicked: modelData.doFunction()
             }
         }

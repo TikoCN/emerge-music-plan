@@ -1,12 +1,9 @@
-cmake_minimum_required(VERSION 3.16)
-
-# windeployqt.exe
-set(CMAKE_TOOLCHAIN_FILE "C:/vcpkg/scripts/buildsystems/vcpkg.cmake")
+cmake_minimum_required(VERSION 3.20)
 project(musicPlay VERSION 0.1 LANGUAGES CXX)
+
+find_package(Qt6 REQUIRED COMPONENTS Widgets)
+# windeployqt.exe
 set(CMAKE_CXX_STANDARD 20)
-set(CMAKE_PREFIX_PATH "D:/qt/6.10.1/msvc2022_64")
-set(VCPKG_INSTALL_DIR "C:/vcpkg/installed/x64-windows")
-set(CMAKE_PREFIX_PATH ${VCPKG_INSTALL_DIR} ${CMAKE_PREFIX_PATH})
 set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 

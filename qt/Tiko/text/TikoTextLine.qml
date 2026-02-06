@@ -6,7 +6,9 @@ Text {
     id: root
     elide: Text.ElideRight
     verticalAlignment: Text.AlignVCenter
-
+    clip: true
+    height: font.pixelSize
+    width: text.length * font.pixelSize
     enum TextType {
         NORMAL = 0,
         TITLE = 1,
@@ -16,7 +18,6 @@ Text {
         DISABLE = 5
     }
     property var textType: TikoTextLine.TextType.NORMAL
-    property Rectangle background: background
     property bool isUseAutoColor: false
     property color autoColor: Qt.black
     property color normalColor: { switch (textType) {
@@ -52,13 +53,5 @@ Text {
         default:
             return TikoSeit.textNormalFont
         }
-    }
-    height: font.pixelSize * 1.3 + 2 * TikoSeit.normalMargins
-
-    Rectangle {
-        id: background
-        anchors.fill: parent
-        color: TikoSeit.transparentColor
-        opacity: 0
     }
 }

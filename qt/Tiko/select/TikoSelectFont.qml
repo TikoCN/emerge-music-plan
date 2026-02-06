@@ -11,6 +11,7 @@ Rectangle {
     border.width: 3
     radius: 10
     implicitHeight: 300
+    implicitWidth: 500
 
     TikoTextLine{
         id: titleLine
@@ -25,21 +26,25 @@ Rectangle {
     TikoButtonCombox {
         id: fontFamiliesCombox
         data: Qt.fontFamilies()
-        width: (parent.width - TikoSeit.normalMargins * 2) * 0.75 / 2
         anchors.left: titleLine.left
         anchors.top: titleLine.bottom
         anchors.topMargin: TikoSeit.subitemSpace
         helpText: qsTr("字体：")
+        onCurrentIndexChanged: {
+            selectedFont.family = currentText
+        }
     }
 
 
     TikoButtonCombox {
         data: [12, 13, 14, 15, 16, 17, 18, 19, 20, 22, 24, 26 ,28, 30]
-        width: fontFamiliesCombox.width
         anchors.right: parent.right
         anchors.rightMargin: TikoSeit.normalMargins
         anchors.top: fontFamiliesCombox.top
         helpText: qsTr("字号：")
+        onCurrentIndexChanged: {
+            selectedFont.pointSize = currentText
+        }
     }
 
     TikoTextLine {

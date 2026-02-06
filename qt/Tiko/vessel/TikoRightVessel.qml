@@ -4,7 +4,7 @@ import Tiko
 Item {
     id: rightVessel
     height: rightVessel.itemShow && titleButtonItem.height < (bgLoader.height || 0) ?
-                (bgLoader.height || 0) + 50 : titleButtonItem.height + 50
+                (bgLoader.height || 0) + 50 : titleButtonItem.implicitHeight + 50
     property TikoButtonNormal titleButton: titleButtonItem
     property Component vessel
     property bool itemShow: true
@@ -14,7 +14,6 @@ Item {
         x: 10
         y: 25
         textLine.textType: TikoTextLine.TextType.TITLE
-        implicitWidth: 100
         opacity: 0.3
         onLeftClicked: rightVessel.itemShow = !rightVessel.itemShow
     }

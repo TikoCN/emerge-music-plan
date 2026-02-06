@@ -222,7 +222,7 @@ TikoFrameless{
         CoreData.sendErrorMsg.connect(sendErroMsg)
     }
 
-    function load(){
+    function load() {
         CoreData.playlist = JSON.parse(SQLData.getAllList())
         mainView.buildData()
     }
