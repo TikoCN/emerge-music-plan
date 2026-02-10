@@ -13,15 +13,15 @@ Image{
     fillMode: Image.PreserveAspectFit
     smooth: true
 
-    property bool isUseAutoColor: true
-    property color autoColor: Qt.red
+    property bool enableUnifiedColor: true
+    property color unifiedColor: Qt.red
 
     MultiEffect {
         id: iconShow
         anchors.fill: imageColorAutoView
         source: imageColorAutoView
-        colorization: isUseAutoColor ? 1 : 0
-        colorizationColor: autoColor
+        colorization: enableUnifiedColor ? 1 : 0
+        colorizationColor: unifiedColor
     }
 }
 

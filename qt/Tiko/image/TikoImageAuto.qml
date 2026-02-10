@@ -4,7 +4,7 @@ import QtQuick
 TikoImage{
     id: imageAutoView
     source: normalUrl
-    isUseAutoColor: String(source) === normalUrl
+    enableUnifiedColor: String(source) === normalUrl
 
     property int loadMsTime: 100
     property int freeMsTime: 100

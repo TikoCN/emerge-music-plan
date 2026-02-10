@@ -8,8 +8,8 @@ MenuItem {
     font: TikoSeit.textNormlFont
     implicitHeight: 35
 
-    property color autoColor: TikoSeit.transparentColor
-    property bool useAutoColor: true
+    property color unifiedColor: TikoSeit.transparentColor
+    property bool useUnifiedColor: true
 
     //背景
     background: Rectangle{
@@ -35,8 +35,8 @@ MenuItem {
             id: iconShow
             anchors.fill: icon
             source: icon
-            colorization: useAutoColor ? 1 : 0
-            colorizationColor: autoColor
+            colorization: useUnifiedColor ? 1 : 0
+            colorizationColor: unifiedColor
         }
         TikoTextLine{
             text: root.text

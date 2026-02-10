@@ -19,7 +19,7 @@ TikoButtonBase {
     TikoImage {
         id: iconImg
         anchors.fill: parent
-        autoColor: showColor
+        unifiedColor: showColor
     }
 
 

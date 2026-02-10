@@ -8,3 +8,4 @@ build/
 qt/CMakePresets.json
 qt/CMakeUserPresets.json
 /qt/.idea
+/.vs

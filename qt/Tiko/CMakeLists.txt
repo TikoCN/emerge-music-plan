@@ -55,17 +55,15 @@ qt_add_qml_module(TikoLib
         vessel/TikoRightVessel.qml
         select/TikoSelectColor.qml
         select/TikoSelectFont.qml
-        TikoImageAuto.qml
-        TikoImage.qml
-        QML_FILES
-        QML_FILES
-        SOURCES
-        QML_FILES
-        QML_FILES
-        QML_FILES
+        image/TikoImageAuto.qml
+        image/TikoImage.qml
         QML_FILES button/TikoButtonText.qml
         QML_FILES button/TikoButtonComplete.qml
-        QML_FILES
+        dynamic/TikoDynamicTextLine.qml
+        dynamic/TikoDynamicIcon.qml
+        dynamic/TikoDynamicBackGround.qml
+        dynamic/TikoDynamicColor.qml
+        dynamic/TikoDynamicState.qml
 )
 
 # 链接 Qt 依赖（纯 QML 模块也需要链接 QtQuick）

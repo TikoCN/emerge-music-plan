@@ -18,8 +18,6 @@ Text {
         DISABLE = 5
     }
     property var textType: TikoTextLine.TextType.NORMAL
-    property bool isUseAutoColor: false
-    property color autoColor: Qt.black
     property color normalColor: { switch (textType) {
         case TikoTextLine.TextType.TITLE:
             return TikoSeit.textTitleColor
@@ -36,7 +34,7 @@ Text {
         }
     }
 
-    color: isUseAutoColor ? autoColor : normalColor
+    color: normalColor
 
     font: {
         switch (textType) {

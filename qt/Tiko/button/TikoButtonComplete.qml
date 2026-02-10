@@ -10,8 +10,8 @@ TikoButtonBase {
 
     TikoImage {
         id: iconImg
-        autoColor: showColor
-        isUseAutoColor: isUseShowColor
+        unifiedColor: showColor
+        enableUnifiedColor: isUseShowColor
 
         anchors.left: parent.left
         anchors.top: parent.top
@@ -21,8 +21,8 @@ TikoButtonBase {
 
     TikoTextLine {
         id: textLineItem
-        autoColor: showColor
-        isUseAutoColor: isUseShowColor
+        unifiedColor: showColor
+        enableUnifiedColor: isUseShowColor
 
         anchors.top: parent.top
         anchors.bottom: parent.bottom
