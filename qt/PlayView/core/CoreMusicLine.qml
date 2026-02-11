@@ -82,11 +82,10 @@ Item {
                     height: 30
                     width: parent.width
                 }
-                TikoTextLine{
+                TikoTextAssistance {
                     text: artist
                     height: 20
                     width: parent.width
-                    textType: TikoTextLine.TextType.ASSISTANCE
                 }
             }
 
@@ -174,7 +173,7 @@ Item {
         id: background
         anchors.fill: parent
         radius: 5
-        color: Setting.transparentColor//背景颜色
+        color: TikoSeit.theme.baseTheme.backgroundNormal
     }
 
     states: [

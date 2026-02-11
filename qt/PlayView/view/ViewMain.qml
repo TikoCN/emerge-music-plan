@@ -12,14 +12,6 @@ Item {
     property var playList: []
     property var playListId: []
 
-    //背景
-    Rectangle {
-        width: parent.width
-        height: parent.height
-        color: Setting.transparentColor//背景颜色
-        opacity: 0.03
-    }
-
     TikoButtonIcon{
         id: closeButton
         anchors.right: parent.right

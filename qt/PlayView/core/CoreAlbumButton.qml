@@ -26,7 +26,7 @@ Item{
     // 整体背景
     Rectangle {
         anchors.fill: parent
-        color: Setting.transparentColor
+        color: TikoSeit.theme.baseTheme.backgroundNormal
         radius: 10
         opacity: mouseArea.containsMouse ? 0.1 : 0
     }

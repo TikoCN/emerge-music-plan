@@ -10,7 +10,7 @@ Drawer {
     modal: false
 
     Rectangle{
-        color: Setting.backdropColor
+        color: TikoSeit.theme.baseTheme.backgroundNormal
         anchors.fill: parent
     }
 

@@ -41,16 +41,17 @@ TikoFrameless{
             height: parent.height
             topLeftRadius: 10
             topRightRadius: 10
-            color: Setting.backdropColor
+            color: TikoSeit.themeColor
             y: showType === 0 ? 0 : -height
 
             Rectangle{
                 anchors.fill: parent
-                border.color: Setting.transparentColor
+                color: Qt.rgba(0,0,0,0)
+                border.color: TikoSeit.theme.baseTheme.backgroundTransition
                 topLeftRadius: 10
                 topRightRadius: 10
                 border.width: 0.5
-                opacity: 0.3
+                opacity: 0.7
             }
         }
 
@@ -217,6 +218,7 @@ TikoFrameless{
     }
 
     Component.onCompleted: {
+        TikoSeit.buildTheme()
         load()
         CoreData.clearData.connect(clearData)
         CoreData.sendErrorMsg.connect(sendErroMsg)

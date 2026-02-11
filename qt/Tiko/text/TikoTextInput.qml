@@ -9,8 +9,8 @@ Item {
 
     property Text show: show
     property TextField inputItem: inputItem
-    property color borderColor: TikoSeit.transparentColor
-    property color backColor: TikoSeit.transparentColor
+    property color borderColor: TikoSeit.theme.baseTheme.borderTransition
+    property color backColor: TikoSeit.theme.baseTheme.backgroundTransition
     property color focusColor: TikoSeit.themeColor
     signal finish
     signal input
@@ -26,6 +26,7 @@ Item {
 
     TextField{
         id: inputItem
+        color: TikoSeit.theme.textTheme.normalColor
         placeholderText: qsTr("在这里输入")
         anchors.right: inputText.right
         width: 200
@@ -77,7 +78,6 @@ Item {
 
         background: Rectangle{
             color: inputText.backColor
-            opacity: 0.1
             border.width: 1
             bottomRightRadius: 3
             topRightRadius: 3
@@ -90,7 +90,6 @@ Item {
         color: "#00000000"
         border.color: inputText.borderColor
         border.width: 1
-        opacity: 0.5
         radius: 3
     }
 }

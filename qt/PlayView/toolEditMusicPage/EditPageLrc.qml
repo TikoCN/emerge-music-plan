@@ -150,7 +150,7 @@ Item{
         ScrollBar.vertical: TikoBarV {parent: lrcShowSpace}
 
         background: Rectangle{
-            color: Setting.transparentColor
+            color: TikoSeit.transparentColor
             opacity: 0.05
             radius: 10
         }
@@ -173,7 +173,7 @@ Item{
                 cursorDelegate: Rectangle{
                     height: 10
                     width: 3
-                    color: Setting.themeColor
+                    color: TikoSeit.themeColor
                     opacity: 0.3
                 }
             }

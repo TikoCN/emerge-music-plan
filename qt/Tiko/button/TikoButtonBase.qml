@@ -7,6 +7,16 @@ Item {
     signal leftClicked()
     signal clicked()
 
+    property TikoImage icon: null
+    property TikoTextLine textLine: null
+    property TikoDynamicBackGround background: null
+    property TikoDynamicState dynamicState: TikoDynamicState {
+        isHover: mouseArea.containsMouse && !isDisabled
+        isPressed: mouseArea.containsPress && !isDisabled
+        isNormal: !mouseArea.containsMouse && !isDisabled
+        isDisabled: false
+    }
+
     MouseArea{
         id: mouseArea
         hoverEnabled: true

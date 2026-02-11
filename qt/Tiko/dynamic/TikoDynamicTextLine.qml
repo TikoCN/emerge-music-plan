@@ -3,7 +3,7 @@ import Tiko
 
 TikoTextLine {
     id: dynamicTextLine
-    property TikoDynamicColor dynamicColor: TikoSeit.TextLineDynamicColor
+    property TikoDynamicColor dynamicColor: TikoSeit.theme.foregroundDynamicColor
     property TikoDynamicState dynamicState: null
 
     property bool enableUnifiedColor: false
@@ -12,7 +12,7 @@ TikoTextLine {
     states: [
         State {
             name: "normal"
-            when: dynamicState.isNormal
+            when: dynamicState != null && dynamicState.isNormal
             PropertyChanges {
                 target: dynamicTextLine
                 color: dynamicColor.normalColor
@@ -20,7 +20,7 @@ TikoTextLine {
         },
         State {
             name: "hover"
-            when: dynamicState.isHover
+            when: dynamicState != null && dynamicState.isHover
             PropertyChanges {
                 target: dynamicTextLine
                 color: dynamicColor.hoverColor
@@ -28,7 +28,7 @@ TikoTextLine {
         },
         State {
             name: "pressed"
-            when: dynamicState.isPressed
+            when: dynamicState != null && dynamicState.isPressed
             PropertyChanges {
                 target: dynamicTextLine
                 color: dynamicColor.normalColor
@@ -36,7 +36,7 @@ TikoTextLine {
         },
         State {
             name: "disabled"
-            when: dynamicState.isDisabled
+            when: dynamicState != null && dynamicState.isDisabled
             PropertyChanges {
                 target: dynamicTextLine
                 color: dynamicColor.normalColor

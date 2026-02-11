@@ -42,12 +42,9 @@ private:
     QT_SETTING_PROPERTY(QStringList, sourceList, SourceList);
 
     // 颜色管理
-    QT_SETTING_PROPERTY(QColor, themeColor, ThemeColor);
-    QT_SETTING_PROPERTY(QColor, transparentColor, TransparentColor);
-    QT_SETTING_PROPERTY(QColor, backdropColor, BackdropColor);
-    QT_SETTING_PROPERTY(QColor, emphasizeColor, EmphasizeColor)
-    QT_SETTING_PROPERTY(QColor, buttonBenchmarklColor, ButtonBenchmarkColor);
-    QT_SETTING_PROPERTY(QColor, textBenchmarklColor, TextBenchmarkColor);
+    QT_SETTING_PROPERTY(QColor, themeColor, themeColor)
+    QT_SETTING_PROPERTY(QColor, buttonBenchmarkColor, ButtonBenchmarkColor);
+    QT_SETTING_PROPERTY(QColor, textBenchmarkColor, TextBenchmarkColor);
     // 歌词相关
     QT_SETTING_PROPERTY(QColor, lrcNormalColor, LrcNormalColor);
     QT_SETTING_PROPERTY(QColor, lrcPlayingColor, LrcPlayingColor);

@@ -17,9 +17,9 @@ Slider {
     }
 
     property double radius: 0
-    property color lineColor: TikoSeit.transparentColor
+    property color lineColor: TikoSeit.theme.baseTheme.backgroundTransition
     property color showColor: TikoSeit.themeColor
-    property color handleColor: TikoSeit.backdropColor
+    property color handleColor: TikoSeit.themeColor
     property double size: 0.2
 
     //滑行航道
@@ -30,7 +30,6 @@ Slider {
         //背景条
         Rectangle{
             color: hSlider.lineColor
-            opacity: 0.1
             radius: hSlider.radius
             anchors.verticalCenter: showSpace.verticalCenter
             x: 0
@@ -46,7 +45,6 @@ Slider {
             anchors.verticalCenter: showSpace.verticalCenter
             x: 0
             color: hSlider.showColor
-            opacity: 0.9
         }
     }
 

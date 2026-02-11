@@ -35,11 +35,9 @@ bool Setting::getParameterList()
     m_maxThreadNumber = ini->value(m_maxThreadNumberKey).toInt();
 
     // 颜色管理
-    m_transparentColor = QColor::fromString(ini->value(m_transparentColorKey).toString());
-    m_backdropColor = QColor::fromString(ini->value(m_backdropColorKey).toString());
     m_themeColor = QColor::fromString(ini->value(m_themeColorKey).toString());
-    m_textBenchmarklColor = QColor::fromString(ini->value(m_textBenchmarklColorKey).toString());
-    m_buttonBenchmarklColor = QColor::fromString(ini->value(m_buttonBenchmarklColorKey).toString());
+    m_textBenchmarkColor = QColor::fromString(ini->value(m_textBenchmarkColorKey).toString());
+    m_buttonBenchmarkColor = QColor::fromString(ini->value(m_buttonBenchmarkColorKey).toString());
 
     // 歌词相关颜色
     m_lrcNormalColor = QColor::fromString(ini->value(m_lrcNormalColorKey).toString());
@@ -92,13 +90,11 @@ void Setting::writeData() const
 
     // 颜色设置写入
     ini->setValue(m_themeColorKey, m_themeColor.name(QColor::HexArgb));
-    ini->setValue(m_transparentColorKey, m_transparentColor.name(QColor::HexArgb));
-    ini->setValue(m_backdropColorKey, m_backdropColor.name(QColor::HexArgb));
     ini->setValue(m_lrcNormalColorKey, m_lrcNormalColor.name(QColor::HexArgb));
     ini->setValue(m_lrcPlayingColorKey, m_lrcPlayingColor.name(QColor::HexArgb));
     ini->setValue(m_deskLrcColorKey, m_deskLrcColor.name(QColor::HexArgb));
-    ini->setValue(m_textBenchmarklColorKey, m_textBenchmarklColor.name(QColor::HexArgb));
-    ini->setValue(m_buttonBenchmarklColorKey, m_buttonBenchmarklColor.name(QColor::HexArgb));
+    ini->setValue(m_textBenchmarkColorKey, m_textBenchmarkColor.name(QColor::HexArgb));
+    ini->setValue(m_buttonBenchmarkColorKey, m_buttonBenchmarkColor.name(QColor::HexArgb));
     // 字体设置写入
     ini->setValue(m_lrcFontKey, m_lrcFont.toString());
     ini->setValue(m_deskLrcFontKey, m_deskLrcFont.toString());
@@ -119,6 +115,7 @@ Setting::Setting()
     :m_iniUrl(QDir::currentPath() + "/data/setting.ini")
 {
     if(!getParameterList()){
+
         m_isOnLine = true;
         m_isGetCoverFromNetEase = true;
         m_isGetCoverFromQQMusic = true;
@@ -130,11 +127,9 @@ Setting::Setting()
         m_maxThreadNumber = 10;
 
         // 颜色属性默认值
-        m_themeColor = Qt::red;                    // 主题颜色 - 红色
-        m_transparentColor = QColor(0, 0, 0, 100); // 透明层颜色 - 半透明黑色
-        m_backdropColor = Qt::white;               // 背景颜色 - 白色
-        m_buttonBenchmarklColor = Qt::blue;
-        m_textBenchmarklColor = Qt::blue;
+        m_themeColor = Qt::red;
+        m_buttonBenchmarkColor = Qt::blue;
+        m_textBenchmarkColor = Qt::blue;
 
         // 歌词颜色默认值
         m_lrcNormalColor = Qt::white;              // 歌词常规颜色 - 白色

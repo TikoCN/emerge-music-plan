@@ -12,16 +12,6 @@ TikoButtonBorder {
     property string helpText: ""          // 帮助文本（前缀）
     property string currentText: tikoComboxButton.data[currentIndex]  // 当前显示文本
 
-    // 背景装饰
-    Rectangle {
-        anchors.fill: parent
-        color: TikoSeit.backdropColor
-        border.color: TikoSeit.transparentColor
-        border.width: 3
-        radius: 8
-        z: -1  // 确保背景在按钮下方
-    }
-
     // 下拉弹出框
     TikoPopup {
         id: tikoPopup
@@ -43,7 +33,6 @@ TikoButtonBorder {
             }
 
             delegate: TikoButtonNormal {
-                radius: 0
                 textLine.text: tikoComboxButton.data[index]
                 width: tikoComboxButton.width
                 height: 40
@@ -52,7 +41,7 @@ TikoButtonBorder {
                 Rectangle {
                     visible: index === tikoComboxButton.show
                     anchors.fill: parent
-                    color: TikoSeit.textInformationColor
+                    color: TikoSeit.buttonBenchmarkColor
                     opacity: 0.3
                     z: -1
                 }

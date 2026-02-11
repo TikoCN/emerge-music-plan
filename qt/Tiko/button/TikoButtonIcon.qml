@@ -7,28 +7,44 @@ TikoButtonBase {
     id: iconButton
     implicitWidth: 32
     implicitHeight: 32
+    icon: iconItem
 
-    property TikoImage icon: iconImg
-
-    onIsHoverChanged: {
-        if(iconButton.isHover){
-            rotAnimation.start()
+    dynamicState.onIsHoverChanged: {
+        if(iconButton.dynamicState.isHover){
+           hoverAnim.start()
         }
     }
 
-    TikoImage {
-        id: iconImg
+    TikoDynamicIcon {
+        id: iconItem
         anchors.fill: parent
-        unifiedColor: showColor
+        dynamicState: iconButton.dynamicState
     }
 
+    SequentialAnimation {
+        id: hoverAnim
+        property int r: 20
 
-    //旋转动画
-    RotationAnimation{
-        id: rotAnimation
-        target: iconImg
-        from: 0
-        to: 360
-        duration: 500
+        RotationAnimation{
+            target: iconItem
+            from: 0
+            to: hoverAnim.r
+            duration: 100
+        }
+
+
+        RotationAnimation{
+            target: iconItem
+            from: hoverAnim.r
+            to: -hoverAnim.r
+            duration: 200
+        }
+
+        RotationAnimation{
+            target: iconItem
+            from: -hoverAnim.r
+            to: 0
+            duration: 100
+        }
     }
 }

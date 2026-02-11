@@ -6,20 +6,19 @@ Rectangle {
     id: root
     property font selectedFont: Qt.font
     property string text
-    color: TikoSeit.backdropColor
-    border.color: TikoSeit.transparentColor
+    color: TikoSeit.theme.baseTheme.backgroundTransition
+    border.color: TikoSeit.theme.baseTheme.borderTransition
     border.width: 3
     radius: 10
     implicitHeight: 300
     implicitWidth: 500
 
-    TikoTextLine{
+    TikoTextTitle {
         id: titleLine
         text: root.text
         anchors.left: parent.left
         anchors.top: parent.top
         anchors.margins: TikoSeit.normalMargins
-        textType: TikoTextLine.TextType.TITLE
     }
 
 
@@ -65,8 +64,7 @@ Rectangle {
 
         Rectangle {
             anchors.fill: parent
-            color: TikoSeit.transparentColor
-            opacity: 0.1
+            color: TikoSeit.theme.baseTheme.backgroundTransition
             radius: 25
         }
     }

@@ -17,18 +17,6 @@ Item{
         onClicked: CoreData.mainTurnAlbumPage()
     }
 
-    // 专辑信息背景
-    Rectangle {
-        id: albumDataBack
-        anchors.left: parent.left
-        anchors.top: parent.top
-        anchors.margins: 20
-        width: parent.width - 60
-        height: 270
-        color: TikoSeit.backdropColor
-        radius: 15
-    }
-
     AutoCoverImage {
         id: albumDataCover
         width: 250
@@ -70,10 +58,10 @@ Item{
     MusicListView {
         id: musicListView
         anchors.top: albumDataCover.bottom
+        anchors.bottom: albumPlayer.bottom
         anchors.left: parent.left
         anchors.margins: 30
         width: parent.width - 60
-        height: parent.height - albumDataBack.height - 40
     }
 
     Connections {

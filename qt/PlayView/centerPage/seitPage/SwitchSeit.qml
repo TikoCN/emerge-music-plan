@@ -16,24 +16,23 @@ TikoRightVessel{
         clip: true
 
         property var switchDataMode: [
-                // 在线模块
-                {text: qsTr("在线模块"),prop: "isOnLine"},
-                // 封面获取组
-                {text: qsTr("从网易获得封面"),prop: "isGetCoverFromNetEase"},
-                {text: qsTr("从QQ音乐获得封面"),prop: "isGetCoverFromQQMusic"},
-                {text: qsTr("从百度获得封面"), prop: "isGetCoverFromBaidu"},
-                {text: qsTr("从必应获得封面"),prop: "isGetCoverFromBing"},
-                // 歌词获取组
-                {text: qsTr("从QQ音乐获得歌词"), prop: "isGetLrcFromQQMusic"},
-                {text: qsTr("从网易获得歌词"),prop: "isGetLrcFromNetEase"}
-
+            // 在线模块
+            {text: qsTr("在线模块"),prop: "isOnLine"},
+            // 封面获取组
+            {text: qsTr("从网易获得封面"),prop: "isGetCoverFromNetEase"},
+            {text: qsTr("从QQ音乐获得封面"),prop: "isGetCoverFromQQMusic"},
+            {text: qsTr("从百度获得封面"), prop: "isGetCoverFromBaidu"},
+            {text: qsTr("从必应获得封面"),prop: "isGetCoverFromBing"},
+            // 歌词获取组
+            {text: qsTr("从QQ音乐获得歌词"), prop: "isGetLrcFromQQMusic"},
+            {text: qsTr("从网易获得歌词"),prop: "isGetLrcFromNetEase"}
         ]
 
         Repeater {
             model: switchDataMode
             delegate: TikoButtonSwitch{
                 width: 300
-                text: modelData.text
+                textLine.text: modelData.text
                 check: Setting[modelData.prop]
                 onCheckChanged: Setting[modelData.prop] = check
             }

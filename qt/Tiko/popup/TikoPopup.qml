@@ -7,8 +7,8 @@ Popup {
     onClosed: hide()
 
     property double radius: 0
-    property color borderColor: TikoSeit.transparentColor
-    property color backColor: TikoSeit.backdropColor
+    property color borderColor: TikoSeit.theme.baseTheme.borderNormal
+    property color backColor: TikoSeit.theme.baseTheme.backgroundNormal
     property double backOpacity: 1
     signal hide()
 
@@ -23,7 +23,6 @@ Popup {
             color: "#00000000"
             border.color: popup.borderColor
             border.width: 0.5
-            opacity: 0.3
         }
     }
 }

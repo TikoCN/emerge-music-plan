@@ -13,8 +13,6 @@ Item {
         id: titleButtonItem
         x: 10
         y: 25
-        textLine.textType: TikoTextLine.TextType.TITLE
-        opacity: 0.3
         onLeftClicked: rightVessel.itemShow = !rightVessel.itemShow
     }
 
@@ -41,8 +39,7 @@ Item {
     Rectangle{
         width: parent.width
         height: 3
-        color: rightVessel.itemShow ? TikoSeit.themeColor : TikoSeit.transparentColor
-        opacity: 0.1
+        color: rightVessel.itemShow ? TikoSeit.theme.baseTheme.borderTransition : TikoSeit.themeColor
         radius: 1.5
     }
 }

@@ -14,9 +14,7 @@ TikoRightVessel {
         columns: width / 200
         property var colorDataMode: [
             // 基础颜色
-            {text: qsTr("主题颜色"), prop: "themeColor"},
-            {text: qsTr("透明层颜色"), prop: "transparentColor"},
-            {text: qsTr("背景颜色"), prop: "backdropColor"},
+            {text: qsTr("主题色"), prop: "themeColor"},
 
             // 歌词颜色
             {text: qsTr("歌词常规颜色"), prop: "lrcNormalColor"},

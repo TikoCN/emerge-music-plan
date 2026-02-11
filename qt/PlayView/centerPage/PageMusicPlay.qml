@@ -39,7 +39,7 @@ Item {
     //纯色底片
     Rectangle{
         anchors.fill: pageMain
-        color: Setting.transparentColor
+        color: TikoSeit.theme.baseTheme.backgroundNormal
     }
     //模糊背景
     AutoCoverImage {
@@ -129,12 +129,12 @@ Item {
         onTriggered: effectCover.move()
     }
 
-    //透明成显示
-    Rectangle{
-        anchors.fill: pageMain
-        color: Setting.transparentColor
-        opacity: 0.3
-    }
+    // //透明成显示
+    // Rectangle{
+    //     anchors.fill: pageMain
+    //     color: TikoSeit.theme.baseTheme.backgroundNormal
+    //     opacity: 0.3
+    // }
 
     Loader{
         id: loaderStyle

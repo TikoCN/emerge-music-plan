@@ -3,56 +3,50 @@ import Tiko
 
 Rectangle {
     id: dynamicbackground
-    property color backgroundHoverColor: TikoSeit.backgroundHoverColor
-    property color backgroundNormalColor: TikoSeit.backgroundNormalColor
-    property color backgroundPressedColor: TikoSeit.backgroundPressedColor
-    property color backgroundDisabledColor: TikoSeit.backgroundDisabledColor
+    property TikoDynamicColor backgroundDynamicColor: TikoSeit.theme.backgroundDynamicColor
+    property TikoDynamicColor borderDynamicColor: TikoSeit.theme.borderDynamicColor
+    property TikoDynamicState dynamicState: null
 
-    property color borderHoverColor: TikoSeit.borderHoverColor
-    property color borderNormalColor: TikoSeit.borderNormalColor
-    property color borderPressedColor: TikoSeit.borderPressedColor
-    property color borderDisabledColor: TikoSeit.borderDisabledColor
-
-    property bool isNormal: false
-    property bool isHover: false
-    property bool isPressed: false
-    property bool isDisabled: false
+    color: Qt.rgba(0, 0, 0, 0)
+    border.color: Qt.rgba(0, 0, 0, 0)
+    border.width: 1
+    radius: 8
 
     states: [
         State {
             name: "normal"
-            when: isNormal
+            when: dynamicState != null && dynamicState.isNormal
             PropertyChanges {
                 target: dynamicbackground
-                color: backgroundNormalColor
-                border.color: borderNormalColor
+                color: backgroundDynamicColor.normalColor
+                border.color: borderDynamicColor.normalColor
             }
         },
         State {
             name: "hover"
-            when: isHover
+            when: dynamicState != null && dynamicState.isHover
             PropertyChanges {
                 target: dynamicbackground
-                color: backgroundHoverColor
-                border.color: borderHoverColor
+                color: backgroundDynamicColor.hoverColor
+                border.color: borderDynamicColor.hoverColor
             }
         },
         State {
             name: "pressed"
-            when: isPressed
+            when: dynamicState != null && dynamicState.isPressed
             PropertyChanges {
                 target: dynamicbackground
-                color: backgroundPressedColor
-                border.color: borderPressedColor
+                color: backgroundDynamicColor.pressedColor
+                border.color: borderDynamicColor.pressedColor
             }
         },
         State {
             name: "disabled"
-            when: isDisabled
+            when: dynamicState != null && dynamicState.isDisabled
             PropertyChanges {
                 target: dynamicbackground
-                color: backgroundDisabledColor
-                border.color: borderDisabledColor
+                color: backgroundDynamicColor.disabledColor
+                border.color: borderDynamicColor.disabledColor
             }
         }
     ]

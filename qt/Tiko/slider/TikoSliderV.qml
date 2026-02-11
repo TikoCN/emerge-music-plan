@@ -14,9 +14,9 @@ Slider {
     }
 
     property double radius: 0
-    property color lineColor: TikoSeit.transparentColor
+    property color lineColor: TikoSeit.theme.baseTheme.backgroundTransition
     property color showColor: TikoSeit.themeColor
-    property color handleColor: TikoSeit.backdropColor
+    property color handleColor: TikoSeit.themeColor
     property double size: 0.3
 
     //滑行航道

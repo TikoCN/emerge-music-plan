@@ -8,7 +8,7 @@ Item {
     implicitHeight: 40
 
     property color selectedColor: "red"
-    property color borderColor: TikoSeit.transparentColor
+    property color borderColor: TikoSeit.theme.baseTheme.borderTransition
     property string text: qsTr("颜色选择")
 
     MouseArea{

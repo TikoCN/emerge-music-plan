@@ -42,7 +42,7 @@ TikoRightVessel {
         }
 
         Rectangle{
-            color: Setting.transparentColor
+            color: TikoSeit.theme.baseTheme.backgroundTransition
             anchors.fill: sourceListColumn
             opacity: 0.05
         }

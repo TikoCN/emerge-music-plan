@@ -3,47 +3,41 @@ import Tiko
 
 
 TikoImage {
-    property color hoverColor: TikoSeit.iconHoverColor
-    property color normalColor: TikoSeit.iconNormalColor
-    property color pressedColor: TikoSeit.iconPressedColor
-    property color disabledColor: TikoSeit.iconDisabledColor
-
-    property bool isNormal: false
-    property bool isHover: false
-    property bool isPressed: false
-    property bool isDisabled: false
+    id: dynamicIcon
+    property TikoDynamicColor dynamicColor: TikoSeit.theme.foregroundDynamicColor
+    property TikoDynamicState dynamicState: null
 
     states: [
         State {
             name: "normal"
-            when: isNormal
+            when: dynamicState != null && dynamicState.isNormal
             PropertyChanges {
-                target: dynamicTextLine
-                unifiedColor: normalColor
+                target: dynamicIcon
+                unifiedColor: dynamicColor.normalColor
             }
         },
         State {
             name: "hover"
-            when: isHover
+            when: dynamicState != null && dynamicState.isHover
             PropertyChanges {
-                target: dynamicTextLine
-                unifiedColor: hoverColor
+                target: dynamicIcon
+                unifiedColor: dynamicColor.hoverColor
             }
         },
         State {
             name: "pressed"
-            when: isPressed
+            when: dynamicState != null && dynamicState.isPressed
             PropertyChanges {
-                target: dynamicTextLine
-                unifiedColor: pressedColor
+                target: dynamicIcon
+                unifiedColor: dynamicColor.pressedColor
             }
         },
         State {
             name: "disabled"
-            when: isDisabled
+            when: dynamicState != null && dynamicState.isDisabled
             PropertyChanges {
-                target: dynamicTextLine
-                unifiedColor: disabledColor
+                target: dynamicIcon
+                unifiedColor: dynamicColor.disabledColor
             }
         }
     ]

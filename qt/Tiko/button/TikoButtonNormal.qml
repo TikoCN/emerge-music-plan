@@ -3,48 +3,25 @@ import QtQuick
 import QtQuick.Effects
 import Tiko
 
-TikoButtonComplete {
-    id: button
+TikoButtonBase {
+    id: normalButton
+    implicitHeight: Math.max(iconItem.implicitHeight, textLineItem.implicitHeight)
+    implicitWidth: childrenRect.width
+    icon: iconItem
+    textLine: textLineItem
 
-    onIsHoverChanged: {
-        if(button.isHover){
-            hoveringAnimation.start()
-        }
-        else{
-            hoveredAnimation.start()
-        }
+    TikoDynamicIcon {
+        id: iconItem
+        dynamicState: normalButton.dynamicState
+        anchors.left: parent.left
     }
 
-    property int radius: 10
-    property double borderWidth: 1
-    property color backColor: showColor
 
-    //背景颜色
-    Rectangle{
-        id: backRect
-        color: backColor
-        radius: button.radius
-        anchors.fill: parent
-        opacity: 0
-    }
-
-    //鼠标进入
-    PropertyAnimation{
-        id: hoveringAnimation
-        target: backRect
-        properties: "opacity"
-        from: button.normal
-        to: button.hover
-        duration: 300
-    }
-
-    //鼠标退出
-    PropertyAnimation{
-        id: hoveredAnimation
-        target: backRect
-        properties: "opacity"
-        from: button.hover
-        to: button.normal
-        duration: 300
+    TikoDynamicTextLine {
+        id: textLineItem
+        dynamicState: normalButton.dynamicState
+        anchors.left: iconItem.right
+        anchors.leftMargin: TikoSeit.subitemSpace
+        anchors.verticalCenter: iconItem.verticalCenter
     }
 }

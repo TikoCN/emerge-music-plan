@@ -17,18 +17,6 @@ Item{
         onClicked: CoreData.mainTurnArtistPage()
     }
 
-    // 专辑信息背景
-    Rectangle {
-        id: artistDataBack
-        anchors.left: parent.left
-        anchors.top: parent.top
-        anchors.margins: 20
-        width: parent.width - 60
-        height: 270
-        color: TikoSeit.backdropColor
-        radius: 15
-    }
-
     AutoCoverImage {
         id: artistDataCover
         width: 250
@@ -68,10 +56,10 @@ Item{
     MusicListView {
         id: musicListView
         anchors.top: artistDataCover.bottom
+        anchors.bottom: artistPlayer.bottom
         anchors.left: parent.left
         anchors.margins: 30
         width: parent.width - 60
-        height: parent.height - artistDataBack.height - 40
     }
 
     Connections {

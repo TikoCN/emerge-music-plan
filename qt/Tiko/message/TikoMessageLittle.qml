@@ -7,8 +7,8 @@ TikoPopup {
     width: icon.width + messageShow.width + 60
     height: messageShow.height
     padding: 0
-    borderColor: TikoSeit.themeColor
-    backColor: TikoSeit.themeColor
+    borderColor: TikoSeit.theme.baseTheme.borderNormal
+    backColor: TikoSeit.theme.baseTheme.backgroundNormal
     backOpacity: 0.4
 
     property string message: qsTr("消息送达")

@@ -8,12 +8,6 @@ import PlayView
 
 Item {
     //背景
-    Rectangle{
-        anchors.fill: parent
-        color: Setting.transparentColor
-        opacity: 0.05
-    }
-
     Item{
         id: shwoView
         width: parent.width
@@ -135,7 +129,7 @@ Item {
             width: playerControl.width + 10
             height: playerControl.height + 10
             anchors.centerIn: playerControl
-            color: Setting.themeColor
+            color: TikoSeit.theme.baseTheme.backgroundEmphasize
             radius: 15
         }
         //播放 暂停按钮

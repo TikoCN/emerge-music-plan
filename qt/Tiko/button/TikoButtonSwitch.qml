@@ -1,26 +1,20 @@
 import QtQuick
 import QtQuick.Controls.Basic
 import Tiko
-Item {
+TikoButtonBase {
     id: switchButton
 
     implicitHeight: 36
-
+    textLine: textLineItem
     property bool check: false
-    property string text: qsTr("文本")
-    property color useingColor: TikoSeit.themeColor
-    property color unuseColor: TikoSeit.transparentColor
+    property color useingColor: TikoSeit.theme
+    property color unuseColor: TikoSeit.theme.baseTheme.backgroundTransition
     property double fontOpacity: 0.3
 
-    MouseArea{
-        id: mouseArea
-        anchors.fill: parent
-        hoverEnabled: true
-        onClicked: {
-            check = !check
-            colorAnimation.start()
-            propertyAnimation.start()
-        }
+    onClicked: {
+        check = !check
+        colorAnimation.start()
+        propertyAnimation.start()
     }
 
     Rectangle{
@@ -40,7 +34,7 @@ Item {
             y: box.spacer
             width: height
             height: box.height - box.spacer * 2
-            color: TikoSeit.backdropColor
+            color: TikoSeit.themeColor
             opacity: 1
             radius: height * 0.5
         }
@@ -64,13 +58,12 @@ Item {
         }
     }
 
-    TikoTextLine{
-        text: switchButton.text
+    TikoDynamicTextLine{
+        id: textLineItem
         anchors.left: box.right
         anchors.leftMargin: 10
         height: switchButton.height
         width: switchButton.width - box.width - 20
-        color: mouseArea.containsMouse ? switchButton.useingColor : switchButton.unuseColor
         opacity: check ? 1 : fontOpacity
     }
 }

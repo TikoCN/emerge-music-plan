@@ -31,7 +31,7 @@ qt_add_qml_module(TikoLib
         QML_FILES
         TikoSeit.qml
         TikoFrameless.qml
-        TikoWidget.qml
+
         bar/TikoBarV.qml
         button/TikoButtonBorder.qml
         button/TikoButtonNormal.qml
@@ -64,6 +64,13 @@ qt_add_qml_module(TikoLib
         dynamic/TikoDynamicBackGround.qml
         dynamic/TikoDynamicColor.qml
         dynamic/TikoDynamicState.qml
+        QML_FILES text/TikoTextLineType.qml
+        QML_FILES text/TikoTextTitle.qml
+        QML_FILES text/TikoTextSubtitle.qml
+        QML_FILES text/TikoTextInformation.qml
+        QML_FILES text/TikoTextAssistance.qml
+        QML_FILES TikoTheme.qml
+        QML_FILES vessel/TikoThemeBackground.qml
 )
 
 # 链接 Qt 依赖（纯 QML 模块也需要链接 QtQuick）

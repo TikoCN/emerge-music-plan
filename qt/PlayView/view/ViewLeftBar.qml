@@ -19,13 +19,6 @@ Item {
         anchors.margins: 10
         width: parent.width - 10
 
-        background: Rectangle{
-            width: parent.width
-            height: parent.height
-            color: Setting.transparentColor//背景颜色
-            opacity: 0.01
-        }
-
         Column{
             spacing: 5
             width: parent.width
@@ -42,14 +35,6 @@ Item {
                     root.showText = textLine.text
                     mainView.turnToMain()
                 }
-
-                Rectangle {
-                    color: TikoSeit.transparentColor
-                    opacity: 0.2
-                    visible: root.showText === parent.text
-                    anchors.fill: parent
-                    radius: 15
-                }
             }
 
             TikoButtonNormal{
@@ -62,14 +47,6 @@ Item {
                     root.showText = textLine.text
                     mainView.turnToAlbum()
                 }
-
-                Rectangle {
-                    color: TikoSeit.transparentColor
-                    opacity: 0.2
-                    visible: root.showText === parent.text
-                    anchors.fill: parent
-                    radius: 15
-                }
             }
 
             TikoButtonNormal{
@@ -80,14 +57,6 @@ Item {
                 onClicked: {
                     root.showText = textLine.text
                     mainView.turnToArtist()
-                }
-
-                Rectangle {
-                    color: TikoSeit.transparentColor
-                    opacity: 0.2
-                    visible: root.showText === parent.text
-                    anchors.fill: parent
-                    radius: 15
                 }
             }
 
@@ -102,14 +71,6 @@ Item {
                     mainView.turnToSeit();
                 }
                 icon.source: "qrc:/image/seit.png"
-
-                Rectangle {
-                    color: TikoSeit.transparentColor
-                    opacity: 0.2
-                    visible: root.showText === parent.text
-                    anchors.fill: parent
-                    radius: 15
-                }
             }
 
             //新建列表
@@ -160,14 +121,6 @@ Item {
                         CoreData.mainTurnMusicList(playlistId)
                     }
                     onRightClicked: openPlayListMenu(playlistId, isDir, name)
-
-                    Rectangle {
-                        color: TikoSeit.transparentColor
-                        opacity: 0.2
-                        visible: root.showText === parent.text
-                        anchors.fill: parent
-                        radius: 15
-                    }
                 }
 
                 model: ListModel{
