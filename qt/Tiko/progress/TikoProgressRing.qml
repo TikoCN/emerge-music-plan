@@ -12,7 +12,7 @@ Shape {
     property double radius: 50
     property double diameter: progressRing.radius * 2
     property color backColor: TikoSeit.theme.baseTheme.backgroundNormal
-    property color usedColor: TikoSeit.themeColor
+    property color usedColor: TikoSeit.theme.baseTheme.themeTransition
     property color transparentColor: TikoSeit.theme.baseTheme.backgroundTransition
 
     Rectangle{

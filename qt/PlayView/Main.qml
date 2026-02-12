@@ -41,7 +41,7 @@ TikoFrameless{
             height: parent.height
             topLeftRadius: 10
             topRightRadius: 10
-            color: TikoSeit.themeColor
+            color: TikoSeit.theme.baseTheme.backgroundNormal
             y: showType === 0 ? 0 : -height
 
             Rectangle{
@@ -67,9 +67,13 @@ TikoFrameless{
         ViewLeftBar{
             id: barView
             height: parent.height - bottomView.height - 10
-            width: 200
+            width: 300
             x: 10
             y: showType === 0 ? 10 : -height
+            onTurnToAlbum: mainView.turnToAlbum()
+            onTurnToArtist: mainView.turnToArtist()
+            onTurnToMain: mainView.turnToMain()
+            onTurnToSeit: mainView.turnToSeit()
         }
 
         //底部导航

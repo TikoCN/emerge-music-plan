@@ -36,7 +36,7 @@ Rectangle {
 
 
     TikoButtonCombox {
-        data: [12, 13, 14, 15, 16, 17, 18, 19, 20, 22, 24, 26 ,28, 30]
+        data: Array.from({length: 14}, (_, index) => index + 1)
         anchors.right: parent.right
         anchors.rightMargin: TikoSeit.normalMargins
         anchors.top: fontFamiliesCombox.top
@@ -46,8 +46,7 @@ Rectangle {
         }
     }
 
-    TikoTextLine {
-        font: selectedFont
+    Rectangle {
         height: 55 * 2
         anchors.top: fontFamiliesCombox.bottom
         anchors.topMargin: TikoSeit.subitemSpace
@@ -56,16 +55,15 @@ Rectangle {
         anchors.rightMargin: TikoSeit.normalMargins
         anchors.bottom: parent.bottom
         anchors.bottomMargin: TikoSeit.normalMargins
+        color: TikoSeit.theme.baseTheme.backgroundTransition
+        radius: 25
 
-        text: root.text + qsTr("预览文本")
-        horizontalAlignment: Text.AlignHCenter
-        verticalAlignment: Text.AlignVCenter
-
-
-        Rectangle {
+        TikoTextLine {
+            font: selectedFont
             anchors.fill: parent
-            color: TikoSeit.theme.baseTheme.backgroundTransition
-            radius: 25
+            text: root.text + qsTr("预览文本")
+            horizontalAlignment: Text.AlignHCenter
+            verticalAlignment: Text.AlignVCenter
         }
     }
 }

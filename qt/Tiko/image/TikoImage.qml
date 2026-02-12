@@ -5,8 +5,8 @@ Image{
     id: imageColorAutoView
     sourceSize.width: width
     sourceSize.height: height
-    width: 32
-    height: 32
+    width: 20
+    height: 20
     asynchronous: true
     cache: true
     mipmap: true

@@ -37,8 +37,8 @@ Canvas {
         let startX = allWith >= width ? 0 : (width - allWith) / 2
         let playingPos = MediaPlayer.player.position
         let overF = 0
-        const playColor = Setting.deskLrcColor
-        const normalColor = Qt.rgba(playColor.r, playColor.g, playColor.b, 0.4)
+        const playColor = Setting.lrcPlayingColor
+        const normalColor = Setting.lrcNormalColor
 
         ctx.clearRect(0, 0, width, height);
         ctx.font = "bold "+ oneFontMetrics.font.pixelSize.toString() +

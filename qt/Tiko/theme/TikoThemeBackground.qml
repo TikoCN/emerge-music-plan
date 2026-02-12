@@ -20,11 +20,23 @@ QtObject {
     property color foregroundTransition
     property color foregroundEmphasize
 
+    property color transparentNormal
+    property color transparentTransition
+    property color transparentEmphasize
+
     property color themeNormal
     property color themeTransition
     property color themeEmphasize
 
-    function setColor(isLightTheme){
+    function setColor(themeColor, isLightTheme){
+        let h = themeColor.hslHue
+        let s = themeColor.hslSaturation
+        let l = themeColor.hslLightness
+        let a = themeColor.a
+
+        let sTransition, lTransition
+        let sEmphasize = Math.min(s * 1.3, 1.0)
+        let lEmphasize = l - 10
         if (isLightTheme) {
             // 背景色层次（从白到浅灰）
             backgroundNormal = Qt.rgba(1.0, 1.0, 1.0, 1.0)
@@ -36,10 +48,18 @@ QtObject {
             borderTransition = Qt.rgba(0.8, 0.8, 0.8, 1.0)
             borderEmphasize = Qt.rgba(0.6, 0.6, 0.6, 1.0)
 
+            // 透明层颜色
+            transparentNormal = Qt.rgba(0, 0, 0, 0.05)
+            transparentTransition = Qt.rgba(0, 0, 0, 0.02)
+            transparentEmphasize = Qt.rgba(0, 0, 0, 0.1)
+
             // 前景色层次（从黑到中灰）
             foregroundNormal = Qt.rgba(0.0, 0.0, 0.0, 1.0)
             foregroundTransition = Qt.rgba(0.2, 0.2, 0.2, 1.0)
             foregroundEmphasize = Qt.rgba(0.4, 0.4, 0.4, 1.0)
+
+            sTransition = s * 0.7
+            lTransition = l + 0.15
         } else {
             // 背景色层次（从黑到深灰）
             backgroundNormal = Qt.rgba(0.0, 0.0, 0.0, 1.0)
@@ -51,10 +71,22 @@ QtObject {
             borderTransition = Qt.rgba(0.25, 0.25, 0.25, 1.0)
             borderEmphasize = Qt.rgba(0.38, 0.38, 0.38, 1.0)
 
+            // 透明层颜色
+            transparentNormal = Qt.rgba(1, 1, 1, 0.05)
+            transparentTransition = Qt.rgba(1, 1, 1, 0.02)
+            transparentEmphasize = Qt.rgba(1, 1, 1, 0.1)
+
             // 前景色层次（从白到中灰白）
             foregroundNormal = Qt.rgba(1.0, 1.0, 1.0, 1.0)
             foregroundTransition = Qt.rgba(0.9, 0.9, 0.9, 1.0)
             foregroundEmphasize = Qt.rgba(0.7, 0.7, 0.7, 1.0)
+
+            sTransition = s * 0.9
+            lTransition = l - 0.12
         }
+
+        themeNormal = themeColor
+        themeTransition = Qt.hsla(h, sTransition, lTransition, a)
+        themeEmphasize = Qt.hsla(h, sEmphasize, lEmphasize, a)
     }
 }

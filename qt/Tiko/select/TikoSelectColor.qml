@@ -34,7 +34,7 @@ Item {
     Rectangle{
         id: colorShow
         height: tikoColorSelcet.height * 0.6
-        width: this.height
+        width: height
         anchors.left: tikoColorSelcet.left
         anchors.verticalCenter: tikoColorSelcet.verticalCenter
         color: tikoColorSelcet.selectedColor

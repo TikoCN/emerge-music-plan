@@ -5,8 +5,8 @@ import Tiko
 
 TikoButtonBase {
     id: iconButton
-    implicitWidth: 32
-    implicitHeight: 32
+    implicitWidth: 20
+    implicitHeight: 20
     icon: iconItem
 
     dynamicState.onIsHoverChanged: {

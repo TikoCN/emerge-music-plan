@@ -20,7 +20,7 @@ QtObject {
             // 亮主题：
             normalColor = Qt.rgba(0.1, 0.1, 0.1, 1) // 黑色
             titleColor = Qt.rgba(0, 0, 0, 1) // 黑色
-            subtitleColor = Qt.rgba(0.3, 0.3, 0.3, 1) // 深灰色
+            subtitleColor = Qt.rgba(0.2, 0.2, 0.2, 1) // 深灰色
             informationColor = Qt.rgba(0.5, 0.5, 0.5, 1) // 灰色
             assistanceColor = Qt.rgba(0.7, 0.7, 0.7, 1) // 浅灰色
         } else {

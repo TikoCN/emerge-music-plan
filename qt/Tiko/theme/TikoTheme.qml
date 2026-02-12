@@ -7,9 +7,9 @@ QtObject {
     property TikoThemeBackground baseTheme: TikoThemeBackground{}
 
     // 动态颜色
-    property TikoDynamicColor foregroundDynamicColor: TikoDynamicColor{}
-    property TikoDynamicColor backgroundDynamicColor: TikoDynamicColor{}
-    property TikoDynamicColor borderDynamicColor: TikoDynamicColor{}
+    property TikoDynamicColor foregroundDynamicColor: TikoDynamicColor{normalColor: baseTheme.foregroundNormal}
+    property TikoDynamicColor backgroundDynamicColor: TikoDynamicColor{normalColor: baseTheme.backgroundNormal}
+    property TikoDynamicColor borderDynamicColor: TikoDynamicColor{normalColor: baseTheme.borderNormal}
 
     property TikoTextLineType textTheme: TikoTextLineType{}
 

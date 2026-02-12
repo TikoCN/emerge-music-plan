@@ -17,6 +17,7 @@ TikoRightVessel{
 
         property var switchDataMode: [
             // 在线模块
+            {text: qsTr("亮暗主题"),prop: "isLightTheme"},
             {text: qsTr("在线模块"),prop: "isOnLine"},
             // 封面获取组
             {text: qsTr("从网易获得封面"),prop: "isGetCoverFromNetEase"},

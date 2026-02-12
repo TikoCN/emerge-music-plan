@@ -6,23 +6,22 @@ import MediaerAPI
 
 QtObject {
     // 主题管理
-    property bool isLightTheme: false
+    property bool isLightTheme: Setting.isLightTheme
     property color themeColor: Setting.themeColor
-    onThemeColorChanged: isLightTheme = isLightColorByLuminance(themeColor)
+    onThemeColorChanged: buildTheme()
     onIsLightThemeChanged: buildTheme()
 
     // 字体颜色相关
-    property color buttonBenchmarkColor: Setting.buttonBenchmarkColor
     property TikoTheme theme: TikoTheme{}
-    onButtonBenchmarkColorChanged: theme.setDynamicColor(buttonBenchmarkColor, isLightTheme)
 
     // 字体管理
     property font benchmarkFont: Setting.benchmarkFont
     onBenchmarkFontChanged: theme.textTheme.setFont(benchmarkFont)
 
     function buildTheme(){
-        theme.setDynamicColor(buttonBenchmarkColor, isLightTheme)
+        theme.setDynamicColor(themeColor, isLightTheme)
         theme.textTheme.setColor(isLightTheme)
+        theme.baseTheme.setColor(themeColor, isLightTheme)
     }
 
     // 基于WCAG相对亮度计算
@@ -43,10 +42,9 @@ QtObject {
         return luminance > 0.5
     }
 
-
-
     property int subitemSpace: 6
     property int normalMargins: 10
+    property int emphasizeMargins: 20
     property int normalLineHeight: theme.textTheme.normalFont.pointSize * 1.3 + 2 * normalMargins
 
     // 歌词相关

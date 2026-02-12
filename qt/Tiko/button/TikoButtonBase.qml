@@ -7,8 +7,8 @@ Item {
     signal leftClicked()
     signal clicked()
 
-    property TikoImage icon: null
-    property TikoTextLine textLine: null
+    property TikoDynamicIcon icon: null
+    property TikoDynamicTextLine textLine: null
     property TikoDynamicBackGround background: null
     property TikoDynamicState dynamicState: TikoDynamicState {
         isHover: mouseArea.containsMouse && !isDisabled
@@ -17,12 +17,15 @@ Item {
         isDisabled: false
     }
 
+    property bool check: false
+
     MouseArea{
         id: mouseArea
         hoverEnabled: true
         anchors.fill: buttonBase
         acceptedButtons: Qt.LeftButton | Qt.RightButton
         onClicked: (mouse)=>{
+                       check = !check
                        buttonBase.clicked()
                        switch(mouse.button){
                            case Qt.LeftButton:

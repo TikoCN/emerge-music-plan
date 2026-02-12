@@ -21,6 +21,7 @@ bool Setting::getParameterList()
     auto *ini = new QSettings(m_iniUrl,QSettings::IniFormat);
     ini->beginGroup("seit");
 
+    m_isLightTheme = ini->value(m_isLightThemeKey).toBool();
     m_isOnLine = ini->value(m_isOnLineKey).toBool();
     m_isGetCoverFromNetEase = ini->value(m_isGetCoverFromNetEaseKey).toBool();
     m_isGetCoverFromQQMusic = ini->value(m_isGetCoverFromQQMusicKey).toBool();
@@ -76,6 +77,7 @@ void Setting::writeData() const
     auto *ini = new QSettings(m_iniUrl, QSettings::IniFormat);
     ini->beginGroup("seit");
 
+    ini->setValue(m_isLightThemeKey, m_isLightTheme);
     ini->setValue(m_isOnLineKey, m_isOnLine);
     ini->setValue(m_isGetCoverFromNetEaseKey, m_isGetCoverFromNetEase);
     ini->setValue(m_isGetCoverFromQQMusicKey, m_isGetCoverFromQQMusic);
@@ -115,7 +117,7 @@ Setting::Setting()
     :m_iniUrl(QDir::currentPath() + "/data/setting.ini")
 {
     if(!getParameterList()){
-
+        m_isLightTheme = true;
         m_isOnLine = true;
         m_isGetCoverFromNetEase = true;
         m_isGetCoverFromQQMusic = true;

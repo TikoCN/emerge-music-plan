@@ -12,7 +12,7 @@ Window{
     color:"#00000000"
     flags: Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint | Qt.Tool
     title: qsTr("桌面歌词")
-    width: (Setting.deskFont.pixelSize * 20 > 600 ? Setting.deskFont.pixelSize * 20: 600) + 40
+    width: (Setting.deskLrcColor.pixelSize * 20 > 600 ? Setting.deskLrcColor.pixelSize * 20: 600) + 40
     height: tool.height + playingLine.height + 30
 
     Component.onDestruction: {
@@ -23,8 +23,8 @@ Window{
 
     Rectangle{
         anchors.fill: parent
-        color: TikoSeit.transparentColor
-        opacity: deskLrcToolArea.containsMouse ? 0.3 : 0
+        color: TikoSeit.theme.baseTheme.transparentNormal
+        opacity: deskLrcToolArea.containsMouse ? 1 : 0
     }
 
     MouseArea{
@@ -106,10 +106,10 @@ Window{
             anchors.topMargin: 10
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.leftMargin: 20
-            width: Setting.deskFont.pixelSize * 20
-            height: Setting.deskFont.pixelSize * 3
-            fontFamily: Setting.deskFont.family
-            fontPixelSize: Setting.deskFont.pixelSize
+            width: Setting.deskLrcFont.pixelSize * 20
+            height: Setting.deskLrcFont.pixelSize * 3
+            fontFamily: Setting.deskLrcFont.family
+            fontPixelSize: Setting.deskLrcFont.pixelSize
         }
     }
 }

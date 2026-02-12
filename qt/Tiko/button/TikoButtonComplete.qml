@@ -9,13 +9,13 @@ TikoButtonBase {
     textLine: textLineItem
     background: backgroundItem
 
-    TikoImage {
+    TikoDynamicIcon {
         id: iconItem
         anchors.left: parent.left
         anchors.leftMargin: TikoSeit.subitemSpace
     }
 
-    TikoTextLine {
+    TikoDynamicTextLine {
         id: textLineItem
         anchors.left: iconItem.right
         anchors.verticalCenter: iconItem.verticalCenter

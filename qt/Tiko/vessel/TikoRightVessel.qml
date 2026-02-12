@@ -39,7 +39,7 @@ Item {
     Rectangle{
         width: parent.width
         height: 3
-        color: rightVessel.itemShow ? TikoSeit.theme.baseTheme.borderTransition : TikoSeit.themeColor
+        color: rightVessel.itemShow ? TikoSeit.theme.baseTheme.borderTransition : TikoSeit.theme.baseTheme.themeTransition
         radius: 1.5
     }
 }

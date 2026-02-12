@@ -32,9 +32,7 @@ TikoRightVessel{
             delegate: TikoTextInput{
                 implicitWidth: 150
                 show.text: modelData.text
-                show.width: 100
                 inputItem.text: Setting[modelData.prop].toString()
-                inputItem.width: 50
                 onFinish: Setting[modelData.prop] = inputNumber(inputItem, Setting[modelData.prop])
             }
         }

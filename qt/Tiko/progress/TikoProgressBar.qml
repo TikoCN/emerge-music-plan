@@ -7,7 +7,7 @@ Item {
 
     property double precent: 0
     property color backColor: TikoSeit.theme.baseTheme.backgroundNormal
-    property color usedColor: TikoSeit.themeColor
+    property color usedColor: TikoSeit.theme.baseTheme.themeTransition
     property color transparentColor: TikoSeit.theme.baseTheme.backgroundTransition
     property double radius: progressBar.height
 

@@ -1,4 +1,5 @@
 import QtQuick
+import QtQuick.Layouts
 import QtQuick.Window
 import QtQuick.Controls
 import QtQml
@@ -10,6 +11,11 @@ Item {
     id: root
     property string showText: ""
 
+    signal turnToMain()
+    signal turnToArtist()
+    signal turnToAlbum()
+    signal turnToSeit()
+
     //左侧导航
     ScrollView{
         ScrollBar.vertical.visible: false
@@ -19,66 +25,53 @@ Item {
         anchors.margins: 10
         width: parent.width - 10
 
-        Column{
-            spacing: 5
-            width: parent.width
-            height: parent.height
+        Grid {
+            id: toolItem
+            anchors.top: parent.top
+            anchors.left: parent.left
+            anchors.right: parent.right
+            anchors.margins: TikoSeit.emphasizeMargins
+            columns: 2
+            spacing: TikoSeit.normalMargins
 
-            //切换到推荐
-            TikoButtonNormal{
-                width: parent.width
-                id: mainPageButton
-                textLine.text: qsTr("推荐")
-                icon.source: "qrc:/image/main.png"
-                anchors.horizontalCenter: parent.horizontalCenter
-                onLeftClicked: {
-                    root.showText = textLine.text
-                    mainView.turnToMain()
-                }
-            }
+            Repeater {
+                delegate: Rectangle {
+                    height: width * 0.6
+                    width: (toolItem.width - TikoSeit.normalMargins) / 2
+                    color: TikoSeit.theme.baseTheme.transparentNormal
+                    radius: 10
 
-            TikoButtonNormal{
-                id: artistButton
-                width: parent.width
-                textLine.text: qsTr("专辑")
-                icon.source: "qrc:/image/album.png"
-                anchors.horizontalCenter: parent.horizontalCenter
-                onClicked: {
-                    root.showText = textLine.text
-                    mainView.turnToAlbum()
+                    TikoButtonIconNormal {
+                        id: iconButton
+                        anchors.centerIn: parent
+                        icon.source: modelData.icon
+                        onClicked: {
+                            root.showText = modelData.icon
+                            modelData.click()
+                        }
+                    }
                 }
-            }
 
-            TikoButtonNormal{
-                width: parent.width
-                textLine.text: qsTr("作曲家")
-                icon.source: "qrc:/image/artist.png"
-                anchors.horizontalCenter: parent.horizontalCenter
-                onClicked: {
-                    root.showText = textLine.text
-                    mainView.turnToArtist()
-                }
+                model: [
+                    {icon: "qrc:/image/main.png", click: root.turnToMain},
+                    {icon: "qrc:/image/album.png", click: root.turnToAlbum},
+                    {icon: "qrc:/image/artist.png", click: root.turnToArtist},
+                    {icon: "qrc:/image/seit.png", click: root.turnToSeit}
+                ]
             }
+        }
 
-            //切换到设置
-            TikoButtonNormal{
-                width: parent.width
-                id: seitPageButton
-                textLine.text: qsTr("设置")
-                anchors.horizontalCenter: parent.horizontalCenter
-                onLeftClicked:{
-                    root.showText = textLine.text
-                    mainView.turnToSeit();
-                }
-                icon.source: "qrc:/image/seit.png"
-            }
+
+        ColumnLayout {
+            anchors.top: toolItem.bottom
+            anchors.left: parent.left
+            anchors.right: parent.right
+            anchors.margins: TikoSeit.emphasizeMargins
 
             //新建列表
             TikoButtonNormal{
-                width: parent.width
                 id: addPlayListButton
                 textLine.text: qsTr("新建列表")
-                anchors.horizontalCenter: parent.horizontalCenter
                 icon.source: "qrc:/image/new.png"
                 onLeftClicked: inputName.open()
 
@@ -104,23 +97,30 @@ Item {
             }
 
             // 插入的列表按钮
-            ListView{
-                width: parent.width
+            Repeater {
                 id: userPlayListListView
-                implicitHeight: childrenRect.height
-                spacing: 5
 
-                delegate: TikoButtonNormal{
-                    width: userPlayListListView.width
-                    textLine.text: name
-                    icon.source: "image://cover/playlistFile?id=" +
-                                playlistId.toString() +
-                                "&radius=3"
-                    onLeftClicked: {
-                        root.showText = textLine.text
-                        CoreData.mainTurnMusicList(playlistId)
+                delegate: Rectangle {
+                    width: parent.width
+                    height: norMalButton.implicitHeight + TikoSeit.emphasizeMargins
+                    radius: 10
+                    color: root.showText === norMalButton.textLine.text ? TikoSeit.theme.baseTheme.transparentEmphasize : "#00000000"
+
+                    TikoButtonNormal{
+                        id: norMalButton
+                        anchors.fill: parent
+                        icon.anchors.leftMargin: TikoSeit.emphasizeMargins
+                        icon.enableUnifiedColor: false
+                        textLine.text: name
+                        icon.source: "image://cover/playlistFile?id=" +
+                                     playlistId.toString() +
+                                     "&radius=3"
+                        onLeftClicked: {
+                            root.showText = textLine.text
+                            CoreData.mainTurnMusicList(playlistId)
+                        }
+                        onRightClicked: openPlayListMenu(playlistId, isDir, name)
                     }
-                    onRightClicked: openPlayListMenu(playlistId, isDir, name)
                 }
 
                 model: ListModel{

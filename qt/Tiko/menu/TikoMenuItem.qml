@@ -5,17 +5,16 @@ import QtQuick.Effects
 
 MenuItem {
     id: root
-    font: TikoSeit.textNormlFont
+    font: TikoSeit.theme.textTheme.normalFont
     implicitHeight: 35
 
-    property color unifiedColor: TikoSeit.transparentColor
+    property color unifiedColor: TikoSeit.theme.baseTheme.backgroundNormal
     property bool useUnifiedColor: true
 
     //背景
     background: Rectangle{
         anchors.fill: parent
-        color: TikoSeit.transparentColor
-        opacity: root.hovered ? 0.05 : 0
+        color: root.hovered ? TikoSeit.theme.baseTheme.borderNormal : TikoSeit.theme.baseTheme.backgroundNormal
     }
 
     //内容

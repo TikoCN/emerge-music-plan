@@ -41,7 +41,7 @@ TikoButtonBorder {
                 Rectangle {
                     visible: index === tikoComboxButton.show
                     anchors.fill: parent
-                    color: TikoSeit.buttonBenchmarkColor
+                    color: TikoSeit.theme.baseTheme.backgroundEmphasize
                     opacity: 0.3
                     z: -1
                 }

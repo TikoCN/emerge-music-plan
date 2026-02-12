@@ -6,13 +6,11 @@ TikoButtonBase {
 
     implicitHeight: 36
     textLine: textLineItem
-    property bool check: false
-    property color useingColor: TikoSeit.theme
-    property color unuseColor: TikoSeit.theme.baseTheme.backgroundTransition
+    property color useingColor: TikoSeit.theme.baseTheme.borderEmphasize
+    property color unuseColor: TikoSeit.theme.baseTheme.backgroundEmphasize
     property double fontOpacity: 0.3
 
-    onClicked: {
-        check = !check
+    onCheckChanged: {
         colorAnimation.start()
         propertyAnimation.start()
     }
@@ -20,10 +18,10 @@ TikoButtonBase {
     Rectangle{
         id: box
         color: switchButton.check ? switchButton.useingColor : switchButton.unuseColor
+        border.color: !switchButton.check ? switchButton.useingColor : switchButton.unuseColor
         height: switchButton.height * 0.6
         width: height * 1.7
         anchors.verticalCenter: switchButton.verticalCenter
-        opacity: 0.6
         radius: height * 0.5
         anchors.left: switchButton.left
         property double spacer: box.height * 0.1
@@ -34,8 +32,7 @@ TikoButtonBase {
             y: box.spacer
             width: height
             height: box.height - box.spacer * 2
-            color: TikoSeit.themeColor
-            opacity: 1
+            color: TikoSeit.theme.baseTheme.themeTransition
             radius: height * 0.5
         }
 
@@ -56,6 +53,8 @@ TikoButtonBase {
             to: switchButton.check ? switchButton.useingColor : switchButton.unuseColor
             duration: 500
         }
+
+
     }
 
     TikoDynamicTextLine{

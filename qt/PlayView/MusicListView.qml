@@ -28,6 +28,13 @@ ListView{
         onPlayMusic: MediaPlayer.buildPlayingListByMusicList(musicList, listId)
     }
 
+    Rectangle{
+        anchors.fill: parent
+        color: TikoSeit.theme.baseTheme.transparentNormal
+        radius: 10
+    }
+
+
     function buildMusicList(musicList) {
         musicModel.clear()
         for(var i=0; i<musicList.length; i++){
@@ -37,5 +44,4 @@ ListView{
                               })
         }
     }
-
 }

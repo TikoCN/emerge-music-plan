@@ -12,7 +12,7 @@ Item {
         id: shwoView
         width: parent.width
         anchors.top: playPos.bottom
-        anchors.topMargin: 10
+        anchors.bottom: parent.bottom
 
         Image {
             id: cover
@@ -32,7 +32,7 @@ Item {
             }
         }
 
-        TikoTextLine{
+        TikoTextTitle{
             id: title
             width: 200
             height: 30
@@ -41,7 +41,7 @@ Item {
             text: qsTr("标题")
         }
 
-        TikoTextLine{
+        TikoTextSubtitle{
             id: artist
             width: 200
             height: 20
@@ -53,10 +53,11 @@ Item {
         }
 
         //设置循环模式
-        TikoButtonIcon{
+        TikoButtonIconNormal{
             id: loopButton
             anchors.right: nextMusicUp.left
-            anchors.rightMargin: 15
+            anchors.rightMargin: TikoSeit.emphasizeMargins
+            anchors.verticalCenter: parent.verticalCenter
             //text: qsTr("设置循环模式")
             onClicked: loopSelect.open()
             Component.onCompleted: setLoopType(MediaPlayer.loopType)
@@ -70,7 +71,7 @@ Item {
                 height: 150
 
                 contentItem:  Column {
-                    spacing:  10
+                    spacing:  TikoSeit.normalMargins
 
                     TikoButtonNormal {
                         id: loop0
@@ -115,10 +116,11 @@ Item {
         }
 
         //播放上一首歌曲
-        TikoButtonIcon{
+        TikoButtonIconNormal{
             id: nextMusicUp
             anchors.right: playerControl.left
-            anchors.rightMargin: 10
+            anchors.rightMargin: TikoSeit.normalMargins
+            anchors.verticalCenter: parent.verticalCenter
             icon.source: "qrc:/image/up.png"
             onClicked: MediaPlayer.playNext(-1)
             //text: qsTr("播放上一首歌曲")
@@ -129,12 +131,13 @@ Item {
             width: playerControl.width + 10
             height: playerControl.height + 10
             anchors.centerIn: playerControl
-            color: TikoSeit.theme.baseTheme.backgroundEmphasize
+            color: TikoSeit.theme.baseTheme.themeNormal
             radius: 15
         }
         //播放 暂停按钮
-        TikoButtonIcon{
+        TikoButtonIconNormal{
             x: parent.width/2 - width/2
+            anchors.verticalCenter: parent.verticalCenter
             id: playerControl
             icon.source: MediaPlayer.player.playing ? "qrc:/image/stop.png" : "qrc:/image/play.png"
             onClicked: MediaPlayer.player.playing ? MediaPlayer.player.pause() : MediaPlayer.player.play()
@@ -142,20 +145,22 @@ Item {
         }
 
         //下一首
-        TikoButtonIcon{
+        TikoButtonIconNormal{
             id: nextMusicDown
             anchors.left: playerControl.right
-            anchors.leftMargin: 10
+            anchors.leftMargin: TikoSeit.normalMargins
+            anchors.verticalCenter: parent.verticalCenter
             icon.source: "qrc:/image/down.png"
             onClicked: MediaPlayer.playNext(1)
             //text: qsTr("播放下一首歌曲")
         }
 
         //音量
-        TikoButtonIcon{
+        TikoButtonIconNormal{
             id: playVolume
             anchors.left: nextMusicDown.right
-            anchors.leftMargin: 15
+            anchors.leftMargin: TikoSeit.emphasizeMargins
+            anchors.verticalCenter: parent.verticalCenter
             icon.source: "qrc:/image/value.png"
             onClicked: volumePopup.open()
             //text: qsTr("控制音量")
@@ -181,10 +186,11 @@ Item {
         }
 
         //桌面歌词
-        TikoButtonIcon{
+        TikoButtonIconNormal{
             id: deskLrc
             anchors.right: playingListTabel.left
-            anchors.rightMargin: 3
+            anchors.rightMargin: TikoSeit.emphasizeMargins
+            anchors.verticalCenter: parent.verticalCenter
             icon.source: "qrc:/image/lrc.png"
             //text: qsTr("桌面歌词")
             onClicked: {
@@ -208,10 +214,11 @@ Item {
         }
 
         //播放列表
-        TikoButtonIcon{
+        TikoButtonIconNormal{
             id: playingListTabel
             anchors.right: parent.right
-            anchors.rightMargin: 10
+            anchors.rightMargin: TikoSeit.emphasizeMargins
+            anchors.verticalCenter: parent.verticalCenter
             icon.source: "qrc:/image/list.png"
             //text: qsTr("播放列表")
 

@@ -14,14 +14,13 @@ ScrollBar {
 
     background: Rectangle {  // 背景
         id: background
-        color: root.active ? TikoSeit.themeColor : TikoSeit.theme.baseTheme.backgroundNormal
-        opacity: 0.3
+        color: root.active ? TikoSeit.theme.baseTheme.transparentEmphasize : "#00000000"
         radius: 4
     }
 
     contentItem: Rectangle {  // 滑块
         id: handle
-        color: TikoSeit.themeColor
+        color: TikoSeit.theme.baseTheme.themeTransition
         radius: 3
     }
 }

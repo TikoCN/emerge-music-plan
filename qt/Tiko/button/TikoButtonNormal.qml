@@ -5,7 +5,8 @@ import Tiko
 
 TikoButtonBase {
     id: normalButton
-    implicitHeight: Math.max(iconItem.implicitHeight, textLineItem.implicitHeight)
+    property int outHeight : 0
+    implicitHeight: Math.max(iconItem.implicitHeight, textLineItem.implicitHeight) + outHeight
     implicitWidth: childrenRect.width
     icon: iconItem
     textLine: textLineItem
@@ -14,14 +15,16 @@ TikoButtonBase {
         id: iconItem
         dynamicState: normalButton.dynamicState
         anchors.left: parent.left
+        anchors.verticalCenter: parent.verticalCenter
+        height: textLine.height + 16
+        width: height
     }
-
 
     TikoDynamicTextLine {
         id: textLineItem
         dynamicState: normalButton.dynamicState
         anchors.left: iconItem.right
         anchors.leftMargin: TikoSeit.subitemSpace
-        anchors.verticalCenter: iconItem.verticalCenter
+        anchors.verticalCenter: parent.verticalCenter
     }
 }

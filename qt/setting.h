@@ -58,6 +58,8 @@ private:
     QT_SETTING_PROPERTY(QRectF, windowRect, WindowRect);
     QT_SETTING_PROPERTY(QPointF, lrcTopPoint, LrcTopPoint);
 
+    QT_SETTING_PROPERTY(bool, isLightTheme, IsLightTheme);
+
     QT_SETTING_PROPERTY(bool, isOnLine, IsOnLine);
     QT_SETTING_PROPERTY(bool, isGetCoverFromNetEase, IsGetCoverFromNetEase);
     QT_SETTING_PROPERTY(bool, isGetCoverFromBing, IsGetCoverFromBing);

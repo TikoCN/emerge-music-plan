@@ -10,7 +10,7 @@ Rectangle {
     color: Qt.rgba(0, 0, 0, 0)
     border.color: Qt.rgba(0, 0, 0, 0)
     border.width: 1
-    radius: 8
+    radius: 3
 
     states: [
         State {

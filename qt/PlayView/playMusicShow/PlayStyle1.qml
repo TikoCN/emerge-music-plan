@@ -5,8 +5,8 @@ import MediaerAPI
 
 Item{
     id: style
-    property color normalColor: Qt.rgba(Setting.backdropColor.r, Setting.backdropColor.g, Setting.backdropColor.b, 0.4)
-    property color standColor: Qt.rgba(Setting.backdropColor.r, Setting.backdropColor.g, Setting.backdropColor.b, 0.9)
+    property color normalColor: TikoSeit.theme.baseTheme.foregroundNormal
+    property color standColor: TikoSeit.theme.baseTheme.foregroundEmphasize
 
     Item{
         id: leftShow
@@ -154,7 +154,7 @@ Item{
                 const w = 3;
                 const length = width / w;
 
-                const mainColor = Qt.rgba(Setting.backdropColor.r, Setting.backdropColor.g, Setting.backdropColor.b, 0.5);
+                const mainColor = TikoSeit.theme.baseTheme.backgroundNormal
 
                 ctx.fillStyle = mainColor
                 ctx.strokeStyle = mainColor

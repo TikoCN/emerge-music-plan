@@ -20,7 +20,7 @@ Item{
             ctx.clearRect(0, 0, width, height)
 
             ctx.lineWidth = 3
-            const ringColor = Qt.rgba(TikoSeit.themeColor.r, TikoSeit.themeColor.g, TikoSeit.themeColor.b, 0.3);
+            const ringColor = TikoSeit.theme.baseTheme.themeTransition
             ctx.strokeStyle = ringColor
 
             ctx.beginPath()

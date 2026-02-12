@@ -12,9 +12,19 @@ Item {
     property var playList: []
     property var playListId: []
 
+    // 主体内容背景
+    Rectangle {
+        anchors.fill: parent
+        color: TikoSeit.theme.baseTheme.transparentNormal
+        topLeftRadius: 10
+        topRightRadius: 10
+    }
+
     TikoButtonIcon{
         id: closeButton
         anchors.right: parent.right
+        anchors.top: parent.top
+        anchors.margins: TikoSeit.normalMargins
         icon.source: "qrc:/image/close.png"
         onClicked: window.close()
         //qsTr("关闭")
@@ -23,6 +33,8 @@ Item {
     TikoButtonIcon{
         id: maxButton
         anchors.right: closeButton.left
+        anchors.top: closeButton.top
+        anchors.rightMargin: TikoSeit.normalMargins
         icon.source: window.visibility === 4 ? "qrc:/image/normal.png" : "qrc:/image/max.png"
         //qsTr("最大化")
         onClicked: window.visibility === 4 ? window.showNormal() : window.showMaximized()
@@ -30,7 +42,9 @@ Item {
 
     TikoButtonIcon{
         id: minButton
+        anchors.top: closeButton.top
         anchors.right: maxButton.left
+        anchors.rightMargin: TikoSeit.normalMargins
         icon.source: "qrc:/image/min.png"
         onClicked: window.showMinimized()
         //qsTr("最小化")

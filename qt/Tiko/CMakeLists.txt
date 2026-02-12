@@ -57,7 +57,7 @@ qt_add_qml_module(TikoLib
         select/TikoSelectFont.qml
         image/TikoImageAuto.qml
         image/TikoImage.qml
-        QML_FILES button/TikoButtonText.qml
+        QML_FILES
         QML_FILES button/TikoButtonComplete.qml
         dynamic/TikoDynamicTextLine.qml
         dynamic/TikoDynamicIcon.qml
@@ -69,8 +69,10 @@ qt_add_qml_module(TikoLib
         QML_FILES text/TikoTextSubtitle.qml
         QML_FILES text/TikoTextInformation.qml
         QML_FILES text/TikoTextAssistance.qml
-        QML_FILES TikoTheme.qml
-        QML_FILES vessel/TikoThemeBackground.qml
+        theme/TikoTheme.qml
+        theme/TikoThemeBackground.qml
+        QML_FILES button/icon/TikoButtonIconLittle.qml
+        QML_FILES button/icon/TikoButtonIconNormal.qml
 )
 
 # 链接 Qt 依赖（纯 QML 模块也需要链接 QtQuick）

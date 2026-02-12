@@ -42,16 +42,15 @@ TikoRightVessel {
         }
 
         Rectangle{
-            color: TikoSeit.theme.baseTheme.backgroundTransition
+            color: TikoSeit.theme.baseTheme.transparentNormal
             anchors.fill: sourceListColumn
-            opacity: 0.05
         }
 
         ColumnLayout{
             id: sourceListColumn
             anchors.top: selectDirButton.bottom
             anchors.topMargin: 10
-            width: parent.width * 0.8
+            width: parent.width
 
             Repeater{
                 model: ListModel{

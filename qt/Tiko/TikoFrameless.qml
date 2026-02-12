@@ -6,7 +6,7 @@ Window {
     property int acttion: 0
     property bool sizeChange: false
 
-    color: TikoSeit.theme.baseTheme.backgroundNormal
+    color: Qt.rgba(0,0,0,0)
     flags: Qt.Window | Qt.FramelessWindowHint // 尝试隐藏边框和标题栏
 
     MouseArea {
