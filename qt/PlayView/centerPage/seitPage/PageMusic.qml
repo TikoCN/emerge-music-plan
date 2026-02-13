@@ -3,26 +3,23 @@ import Tiko
 import MediaerAPI
 import PlayView
 
-
 PageButtonBase {
 
     onInitKeyList: {
-        const list = SQLData.getArtistKeys()
+        const list = SQLData.getMusicKeys()
         listToKeyModel(list)
     }
 
-    delegateItem: GridButtonArtist{
+    delegateItem: GridButtonMusic {
         loadEnable: true
         autoHeightEnable: false
         flow: GridView.LeftToRight
 
         onLoadData:(index, pageSize) => {
-                       let list = SQLData.getArtistByKey(currentKey, pageSize, index)
+                       let list = SQLData.getMusicByKey(currentKey, pageSize, index)
                        toModel(list)
 
                        if (list.length !== pageSize) loadIsFinish = true
                    }
     }
 }
-
-

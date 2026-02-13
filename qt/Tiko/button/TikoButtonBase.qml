@@ -2,11 +2,12 @@ import QtQuick
 import Tiko
 
 Item {
-    id: buttonBase
+    id: baseButton
     signal rightClicked()
     signal leftClicked()
     signal clicked()
 
+    property bool check: false
     property TikoDynamicIcon icon: null
     property TikoDynamicTextLine textLine: null
     property TikoDynamicBackGround background: null
@@ -17,24 +18,24 @@ Item {
         isDisabled: false
     }
 
-    property bool check: false
-
     MouseArea{
         id: mouseArea
+        anchors.fill: baseButton
+
         hoverEnabled: true
-        anchors.fill: buttonBase
         acceptedButtons: Qt.LeftButton | Qt.RightButton
         onClicked: (mouse)=>{
                        check = !check
-                       buttonBase.clicked()
+                       baseButton.clicked()
                        switch(mouse.button){
                            case Qt.LeftButton:
-                           buttonBase.leftClicked()
+                           baseButton.leftClicked()
                            break
                            case Qt.RightButton:
-                           buttonBase.rightClicked()
+                           baseButton.rightClicked()
                            break
                        }
                    }
     }
+
 }

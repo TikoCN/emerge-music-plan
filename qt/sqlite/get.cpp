@@ -5,7 +5,7 @@
 
 #include "baseclass/dataexception.h"
 
-QStringList Get::getArtistKeyList()
+QStringList Get::getArtistKeys()
 {
     QStringList keyList;
     try {
@@ -25,7 +25,7 @@ QStringList Get::getArtistKeyList()
     return keyList;
 }
 
-QList<int> Get::getArtistIdByNameKey(const QString& key, int size, int start)
+QList<int> Get::getArtistByKey(const QString& key, int size, int start)
 {
     QList<int> artistList;
     sqlite3_stmt *stmt = nullptr;
@@ -126,7 +126,7 @@ QList<int> Get::getArtistMusicList(const int id)
     return list;
 }
 
-QStringList Get::getAlbumKeyList()
+QStringList Get::getAlbumKeys()
 {
     QStringList keyList;
     try {
@@ -146,13 +146,13 @@ QStringList Get::getAlbumKeyList()
     return keyList;
 }
 
-QList<int> Get::getAlbumIdByNameKey(const QString& key, int size, int start)
+QList<int> Get::getAlbumByKey(const QString& key, int size, int start)
 {
     QList<int> albumList;
     sqlite3_stmt *stmt = nullptr;
 
     try {
-        const char *sql = "SELECT album_id "
+        const auto sql = "SELECT album_id "
                           "FROM album "
                           "WHERE key = ? "
                           "LIMIT ? OFFSET ?";
@@ -235,6 +235,50 @@ QList<int> Get::getAlbumMusicList(const int id)
         while (stmtStep(stmt)) {
             const int aim = sqlite3_column_int(stmt, 0);
             list.append(aim);
+        }
+    } catch (const DataException &e) {
+        tlog->logError(e.errorMessage());
+        list.clear();
+    }
+    stmtFree(stmt);
+    return list;
+}
+
+QStringList Get::getMusicKeys() {
+    QStringList keyList;
+    try {
+        const auto sql = "SELECT DISTINCT key FROM music ORDER BY key ASC";
+
+        const sqlite3_callback callback = [](void *data, int argc, char **argv, char **azColName)->int{
+            auto *strings = static_cast<QStringList *>(data);
+            strings->append(QString(*argv));
+            return SQLITE_OK;
+        };
+
+        sqlExec(sql, callback, &keyList);
+    } catch (const DataException &e) {
+        tlog->logError(e.errorMessage());
+        return keyList;
+    }
+    return keyList;
+}
+
+QList<int> Get::getMusicIdByKey(const QString &key, const int size, const int start) {
+    QList<int> list;
+    sqlite3_stmt *stmt = nullptr;
+
+    try {
+        const auto sql = "SELECT music_id "
+                          "FROM music "
+                          "WHERE key = ? "
+                          "LIMIT ? OFFSET ?";
+        stmtPrepare(&stmt, sql);
+        stmtBindText(stmt, 1, key);
+        stmtBindInt(stmt, 2, size);
+        stmtBindInt(stmt, 3, start);
+        while (stmtStep(stmt)) {
+            const int id = sqlite3_column_int(stmt, 0);
+            list.append(id);
         }
     } catch (const DataException &e) {
         tlog->logError(e.errorMessage());

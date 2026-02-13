@@ -42,7 +42,7 @@ SQLite::SQLite(TLog *log)
         // 检测 playlist
         {
             const auto sql = "CREATE TABLE playlist("
-                              "list_id INTEGER PRIMARY KEY AUTOINCREMENT,"
+                              "list_id INTEGER PRIMARY KEY,"
                               "name TEXT NOT NULL,"
                               "sort INT NOT NULL,"
                               "url TEXT UNIQUE,"
@@ -56,7 +56,7 @@ SQLite::SQLite(TLog *log)
         // 检测 artist
         {
             const auto sql = "CREATE TABLE artist("
-                              "artist_id INTEGER PRIMARY KEY AUTOINCREMENT,"
+                              "artist_id INTEGER PRIMARY KEY,"
                               "name TEXT NOT NULL UNIQUE,"
                               "key TEXT NOT NULL"
                               ")";
@@ -68,7 +68,7 @@ SQLite::SQLite(TLog *log)
         // 检测 album
         {
             const auto sql = "CREATE TABLE album("
-                              "album_id INTEGER PRIMARY KEY AUTOINCREMENT,"
+                              "album_id INTEGER PRIMARY KEY,"
                               "name TEXT NOT NULL UNIQUE,"
                               "key TEXT NOT NULL"
                               ")";
@@ -80,7 +80,7 @@ SQLite::SQLite(TLog *log)
         // music
         {
             const auto sql = "CREATE TABLE music("
-                              "music_id INTEGER PRIMARY KEY AUTOINCREMENT,"
+                              "music_id INTEGER PRIMARY KEY,"
                               "title TEXT NOT NULL,"
                               "album_id INT NOT NULL,"
                               "duration INT NOT NULL,"
@@ -89,6 +89,7 @@ SQLite::SQLite(TLog *log)
                               "love INT NOT NULL,"
                               "play_number INT NOT NULL,"
                               "url TEXT NOT NULL UNIQUE,"
+                              "key TEXT NOT NULL, "
                               "FOREIGN KEY (album_id) REFERENCES album(album_id) ON DELETE CASCADE"
                               ")";
             // 执行sql
@@ -151,7 +152,7 @@ bool SQLite::selectNewMusic(const QFileInfoList& infoList, QFileInfoList *newInf
                 newInfoList->append(i);
         }
     } catch (const DataException &e) {
-        this->throwError(e.errorMessage());
+        tlog->logError(e.errorMessage());
         flag = false;
     }
 

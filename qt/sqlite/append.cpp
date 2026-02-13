@@ -17,10 +17,12 @@ bool Append::appendMusic(const QList<MediaData> &dataList) {
     try {
         const auto getAlbumIDSql = "SELECT album_id FROM album WHERE name=? LIMIT 1";
         const auto appendMusicSql = "INSERT OR IGNORE INTO "
-                "music(title, album_id, duration, insert_time, level, love, play_number, url) "
-                "VALUES(?, ?, ?, ?, ?, ?, ?, ?)";
+                "music(title, album_id, duration, insert_time, level, love, play_number, url, key) "
+                "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)";
         stmtPrepare(&appendMusicStmt, appendMusicSql);
         stmtPrepare(&getAlbumIDStmt, getAlbumIDSql);
+
+        NameKey key(tlog);
 
         for (const MediaData &data: dataList) {
             stmtReset(getAlbumIDStmt);
@@ -37,6 +39,7 @@ bool Append::appendMusic(const QList<MediaData> &dataList) {
             stmtBindInt(appendMusicStmt, 6, data.isLove);
             stmtBindInt(appendMusicStmt, 7, data.playNumber);
             stmtBindText(appendMusicStmt, 8, data.url);
+            stmtBindText(appendMusicStmt, 9, key.find(data.title));
             stmtStep(appendMusicStmt);
         }
     } catch (const DataException &e) {

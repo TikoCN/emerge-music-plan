@@ -51,10 +51,7 @@ ScrollView {
     }
 
     function buildRand() {
-        recomMusic.build()
-        recomAlbum.build()
         recomMusicNew.build()
-        recomArtist.build()
         recomMusicPlay.build()
     }
 }

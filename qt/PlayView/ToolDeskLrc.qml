@@ -12,7 +12,7 @@ Window{
     color:"#00000000"
     flags: Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint | Qt.Tool
     title: qsTr("桌面歌词")
-    width: (Setting.deskLrcColor.pixelSize * 20 > 600 ? Setting.deskLrcColor.pixelSize * 20: 600) + 40
+    width: (Setting.deskLrcFont.pixelSize * 20 > 600 ? Setting.deskLrcFont.pixelSize * 20: 600) + 40
     height: tool.height + playingLine.height + 30
 
     Component.onDestruction: {

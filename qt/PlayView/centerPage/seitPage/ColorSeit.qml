@@ -19,7 +19,6 @@ TikoRightVessel {
             // 歌词颜色
             {text: qsTr("歌词常规颜色"), prop: "lrcNormalColor"},
             {text: qsTr("歌词播放颜色"), prop: "lrcPlayingColor"},
-            {text: qsTr("桌面歌词颜色"), prop: "deskLrcColor"},
 
             // 文本颜色
             {text: qsTr("文本颜色"), prop: "textBenchmarkColor"},

@@ -56,6 +56,7 @@ Item {
         width: parent.width
         height: parent.height - closeButton.height
         initialItem: seitPage
+        z: -1
     }
 
     PageSeit {
@@ -159,8 +160,6 @@ Item {
     }
 
     function buildData(){
-        artistPage.build()
-        albumPage.build()
         mainPage.buildRand()
     }
 

@@ -3,112 +3,25 @@ import Tiko
 import DataType
 import MediaerAPI
 import PlayView
-
-Item{
+CoreBaseButton {
     id: artistButton
-    width: CoreData.cellItemWidth
-    height: CoreData.cellItemHeight
 
     property int artistId: -1
-    property int coverId: 0
-    property string name: ""
-    property int duration: -1
+    property var musicList: []
 
-    Component.onCompleted: {
+    normalIcon: "qrc:/image/artist.png"
+    loadIcon: "image://cover/artistFile?id=" +
+              artistId.toString() +
+              "&radius=10"
+    onPage: CoreData.mainTurnArtistPlayer(artistId)
+    onMenu: createMenu(this)
+    onPlay: MediaPlayer.buildPlayingListByMusicList(musicList)
+
+    onArtistIdChanged: {
         const json = DataActive.getArtistJson(artistId);
         name = json.artist
-        duration = json.duration
-    }
-
-    // 整体背景
-    Rectangle {
-        anchors.fill: parent
-        color: TikoSeit.theme.baseTheme.backgroundNormal
-        radius: 10
-        opacity: mouseArea.containsMouse ? 0.1 : 0
-    }
-
-    MouseArea {
-        id: mouseArea
-        anchors.fill: parent
-        hoverEnabled: true
-        acceptedButtons: Qt.RightButton | Qt.LeftButton
-        onClicked: (mouse) => {
-                       switch(mouse.button){
-                           case Qt.LeftButton:
-                           CoreData.mainTurnArtistPlayer(artistId)
-                           break
-                           case Qt.RightButton:
-                           createMenu(this)
-                           break
-                       }
-                   }
-
-        //封面显示区
-        Item {
-            id: showItem
-            height: childrenRect.height
-            x: CoreData.cellItemSpace
-            y: CoreData.cellItemSpace
-            width: CoreData.cellImageWidth
-
-            AutoCoverImage {
-                id: artistCover
-                width: CoreData.cellImageWidth
-                height: CoreData.cellImageHeight
-                normalUrl: "qrc:/image/artist.png"
-                loadUrl: "image://cover/artistFile?id=" +
-                         artistId.toString() +
-                         "&radius=10"
-            }
-
-            // 播放按钮
-            TikoButtonIcon {
-                width: 30
-                height: width
-                icon.source: "qrc:/image/play.png"
-                icon.width: width / 2
-                icon.height: height / 2
-                anchors.bottom: artistCover.bottom
-                anchors.left: artistCover.left
-                anchors.margins: artistCover.width * 0.05
-                visible: mouseArea.containsMouse
-                onClicked: MediaPlayer.buildPlayingListByMusicList(musicList)
-            }
-
-            // 菜单按钮
-            TikoButtonIcon {
-                width: 30
-                height: width
-                icon.source: "qrc:/image/more.png"
-                icon.width: width / 2
-                icon.height: height / 2
-                anchors.top: artistCover.top
-                anchors.right: artistCover.right
-                anchors.margins: artistCover.width * 0.05
-                visible: mouseArea.containsMouse
-                onClicked: createMenu(this)
-            }
-
-            // 专辑名
-            TikoTextLine {
-                id: textLine
-                anchors.top: artistCover.bottom
-                anchors.left: artistCover.left
-                width: parent.width
-                text: name
-            }
-
-            // 专辑时长
-            TikoTextLine {
-                id: timeLine
-                anchors.top: textLine.bottom
-                anchors.left: artistCover.left
-                width: parent.width
-                opacity: 0.4
-                text: BaseTool.typeConversion.timeToString(duration)
-            }
-        }
+        subtitle = BaseTool.typeConversion.timeToString(Number(json.duration))
+        musicList = json.musicList
     }
 
     Component {

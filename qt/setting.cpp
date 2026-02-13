@@ -94,7 +94,6 @@ void Setting::writeData() const
     ini->setValue(m_themeColorKey, m_themeColor.name(QColor::HexArgb));
     ini->setValue(m_lrcNormalColorKey, m_lrcNormalColor.name(QColor::HexArgb));
     ini->setValue(m_lrcPlayingColorKey, m_lrcPlayingColor.name(QColor::HexArgb));
-    ini->setValue(m_deskLrcColorKey, m_deskLrcColor.name(QColor::HexArgb));
     ini->setValue(m_textBenchmarkColorKey, m_textBenchmarkColor.name(QColor::HexArgb));
     ini->setValue(m_buttonBenchmarkColorKey, m_buttonBenchmarkColor.name(QColor::HexArgb));
     // 字体设置写入
@@ -134,9 +133,8 @@ Setting::Setting()
         m_textBenchmarkColor = Qt::blue;
 
         // 歌词颜色默认值
-        m_lrcNormalColor = Qt::white;              // 歌词常规颜色 - 白色
-        m_lrcPlayingColor = Qt::red;               // 歌词播放颜色 - 红色
-        m_deskLrcColor = Qt::red;                  // 桌面歌词颜色 - 红色
+        m_lrcNormalColor = Qt::white;              // 常规颜色 - 白色
+        m_lrcPlayingColor = Qt::red;               // 播放颜色 - 红色
 
         // 字体属性默认值
         m_lrcFont = QFont("Microsoft YaHei", 16, QFont::Normal);      // 歌词字体

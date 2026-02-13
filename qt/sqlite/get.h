@@ -14,23 +14,24 @@ class Get : public Update
     Q_OBJECT
 public:
     explicit Get(TLog *log) : Update(log) {};
-    Q_INVOKABLE QStringList getArtistKeyList();
-    Q_INVOKABLE QList<int> getArtistIdByNameKey(const QString& key, int size, int start);
 
     // 歌手
+    Q_INVOKABLE QStringList getArtistKeys();
+    Q_INVOKABLE QList<int> getArtistByKey(const QString& key, int size, int start);
     ArtistPtr getArtist(int id);
     QHash<int, ArtistPtr> getArtist(const QList<int>& idList);
     QList<int> getArtistMusicList(int id);
 
-    Q_INVOKABLE QStringList getAlbumKeyList();
-    Q_INVOKABLE QList<int> getAlbumIdByNameKey(const QString& key, int size, int start);
-
     // 专辑
+    Q_INVOKABLE QStringList getAlbumKeys();
+    Q_INVOKABLE QList<int> getAlbumByKey(const QString& key, int size, int start);
     AlbumPtr getAlbum(int id);
     QHash<int, AlbumPtr> getAlbum(const QList<int>& idList);
     QList<int> getAlbumMusicList(int id);
 
     // 音乐
+    Q_INVOKABLE QStringList getMusicKeys();
+    Q_INVOKABLE QList<int> getMusicIdByKey(const QString& key, int size, int start);
     MusicPtr getMusic(int id);
     QHash<int, MusicPtr> getMusic(const QList<int>& idList);
     QString getMusicUrl(int id);

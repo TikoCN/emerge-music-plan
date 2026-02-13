@@ -50,7 +50,7 @@ QtObject {
     // 歌词相关
     property color lrcNormalColor: Setting.lrcNormalColor
     property color lrcPlayingColor: Setting.lrcPlayingColor
-    property color deskLrcColor: Setting.deskLrcColor
+
     property font lrcFont: Setting.lrcFont
     property font deskLrcFont: Setting.deskLrcFont
 }

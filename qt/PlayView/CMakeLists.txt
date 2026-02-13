@@ -93,6 +93,14 @@ qt_add_qml_module(PlayViewLib
         QML_FILES centerPage/seitPage/FontSeit.qml
         QML_FILES centerPage/seitPage/ParameterSeit.qml
         QML_FILES centerPage/seitPage/SwitchSeit.qml
+        QML_FILES core/CoreBaseButton.qml
+        QML_FILES recommend/CoreButtonGrid.qml
+        QML_FILES centerPage/PageButtonBase.qml
+        QML_FILES core/GridButtonBase.qml
+        QML_FILES core/GridButtonArtist.qml
+        QML_FILES core/GridButtonAlbum.qml
+        QML_FILES core/GridButtonMusic.qml
+        QML_FILES centerPage/seitPage/PageMusic.qml
 )
 
 # 链接 QtQuick 依赖（纯 QML 模块也需要显式链接）

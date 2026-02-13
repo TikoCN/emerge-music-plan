@@ -3,47 +3,13 @@ import Tiko
 import MediaerAPI
 import PlayView
 
-Item {
-    height: childrenRect.height
+CoreButtonGrid {
+    text: qsTr("随机推荐歌手")
 
-    TikoTextLine {
-        opacity: 0.7
-        id: artistRandText
-        width: parent.width
-        text: qsTr("随机推荐歌手")
-    }
-
-    ListView {
-        id: artistRandList
-        anchors.top: artistRandText.bottom
-        anchors.topMargin: 6
-        height: CoreData.recomLineHeight
-        width: parent.width
-        orientation: ListView.Horizontal
-        spacing: CoreData.cellItemSpace
-        clip: true
-        currentIndex: 0
-        highlightRangeMode: ListView.StrictlyEnforceRange
-        preferredHighlightBegin: 0
-        preferredHighlightEnd: 0
-
-        model: ListModel{
-            id: artistRandModel
+    delegateItem: GridButtonArtist {
+        onInitData: {
+            let dataList = SQLData.getArtistRandList()
+            toModel(dataList)
         }
-
-        delegate: CoreArtistButton {
-            artistId: inArtistId
-        }
-    }
-
-    function build(){
-        const artistList = SQLData.getArtistRandList();
-        for (const i in artistList) {
-            artistRandModel.append({inArtistId: artistList[i]})
-        }
-    }
-
-    function clear(){
-        artistRandModel.clear()
     }
 }

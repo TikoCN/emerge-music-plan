@@ -48,7 +48,6 @@ private:
     // 歌词相关
     QT_SETTING_PROPERTY(QColor, lrcNormalColor, LrcNormalColor);
     QT_SETTING_PROPERTY(QColor, lrcPlayingColor, LrcPlayingColor);
-    QT_SETTING_PROPERTY(QColor, deskLrcColor, DeskLrcColor);
 
     QT_SETTING_PROPERTY(QFont, benchmarkFont, benchmarkFont);
     QT_SETTING_PROPERTY(QFont, lrcFont, lrcFont);

@@ -11,7 +11,7 @@ ScrollView{
     ScrollBar.horizontal.visible: false
     ScrollBar.vertical: TikoBarV{}
 
-    readonly property double modeTextWidth: 400
+    readonly property double modeTextWidth: 200
     readonly property real itemWidth: seitPage.width * 0.9
     
     ColumnLayout{
