@@ -3,33 +3,34 @@ import Tiko
 import DataType
 import MediaerAPI
 import PlayView
-CoreBaseButton {
-    id: artistButton
 
-    property int artistId: -1
+CoreButtonBase {
+    id: albumButton
+
+    property int albumId: -1
     property var musicList: []
 
-    normalIcon: "qrc:/image/artist.png"
-    loadIcon: "image://cover/artistFile?id=" +
-              artistId.toString() +
+    normalIcon: "qrc:/image/album.png"
+    loadIcon: "image://cover/albumFile?id=" +
+              albumId.toString() +
               "&radius=10"
-    onPage: CoreData.mainTurnArtistPlayer(artistId)
+    onPage: CoreData.mainTurnAlbumPlayer(albumId)
     onMenu: createMenu(this)
     onPlay: MediaPlayer.buildPlayingListByMusicList(musicList)
 
-    onArtistIdChanged: {
-        const json = DataActive.getArtistJson(artistId);
-        name = json.artist
+    onAlbumIdChanged: {
+        const json = DataActive.getAlbumJson(albumId);
+        name = json.album
         subtitle = BaseTool.typeConversion.timeToString(Number(json.duration))
         musicList = json.musicList
     }
 
     Component {
         id: menuComponent
-        MenuArtist {
-            artistId: artistButton.artistId
-            musicList: artistButton.musicList
-            name: artistButton.name
+        MenuAlbum {
+            albumId: albumButton.albumId
+            musicList: albumButton.musicList
+            name: albumButton.name
         }
     }
 

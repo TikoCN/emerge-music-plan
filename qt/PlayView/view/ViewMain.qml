@@ -64,13 +64,8 @@ Item {
         visible: false
     }
 
-    PageAlbum {
-        id: albumPage
-        visible: false
-    }
-
-    PageArtist {
-        id: artistPage
+    PageLibrary {
+        id: libraryPage
         visible: false
     }
 
@@ -133,12 +128,6 @@ Item {
         }
     }
 
-    function turnToArtist(){
-        if(stackView.currentItem != artistPage){
-            stackView.replace(artistPage)
-        }
-    }
-
     function turnToArtistPlayer(artistId){
         artistPlayer.setArtistId(artistId)
         if(stackView.currentItem != artistPlayer){
@@ -146,9 +135,9 @@ Item {
         }
     }
 
-    function turnToAlbum(){
-        if(stackView.currentItem != albumPage){
-            stackView.replace(albumPage)
+    function turnToLibraryPage(){
+        if(stackView.currentItem != libraryPage){
+            stackView.replace(libraryPage)
         }
     }
 
@@ -172,9 +161,8 @@ Item {
     Component.onCompleted: {
         CoreData.mainTurnSeit.connect(turnToSeit)
         CoreData.mainTurnMain.connect(turnToMain)
-        CoreData.mainTurnAlbumPage.connect(turnToAlbum)
+        CoreData.mainTurnLibraryPage.connect(turnToLibraryPage)
         CoreData.mainTurnAlbumPlayer.connect(turnToAlbumPlayer)
-        CoreData.mainTurnArtistPage.connect(turnToArtist)
         CoreData.mainTurnArtistPlayer.connect(turnToArtistPlayer)
         CoreData.mainTurnMusicList.connect(turnToMusicList)
     }

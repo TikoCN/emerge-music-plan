@@ -28,9 +28,10 @@ qt_add_qml_module(PlayViewLib
         URI PlayView                  # 模块唯一标识，主项目通过这个导入
         VERSION 1.0                   # 版本号
         QML_FILES
+        # 其他 QML 文件
         Main.qml
         CoreData.qml
-        ToolDeskLrc.qml
+        AutoCoverImage.qml
         # 播放器页面相关
         player/ShowPageLrcList.qml
         player/ShowPagePlayList.qml
@@ -42,6 +43,7 @@ qt_add_qml_module(PlayViewLib
         view/ViewMain.qml
         view/ViewPlayingList.qml
         # 播放样式相关
+        playMusicShow/PageMusicPlay.qml
         playMusicShow/PlayStyle1.qml
         playMusicShow/PlayStyle2.qml
         # 菜单相关
@@ -55,52 +57,53 @@ qt_add_qml_module(PlayViewLib
         toolEditMusicPage/EditPageMusic.qml
         toolEditMusicPage/EditPageLrc.qml
         toolEditMusicPage/ToolEditMusic.qml
-        # 中心页面相关
-        centerPage/PageArtist.qml
-        centerPage/PageAlbum.qml
-        centerPage/PageSeit.qml
-        centerPage/PageMusicPlay.qml
-        centerPage/PageRecommend.qml
+        toolEditMusicPage/ToolDeskLrc.qml
         # 推荐相关
-        recommend/RecomAlbum.qml
-        recommend/RecomArtist.qml
-        recommend/RecomMusic.qml
+        recommend/RecomGridButtonAlbum.qml
+        recommend/RecomGridButtonArtist.qml
+        recommend/RecomGridButtonMusic.qml
         recommend/RecomMusicNew.qml
         recommend/RecomMusicPlay.qml
+        recommend/RecomGridButtonBase.qml
+        recommend/PageRecommend.qml
         # 歌词行相关
         lrcLine/DrawLrcLine.qml
         lrcLine/DrawLoadLine.qml
         lrcLine/CoreLrcLine.qml
         lrcLine/DrawLrcFixHeight.qml
-        # 核心组件相关
-        core/CoreMusicButton.qml
-        core/CoreAlbumButton.qml
-        core/CoreArtistButton.qml
-        core/CoreMusicLine.qml
         # 输入弹窗相关
         inputPopup/InputArtistName.qml
         inputPopup/InputAlbumName.qml
         inputPopup/InputPlayListName.qml
-        # 其他 QML 文件
-        AutoCoverImage.qml
+        # 核心组件相关
+        lineCell/CoreMusicLine.qml
+        lineList/MusicListView.qml
 
-        MusicListView.qml
-        QML_FILES
-        QML_FILES
-        QML_FILES centerPage/seitPage/UpdateDataSeit.qml
-        QML_FILES centerPage/seitPage/SourceSeit.qml
-        QML_FILES centerPage/seitPage/ColorSeit.qml
-        QML_FILES centerPage/seitPage/FontSeit.qml
-        QML_FILES centerPage/seitPage/ParameterSeit.qml
-        QML_FILES centerPage/seitPage/SwitchSeit.qml
-        QML_FILES core/CoreBaseButton.qml
-        QML_FILES recommend/CoreButtonGrid.qml
-        QML_FILES centerPage/PageButtonBase.qml
-        QML_FILES core/GridButtonBase.qml
-        QML_FILES core/GridButtonArtist.qml
-        QML_FILES core/GridButtonAlbum.qml
-        QML_FILES core/GridButtonMusic.qml
-        QML_FILES centerPage/seitPage/PageMusic.qml
+        seitPage/UpdateDataSeit.qml
+        seitPage/SourceSeit.qml
+        seitPage/ColorSeit.qml
+        seitPage/FontSeit.qml
+        seitPage/ParameterSeit.qml
+        seitPage/SwitchSeit.qml
+        seitPage/PageSeit.qml
+
+        buttonCell/CoreButtonBase.qml
+        buttonCell/CoreButtonMusic.qml
+        buttonCell/CoreButtonAlbum.qml
+        buttonCell/CoreButtonArtist.qml
+
+        buttonGrid/GridButtonBase.qml
+        buttonGrid/GridButtonArtist.qml
+        buttonGrid/GridButtonAlbum.qml
+        buttonGrid/GridButtonMusic.qml
+
+        libraryPage/PageButtonBase.qml
+        libraryPage/PageMusic.qml
+        libraryPage/PageArtist.qml
+        libraryPage/PageAlbum.qml
+        QML_FILES libraryPage/PageLibrary.qml
+        QML_FILES player/ShowPageBase.qml
+        QML_FILES LoadBase.qml
 )
 
 # 链接 QtQuick 依赖（纯 QML 模块也需要显式链接）

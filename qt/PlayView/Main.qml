@@ -70,10 +70,6 @@ TikoFrameless{
             width: 300
             x: 10
             y: showType === 0 ? 10 : -height
-            onTurnToAlbum: mainView.turnToAlbum()
-            onTurnToArtist: mainView.turnToArtist()
-            onTurnToMain: mainView.turnToMain()
-            onTurnToSeit: mainView.turnToSeit()
         }
 
         //底部导航

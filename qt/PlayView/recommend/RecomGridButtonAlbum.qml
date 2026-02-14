@@ -3,13 +3,13 @@ import Tiko
 import PlayView
 import MediaerAPI
 
-CoreButtonGrid {
+RecomGridButtonBase {
     text: qsTr("随机推荐专辑")
 
     delegateItem: GridButtonAlbum {
-        onInitData: {
-            let dataList = SQLData.getAlbumRandList();
-            toModel(dataList)
+        dataLoader.onLoadData: {
+            let list = SQLData.getAlbumRandList()
+            dataLoader.loadIsFinish = true
         }
     }
 }

@@ -1,6 +1,6 @@
 import QtQuick
 import Tiko
-import MediaerAPI   
+import MediaerAPI
 import PlayView
 import DataType
 
@@ -21,8 +21,6 @@ Item{
         id: albumDataCover
         width: 250
         height: 250
-        sourceSize.width: width
-        sourceSize.height: height
         anchors.left: parent.left
         anchors.top: parent.top
         anchors.margins: 30
@@ -70,6 +68,7 @@ Item{
             build()
         }
     }
+
     onAlbumIdChanged: build()
 
     function setAlbumId(albumId){
@@ -81,6 +80,6 @@ Item{
         name = json.album
         duration = json.duration
         musicList = BaseTool.typeConversion.stringToIntList(json.musicList)
-        musicListView.buildMusicList(musicList)
+        musicListView.listToModel(musicList)
     }
 }

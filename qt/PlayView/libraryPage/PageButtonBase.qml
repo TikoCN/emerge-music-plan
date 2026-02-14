@@ -64,6 +64,6 @@ Item {
     Component.onCompleted: init()
 
     onCurrentKeyChanged: {
-        loader.item.build()
+        loader.item.reset()
     }
 }

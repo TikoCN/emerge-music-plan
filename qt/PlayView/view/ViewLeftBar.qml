@@ -11,11 +11,6 @@ Item {
     id: root
     property string showText: ""
 
-    signal turnToMain()
-    signal turnToArtist()
-    signal turnToAlbum()
-    signal turnToSeit()
-
     //左侧导航
     ScrollView{
         ScrollBar.vertical.visible: false
@@ -53,10 +48,9 @@ Item {
                 }
 
                 model: [
-                    {icon: "qrc:/image/main.png", click: root.turnToMain},
-                    {icon: "qrc:/image/album.png", click: root.turnToAlbum},
-                    {icon: "qrc:/image/artist.png", click: root.turnToArtist},
-                    {icon: "qrc:/image/seit.png", click: root.turnToSeit}
+                    {icon: "qrc:/image/main.png", click: CoreData.mainTurnMain},
+                    {icon: "qrc:/image/album.png", click: CoreData.mainTurnLibraryPage},
+                    {icon: "qrc:/image/seit.png", click: CoreData.mainTurnSeit}
                 ]
             }
         }

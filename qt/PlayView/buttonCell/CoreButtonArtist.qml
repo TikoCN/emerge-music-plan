@@ -4,33 +4,33 @@ import DataType
 import MediaerAPI
 import PlayView
 
-CoreBaseButton {
-    id: albumButton
+CoreButtonBase {
+    id: artistButton
 
-    property int albumId: -1
+    property int artistId: -1
     property var musicList: []
 
-    normalIcon: "qrc:/image/album.png"
-    loadIcon: "image://cover/albumFile?id=" +
-              albumId.toString() +
+    normalIcon: "qrc:/image/artist.png"
+    loadIcon: "image://cover/artistFile?id=" +
+              artistId.toString() +
               "&radius=10"
-    onPage: CoreData.mainTurnAlbumPlayer(albumId)
+    onPage: CoreData.mainTurnArtistPlayer(artistId)
     onMenu: createMenu(this)
     onPlay: MediaPlayer.buildPlayingListByMusicList(musicList)
 
-    onAlbumIdChanged: {
-        const json = DataActive.getAlbumJson(albumId);
-        name = json.album
+    onArtistIdChanged: {
+        const json = DataActive.getArtistJson(artistId);
+        name = json.artist
         subtitle = BaseTool.typeConversion.timeToString(Number(json.duration))
         musicList = json.musicList
     }
 
     Component {
         id: menuComponent
-        MenuAlbum {
-            albumId: albumButton.albumId
-            musicList: albumButton.musicList
-            name: albumButton.name
+        MenuArtist {
+            artistId: artistButton.artistId
+            musicList: artistButton.musicList
+            name: artistButton.name
         }
     }
 

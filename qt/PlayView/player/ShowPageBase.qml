@@ -1,7 +1,7 @@
 import QtQuick
 import QtQuick.Controls.Basic
 import QtQuick.Layouts
-import MediaerAPI   
+import MediaerAPI
 import Tiko
 import PlayView
 import DataType
@@ -9,10 +9,11 @@ import DataType
 Item {
     id: playerPlayList
     property int sort: -1
-    property int playlistId: -1
     property int duration: -1
+    property int length: 0
     property string name: ""
-    property var musicList: []
+    property string search: ""
+    property alias musicList: musicListView
 
     Item{
         id: showView
@@ -51,6 +52,7 @@ Item {
             anchors.top: playlistName.bottom
             anchors.topMargin: 10
             width: parent.width - playlistCover.width
+            text: qsTr("包含 %1 首歌曲，时长为：%2").arg(length, BaseTool.typeConversion.durationToTimeStringNoMax(duration))
         }
 
         //播放列表
@@ -85,10 +87,7 @@ Item {
                 Layout.minimumWidth: 70
                 textLine.text: qsTr("歌曲") + musicList.length.toString()
                 icon.source: "qrc:/image/music.png"
-                onLeftClicked: {
-                    musicList = DataActive.playListShowAllMusic(playlistId)
-                    build()
-                }
+                onLeftClicked: {}
             }
 
             //显示喜爱歌曲列表
@@ -96,10 +95,7 @@ Item {
                 Layout.minimumWidth: 70
                 textLine.text: qsTr("喜爱")
                 icon.source: "qrc:/image/love.png"
-                onLeftClicked: {
-                    musicList = DataActive.playListShowLoveMusic(playlistId)
-                    build()
-                }
+                onLeftClicked: {}
             }
 
             //排序
@@ -116,7 +112,7 @@ Item {
                         sort: playerPlayList.sort
                         onNewSortChanged: {
                             playerPlayList.sort = newSort
-                            build()
+                            musicListView.reset()
                         }
                     }
                 }
@@ -164,8 +160,8 @@ Item {
                 Layout.maximumWidth: 0
                 show.text: qsTr("搜索")
                 onFinish: {
-                    musicList = DataActive.playListShowSearchMusic(playlistId, input.text)
-                    build()
+                    search = input.text
+                    musicListView.reset()
                     closeWidthAnimation.start()
                 }
                 visible: false
@@ -194,31 +190,5 @@ Item {
         anchors.topMargin: 20
         anchors.left: playerPlayList.left
         anchors.leftMargin: 5
-    }
-
-    function setPlayListId(id){
-        if (playlistId === id)
-            return
-        playlistId = id
-
-        const json = DataActive.getPlayListJson(id);
-        musicList = BaseTool.typeConversion.stringToIntList(json.musicList)
-        sort = json.sort
-        duration = json.duration
-        playlistHelp.text = musicList.length.toString()+" "+qsTr("首歌曲   ") +
-                BaseTool.typeConversion.durationToTimeStringNoMax(duration)
-        build()
-    }
-
-    function build() {
-        musicList = DataActive.musicListSort(musicList, sort)
-        musicListView.listToModel(musicList)
-    }
-
-    Connections {
-        target: DataActive
-        function onBuildPlayListPlayer(){
-            build()
-        }
     }
 }

@@ -80,6 +80,6 @@ Item{
         name = json.artist
         duration = json.duration
         musicList = BaseTool.typeConversion.stringToIntList(json.musicList)
-        musicListView.buildMusicList(musicList)
+        musicListView.listToModel(musicList)
     }
 }

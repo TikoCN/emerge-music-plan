@@ -8,17 +8,10 @@ GridView {
 
     property int row: 1                        // 可见行数
     property int column: 6                    // 列数
-    property int pageSize: 30                // 每页加载数量
     property int realCellWidth: gridItem.cellWidth - TikoSeit.emphasizeMargins
-    property bool loadEnable: false
-    property bool loadIsFinish: false
     property bool autoHeightEnable: true
-
-    property int _loadPos: 0                 // 当前已加载位置
-    property bool _loadingMore: false       // 是否正在加载
-
-    signal initData()
-    signal loadData(int index, int pageSize)
+    property LoadBase dataLoader: LoadBase{}
+    property alias gridModel: gridModelItem
 
     height: 50
     flow: GridView.TopToBottom
@@ -35,13 +28,12 @@ GridView {
         id: gridModelItem
     }
 
-
     onAtYEndChanged: {
-        if (loadEnable && !loadIsFinish && atYEnd && flow === GridView.LeftToRight) loadMore()
+        if (atYEnd && flow === GridView.LeftToRight) dataLoader.loadMore()
     }
 
     onAtXEndChanged: {
-        if (loadEnable && !loadIsFinish && atXEnd && flow === GridView.TopToBottom) loadMore()
+        if (atXEnd && flow === GridView.TopToBottom) dataLoader.loadMore()
     }
 
     function setGridHeight(cell) {
@@ -52,30 +44,8 @@ GridView {
         }
     }
 
-    function loadMore() {
-        if(_loadingMore) return
-
-        _loadingMore = true
-
-        loadData(_loadPos, pageSize)
-        _loadPos += pageSize
-
-        _loadingMore = false
-    }
-
-    function clear() {
-        _loadPos = 0
+    function reset() {
+        dataLoader.reset()
         gridModelItem.clear()
-    }
-
-    function build(){
-        clear()
-        initData()
-    }
-
-    Component.onCompleted: build()
-
-    function toModel(list) {
-        list.forEach(id => {gridModelItem.append({id: id})})
     }
 }

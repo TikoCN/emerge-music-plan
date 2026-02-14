@@ -5,13 +5,12 @@
 
 #include "baseclass/dataexception.h"
 
-QStringList Get::getArtistKeys()
-{
+QStringList Get::getArtistKeys() {
     QStringList keyList;
     try {
         const auto sql = "SELECT DISTINCT key FROM artist ORDER BY key ASC";
 
-        const sqlite3_callback callback = [](void *data, int argc, char **argv, char **azColName)->int{
+        const sqlite3_callback callback = [](void *data, int argc, char **argv, char **azColName)-> int {
             auto *strings = static_cast<QStringList *>(data);
             strings->append(QString(*argv));
             return SQLITE_OK;
@@ -25,16 +24,15 @@ QStringList Get::getArtistKeys()
     return keyList;
 }
 
-QList<int> Get::getArtistByKey(const QString& key, int size, int start)
-{
+QList<int> Get::getArtistByKey(const QString &key, int size, int start) {
     QList<int> artistList;
     sqlite3_stmt *stmt = nullptr;
 
     try {
         const auto sql = "SELECT artist_id "
-                          "FROM artist "
-                          "WHERE key = ? "
-                         "LIMIT ? OFFSET ?";
+                "FROM artist "
+                "WHERE key = ? "
+                "LIMIT ? OFFSET ?";
         stmtPrepare(&stmt, sql);
         stmtBindText(stmt, 1, key);
         stmtBindInt(stmt, 2, size);
@@ -52,8 +50,7 @@ QList<int> Get::getArtistByKey(const QString& key, int size, int start)
     return artistList;
 }
 
-ArtistPtr Get::getArtist(const int id)
-{
+ArtistPtr Get::getArtist(const int id) {
     QList<int> idList;
     idList.append(id);
 
@@ -63,21 +60,20 @@ ArtistPtr Get::getArtist(const int id)
     return nullptr;
 }
 
-QHash<int, ArtistPtr> Get::getArtist(const QList<int>& idList)
-{
+QHash<int, ArtistPtr> Get::getArtist(const QList<int> &idList) {
     QHash<int, ArtistPtr> artistHash;
     sqlite3_stmt *stmt = nullptr;
 
     try {
         const auto sql = "SELECT artist.name, artist.artist_id, artist.key, "
-                          "GROUP_CONCAT(artist_music.music_id) AS artist_music, SUM(music.duration) "
-                          "FROM artist "
-                          "JOIN artist_music ON artist.artist_id = artist_music.artist_id "
-                          "JOIN music ON artist_music.music_id = music.music_id "
-                          "WHERE artist.artist_id = ? LIMIT 1";
+                "GROUP_CONCAT(artist_music.music_id) AS artist_music, SUM(music.duration) "
+                "FROM artist "
+                "JOIN artist_music ON artist.artist_id = artist_music.artist_id "
+                "JOIN music ON artist_music.music_id = music.music_id "
+                "WHERE artist.artist_id = ? LIMIT 1";
 
         stmtPrepare(&stmt, sql);
-        for (int i : idList) {
+        for (int i: idList) {
             stmtPrepare(&stmt, sql);
             stmtBindInt(stmt, 1, i);
             stmtStep(stmt);
@@ -89,7 +85,7 @@ QHash<int, ArtistPtr> Get::getArtist(const QList<int>& idList)
 
             ArtistPtr artist(new Artist(name, id, key));
             artist->duration = duration;
-            for (const auto & j : list) {
+            for (const auto &j: list) {
                 artist->musicList.append(j.toInt());
             }
             artistHash.insert(i, artist);
@@ -103,15 +99,14 @@ QHash<int, ArtistPtr> Get::getArtist(const QList<int>& idList)
     return artistHash;
 }
 
-QList<int> Get::getArtistMusicList(const int id)
-{
+QList<int> Get::getArtistMusicList(const int id) {
     QList<int> list;
     sqlite3_stmt *stmt = nullptr;
 
     try {
         const char *sql = "SELECT music_id "
-                          "FROM artist_music "
-                          "WHERE artist_id = ?";
+                "FROM artist_music "
+                "WHERE artist_id = ?";
         stmtPrepare(&stmt, sql);
         stmtBindInt(stmt, 1, id);
         while (stmtStep(stmt)) {
@@ -126,13 +121,12 @@ QList<int> Get::getArtistMusicList(const int id)
     return list;
 }
 
-QStringList Get::getAlbumKeys()
-{
+QStringList Get::getAlbumKeys() {
     QStringList keyList;
     try {
         const auto sql = "SELECT DISTINCT key FROM album ORDER BY key ASC";
 
-        const sqlite3_callback callback = [](void *data, int argc, char **argv, char **azColName)->int{
+        const sqlite3_callback callback = [](void *data, int argc, char **argv, char **azColName)-> int {
             auto *strings = static_cast<QStringList *>(data);
             strings->append(QString(*argv));
             return SQLITE_OK;
@@ -146,16 +140,15 @@ QStringList Get::getAlbumKeys()
     return keyList;
 }
 
-QList<int> Get::getAlbumByKey(const QString& key, int size, int start)
-{
+QList<int> Get::getAlbumByKey(const QString &key, int size, int start) {
     QList<int> albumList;
     sqlite3_stmt *stmt = nullptr;
 
     try {
         const auto sql = "SELECT album_id "
-                          "FROM album "
-                          "WHERE key = ? "
-                          "LIMIT ? OFFSET ?";
+                "FROM album "
+                "WHERE key = ? "
+                "LIMIT ? OFFSET ?";
         stmtPrepare(&stmt, sql);
         stmtBindText(stmt, 1, key);
         stmtBindInt(stmt, 2, size);
@@ -172,8 +165,7 @@ QList<int> Get::getAlbumByKey(const QString& key, int size, int start)
     return albumList;
 }
 
-AlbumPtr Get::getAlbum(const int id)
-{
+AlbumPtr Get::getAlbum(const int id) {
     QList<int> idList;
     idList.append(id);
 
@@ -183,20 +175,19 @@ AlbumPtr Get::getAlbum(const int id)
     return nullptr;
 }
 
-QHash<int, AlbumPtr> Get::getAlbum(const QList<int>& idList)
-{
+QHash<int, AlbumPtr> Get::getAlbum(const QList<int> &idList) {
     QHash<int, AlbumPtr> albumHash;
     sqlite3_stmt *stmt = nullptr;
 
     try {
         const auto sql = "SELECT album.name, album.album_id, album.key, "
-                          "GROUP_CONCAT(music.music_id) AS album_music, SUM(music.duration) "
-                          "FROM album "
-                          "JOIN music ON album.album_id = music.album_id "
-                          "WHERE album.album_id = ? LIMIT 1";
+                "GROUP_CONCAT(music.music_id) AS album_music, SUM(music.duration) "
+                "FROM album "
+                "JOIN music ON album.album_id = music.album_id "
+                "WHERE album.album_id = ? LIMIT 1";
 
         stmtPrepare(&stmt, sql);
-        for (int i : idList) {
+        for (int i: idList) {
             stmtPrepare(&stmt, sql);
             stmtBindInt(stmt, 1, i);
             stmtStep(stmt);
@@ -208,7 +199,7 @@ QHash<int, AlbumPtr> Get::getAlbum(const QList<int>& idList)
 
             AlbumPtr album(new Album(name, id, key));
             album->duration = duration;
-            for (const auto & j : list) {
+            for (const auto &j: list) {
                 album->musicList.append(j.toInt());
             }
             albumHash.insert(i, album);
@@ -221,15 +212,14 @@ QHash<int, AlbumPtr> Get::getAlbum(const QList<int>& idList)
     return albumHash;
 }
 
-QList<int> Get::getAlbumMusicList(const int id)
-{
+QList<int> Get::getAlbumMusicList(const int id) {
     QList<int> list;
     sqlite3_stmt *stmt = nullptr;
 
     try {
         const auto sql = "SELECT music_id "
-                          "FROM music "
-                          "WHERE album_id = ?";
+                "FROM music "
+                "WHERE album_id = ?";
         stmtPrepare(&stmt, sql);
         stmtBindInt(stmt, 1, id);
         while (stmtStep(stmt)) {
@@ -249,7 +239,7 @@ QStringList Get::getMusicKeys() {
     try {
         const auto sql = "SELECT DISTINCT key FROM music ORDER BY key ASC";
 
-        const sqlite3_callback callback = [](void *data, int argc, char **argv, char **azColName)->int{
+        const sqlite3_callback callback = [](void *data, int argc, char **argv, char **azColName)-> int {
             auto *strings = static_cast<QStringList *>(data);
             strings->append(QString(*argv));
             return SQLITE_OK;
@@ -263,15 +253,15 @@ QStringList Get::getMusicKeys() {
     return keyList;
 }
 
-QList<int> Get::getMusicIdByKey(const QString &key, const int size, const int start) {
+QList<int> Get::getMusicByKey(const QString &key, const int size, const int start) {
     QList<int> list;
     sqlite3_stmt *stmt = nullptr;
 
     try {
         const auto sql = "SELECT music_id "
-                          "FROM music "
-                          "WHERE key = ? "
-                          "LIMIT ? OFFSET ?";
+                "FROM music "
+                "WHERE key = ? "
+                "LIMIT ? OFFSET ?";
         stmtPrepare(&stmt, sql);
         stmtBindText(stmt, 1, key);
         stmtBindInt(stmt, 2, size);
@@ -288,8 +278,7 @@ QList<int> Get::getMusicIdByKey(const QString &key, const int size, const int st
     return list;
 }
 
-QString Get::getMusicUrl(const int id)
-{
+QString Get::getMusicUrl(const int id) {
     sqlite3_stmt *stmt = nullptr;
     QString url;
     try {
@@ -305,8 +294,7 @@ QString Get::getMusicUrl(const int id)
     return url;
 }
 
-MusicPtr Get::getMusic(const int id)
-{
+MusicPtr Get::getMusic(const int id) {
     QList<int> idList;
     idList.append(id);
 
@@ -316,22 +304,21 @@ MusicPtr Get::getMusic(const int id)
     return nullptr;
 }
 
-QHash<int, MusicPtr> Get::getMusic(const QList<int>& idList)
-{
+QHash<int, MusicPtr> Get::getMusic(const QList<int> &idList) {
     QHash<int, MusicPtr> hash;
     sqlite3_stmt *stmt = nullptr;
     try {
         const auto sql = "SELECT music.music_id, music.title, music.duration, music.insert_time, "
-                          "music.level, music.love, music.play_number, music.url, "
-                          "album.name, GROUP_CONCAT(artist.name) AS artist_names, music.album_id "
-                          "FROM music "
-                          "JOIN album ON album.album_id = music.album_id "
-                          "JOIN artist_music ON artist_music.music_id = music.music_id "
-                          "JOIN artist ON artist_music.artist_id = artist.artist_id "
-                          "WHERE music.music_id = ? "
-                          "GROUP BY music.music_id";
+                "music.level, music.love, music.play_number, music.url, "
+                "album.name, GROUP_CONCAT(artist.name) AS artist_names, music.album_id "
+                "FROM music "
+                "JOIN album ON album.album_id = music.album_id "
+                "JOIN artist_music ON artist_music.music_id = music.music_id "
+                "JOIN artist ON artist_music.artist_id = artist.artist_id "
+                "WHERE music.music_id = ? "
+                "GROUP BY music.music_id";
         stmtPrepare(&stmt, sql);
-        for (int i : idList) {
+        for (int i: idList) {
             stmtReset(stmt);
             stmtBindInt(stmt, 1, i);
             stmtStep(stmt);
@@ -360,13 +347,12 @@ QHash<int, MusicPtr> Get::getMusic(const QList<int>& idList)
     return hash;
 }
 
-QString Get::getAllList()
-{
+QString Get::getAllList() {
     QJsonArray array;
     try {
         const auto sql = "SELECT list_id, name, is_dir, url FROM playlist";
 
-        const sqlite3_callback callback = [](void *data, int argc, char **argv, char **azColName)->int{
+        const sqlite3_callback callback = [](void *data, int argc, char **argv, char **azColName)-> int {
             if (data == nullptr) {
                 return SQLITE_ERROR;
             }
@@ -393,17 +379,17 @@ QString Get::getAllList()
     return doc.toJson();
 }
 
-PlayListPtr Get::getList(const int id)
-{
+PlayListPtr Get::getList(const int id) {
     PlayListPtr playlist(new PlayList);
     sqlite3_stmt *stmt = nullptr;
     try {
-        const auto sql = "SELECT l.list_id, l.name, l.sort, l.url, l.is_dir, SUM(m.duration) AS total_duration, GROUP_CONCAT(lm.music_id) AS music_ids "
-                          "FROM playlist as l "
-                          "JOIN playlist_music as lm ON l.list_id = lm.list_id "
-                          "JOIN music as m ON lm.music_id = m.music_id "
-                          "WHERE l.list_id = ? "
-                          "LIMIT 1";
+        const auto sql =
+                "SELECT l.list_id, l.name, l.sort, l.url, l.is_dir, SUM(m.duration) AS total_duration, GROUP_CONCAT(lm.music_id) AS music_ids "
+                "FROM playlist as l "
+                "JOIN playlist_music as lm ON l.list_id = lm.list_id "
+                "JOIN music as m ON lm.music_id = m.music_id "
+                "WHERE l.list_id = ? "
+                "LIMIT 1";
         stmtPrepare(&stmt, sql);
         stmtBindInt(stmt, 1, id);
         stmtStep(stmt);
@@ -411,14 +397,13 @@ PlayListPtr Get::getList(const int id)
         playlist->id = sqlite3_column_int(stmt, 0);
         playlist->name = QString::fromUtf8(sqlite3_column_text(stmt, 1));
         playlist->sort = static_cast<PlayList::SORT_TYPE>(sqlite3_column_int(stmt, 2));
-        playlist->url  = QString::fromUtf8(sqlite3_column_text(stmt, 3));
+        playlist->url = QString::fromUtf8(sqlite3_column_text(stmt, 3));
         playlist->isDir = sqlite3_column_int(stmt, 4) == 1;
         playlist->duration = sqlite3_column_int64(stmt, 5);
 
-        for (QStringList list = QString::fromUtf8(sqlite3_column_text(stmt, 6)).split(","); const QString & i : list) {
+        for (QStringList list = QString::fromUtf8(sqlite3_column_text(stmt, 6)).split(","); const QString &i: list) {
             playlist->musicList.append(i.toInt());
         }
-
     } catch (const DataException &e) {
         tlog->logError(e.errorMessage());
     }
@@ -426,15 +411,14 @@ PlayListPtr Get::getList(const int id)
     return playlist;
 }
 
-QList<int> Get::getPlayListMusicList(const int id)
-{
+QList<int> Get::getPlayListMusicList(const int id) {
     QList<int> list;
     sqlite3_stmt *stmt = nullptr;
 
     try {
         const auto sql = "SELECT music_id "
-                          "FROM playlist_music "
-                          "WHERE list_id = ?";
+                "FROM playlist_music "
+                "WHERE list_id = ?";
         stmtPrepare(&stmt, sql);
         stmtBindInt(stmt, 1, id);
         while (stmtStep(stmt)) {
@@ -449,40 +433,34 @@ QList<int> Get::getPlayListMusicList(const int id)
     return list;
 }
 
-QList<int> Get::getAlbumRandList()
-{
+QList<int> Get::getAlbumRandList() {
     const auto sql = "SELECT album_id FROM album ORDER BY RANDOM() LIMIT 15";
     return getIntList(sql);
 }
 
-QList<int> Get::getArtistRandList()
-{
+QList<int> Get::getArtistRandList() {
     const auto sql = "SELECT artist_id FROM artist ORDER BY RANDOM() LIMIT 15";
     return getIntList(sql);
 }
 
-QList<int> Get::getMusicRandList(int length)
-{
+QList<int> Get::getMusicRandList(int length) {
     length = (length == -1) ? 15 : length;
 
     const QString sql = QString("SELECT music_id FROM music ORDER BY RANDOM() LIMIT %1").arg(length);
     return getIntList(sql.toStdString().c_str());
 }
 
-QList<int> Get::getNewMusicList()
-{
+QList<int> Get::getNewMusicList() {
     const auto sql = "SELECT music_id FROM music ORDER BY play_number DESC LIMIT 15";
     return getIntList(sql);
 }
 
-QList<int> Get::getReadMoreList()
-{
+QList<int> Get::getReadMoreList() {
     const auto sql = "SELECT music_id FROM music ORDER BY insert_time DESC LIMIT 15";
     return getIntList(sql);
 }
 
-QList<int> Get::getIntList(const char *sql)
-{
+QList<int> Get::getIntList(const char *sql) {
     QList<int> idList;
     try {
         sqlExec(sql, idListCallBack, &idList);
@@ -493,8 +471,7 @@ QList<int> Get::getIntList(const char *sql)
     return idList;
 }
 
-MediaData Get::getMediaFromStmt(sqlite3_stmt *stmt)
-{
+MediaData Get::getMediaFromStmt(sqlite3_stmt *stmt) {
     /*
      * "SELECT music.title, music.duration, "
      * "music.level, music.love, music.play_number, music.url, "
@@ -508,19 +485,18 @@ MediaData Get::getMediaFromStmt(sqlite3_stmt *stmt)
     data.isLove = sqlite3_column_int(stmt, 3) == 1;
     data.playNumber = sqlite3_column_int(stmt, 4);
     data.url = QString::fromUtf8(sqlite3_column_text(stmt, 5));
-    data.album= QString::fromUtf8(sqlite3_column_text(stmt, 6));
+    data.album = QString::fromUtf8(sqlite3_column_text(stmt, 6));
     data.artistList = QString::fromUtf8(sqlite3_column_text(stmt, 7)).split(",");
     return data;
 }
 
-int Get::checkArtistName(const QString& name)
-{
+int Get::checkArtistName(const QString &name) {
     sqlite3_stmt *stmt = nullptr;
     int r = -1;
     try {
         const auto sql = "SELECT COALESCE("
-                          "(SELECT artist_id FROM artist WHERE name = ? LIMIT 1), "
-                          "-1) AS artist_id";
+                "(SELECT artist_id FROM artist WHERE name = ? LIMIT 1), "
+                "-1) AS artist_id";
         stmtPrepare(&stmt, sql);
         stmtBindText(stmt, 1, name);
         stmtStep(stmt);
@@ -533,14 +509,13 @@ int Get::checkArtistName(const QString& name)
     return r;
 }
 
-int Get::checkAlbumName(const QString& name)
-{
+int Get::checkAlbumName(const QString &name) {
     sqlite3_stmt *stmt = nullptr;
     int r = -1;
     try {
         const auto sql = "SELECT COALESCE("
-                          "(SELECT album_id FROM album WHERE name = ? LIMIT 1), "
-                          "-1) AS album_id";
+                "(SELECT album_id FROM album WHERE name = ? LIMIT 1), "
+                "-1) AS album_id";
         stmtPrepare(&stmt, sql);
         stmtBindText(stmt, 1, name);
         stmtStep(stmt);
@@ -553,14 +528,13 @@ int Get::checkAlbumName(const QString& name)
     return r;
 }
 
-int Get::checkPlayListName(const QString& name)
-{
+int Get::checkPlayListName(const QString &name) {
     sqlite3_stmt *stmt = nullptr;
     int r = -1;
     try {
         const auto sql = "SELECT COALESCE("
-                          "(SELECT list_id FROM playlist WHERE name = ? LIMIT 1), "
-                          "-1) AS list_id";
+                "(SELECT list_id FROM playlist WHERE name = ? LIMIT 1), "
+                "-1) AS list_id";
         stmtPrepare(&stmt, sql);
         stmtBindText(stmt, 1, name);
         stmtStep(stmt);
@@ -577,9 +551,9 @@ QStringList Get::getAlbumNameList(const int size, const int start) {
     sqlite3_stmt *stmt = nullptr;
     try {
         const auto sql = "SELECT name "
-                         "FROM album "
-                         "ORDER by name "
-                         "LIMIT ? OFFSET ?";
+                "FROM album "
+                "ORDER by name "
+                "LIMIT ? OFFSET ?";
         stmtPrepare(&stmt, sql);
         stmtBindInt(stmt, 1, size);
         stmtBindInt(stmt, 2, start);
@@ -587,11 +561,10 @@ QStringList Get::getAlbumNameList(const int size, const int start) {
             const QString name = QString::fromUtf8(sqlite3_column_text(stmt, 0));
             albumNameList.append(name);
         };
-
     } catch (const DataException &e) {
         tlog->logError(e.errorMessage());
     }
-    
+
     stmtFree(stmt);
     return albumNameList;
 }
@@ -601,9 +574,9 @@ QStringList Get::getArtistNameList(const int size, const int start) {
     sqlite3_stmt *stmt = nullptr;
     try {
         const auto sql = "SELECT name "
-                         "FROM artist "
-                         "ORDER by name "
-                         "LIMIT ? OFFSET ?";
+                "FROM artist "
+                "ORDER by name "
+                "LIMIT ? OFFSET ?";
         stmtPrepare(&stmt, sql);
         stmtBindInt(stmt, 1, size);
         stmtBindInt(stmt, 2, start);
@@ -611,12 +584,34 @@ QStringList Get::getArtistNameList(const int size, const int start) {
             const QString name = QString::fromUtf8(sqlite3_column_text(stmt, 0));
             artistNameList.append(name);
         };
-
     } catch (const DataException &e) {
         tlog->logError(e.errorMessage());
     }
-    
+
     stmtFree(stmt);
     return artistNameList;
 }
 
+QList<int> Get::getMusicAlbum(int albumId, const int size, const int start) {
+    QList<int> musicList;
+    sqlite3_stmt *stmt = nullptr;
+    try {
+        const auto sql = "SELECT music_id "
+                "FROM music, album_music, album,  "
+                "WHERE music.music_id = album_music.music_id "
+                "GROUP BY music.music_id "
+                "LIMIT ? OFFSET ?";
+        stmtPrepare(&stmt, sql);
+        stmtBindInt(stmt, 1, size);
+        stmtBindInt(stmt, 2, start);
+        while (stmtStep(stmt)) {
+            const int id = sqlite3_column_int(stmt, 0);
+            musicList.append(id);
+        };
+    } catch (const DataException &e) {
+        tlog->logError(e.errorMessage());
+    }
+
+    stmtFree(stmt);
+    return musicList;
+}

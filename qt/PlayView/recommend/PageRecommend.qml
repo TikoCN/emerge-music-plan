@@ -18,14 +18,14 @@ ScrollView {
         anchors.left: parent.left
         anchors.margins: 20
 
-        RecomMusic {
+        RecomGridButtonMusic {
             id: recomMusic
             width: showColumn.width
             height: childrenRect.height
         }
 
         // 随机推荐专辑
-        RecomAlbum {
+        RecomGridButtonAlbum {
             id: recomAlbum
             width: showColumn.width
             height: childrenRect.height
@@ -37,7 +37,7 @@ ScrollView {
             height: childrenRect.height
         }
 
-        RecomArtist {
+        RecomGridButtonArtist {
             id: recomArtist
             width: showColumn.width
             height: childrenRect.height

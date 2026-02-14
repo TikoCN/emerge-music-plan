@@ -31,7 +31,7 @@ public:
 
     // 音乐
     Q_INVOKABLE QStringList getMusicKeys();
-    Q_INVOKABLE QList<int> getMusicIdByKey(const QString& key, int size, int start);
+    Q_INVOKABLE QList<int> getMusicByKey(const QString& key, int size, int start);
     MusicPtr getMusic(int id);
     QHash<int, MusicPtr> getMusic(const QList<int>& idList);
     QString getMusicUrl(int id);
@@ -59,6 +59,8 @@ public:
 
     QStringList getAlbumNameList(int size, int start);
     QStringList getArtistNameList(int size, int start);
+
+    [[nodiscard]] QList<int> getMusicAlbum(int albumId, int size, int start);
 };
 
 #endif // GET_H
