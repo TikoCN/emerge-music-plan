@@ -15,6 +15,10 @@ qt_standard_project_setup(REQUIRES 6.8)
 
 qt_add_executable(appmusicPlay
     main.cpp
+        sqlite/Delete.cpp
+        sqlite/Delete.h
+        baseclass/LiteralConstant.cpp
+        baseclass/LiteralConstant.h
 )
 
 qt_policy(SET QTP0004 NEW)
@@ -25,6 +29,7 @@ qt_add_qml_module(appmusicPlay
         URI musicPlay
         VERSION 1.0
         SOURCES
+        baseclass/SortType.h
         setting.h setting.cpp
         online.h online.cpp
         ffmpeg.h ffmpeg.cpp

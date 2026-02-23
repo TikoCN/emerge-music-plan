@@ -4,18 +4,20 @@
 #include <QObject>
 #include <QSet>
 #include <QSharedPointer>
+#include "SortType.h"
+
 using AlbumPtr = QSharedPointer<class Album>;
 
 class Album{
 public:
-    explicit Album(QString name, int id, QString lineKey);
-
-    QList<int> musicList; // 音乐列表
-    QString name;
-    QString lineKey;
-    QSet<QString> artistSet;
-    long long duration;
-    int id;
+    int musicCount = 0; // 音乐条目总数
+    QString name = QObject::tr("未知专辑");
+    QString lineKey = "";
+    QSet<QString> artistSet = {QObject::tr("未知歌手")};
+    long long duration = 0;
+    int id = -1;
+    int firstMusic = 0;
+    SORT_TYPE sortType = SORT_TITTLE_ASC;
 
     [[nodiscard]] QJsonObject getJsonObject() const;
 };

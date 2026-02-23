@@ -5,137 +5,60 @@ import MediaerAPI
 
 Item{
     id: style
-    Canvas{
+    property string artist: qsTr("标题")
+    property string title: qsTr("标题")
+    property string icon: ""
+    property bool show: false
+
+    AudioVsualizationCircle {
         id: canvas
-        x: style.width * 0.5 * 0.1
-        y: style.height * 0.1
-        width: style.width * 0.8 * 0.5
-        height: style.height * 0.8
-        property var samples: []
-        property int startAngle: 0
-        onPaint: {
-            const min = Math.min(canvas.width, canvas.height);
-            const r = min * 0.4;
-            const ctx = getContext("2d");
-            ctx.clearRect(0, 0, width, height)
+        anchors.fill: style
+    }
 
-            ctx.lineWidth = 3
-            const ringColor = TikoSeit.theme.baseTheme.themeTransition
-            ctx.strokeStyle = ringColor
+    Item {
+        width: childrenRect.width
+        height: childrenRect.height
+        anchors.centerIn: canvas
 
-            ctx.beginPath()
-
-            canvas.startAngle += 1
-            const angleStep = 3;// 每3度一个样本
-            const totalSteps = 360 / angleStep;
-            const amplitude = 100;
-
-            // 确保样本数量足够，不足时补零
-            for (let i = 0; i < totalSteps; i++) {
-                const angle = i * angleStep + canvas.startAngle;
-                const radians = angle * Math.PI / 180;
-
-                // 获取样本值（假设samples是0~1的归一化数组）
-                let sampleValue = (samples[i] || 0) * amplitude; // 放大样本效果
-                if(Math.abs(sampleValue) < amplitude * 0.1){
-                    sampleValue = 0
-                }
-
-                // 极坐标转笛卡尔坐标
-                const x = canvas.width / 2 + Math.cos(radians) * (r + sampleValue);
-                const y = canvas.height / 2 + Math.sin(radians) * (r + sampleValue);
-
-                if (i === 0) {
-                    ctx.moveTo(x, y) // 路径起点
-                } else {
-                    ctx.lineTo(x, y)
-                }
-            }
-            ctx.closePath() // 闭合路径
-
-            // 确保样本数量足够，不足时补零
-            for (i = 0; i < totalSteps; i++) {
-                angle = i * angleStep + canvas.startAngle
-                radians = angle * Math.PI / 180
-
-                // 获取样本值（假设samples是0~1的归一化数组）
-                sampleValue = (samples[i] || 0) * amplitude // 放大样本效果
-                if(Math.abs(sampleValue) < amplitude * 0.05){
-                    sampleValue = 0
-                }
-
-                // 极坐标转笛卡尔坐标
-                x = canvas.width/2 + Math.cos(radians) * (r - sampleValue)
-                y = canvas.height/2 + Math.sin(radians) * (r - sampleValue)
-
-                if (i === 0) {
-                    ctx.moveTo(x, y) // 路径起点
-                } else {
-                    ctx.lineTo(x, y)
-                }
-            }
-
-            ctx.closePath() // 闭合路径
-
-            // 确保样本数量足够，不足时补零
-            for (i = 0; i < totalSteps; i++) {
-                angle = i * angleStep + canvas.startAngle
-                radians = angle * Math.PI / 180
-
-                // 获取样本值（假设samples是0~1的归一化数组）
-                sampleValue = (samples[i] || 0) * amplitude // 放大样本效果
-                if(Math.abs(sampleValue) < amplitude * 0.2){
-                    continue
-                }
-
-                // 极坐标转笛卡尔坐标
-                x = canvas.width/2 + Math.cos(radians) * (r - sampleValue)
-                y = canvas.height/2 + Math.sin(radians) * (r - sampleValue)
-                ctx.moveTo(x, y) // 路径起点
-
-                // 极坐标转笛卡尔坐标
-                x = canvas.width/2 + Math.cos(radians) * (r + sampleValue)
-                y = canvas.height/2 + Math.sin(radians) * (r + sampleValue)
-                ctx.lineTo(x, y)
-            }
-            ctx.stroke()
+        TikoTextLine{
+            id: titleItem
+            text: title
+            anchors.horizontalCenter: positionControl.horizontalCenter
         }
 
-        Component.onCompleted: canvas.requestPaint()
-        //关联
-        Connections{
-            target: MediaPlayer
-            function onCppDrawLine(outSamples){
-                canvas.samples = outSamples
-                canvas.requestPaint()
-            }
+        TikoTextLine{
+            id: artistItem
+            text: artist
+            anchors.top: titleItem.bottom
+            anchors.horizontalCenter: positionControl.horizontalCenter
         }
-    }
 
-    TikoTextLine{
-        id: title
-        x: style.width * 0.5 + style.width * 0.5 * 0.1
-        y: style.height * 0.2
-        width: style.width * 0.5 * 0.8
-    }
-
-    TikoTextLine{
-        id: artist
-        x: title.x
-        width: title.width
-        anchors.top: title.bottom
-    }
-
-    Connections{
-        target:MediaPlayer.player
-        function onSourceChanged(){
-            artist.text = MediaPlayer.playingMusic.artist
-            title.text = MediaPlayer.playingMusic.title
+        PositionControl{
+            id: positionControl
+            anchors.top: artistItem.bottom
+            anchors.margins: TikoSeit.emphasizeMargins
+            width: canvas.r
         }
-    }
 
-    Component.onCompleted: {
-        artist.text = MediaPlayer.playingMusic.artist
-        title.text = MediaPlayer.playingMusic.title
+        PlayDown {
+            id: playDown
+            anchors.top: positionControl.bottom
+            anchors.left: playState.right
+            anchors.margins: TikoSeit.emphasizeMargins
+        }
+
+        PlayState {
+            id: playState
+            anchors.horizontalCenter: positionControl.horizontalCenter
+            anchors.top: positionControl.bottom
+            anchors.margins: TikoSeit.emphasizeMargins
+        }
+
+        PlayUp {
+            id: playUp
+            anchors.top: positionControl.bottom
+            anchors.right: playState.left
+            anchors.margins: TikoSeit.emphasizeMargins
+        }
     }
 }

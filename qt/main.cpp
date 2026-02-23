@@ -33,20 +33,20 @@ int main(int argc, char *argv[]) {
     TLog::buildInstance();                                      // 0
     TLog *tlog = TLog::getInstance();
     SQLite::buildInstance(tlog);                                // 1
+    SQLite *sql = SQLite::getInstance();
     BaseTool::buildInstance();                                  // 1
     BaseTool *baseTool = BaseTool::getInstance();
 
     DataActive::buildInstance();                                 // 2
     DataActive *dataActive = DataActive::getInstance();
 
-    MediaPlayer::buildInstance(baseTool, dataActive, tlog);      // 3
+    MediaPlayer::buildInstance(baseTool, dataActive, tlog, sql);      // 3
     Setting::buildInstance();                                    // 3
     TaskCenter::buildInstance();                                 // 3
     OnLine::buildInstance();                                     // 3
     ImageControl::buildInstance();                               // 3
 
     //获得单例指针
-    SQLite *sql = SQLite::getInstance();
     Setting *seit = Setting::getInstance();
     MediaPlayer *mediaPlayer = MediaPlayer::getInstance();
     const TaskCenter *center = TaskCenter::getInstance();
@@ -68,7 +68,12 @@ int main(int argc, char *argv[]) {
     qmlRegisterType<QmlActive>("DataType", 1, 0, "QmlActive");
 
     QObject::connect(seit, &Setting::loadMusics, center, &TaskCenter::start);
+
     QObject::connect(mediaPlayer, &MediaPlayer::downLrc, onLine, &OnLine::downLrc);
+    QObject::connect(mediaPlayer->getAudioOutput(), &QAudioOutput::volumeChanged, seit, [seit](const float volume) {
+        seit->setParameter(LiteralConstant::VOLUME, volume);
+    });
+
     QObject::connect(onLine, &OnLine::lrcDowned, mediaPlayer, &MediaPlayer::loadLrcList);
 
     // 开始加载

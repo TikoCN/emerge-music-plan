@@ -23,9 +23,9 @@ Item {
     property string artist : ""
     property string album: ""
     property string lastEdit: ""
-    signal playMusic()
+    signal playMusic(int musicId, int listId)
 
-    Component.onCompleted:{
+    onMusicIdChanged:{
         const json = DataActive.getMusicJson(musicId);
         musicTitle = json.title
         artist = json.artist
@@ -45,7 +45,7 @@ Item {
         onClicked: (mouse) => {
                        switch(mouse.button){
                            case Qt.LeftButton:
-                           playMusic()
+                           playMusic(musicId, listId)
                            break
                            case Qt.RightButton:
                            createMenu(musicLine)

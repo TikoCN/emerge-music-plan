@@ -6,28 +6,32 @@
 #include "baseclass/artist.h"
 #include "baseclass/playlist.h"
 #include "baseclass/mediadata.h"
-#include "update.h"
+#include "Delete.h"
 #include <QJsonArray>
 
-class Get : public Update
+class Get : public Delete
 {
     Q_OBJECT
 public:
-    explicit Get(TLog *log) : Update(log) {};
+    explicit Get(TLog *log) : Delete(log) {};
 
     // 歌手
     Q_INVOKABLE QStringList getArtistKeys();
     Q_INVOKABLE QList<int> getArtistByKey(const QString& key, int size, int start);
     ArtistPtr getArtist(int id);
     QHash<int, ArtistPtr> getArtist(const QList<int>& idList);
-    QList<int> getArtistMusicList(int id);
+    Q_INVOKABLE [[nodiscard]] QList<int> getArtistMusic(int id, int size, int start, int sort);
+    [[nodiscard]] QList<int> getArtistMusicAll(int id, int sort);
+    int getArtistMusicFirst(int artistId);
 
     // 专辑
     Q_INVOKABLE QStringList getAlbumKeys();
     Q_INVOKABLE QList<int> getAlbumByKey(const QString& key, int size, int start);
     AlbumPtr getAlbum(int id);
     QHash<int, AlbumPtr> getAlbum(const QList<int>& idList);
-    QList<int> getAlbumMusicList(int id);
+    Q_INVOKABLE [[nodiscard]] QList<int> getAlbumMusic(int id, int size, int start, int sort);
+    [[nodiscard]] QList<int> getAlbumMusicAll(int id, int sort);
+    int getAlbumMusicFirst(int albumId);
 
     // 音乐
     Q_INVOKABLE QStringList getMusicKeys();
@@ -39,7 +43,12 @@ public:
     // 播放列表
     Q_INVOKABLE QString getAllList();
     PlayListPtr getList(int id);
-    QList<int> getPlayListMusicList(int id);
+    Q_INVOKABLE [[nodiscard]] QList<int> getPlayListMusic(int id, int size, int start, int sort);
+    [[nodiscard]] QList<int> getPlayListMusicAll(int id, int sort);
+    int getPlayListMusicFirst(int playListId);
+
+    // 正在播放列表
+    Q_INVOKABLE QList<int> getPlayingListMusic();
 
     // 获得随机列表
     Q_INVOKABLE QList<int> getAlbumRandList();
@@ -50,7 +59,7 @@ public:
     // 得到最多播放音乐
     Q_INVOKABLE QList<int> getReadMoreList();
 
-    QList<int> getIntList(const char *sql);
+    QList<int> getIntList(const QString &sql);
     static MediaData getMediaFromStmt(sqlite3_stmt *stmt);
 
     Q_INVOKABLE int checkArtistName(const QString& name);
@@ -60,7 +69,7 @@ public:
     QStringList getAlbumNameList(int size, int start);
     QStringList getArtistNameList(int size, int start);
 
-    [[nodiscard]] QList<int> getMusicAlbum(int albumId, int size, int start);
+    [[nodiscard]] static QString getSelectMusicSortSql(int sort, const QString& masterTable, const QString &masterColumn, bool isLimit = true);
 };
 
 #endif // GET_H

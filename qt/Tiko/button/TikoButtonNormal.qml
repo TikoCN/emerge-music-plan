@@ -16,7 +16,7 @@ TikoButtonBase {
         dynamicState: normalButton.dynamicState
         anchors.left: parent.left
         anchors.verticalCenter: parent.verticalCenter
-        height: textLine.height + 16
+        height: textLine.height + TikoSeit.subitemSpace
         width: height
     }
 

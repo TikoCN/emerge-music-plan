@@ -11,7 +11,7 @@ QJsonObject Music::getJsonObject() const {
     QJsonObject json;
     json.insert("title", title);
     json.insert("album", album);
-    json.insert("artist", getArtist());
+    json.insert("artist", artist);
     json.insert("level", level);
     json.insert("isLove", isLove);
     json.insert("playNumber", playNumber);
@@ -21,19 +21,9 @@ QJsonObject Music::getJsonObject() const {
     return json;
 }
 
-Music::Music()
-    : title(QObject::tr("未知音乐"))
-      , artistList{QObject::tr("未知歌手")}
-      , url("")
-      , album(QObject::tr("未知专辑"))
-      , level(0)
-      , playNumber(0)
-      , isLove(false) {
-}
-
 void Music::setMedia(const MediaData &data) {
     title = data.title;
-    artistList = data.artistList;
+    artist = data.artist;
     album = data.album;
     playNumber = data.playNumber;
     isLove = data.isLove;
@@ -94,7 +84,7 @@ QImage Music::loadAloneCover(const QString &url) {
  * 判断是否符合搜索条件
 */
 bool Music::isSearch(const QString &aim) const {
-    if (title.contains(aim) || artistList.contains(aim) || album.contains(aim)) {
+    if (title.contains(aim) || artist.contains(aim) || album.contains(aim)) {
         return true;
     }
     return false;
@@ -136,6 +126,3 @@ void Music::setSuffix(const QString &type) const {
     }
 }
 
-QString Music::getArtist() const {
-    return artistList.join(";");
-}

@@ -3,6 +3,8 @@
 
 #include "sqlite3.h"
 #include "tlog.h"
+#include "baseclass/SortType.h"
+#include "baseclass/LiteralConstant.h"
 
 class Core : public QObject
 {
@@ -27,7 +29,9 @@ protected:
 
     static void stmtFree(sqlite3_stmt *stmt);
 
-    void sqlExec(const char *sql, sqlite3_callback back, void *data);
+    void sqlExecuteCallBack(const char *sql, sqlite3_callback back, void *data);
+
+    void sqlExecute(const char *sql, QString error);
 
 public:
     explicit Core(TLog *log);

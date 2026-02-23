@@ -10,23 +10,33 @@ import PlayView
 Item {
     id: libraryPage
 
-    RowLayout {
+    Row {
         id: toolRow
         anchors.top: libraryPage.top
         anchors.right: libraryPage.right
         anchors.left: libraryPage.left
-        anchors.topMargin: TikoSeit.emphasizeMargins
+        anchors.margins: TikoSeit.emphasizeMargins
+        spacing: TikoSeit.emphasizeMargins
+        property string selectText: ""
 
         Repeater {
             model: [
-                {name:"专辑", click: stackAlbum},
-                {name:"歌手", click: stackArtist},
-                {name:"音乐", click: stackMusic}
+                {name:"专辑", icon:"qrc:/image/album.png", click: stackAlbum},
+                {name:"歌手", icon:"qrc:/image/artist.png", click: stackArtist},
+                {name:"音乐", icon:"qrc:/image/default.png", click: stackMusic}
             ]
 
             delegate: TikoButtonNormal {
+                icon.source: modelData.icon
                 textLine.text: modelData.name
-                onClicked: modelData.click()
+                icon.compulsion.isPressed: toolRow.selectText === textLine.text
+                textLine.compulsion.isPressed: toolRow.selectText === textLine.text
+                onClicked: {
+                    if (toolRow.selectText === textLine.text) return
+
+                    modelData.click()
+                    toolRow.selectText = textLine.text
+                }
             }
         }
     }

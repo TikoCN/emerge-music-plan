@@ -56,9 +56,9 @@ private:
     ImageControl *ctr;
     DataActive *data;
 
-    int m_loadId{};
-    int m_loadMusicId{};
-    int m_radius{};
+    int m_loadId;
+    int m_loadMusicId;
+    int m_radius;
 
 };
 

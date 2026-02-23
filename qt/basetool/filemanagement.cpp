@@ -59,8 +59,8 @@ QString FileManagement::getMusicLrcData(const int musicId) {
     return lrcData;
 }
 
-void FileManagement::wrtiLrcData(const int musicId, const QString &lrcData) {
-    QString lrc = getMusicLrcUrl(musicId);
+void FileManagement::writeLrcData(const int musicId, const QString &lrcData) {
+    const QString lrc = getMusicLrcUrl(musicId);
     QFile lrcFile(lrc);
     if (!lrcFile.open(QIODevice::Text | QIODevice::WriteOnly)) {
         return;
@@ -74,11 +74,11 @@ QList<LrcDataPtr> FileManagement::getMusicLyricsData(const int musicId) {
     TLog::getInstance()->logError(tr("开始读取歌曲歌词") +
                                   tr("歌曲ID:%1").arg(musicId));
 
-    QString lrc = getMusicLrcUrl(musicId);
+    const QString lrc = getMusicLrcUrl(musicId);
     QList<LrcDataPtr> lrcList;
 
     DataActive *core = DataActive::getInstance();
-    MusicPtr music = core->getMusicCore(musicId);
+    const MusicPtr music = core->getMusicCore(musicId);
     if (music == nullptr) {
         TLog::getInstance()->logError(tr("获取数据失败") +
                                       tr("歌曲ID:%1").arg(musicId));
@@ -91,7 +91,10 @@ QList<LrcDataPtr> FileManagement::getMusicLyricsData(const int musicId) {
     }
 
     QTextStream in(&lrcFile);
-    QRegularExpression rx;
+    const QRegularExpression hlrcLineRx(R"(\[(\d+),(\d+)\])");
+    const QRegularExpression hlrcWordRx(R"(\((\d+),(\d+)\)\s*([^(]*))");
+    const QRegularExpression lrcLineRx(R"(\[(\d+):(\d+).(\d+)\]([\s\S]*))");
+    const QRegularExpression nullRx("[^\\s]");
     QRegularExpressionMatch match;
     QString line;
     LrcDataPtr lrcD;
@@ -101,9 +104,8 @@ QList<LrcDataPtr> FileManagement::getMusicLyricsData(const int musicId) {
         while (!in.atEnd()) {
             line = in.readLine();
 
-            //捕获开始时间和结束时间
-            rx.setPattern(R"(\[(\d+),(\d+)\])");
-            match = rx.match(line);
+            // 捕获行级时间戳 [开始,结束]
+            match = hlrcLineRx.match(line);
             //初始化并设置开始结束时间
             if (match.isValid()) {
                 lrcD = LrcDataPtr(new LrcData);
@@ -116,52 +118,54 @@ QList<LrcDataPtr> FileManagement::getMusicLyricsData(const int musicId) {
                 continue;
             }
 
-            //捕获主体
-            QStringList lrcText = line.split("/");
+            // 按 ' / ' 分割行内容，第一个元素是带时间戳的文本，后面是辅助文本
+            QStringList lrcText = line.split(" / ");
             // 添加到其他文本
             for (int i = 1; i < lrcText.size(); ++i) {
                 lrcD->helpTextList.append(lrcText[i]);
             }
 
-            rx.setPattern(R"(\((\d+),(\d+)\)\s*([^(]*))");
-            QRegularExpressionMatchIterator it = rx.globalMatch(lrcText.first());
+            // 解析逐字时间戳格式：(开始,结束) 文本
+            QRegularExpressionMatchIterator it = hlrcWordRx.globalMatch(lrcText.first());
             while (it.hasNext()) {
                 match = it.next();
-                long long start = match.captured(1).toLong();
-                long long end = match.captured(2).toLong();
+                const long long start = match.captured(1).toLong();
+                const long long end = match.captured(2).toLong();
                 QString text = match.captured(3);
                 lrcD->append(start, end, text);
             }
         }
     } else {
-        rx.setPattern(R"(\[(\d+):(\d+).(\d+)\]([\s\S]*))");
         QStringList lrcTextList;
         //读取基本数据以及文本行
         while (!in.atEnd()) {
             line = in.readLine();
-            match = rx.match(line);
+            match = lrcLineRx.match(line);
             if (match.hasMatch()) {
                 lrcD = LrcDataPtr(new LrcData);
                 lrcD->id = static_cast<int>(lrcList.size());
                 lrcD->startTime = match.captured(1).toLong() * 60 * 1000 +
                                   match.captured(2).toLong() * 1000 +
                                   match.captured(3).toLong();
-                QStringList lrcText = match.captured(4).split("/");
+                // 提取歌词文本，可能包含辅助文本（以 " / " 分隔）
+                QStringList lrcText = match.captured(4).split(" / ");
                 // 添加到其他文本
                 for (int i = 1; i < lrcText.size(); ++i) {
                     lrcD->helpTextList.append(lrcText[i]);
                 }
+                if (nullRx.match(lrcText.first()).hasMatch()) {
+                    lrcTextList.append(lrcText.first());
+                } else {
+                    lrcTextList.append("");
+                }
 
-                lrcTextList.append(lrcText.first());
                 lrcList.append(lrcD);
-            } else {
-                continue;
             }
         }
 
         //设置逐字时间戳
         for (int i = 0; i < lrcList.size(); i++) {
-            long long start = lrcList[i]->startTime;
+            const long long start = lrcList[i]->startTime;
             long long end;
             if (i == lrcList.size() - 1) {
                 end = music->duration;

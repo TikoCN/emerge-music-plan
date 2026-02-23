@@ -17,7 +17,7 @@ public:
     // LRC FILE
     Q_INVOKABLE [[nodiscard]] static QString getMusicLrcUrl(int musicId);
     Q_INVOKABLE [[nodiscard]] static QString getMusicLrcData(int musicId);
-    Q_INVOKABLE static void wrtiLrcData(int musicId, const QString& lrcData);
+    Q_INVOKABLE static void writeLrcData(int musicId, const QString& lrcData);
     [[nodiscard]] static QList<LrcDataPtr> getMusicLyricsData(int musicId) ;
 
     // DIR

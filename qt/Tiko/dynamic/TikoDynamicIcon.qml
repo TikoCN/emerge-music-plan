@@ -6,19 +6,12 @@ TikoImage {
     id: dynamicIcon
     property TikoDynamicColor dynamicColor: TikoSeit.theme.foregroundDynamicColor
     property TikoDynamicState dynamicState: null
+    property alias compulsion: compulsionState
 
     states: [
         State {
-            name: "normal"
-            when: dynamicState != null && dynamicState.isNormal
-            PropertyChanges {
-                target: dynamicIcon
-                unifiedColor: dynamicColor.normalColor
-            }
-        },
-        State {
             name: "hover"
-            when: dynamicState != null && dynamicState.isHover
+            when: compulsionState.isHover || (dynamicState != null && dynamicState.isHover)
             PropertyChanges {
                 target: dynamicIcon
                 unifiedColor: dynamicColor.hoverColor
@@ -26,7 +19,7 @@ TikoImage {
         },
         State {
             name: "pressed"
-            when: dynamicState != null && dynamicState.isPressed
+            when: compulsionState.isPressed || (dynamicState != null && dynamicState.isPressed)
             PropertyChanges {
                 target: dynamicIcon
                 unifiedColor: dynamicColor.pressedColor
@@ -34,11 +27,23 @@ TikoImage {
         },
         State {
             name: "disabled"
-            when: dynamicState != null && dynamicState.isDisabled
+            when: compulsionState.isDisabled || (dynamicState != null && dynamicState.isDisabled)
             PropertyChanges {
                 target: dynamicIcon
                 unifiedColor: dynamicColor.disabledColor
             }
+        },
+        State {
+            name: "normal"
+            when: compulsionState.isNormal || (dynamicState != null && dynamicState.isNormal)
+            PropertyChanges {
+                target: dynamicIcon
+                unifiedColor: dynamicColor.normalColor
+            }
         }
     ]
+
+    TikoDynamicState {
+        id: compulsionState
+    }
 }

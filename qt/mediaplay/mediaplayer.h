@@ -4,23 +4,24 @@
 #include <QMediaPlayer>
 #include <QPixmap>
 #include "mediaplay/lrcdatacontrol.h"
+#include "sqlite/sqlite.h"
 
 class MediaPlayer :public LrcDataControl
 {
     Q_OBJECT
 private:
     static MediaPlayer* instance;
-    MediaPlayer(BaseTool *baseTool, DataActive *dataActive, TLog *log, QObject *parent = nullptr);
+    MediaPlayer(BaseTool *baseTool, DataActive *dataActive, TLog *log, SQLite *sql, QObject *parent = nullptr);
 
     int m_loopType;//播放种类
 
     QList<int> m_musicList;//正在播放列表
-    int m_PlayingListId{};//正在播放歌曲的列表id
-    int m_playingMusicId{};// 正在播放音乐id
+    int m_PlayingMusicListId;//正在播放歌曲的列表id
+    int m_playingMusicId;// 正在播放音乐id
     MusicPtr m_playingMusic;
+    SQLite *m_sqlite;
 
     Q_PROPERTY(int playingMusicId READ playingMusicId CONSTANT)
-    Q_PROPERTY(QList<int> musicList READ musicList CONSTANT)
     Q_PROPERTY(int loopType READ getLoopType WRITE setLoopType NOTIFY loopTypeChanged FINAL)
 
 public:
@@ -28,14 +29,14 @@ public:
         return instance;
     }
 
-    static void buildInstance(BaseTool *baseTool, DataActive *dataActive, TLog *log){
+    static void buildInstance(BaseTool *baseTool, DataActive *dataActive, TLog *log, SQLite *sql) {
         if(instance == nullptr){
-            instance = new MediaPlayer(baseTool, dataActive, log);
+            instance = new MediaPlayer(baseTool, dataActive, log, sql);
         }
     }
 
     static void freeInstance(){
-            delete instance;
+        delete instance;
     }
 
     //播放下一首
@@ -44,19 +45,34 @@ public:
     Q_INVOKABLE [[nodiscard]] QString getTimeString() const;
     [[nodiscard]] int getLoopType() const;
     void setLoopType(int newLoopType);
-    void playMusicByListId(int musicListId);
+    Q_INVOKABLE void playMusicByListId(int musicListId);
 
     //播放音乐
-    Q_INVOKABLE void buildPlayingListByMusicList(QList<int> list, int playMusicId = 0);
-    Q_INVOKABLE void buildPlayingListByMusicId(int musicId);
-    // 播放列表插入歌曲
-    Q_INVOKABLE void insertPlayingListByMusicList(const QList<int>& list);
-    Q_INVOKABLE void insertPlayingListByMusicId(int musicId);
-    Q_INVOKABLE void appendPlayingListByMusicList(const QList<int>& list);
-    Q_INVOKABLE void appendPlayingListByMusicId(int musicId);
-    [[nodiscard]] int playingMusicId() const;
-    [[nodiscard]] QList<int> musicList() const;
+    void buildPlayingList(QList<int> list, int playMusicId = 0);
+    void buildPlayingId(int musicId);
+    Q_INVOKABLE void buildPlayingArtist(int artistId, int listId = 0);
+    Q_INVOKABLE void buildPlayingAlbum(int albumId, int listId = 0);
+    Q_INVOKABLE void buildPlayingPlayList(int playListId, int listId = 0);
 
+    // 播放列表插入歌曲
+    void insertPlayingList(const QList<int>& list);
+    void insertPlayingId(int musicId);
+    Q_INVOKABLE void insertPlayingArtist(int artistId);
+    Q_INVOKABLE void insertPlayingAlbum(int albumId);
+    Q_INVOKABLE void insertPlayingPlayList(int playListId);
+
+    void appendPlayingList(const QList<int>& list);
+    void appendPlayingId(int musicId);
+    Q_INVOKABLE void appendPlayingArtist(int artistId);
+    Q_INVOKABLE void appendPlayingAlbum(int albumId);
+    Q_INVOKABLE void appendPlayingPlayList(int playListId);
+
+    [[nodiscard]] int playingMusicId() const;
+    Q_INVOKABLE [[nodiscard]] QList<int> getMusicList(int size, int start) const;
+
+    Q_INVOKABLE void initData();
+    void setPlayingMusicListId(int playingMusicListId);
+    [[nodiscard]] int getPlayingMusicListId() const;
 signals:
 
     //重建播放列表

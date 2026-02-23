@@ -5,22 +5,15 @@ TikoTextLine {
     id: dynamicTextLine
     property TikoDynamicColor dynamicColor: TikoSeit.theme.foregroundDynamicColor
     property TikoDynamicState dynamicState: null
+    property TikoDynamicState compulsion: compulsionState
 
     property bool enableUnifiedColor: false
     property color unifiedColor: Qt.black
 
     states: [
         State {
-            name: "normal"
-            when: dynamicState != null && dynamicState.isNormal
-            PropertyChanges {
-                target: dynamicTextLine
-                color: dynamicColor.normalColor
-            }
-        },
-        State {
             name: "hover"
-            when: dynamicState != null && dynamicState.isHover
+            when: compulsionState.isHover || (dynamicState != null && dynamicState.isHover)
             PropertyChanges {
                 target: dynamicTextLine
                 color: dynamicColor.hoverColor
@@ -28,7 +21,7 @@ TikoTextLine {
         },
         State {
             name: "pressed"
-            when: dynamicState != null && dynamicState.isPressed
+            when: compulsionState.isPressed || (dynamicState != null && dynamicState.isPressed)
             PropertyChanges {
                 target: dynamicTextLine
                 color: dynamicColor.normalColor
@@ -36,11 +29,23 @@ TikoTextLine {
         },
         State {
             name: "disabled"
-            when: dynamicState != null && dynamicState.isDisabled
+            when: compulsionState.isDisabled || (dynamicState != null && dynamicState.isDisabled)
+            PropertyChanges {
+                target: dynamicTextLine
+                color: dynamicColor.normalColor
+            }
+        },
+        State {
+            name: "normal"
+            when: compulsionState.isNormal || (dynamicState != null && dynamicState.isNormal)
             PropertyChanges {
                 target: dynamicTextLine
                 color: dynamicColor.normalColor
             }
         }
     ]
+
+    TikoDynamicState {
+        id: compulsionState
+    }
 }

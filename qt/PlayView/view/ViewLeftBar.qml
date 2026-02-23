@@ -9,7 +9,7 @@ import PlayView
 
 Item {
     id: root
-    property string showText: ""
+    property string showText: "qrc:/image/seit.png"
 
     //左侧导航
     ScrollView{
@@ -38,8 +38,11 @@ Item {
 
                     TikoButtonIconNormal {
                         id: iconButton
-                        anchors.centerIn: parent
+                        anchors.fill: parent
                         icon.source: modelData.icon
+                        icon.width: 32
+                        icon.height: icon.width
+                        icon.compulsion.isHover: root.showText === modelData.icon
                         onClicked: {
                             root.showText = modelData.icon
                             modelData.click()
@@ -128,7 +131,6 @@ Item {
     Component{
         id: editMusicListMenu
         MenuPlayList {
-
         }
     }
 

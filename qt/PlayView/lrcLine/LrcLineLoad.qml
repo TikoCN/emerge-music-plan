@@ -8,8 +8,8 @@ Canvas {
     id: drawLoadLine
     height: 0
 
-    property color playingColor: "#ffffffff"
-    property color normalColor: "#40ffffff"
+    property color playingColor: TikoSeit.theme.baseTheme.foregroundNormal
+    property color normalColor: TikoSeit.theme.baseTheme.foregroundTransition
     property int lrcId: -1
     property int playingPos: MediaPlayer.player.position
     property int startTime: -1
@@ -31,8 +31,8 @@ Canvas {
 
         // 渐变色
         let overF = (playingPos - startTime) / (duration - startTime);
-        overF = overF || 0
-        overF = overF > 1 || 1
+        overF = Math.max(overF, 0)
+        overF = Math.min(overF, 1)
         const gradient = ctx.createLinearGradient(boreder, centerY - r, boreder + (space + 2 * r) * 3 + 2 * r, centerY - r);
 
         // 添加颜色停止点
@@ -95,7 +95,7 @@ Canvas {
     Connections{
         target: MediaPlayer
 
-        function onPlayingLrcIdChange(playingLrcId){
+        function onPlayingLrcIdChanged(playingLrcId){
             if(isDraw != (playingLrcId === lrcId)) {
                 isDraw = (playingLrcId === lrcId)
 
@@ -106,6 +106,15 @@ Canvas {
                     closeAnimation.start()
                 }
             }
+        }
+    }
+
+    //关联
+    Connections {
+        target: CoreData
+        function onAutoUpdateUI (){
+            if(isDraw)
+            requestPaint()
         }
     }
 }

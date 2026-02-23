@@ -13,9 +13,10 @@ TikoFrameless {
 
     Rectangle{
         anchors.fill: parent
-        color: TikoSeit.backdropColor
+        color: TikoSeit.theme.baseTheme.backgroundNormal
         topLeftRadius: 10
         topRightRadius: 10
+        z: -1
     }
 
     Item{
@@ -29,7 +30,7 @@ TikoFrameless {
         TikoButtonNormal{
             id: editLrcButton
             anchors.left: tool.left
-            text: qsTr("编辑歌词")
+            textLine.text: qsTr("编辑歌词")
             onLeftClicked: toolEditMusic.stackEditLrcPage()
             icon.source: "qrc:/image/editLrc.png"
         }
@@ -37,7 +38,7 @@ TikoFrameless {
         TikoButtonNormal{
             anchors.left: editLrcButton.right
             anchors.leftMargin: 10
-            text: qsTr("编辑音乐")
+            textLine.text: qsTr("编辑音乐")
             onLeftClicked: toolEditMusic.stackEditMusicPage()
             icon.source: "qrc:/image/editMusic.png"
         }
@@ -45,7 +46,7 @@ TikoFrameless {
         TikoButtonIcon{
             anchors.right: parent.right
             icon.source: "qrc:/image/close.png"
-            text: qsTr("关闭")
+            textLine.text: qsTr("关闭")
             onClicked: toolEditMusic.destroy()
         }
     }
@@ -73,7 +74,7 @@ TikoFrameless {
         anchors.centerIn: stackView
         width: parent.width - 20
         height: parent.height - tool.height - 20
-        color: TikoSeit.transparentColor
+        color: TikoSeit.theme.baseTheme.transparentNormal
         opacity: 0.05
         topLeftRadius: 10
         topRightRadius: 10

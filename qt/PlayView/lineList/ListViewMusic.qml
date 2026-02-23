@@ -1,4 +1,4 @@
-import QtQuick
+ import QtQuick
 import QtQuick.Controls.Basic
 import QtQuick.Layouts
 import MediaerAPI
@@ -15,7 +15,10 @@ ListView{
     ScrollBar.vertical: TikoBarV{}
 
     property LoadBase dataLoader: LoadBase{}
-    signal play()
+    property bool isLittle: false
+    property bool onlyLove: false
+    signal play(int musicId, int listId)
+    signal createMenu()
 
     onAtYEndChanged: {
         if (atYEnd && orientation === ListView.Vertical) dataLoader.loadMore()
@@ -29,7 +32,16 @@ ListView{
         width: musicListView.width
         listId: model.listId
         musicId: model.id
-        onPlayMusic: musicListView.play()
+        onPlayMusic: (musicId, listId) => {musicListView.play(musicId, listId)}
+        isLittle: musicListView.isLittle
+        visible: {
+            if (onlyLove && !isLove) {
+                return false
+            }
+            else {
+                return true
+            }
+        }
     }
 
     Rectangle{
@@ -38,13 +50,15 @@ ListView{
         radius: 10
     }
 
-    function listToModel(list) {
+    function appendList(list) {
         for(var i=0; i<list.length; i++){
             musicModel.append({
                                   listId: i,
                                   id: list[i]
                               })
         }
+
+        if (list.length !== CoreData.pageSize) dataLoader.loadIsFinish = true
     }
 
     function reset() {

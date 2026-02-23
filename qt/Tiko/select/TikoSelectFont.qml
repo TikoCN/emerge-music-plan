@@ -36,7 +36,7 @@ Rectangle {
 
 
     TikoButtonCombox {
-        data: Array.from({length: 14}, (_, index) => index + 1)
+        data: Array.from({length: 40}, (_, index) => index + 1)
         anchors.right: parent.right
         anchors.rightMargin: TikoSeit.normalMargins
         anchors.top: fontFamiliesCombox.top

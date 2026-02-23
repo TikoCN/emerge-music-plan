@@ -5,78 +5,78 @@ import MediaerAPI
 
 Item{
     id: style
-    property color normalColor: TikoSeit.theme.baseTheme.foregroundNormal
-    property color standColor: TikoSeit.theme.baseTheme.foregroundEmphasize
+    property string artist: qsTr("标题")
+    property string title: qsTr("标题")
+    property string icon: ""
+    property bool show: false
+
+    onShowChanged: {
+        if (show) {
+            lrcShow.buildLrcList()
+        } else {
+            lrcShow.clearData()
+        }
+    }
 
     Item{
         id: leftShow
         width: style.width / 2
         height: style.height
 
-        Image {
+        TikoImageAuto {
             id: cover
-            cache: false
             anchors.horizontalCenter: leftShow.horizontalCenter
             y: leftShow.height * 0.1
             width: min
             height: min
-            sourceSize.width: min
-            sourceSize.height: min
-            asynchronous: true
-            source: "qrc:/image/cover.png"
+            loadUrl: style.icon
+            normalUrl: "qrc:/image/exe.png"
             property double min: Math.min(leftShow.height * 0.5, leftShow.width * 0.8)
         }
 
-        TikoTextLine{
-            id: title
+        TikoTextTitle {
+            id: titleItem
             anchors.top: cover.bottom
-            anchors.topMargin: 30
+            anchors.topMargin: TikoSeit.emphasizeMargins
             anchors.horizontalCenter: leftShow.horizontalCenter
             width: cover.width
-            font.bold: true
-            color: style.standColor
-            text: qsTr("标题")
+            text: style.title
         }
 
-        TikoTextLine{
-            id: artist
+        TikoTextSubtitle {
+            id: artistItem
             width: cover.width
-            anchors.top: title.bottom
-            anchors.topMargin: 10
+            anchors.top: titleItem.bottom
+            anchors.topMargin: TikoSeit.normalMargins
             anchors.horizontalCenter: leftShow.horizontalCenter
-            text: qsTr("作者")
-            color: style.normalColor
+            text: style.artist
         }
 
         Row {
-            anchors.top: title.top
+            anchors.top: titleItem.top
+            anchors.bottom: artistItem.bottom
             anchors.right: cover.right
-            height: artist.y - title.y + artist.height
-            width: height * 3 + 20
-            spacing: 10
+            spacing: TikoSeit.emphasizeMargins
 
-            TikoButtonIcon{
+            TikoButtonIconLittle {
                 id: playUp
-                width: height
-                height: parent.height
+                anchors.verticalCenter: parent.verticalCenter
                 icon.source: "qrc:/image/up.png"
                 onClicked: MediaPlayer.playNext(-1)
                 //text: qsTr("播放上一首歌曲")
             }
 
-            TikoButtonIcon{
+            TikoButtonIconLittle {
                 id: playControlButton
-                width: height
-                height: parent.height
+                anchors.verticalCenter: parent.verticalCenter
                 icon.source: MediaPlayer.player.playing ? "qrc:/image/stop.png" : "qrc:/image/play.png"
                 onClicked: MediaPlayer.player.playing ? MediaPlayer.player.pause() : MediaPlayer.player.play()
                 //text: MediaPlayer.player.playing ? qsTr("暂停") : qsTr("播放")
             }
 
-            TikoButtonIcon{
+            TikoButtonIconLittle {
                 id: playDown
-                width: height
-                height: parent.height
+                anchors.verticalCenter: parent.verticalCenter
                 icon.source: "qrc:/image/down.png"
                 onClicked: MediaPlayer.playNext(1)
                 //text: qsTr("播放下一首歌曲")
@@ -85,7 +85,7 @@ Item{
 
         TikoSliderH{
             id: playControl
-            anchors.top: artist.bottom
+            anchors.top: artistItem.bottom
             anchors.topMargin: 10
             anchors.horizontalCenter: leftShow.horizontalCenter
             width: cover.width
@@ -94,21 +94,16 @@ Item{
             to: MediaPlayer.player.duration
             value: MediaPlayer.player.position
             size: 1
-            showColor: style.standColor
-            lineColor: style.normalColor
-
-            onMoved: {
-                MediaPlayer.player.setPosition(value)
-            }
+            showColor: TikoSeit.theme.baseTheme.foregroundNormal
+            onMoved: {MediaPlayer.player.setPosition(value)}
         }
 
-        TikoTextLine{
+        TikoTextSubtitle {
             id: nowTime
             anchors.top: playControl.bottom
             anchors.topMargin: 10
             anchors.left: playControl.left
             text: formatTime(time)
-            color: style.normalColor
             property int time: MediaPlayer.player.position / 1000
 
             // 定义转换函数
@@ -120,13 +115,12 @@ Item{
             }
         }
 
-        TikoTextLine{
+        TikoTextSubtitle {
             id: lastTime
             anchors.top: playControl.bottom
             anchors.topMargin: 10
             anchors.right: playControl.right
             text: formatTime(time)
-            color: style.normalColor
             property int time: (MediaPlayer.player.duration - MediaPlayer.player.position) / 1000
 
             // 定义转换函数
@@ -134,37 +128,16 @@ Item{
                 const mins = Math.floor(seconds / 60);
                 const secs = seconds % 60;
                 // 补零：强制两位数
-                return `-${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+                return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
             }
         }
 
-        Canvas{
+        AudioVsualizationRect {
             id: canvas
-            clip: true
-            width: artist.width
+            width: artistItem.width
             height: leftShow.height * 0.15
             anchors.top: playControl.bottom
             anchors.horizontalCenter: leftShow.horizontalCenter
-
-            onPaint: {
-                const ctx = getContext("2d");
-                // 清除画布
-                ctx.clearRect(0, 0, width, height);
-                const inList = MediaPlayer.allSamples;
-                const w = 3;
-                const length = width / w;
-
-                const mainColor = TikoSeit.theme.baseTheme.backgroundNormal
-
-                ctx.fillStyle = mainColor
-                ctx.strokeStyle = mainColor
-                //上半部分方形
-                for(let i=0; i<length && i<inList.length; i++){
-                    ctx.fillRect(i*(w + 3), height,
-                                w, -height/3 * inList[i])
-                }
-            }
-            Component.onCompleted: canvas.requestPaint()
         }
     }
 
@@ -176,7 +149,7 @@ Item{
         height: style.height
 
         //滚动歌词
-        ShowPageLrcList{
+        ListViewLrc {
             id: lrcShow
             y: rightShow.height * 0.1
             anchors.horizontalCenter: rightShow.horizontalCenter
@@ -192,21 +165,5 @@ Item{
         function onCppDrawLine(){
             canvas.requestPaint()
         }
-    }
-    Connections{
-        target:MediaPlayer.player
-        function onSourceChanged(){
-            loadPlaying()
-        }
-    }
-
-    Component.onCompleted: loadPlaying()
-    function loadPlaying() {
-        const json = DataActive.getMusicJson(MediaPlayer.playingMusicId);
-        artist.text = json.artist
-        title.text = json.title
-        cover.source = "image://cover/musicOnLine?id=" +
-                MediaPlayer.playingMusicId.toString() +
-                "&radius=10&highLight"
     }
 }

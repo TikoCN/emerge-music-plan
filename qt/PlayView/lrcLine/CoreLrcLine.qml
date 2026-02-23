@@ -4,9 +4,8 @@ import QtQuick.Effects
 import MediaerAPI
 import Tiko
 
-Item {
+Loader {
     id: coreLrcLine
-    height: loader.item ? loader.item.height : 0
 
     property color playingColor: "#ffffffff"
     property color normalColor: "#80ffffff"
@@ -19,7 +18,7 @@ Item {
     property var textList: []
     property var helpTextList: []
 
-    Component.onCompleted: {
+    onLrcIdChanged: {
         const json = MediaPlayer.getLrcJsonObject(lrcId);
         startList = BaseTool.typeConversion.stringToLongList(json.startList)
         endList = BaseTool.typeConversion.stringToLongList(json.endList)
@@ -27,17 +26,16 @@ Item {
         helpTextList = BaseTool.typeConversion.stringToStringList(json.helpTextList)
         startTime = Number(json.startTime)
         duration = Number(json.endTime - json.startTime)
-    }
-
-    Loader {
-        id: loader
-        anchors.fill: parent
-        sourceComponent: textList.length > 0 ? drawLrcLineCom : drawLoadLineCom
+        if (textList.length > 0) {
+            sourceComponent = drawLrcLineCom
+        } else {
+            sourceComponent = drawLoadLineCom
+        }
     }
 
     Component {
         id: drawLrcLineCom
-        DrawLrcLine {
+        LrcLineNormal {
             width: coreLrcLine.width
             id: drawLrcLine
             lrcId: coreLrcLine.lrcId
@@ -50,13 +48,29 @@ Item {
 
     Component {
         id: drawLoadLineCom
-        DrawLoadLine {
+        LrcLineLoad {
             width: coreLrcLine.width
             id: drawLoadLine
             lrcId: coreLrcLine.lrcId
             startTime: coreLrcLine.startTime
             duration: coreLrcLine.duration
         }
+    }
+
+    MouseArea{
+        id: mouseAreaItem
+        anchors.fill: parent
+        propagateComposedEvents: true
+        acceptedButtons: Qt.RightButton | Qt.LeftButton
+        hoverEnabled: true
+
+        onClicked: (mouse)=>{
+                       //跳转到当前时间
+                       if(mouse.button === Qt.LeftButton){
+                           MediaPlayer.turnToLrc(lrcId)
+                       }
+                       mouse.accepted = false
+                   }
     }
 }
 

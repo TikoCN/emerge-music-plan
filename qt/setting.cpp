@@ -1,24 +1,23 @@
 #include "setting.h"
 #include "mediaplay/mediaplayer.h"
+#include "baseclass/LiteralConstant.h"
 #include <QSettings>
 #include <QDir>
 #include <QScreen>
 
-void Setting::loadMusicCores(){
+void Setting::loadMusicCores() {
     emit loadMusics();
 }
 
 /*
 读取参数
 */
-bool Setting::getParameterList()
-{
+bool Setting::getParameterList() {
     //读取成功
-    if(!QFile::exists(m_iniUrl)){
+    if (!QFile::exists(m_iniUrl)) {
         return false;
     }
-    const MediaPlayer* player = MediaPlayer::getInstance();
-    auto *ini = new QSettings(m_iniUrl,QSettings::IniFormat);
+    auto *ini = new QSettings(m_iniUrl, QSettings::IniFormat);
     ini->beginGroup("seit");
 
     m_isLightTheme = ini->value(m_isLightThemeKey).toBool();
@@ -27,7 +26,7 @@ bool Setting::getParameterList()
     m_isGetCoverFromQQMusic = ini->value(m_isGetCoverFromQQMusicKey).toBool();
     m_isGetCoverFromBing = ini->value(m_isGetCoverFromBingKey).toBool();
     m_isGetCoverFromBaidu = ini->value(m_isGetCoverFromBaiduKey).toBool();
-    
+
     m_isGetLrcFromNetEase = ini->value(m_isGetLrcFromNetEaseKey).toBool();
     m_isGetLrcFromQQMusic = ini->value(m_isGetLrcFromQQMusicKey).toBool();
 
@@ -50,30 +49,30 @@ bool Setting::getParameterList()
     m_benchmarkFont.fromString(ini->value(m_benchmarkFontKey).toString());
 
     m_lrcTopPoint = ini->value(m_lrcTopPointKey).toPoint();
-
     m_windowRect = ini->value(m_windowRectKey).toRectF();
-    player->getAudioOutput()->setVolume(ini->value("volume").toFloat());
+
+    MediaPlayer *player = MediaPlayer::getInstance();
+    player->getAudioOutput()->setVolume(ini->value(LiteralConstant::VOLUME).toFloat());
+    player->setPlayingMusicListId(ini->value(LiteralConstant::PLAY_MUSIC_LIST_ID).toInt());
 
     ini->endGroup();
-    ini->sync();//写入磁盘
+    ini->sync(); //写入磁盘
     delete ini;
 
     //读取成功
     return true;
 }
 
-void Setting::removeUrl(const QString &url)
-{
-    if(const long long i = m_sourceList.indexOf(url); i >= 0){
+void Setting::removeUrl(const QString &url) {
+    if (const long long i = m_sourceList.indexOf(url); i >= 0) {
         m_sourceList.remove(i);
     }
 
     //todo emit Base::getInstance()->sendMessage(url + tr(" 路径移除成功，将在下次加载时生效"), 0);
 }
 
-void Setting::writeData() const
-{
-    const MediaPlayer* player = MediaPlayer::getInstance();
+void Setting::writeData() const {
+    const MediaPlayer *player = MediaPlayer::getInstance();
     auto *ini = new QSettings(m_iniUrl, QSettings::IniFormat);
     ini->beginGroup("seit");
 
@@ -105,58 +104,46 @@ void Setting::writeData() const
 
     ini->setValue(m_windowRectKey, m_windowRect);
 
-    ini->setValue("volume", player->getAudioOutput()->volume());
+    ini->setValue(LiteralConstant::PLAY_MUSIC_LIST_ID, player->getPlayingMusicListId());
+    ini->setValue(LiteralConstant::VOLUME, player->getAudioOutput()->volume());
 
     ini->endGroup();
-    ini->sync();//写入磁盘
+    ini->sync(); //写入磁盘
     delete ini;
 }
 
 Setting::Setting()
-    :m_iniUrl(QDir::currentPath() + "/data/setting.ini")
-{
-    if(!getParameterList()){
-        m_isLightTheme = true;
-        m_isOnLine = true;
-        m_isGetCoverFromNetEase = true;
-        m_isGetCoverFromQQMusic = true;
-        m_isGetCoverFromBing = true;
-        m_isGetCoverFromBaidu = true;
-        m_isGetLrcFromNetEase = true;
-        m_isGetLrcFromQQMusic = true;
+    : m_iniUrl(QDir::currentPath() + "/data/setting.ini") {
+    m_isLightTheme = true;
+    m_isOnLine = true;
+    m_isGetCoverFromNetEase = true;
+    m_isGetCoverFromQQMusic = true;
+    m_isGetCoverFromBing = true;
+    m_isGetCoverFromBaidu = true;
+    m_isGetLrcFromNetEase = true;
+    m_isGetLrcFromQQMusic = true;
 
-        m_maxThreadNumber = 10;
+    m_maxThreadNumber = 10;
 
-        // 颜色属性默认值
-        m_themeColor = Qt::red;
-        m_buttonBenchmarkColor = Qt::blue;
-        m_textBenchmarkColor = Qt::blue;
+    // 颜色属性默认值
+    m_themeColor = Qt::red;
+    m_buttonBenchmarkColor = Qt::blue;
+    m_textBenchmarkColor = Qt::blue;
 
-        // 歌词颜色默认值
-        m_lrcNormalColor = Qt::white;              // 常规颜色 - 白色
-        m_lrcPlayingColor = Qt::red;               // 播放颜色 - 红色
+    // 歌词颜色默认值
+    m_lrcNormalColor = Qt::white; // 常规颜色 - 白色
+    m_lrcPlayingColor = Qt::red; // 播放颜色 - 红色
 
-        // 字体属性默认值
-        m_lrcFont = QFont("Microsoft YaHei", 16, QFont::Normal);      // 歌词字体
-        m_deskLrcFont = QFont("Microsoft YaHei", 20, QFont::Bold);    // 桌面歌词字体
-        m_benchmarkFont = QFont("Microsoft YaHei", 13, QFont::Normal);
+    // 字体属性默认值
+    m_lrcFont = QFont("Microsoft YaHei", 16, QFont::Normal); // 歌词字体
+    m_deskLrcFont = QFont("Microsoft YaHei", 20, QFont::Bold); // 桌面歌词字体
+    m_benchmarkFont = QFont("Microsoft YaHei", 13, QFont::Normal);
 
-        const QRectF screen = QGuiApplication::primaryScreen()->geometry();
-        m_windowRect.setRect(screen.width() * 0.2, screen.height() * 0.2,
-                           screen.width() * 0.6, screen.height() * 0.6);
-        m_lrcTopPoint.setX(m_windowRect.x());
-        m_lrcTopPoint.setY(m_windowRect.y() + m_windowRect.height()/2);
+    const QRectF screen = QGuiApplication::primaryScreen()->geometry();
+    m_windowRect.setRect(screen.width() * 0.2, screen.height() * 0.2,
+                         screen.width() * 0.6, screen.height() * 0.6);
+    m_lrcTopPoint.setX(m_windowRect.x());
+    m_lrcTopPoint.setY(m_windowRect.y() + m_windowRect.height() / 2);
 
-        writeData();
-    }
-
-    const MediaPlayer* player = MediaPlayer::getInstance();
-    //额外读写数据
-    connect(player->getAudioOutput(), &QAudioOutput::volumeChanged, this, [=](const float volume){
-        setParameter("volume",volume);
-    });
-
-    connect(player->getPlayer(), &QMediaPlayer::playbackRateChanged, this, [=](const float rate){
-        setParameter("playRate",rate);
-    });
+    getParameterList();
 }

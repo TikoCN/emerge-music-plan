@@ -107,7 +107,7 @@ void TaskCenter::loadMedia()
 void TaskCenter::clearData()
 {
     m_dataList.clear();
-    m_albumLSet.clear();
+    m_albumSet.clear();
     m_artistSet.clear();
     m_playlistSet.clear();
     m_artistMusicList.clear();
@@ -140,15 +140,27 @@ void TaskCenter::appendMedia(QList<MediaData> dataList)
 {
     m_dataList.append(dataList);
     for (MediaData &i : dataList) {
-        MediaData *data = &i;
-        for (int j = 0; j < data->artistList.size(); ++j) {
-            m_artistSet.insert(data->artistList[j]);
+        const MediaData *data = &i;
+         static QRegularExpression rx("[,;]+");
+
+        const auto artistList = data->artist.split(rx);
+        for (const QString& artist : artistList) {
+            m_artistSet.insert(artist);
             QPair<QString, QString> pair;
             pair.first = data->url;
-            pair.second = data->artistList[j];
+            pair.second = artist;
             m_artistMusicList.append(pair);
         }
-        m_albumLSet.insert(data->album);
+        
+        const auto albumList = data->album.split(rx);
+        for (const QString& album : albumList) {
+            m_albumSet.insert(album);
+            QPair<QString, QString> pair;
+            pair.first = data->url;
+            pair.second = album;
+            m_albumMusicList.append(pair);
+        }
+
         m_playlistSet.insert(data->dir);
         m_dataList.append(*data);
         QPair<QString, QString> pair;
@@ -170,11 +182,12 @@ void TaskCenter::writeDataSQL()
 {
     SQLite *sql = SQLite::getInstance();
     sql->begin();
-    sql->appendAlbum(QStringList(m_albumLSet.begin(), m_albumLSet.end()));
+    sql->appendAlbum(QStringList(m_albumSet.begin(), m_albumSet.end()));
     sql->appendArtist(QStringList(m_artistSet.begin(), m_artistSet.end()));
     sql->appendDirPlayList(QStringList(m_playlistSet.begin(), m_playlistSet.end()));
     sql->appendMusic(m_dataList);
     sql->appendArtistMusic(m_artistMusicList);
+    sql->appendAlbumMusic(m_albumMusicList);
     sql->appendPlayListMusic(m_playlistMusicList);
     sql->commit();
 }

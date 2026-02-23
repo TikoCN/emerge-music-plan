@@ -24,6 +24,10 @@ QtObject {
     property color transparentTransition
     property color transparentEmphasize
 
+    property color transparentAntiNormal
+    property color transparentAntiTransition
+    property color transparentAntiEmphasize
+
     property color themeNormal
     property color themeTransition
     property color themeEmphasize
@@ -53,6 +57,11 @@ QtObject {
             transparentTransition = Qt.rgba(0, 0, 0, 0.02)
             transparentEmphasize = Qt.rgba(0, 0, 0, 0.1)
 
+            // anti透明层颜色
+            transparentAntiNormal = Qt.rgba(1, 1, 1, 0.2)
+            transparentAntiTransition = Qt.rgba(1, 1, 1, 0.1)
+            transparentAntiEmphasize = Qt.rgba(1, 1, 1, 0.5)
+
             // 前景色层次（从黑到中灰）
             foregroundNormal = Qt.rgba(0.0, 0.0, 0.0, 1.0)
             foregroundTransition = Qt.rgba(0.2, 0.2, 0.2, 1.0)
@@ -75,6 +84,11 @@ QtObject {
             transparentNormal = Qt.rgba(1, 1, 1, 0.05)
             transparentTransition = Qt.rgba(1, 1, 1, 0.02)
             transparentEmphasize = Qt.rgba(1, 1, 1, 0.1)
+
+            // anti透明层颜色
+            transparentAntiNormal = Qt.rgba(0, 0, 0, 0.05)
+            transparentAntiTransition = Qt.rgba(0, 0, 0, 0.02)
+            transparentAntiEmphasize = Qt.rgba(0, 0, 0, 0.1)
 
             // 前景色层次（从白到中灰白）
             foregroundNormal = Qt.rgba(1.0, 1.0, 1.0, 1.0)

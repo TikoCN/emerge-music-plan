@@ -22,20 +22,12 @@ MenuItem {
         color: "#00000000"
         opacity: root.enabled ? 1 : 0.4
 
-        Image {
+        TikoImage {
             id: icon
             height: parent.height
             width: parent.height
             anchors.verticalCenter: parent.verticalCenter
             source: root.icon.source
-            visible: false
-        }
-        MultiEffect {
-            id: iconShow
-            anchors.fill: icon
-            source: icon
-            colorization: useUnifiedColor ? 1 : 0
-            colorizationColor: unifiedColor
         }
         TikoTextLine{
             text: root.text

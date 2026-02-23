@@ -14,8 +14,8 @@ class DataManager : public QObject
     Q_OBJECT
 
 public:
-    SQLite *sql;
-    TLog *log;
+    SQLite *m_sql;
+    TLog *m_loger;
 
     enum CORE_TYPE {
         MUSIC,

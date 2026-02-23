@@ -3,20 +3,13 @@
 #include <QJsonObject>
 #include <utility>
 
-Artist::Artist(QString name, const int id, QString linekey)
-    : name(std::move(name))
-      , lineKey(std::move(linekey))
-      , duration(0)
-      , id(id)
-      , isNoCover(false) {
-}
-
 QJsonObject Artist::getJsonObject() const {
     QJsonObject json;
-    json.insert("artist", name);
+    json.insert("name", name);
     json.insert("artist_id", id);
     json.insert("duration", duration);
-    json.insert("musicList", TypeConversion::intListToString(musicList));
+    json.insert("musicCount", musicCount);
     json.insert("lineKey", lineKey);
+    json.insert("sort", static_cast<int>(sortType));
     return json;
 }

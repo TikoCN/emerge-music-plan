@@ -220,8 +220,21 @@ TikoFrameless{
     Component.onCompleted: {
         TikoSeit.buildTheme()
         load()
+        MediaPlayer.initData()
+
+        CoreData.windows = window
         CoreData.clearData.connect(clearData)
         CoreData.sendErrorMsg.connect(sendErroMsg)
+
+        CoreData.windowShowMin.connect(showMinimized)
+        CoreData.windowShowMax.connect(function () {
+            if (window.visibility === 4) {
+                window.showNormal()
+            } else {
+                window.showMaximized()
+            }
+        })
+        CoreData.windowClose.connect(close)
     }
 
     function load() {

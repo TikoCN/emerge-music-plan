@@ -22,6 +22,7 @@ Item {
             sourceSize.width: width
             sourceSize.height: height
             source: "qrc:/image/cover.png"
+            anchors.verticalCenter: parent.verticalCenter
 
             MouseArea {
                 anchors.fill: parent
@@ -38,6 +39,7 @@ Item {
             height: 30
             anchors.left: cover.right
             anchors.leftMargin: 10
+            anchors.top: cover.top
             text: qsTr("标题")
         }
 
@@ -62,7 +64,6 @@ Item {
             onClicked: loopSelect.open()
             Component.onCompleted: setLoopType(MediaPlayer.loopType)
 
-
             TikoPopup{
                 id: loopSelect
                 parent: loopButton
@@ -70,8 +71,8 @@ Item {
                 width: 140
                 height: 150
 
-                contentItem:  Column {
-                    spacing:  TikoSeit.normalMargins
+                contentItem: Column {
+                    spacing: TikoSeit.normalMargins
 
                     TikoButtonNormal {
                         id: loop0

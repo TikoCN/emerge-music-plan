@@ -13,7 +13,7 @@ Window{
     flags: Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint | Qt.Tool
     title: qsTr("桌面歌词")
     width: (Setting.deskLrcFont.pixelSize * 20 > 600 ? Setting.deskLrcFont.pixelSize * 20: 600) + 40
-    height: tool.height + playingLine.height + 30
+    height: deskLrcToolArea.height
 
     Component.onDestruction: {
         var mousePos = deskLrcToolArea.mapToGlobal(0, 0)
@@ -30,86 +30,116 @@ Window{
     MouseArea{
         id: deskLrcToolArea
         hoverEnabled: true
-        anchors.fill: parent
+        width: parent.width
+        height: tool.height + playingLine.height
         onPressed: deskLrcTool.startSystemMove()
 
-        RowLayout{
+        Item {
             id: tool
-            anchors.top: parent.top
-            anchors.topMargin: 10
-            anchors.horizontalCenter: parent.horizontalCenter
-            visible: deskLrcToolArea.containsMouse ? true : false
-            width: 400
-            height: 40
+            visible: deskLrcToolArea.containsMouse
+            width: parent.width
+            height: playBtn.height + TikoSeit.emphasizeMargins
 
             TikoButtonIcon{
+                id: mainBtn
                 icon.source: "qrc:/image/music.png"
                 onClicked: window.show()
+                anchors.right: fontDscBtn.left
+                anchors.top: parent.top
+                anchors.margins: TikoSeit.emphasizeMargins
                 //text: qsTr("显示主窗口")
             }
 
             TikoButtonIcon{
+                id: fontDscBtn
                 icon.source: "qrc:/image/size-.png"
-                onClicked: Setting.deskFont.pixelSize--
+                onClicked: Setting.deskLrcFont.pointSize--
+                anchors.right: backBtn.left
+                anchors.top: parent.top
+                anchors.margins: TikoSeit.emphasizeMargins
                 //text: qsTr("字体减小")
             }
 
             TikoButtonIcon{
+                id: backBtn
                 icon.source: "qrc:/image/leftArrow.png"
                 onClicked: MediaPlayer.player.position = MediaPlayer.player.position - 0.5 * 1000
+                anchors.right: upBtn.left
+                anchors.top: parent.top
+                anchors.margins: TikoSeit.emphasizeMargins
                 //text: qsTr("快退")
             }
 
             //播放上一首歌曲
             TikoButtonIcon{
+                id: upBtn
                 icon.source: "qrc:/image/up.png"
                 onClicked: MediaPlayer.playNext(-1)
+                anchors.right: playBtn.left
+                anchors.top: parent.top
+                anchors.margins: TikoSeit.emphasizeMargins
                 //text: qsTr("播放上一首歌曲")
             }
 
             //播放 暂停按钮
             TikoButtonIcon{
+                id: playBtn
                 icon.source: MediaPlayer.player.playing ? "qrc:/image/stop.png" : "qrc:/image/play.png"
                 onClicked: MediaPlayer.player.playing ? MediaPlayer.player.pause() : MediaPlayer.player.play()
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.top: parent.top
+                anchors.topMargin: TikoSeit.emphasizeMargins
                 //text: MediaPlayer.player.playing ? qsTr("暂停") : qsTr("播放")
             }
 
             //下一首
             TikoButtonIcon{
+                id: downBtn
                 icon.source: "qrc:/image/down.png"
                 onClicked: MediaPlayer.playNext(1)
+                anchors.left: playBtn.right
+                anchors.top: parent.top
+                anchors.margins: TikoSeit.emphasizeMargins
                 //text: qsTr("播放下一首歌曲")
             }
 
             TikoButtonIcon{
+                id: forwordBtn
                 icon.source: "qrc:/image/rightArrow.png"
                 onClicked: MediaPlayer.player.position = MediaPlayer.player.position + 0.5 * 1000
+                anchors.left: downBtn.right
+                anchors.top: parent.top
+                anchors.margins: TikoSeit.emphasizeMargins
                 //text: qsTr("快进")
             }
 
             TikoButtonIcon{
+                id: fontAscBtn
                 icon.source: "qrc:/image/size+.png"
-                onClicked: Setting.deskFont.pixelSize++
+                onClicked: Setting.deskLrcFont.pointSize++
+                anchors.left: forwordBtn.right
+                anchors.top: parent.top
+                anchors.margins: TikoSeit.emphasizeMargins
                 //text: qsTr("字体加大")
             }
 
             TikoButtonIcon{
+                id: lrcBtn
                 icon.source: "qrc:/image/close.png"
                 onClicked: deskLrcTool.destroy()
+                anchors.left: fontAscBtn.right
+                anchors.top: parent.top
+                anchors.margins: TikoSeit.emphasizeMargins
                 //text: qsTr("隐藏歌词")
             }
         }
 
-        DrawLrcFixHeight {
+        LrcLineDesk {
             id: playingLine
+            height: lrcFont.pixelSize * 1.5 + TikoSeit.emphasizeMargins * 2
             anchors.top: tool.bottom
-            anchors.topMargin: 10
+            anchors.margins: TikoSeit.emphasizeMargins
             anchors.horizontalCenter: parent.horizontalCenter
-            anchors.leftMargin: 20
-            width: Setting.deskLrcFont.pixelSize * 20
-            height: Setting.deskLrcFont.pixelSize * 3
-            fontFamily: Setting.deskLrcFont.family
-            fontPixelSize: Setting.deskLrcFont.pixelSize
         }
     }
 }

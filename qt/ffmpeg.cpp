@@ -750,7 +750,7 @@ bool FFmpeg::getDict(MediaData *data, const QString& url)
         else if (keyList[i].compare("artist", Qt::CaseInsensitive) == 0) {
             QString artist = valueList[i];
             if (artist == "" || artist.replace(" ", "") == "") artist = tr("未知歌手");
-            data->artistList = artist.split(";");
+            data->artist = artist;
         }
         else if (keyList[i].compare("album", Qt::CaseInsensitive) == 0) {
             QString album = valueList[i];

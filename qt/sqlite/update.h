@@ -11,6 +11,9 @@ class Update : public Append
 {
     Q_OBJECT
 public:
+
+    explicit Update(TLog * log) : Append(log) {};
+
     // 更新条目
     bool updateMusic(const MusicPtr &music);
     bool updateMusic(const QList<MusicPtr>& musicList);
@@ -19,6 +22,8 @@ public:
 
     bool updatePlayListMusic(int musicId, int playlistNewId, int playlistOldId);
     Q_INVOKABLE bool updatePlayListMusic(const QList<int>& musicIdList, int playlistNewId, int playlistOldId);
+    bool updatePlayingListMusic(int musicId, int position);
+    bool updatePlayingListMusic(const QList<int>& musicIdList, int start);
 
     bool updateArtist(const ArtistPtr& artist);
 
@@ -30,7 +35,6 @@ public:
     bool updateAlbumMusic(int musicId, int albumNewId, int albumOldId);
     Q_INVOKABLE bool updateAlbumMusic(const QList<int>& musicIdList, int albumNewId, int albumOldId);
 
-    explicit Update(TLog * log) : Append(log) {};
     bool updateAlbumNameKey(const QStringList& albumName, const QStringList& albumNameKey);
     bool updateArtistNameKey(const QStringList& artistName, const QStringList& artistNameKey);
 };

@@ -26,6 +26,18 @@ public:
     QList<QString> clearNullMusicItem();
     QList<QString> clearNullPlayListItem();
 
+    void createTableMusic();
+    void createTablePlayinglist();
+
+    void createTablePlayList();
+    void createTablePlayListMuisc();
+
+    void createTableArtist();
+    void createTableArtistMusic();
+
+    void createTableAlbum();
+    void createTableAlbumMusic();
+
 private:
     explicit SQLite(TLog *log);
     ~SQLite() override;

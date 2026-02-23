@@ -8,8 +8,8 @@ RecomGridButtonBase {
 
     delegateItem: GridButtonMusic {
         dataLoader.onLoadData: {
-            SQLData.getMusicRandList()
-            dataLoader.loadIsFinish = true
+            let list = SQLData.getMusicRandList()
+            appendList(list)
         }
     }
 }

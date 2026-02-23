@@ -20,7 +20,7 @@ CoreButtonBase {
 
     onAlbumIdChanged: {
         const json = DataActive.getAlbumJson(albumId);
-        name = json.album
+        name = json.name
         subtitle = BaseTool.typeConversion.timeToString(Number(json.duration))
         musicList = json.musicList
     }

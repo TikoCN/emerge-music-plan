@@ -9,7 +9,7 @@ RecomGridButtonBase {
     delegateItem: GridButtonAlbum {
         dataLoader.onLoadData: {
             let list = SQLData.getAlbumRandList()
-            dataLoader.loadIsFinish = true
+            appendList(list)
         }
     }
 }

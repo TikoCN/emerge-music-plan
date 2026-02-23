@@ -11,9 +11,9 @@ PageButtonBase {
     }
 
     delegateItem: GridButtonMusic {
-        dataLoader.loadEnable: true
         autoHeightEnable: false
         flow: GridView.LeftToRight
+
         dataLoader.onLoadData:(index) => {
                        let list = SQLData.getMusicByKey(currentKey, CoreData.pageSize, index)
                        list.forEach(id => {gridModel.append({id: id})})

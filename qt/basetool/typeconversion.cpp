@@ -78,7 +78,7 @@ QList<long long> TypeConversion::stringToLongList(const QString& str) {
 
 QList<QString> TypeConversion::stringToStringList(const QString &str)
 {
-    if(!str.contains("String:"))
+    if(!str.contains("String:") || str == "String:")
         return {};
     return str.split("String:")[1].split(";").toList();
 }

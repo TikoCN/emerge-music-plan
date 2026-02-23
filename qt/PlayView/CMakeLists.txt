@@ -33,10 +33,10 @@ qt_add_qml_module(PlayViewLib
         CoreData.qml
         AutoCoverImage.qml
         # 播放器页面相关
-        player/ShowPageLrcList.qml
         player/ShowPagePlayList.qml
         player/ShowPageAlbum.qml
         player/ShowPageArtist.qml
+        player/ShowPageBase.qml
         # 视图相关
         view/ViewBottomBar.qml
         view/ViewLeftBar.qml
@@ -67,17 +67,19 @@ qt_add_qml_module(PlayViewLib
         recommend/RecomGridButtonBase.qml
         recommend/PageRecommend.qml
         # 歌词行相关
-        lrcLine/DrawLrcLine.qml
-        lrcLine/DrawLoadLine.qml
+        lrcLine/LrcLineNormal.qml
+        lrcLine/LrcLineLoad.qml
         lrcLine/CoreLrcLine.qml
-        lrcLine/DrawLrcFixHeight.qml
+        lrcLine/LrcLineDesk.qml
+        lrcLine/LrcLineBase.qml
         # 输入弹窗相关
         inputPopup/InputArtistName.qml
         inputPopup/InputAlbumName.qml
         inputPopup/InputPlayListName.qml
         # 核心组件相关
         lineCell/CoreMusicLine.qml
-        lineList/MusicListView.qml
+        lineList/ListViewMusic.qml
+        lineList/ListViewLrc.qml
 
         seitPage/UpdateDataSeit.qml
         seitPage/SourceSeit.qml
@@ -101,9 +103,21 @@ qt_add_qml_module(PlayViewLib
         libraryPage/PageMusic.qml
         libraryPage/PageArtist.qml
         libraryPage/PageAlbum.qml
-        QML_FILES libraryPage/PageLibrary.qml
-        QML_FILES player/ShowPageBase.qml
-        QML_FILES LoadBase.qml
+        libraryPage/PageLibrary.qml
+
+        back/BackImage.qml
+        back/BackWater.qml
+
+        LoadBase.qml
+        QML_FILES AudioVisualizationRectangle/AudioVsualizationRect.qml
+        QML_FILES GeneralControls/PositionControl.qml
+        QML_FILES GeneralControls/WindowClose.qml
+        QML_FILES GeneralControls/WindowMax.qml
+        QML_FILES GeneralControls/WindowMin.qml
+        QML_FILES GeneralControls/PlayUp.qml
+        QML_FILES GeneralControls/PlayDown.qml
+        QML_FILES GeneralControls/PlayState.qml
+        QML_FILES AudioVisualizationRectangle/AudioVsualizationCircle.qml
 )
 
 # 链接 QtQuick 依赖（纯 QML 模块也需要显式链接）

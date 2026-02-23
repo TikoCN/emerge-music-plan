@@ -1,5 +1,6 @@
 import QtQuick
 import PlayView
+import MediaerAPI
 
 GridButtonBase {
     delegate: CoreButtonAlbum {
@@ -8,7 +9,8 @@ GridButtonBase {
         onHeightChanged: setGridHeight(this)
     }
 
-    function listToModel(list) {
+    function appendList(list) {
         list.forEach(id => {gridModel.append({id: id})})
+        if (list.length !== CoreData.pageSize) dataLoader.loadIsFinish = true
     }
 }

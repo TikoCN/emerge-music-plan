@@ -63,9 +63,9 @@ void ImageResponse::loadMusicCover(const bool isOnline)
 
 void ImageResponse::loadPlayListCover(const bool isOnline)
 {
-    if (const PlayListPtr playlist = data->getPlayListCore(m_loadId);
-        playlist != nullptr && !playlist->musicList.empty()) {
-        m_loadMusicId = playlist->musicList[0];
+    const PlayListPtr playlist = data->getPlayListCore(m_loadId);
+    if (playlist != nullptr) {
+        m_loadMusicId = playlist->firstMusic;
         loadMusicCover(isOnline);
     }
 }
@@ -145,8 +145,11 @@ bool ImageResponse::loadImageFile(const QString& url)
 }
 
 ImageResponse::ImageResponse(QString url, const QSize &requestedSize)
-    :m_url(std::move(url)), m_requestedSize(requestedSize)
+    :m_requestedSize(requestedSize)
 {
+    m_url = std::move(url) + QString("&width:%1&height:%2")
+    .arg(requestedSize.width())
+    .arg(requestedSize.height());
     setAutoDelete(false);
     ctr = ImageControl::getInstance();
     data = DataActive::getInstance();

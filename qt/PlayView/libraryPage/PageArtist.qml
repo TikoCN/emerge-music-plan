@@ -12,7 +12,6 @@ PageButtonBase {
     }
 
     delegateItem: GridButtonArtist{
-        dataLoader.loadEnable: true
         autoHeightEnable: false
         flow: GridView.LeftToRight
 

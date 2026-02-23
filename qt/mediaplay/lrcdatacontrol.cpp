@@ -1,15 +1,43 @@
 #include "lrcdatacontrol.h"
 #include <QJsonObject>
+#include <QTimer>
 
 /*
  * 加载歌词
  */
+void LrcDataControl::setPlayingPosition(long newPlayingPosition)
+{
+    if (m_playingPosition == newPlayingPosition)
+        return;
+    m_playingPosition = newPlayingPosition;
+    emit playingPositionChanged();
+}
+
 LrcDataControl::LrcDataControl(BaseTool *baseTool, DataActive *dataActive, TLog *log, QObject *parent)
     : MediaPlayData(baseTool, dataActive, log, parent)
       , m_playingLrcId(-1) {
+    connect(m_player, &QMediaPlayer::playingChanged, this, [=](const bool isPlaying) {
+        if (isPlaying) {
+            m_updateLrcTimer->start(20);
+        } else {
+            m_updateLrcTimer->stop();
+        }
+    });
+
     connect(m_player, &QMediaPlayer::positionChanged, this, [this](const qint64 time) {
+        m_startTime = QDateTime::currentMSecsSinceEpoch();
         selectPlayLrc(time);
     });
+
+    m_updateLrcTimer = new QTimer(this);
+    connect(m_updateLrcTimer, &QTimer::timeout, this, [=]() {
+        m_playingPosition = QDateTime::currentMSecsSinceEpoch() - m_startTime + m_player->position();
+        emit lrcUpdate();
+    });
+}
+
+LrcDataControl::~LrcDataControl() {
+    delete m_updateLrcTimer;
 }
 
 void LrcDataControl::loadLrcList(const int musicId) {
@@ -32,11 +60,19 @@ void LrcDataControl::selectPlayLrc(const qint64 time) {
         for (int i = 0; i < m_lrcList.size(); i++) {
             if (m_lrcList[i]->startTime <= time && m_lrcList[i]->endTime >= time) {
                 m_playingLrcId = i;
-                emit playingLrcIdChange(i);
+                emit playingLrcIdChanged(i);
                 break;
             }
         }
     }
+}
+
+long LrcDataControl::getPlayingPosition() const {
+    return m_playingPosition;
+}
+
+int LrcDataControl::getPlayingLrcId() const {
+    return m_playingLrcId;
 }
 
 void LrcDataControl::turnToLrc(const int lrcId) {

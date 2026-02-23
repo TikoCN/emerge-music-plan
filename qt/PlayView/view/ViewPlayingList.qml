@@ -10,6 +10,7 @@ Drawer {
     modal: false
 
     Rectangle{
+        id: background
         color: TikoSeit.theme.baseTheme.backgroundNormal
         anchors.fill: parent
     }
@@ -29,26 +30,20 @@ Drawer {
         }
     }
 
-    ListView{
+    ListViewMusic {
         id: musicList
-        width: parent.width - 20
-        height: parent.height - playingPlayListText.height - 50
+        anchors.bottom: background.bottom
         anchors.top: playingPlayListText.bottom
-        anchors.topMargin: 10
-        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.right: background.right
+        anchors.left: background.left
+        anchors.margins: TikoSeit.emphasizeMargins
         clip: true
-
-        model: ListModel{
-            id: musicModel
-        }
-
-        delegate: CoreMusicLine{
-            width: musicList.width - 20
-            onPlayMusic: MediaPlayer.playMusicByListId(listId)
-            listId: musicListId
-            musicId: MediaPlayer.musicList[musicListId]
-            isLittle: true
-        }
+        isLittle: true
+        onPlay: (musicId, listId) => {MediaPlayer.playMusicByListId(listId)}
+        dataLoader.onLoadData: (index) => {
+                                   let list = MediaPlayer.getMusicList(CoreData.pageSize, index)
+                                   appendList(list)
+                               }
     }
 
     //关联
@@ -58,31 +53,11 @@ Drawer {
         function onMusicListBuild(){
             buildMusicLine()
         }
-
-        function onMusicListAppend(start, length){
-            appendMusic(start, length)
-        }
-
-        function onClearData(){
-            clearData()
-        }
     }
 
     //建立播放列表
     function buildMusicLine(){
-        musicModel.clear()
-
-        appendMusic(0, MediaPlayer.musicList.length)
-    }
-
-    //插入新条目 musicId 音乐的列表id
-    function appendMusic(start, length){
-        for (var i = start; i<length; i++) {
-            musicModel.append({musicListId: i})
-        }
-    }
-
-    function clearData(){
-        musicModel.clear()
+        musicList.reset()
+        musicList.dataLoader.loadMore()
     }
 }

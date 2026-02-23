@@ -10,10 +10,14 @@ Item {
     id: playerPlayList
     property int sort: -1
     property int duration: -1
-    property int length: 0
+    property int musicCount: 0
     property string name: ""
     property string search: ""
-    property alias musicList: musicListView
+    property string loadIcon: ""
+    property string normalIcon: ""
+    property ListViewMusic musicList: musicListView
+
+    signal createMenu()
 
     Item{
         id: showView
@@ -25,24 +29,20 @@ Item {
             id: playlistCover
             anchors.left: parent.left
             anchors.leftMargin: 10
-            normalUrl: "qrc:/image/default.png"
-            loadUrl: "image://cover/playlistFile?id=" +
-                     playlistId.toString() +
-                     "&radius=10"
+            normalUrl: normalIcon
+            loadUrl: loadIcon
             width: 200
             height: 200
-            extraLoadFlag: playlistId !== -1
         }
 
         //列表名字
-        TikoTextLine{
+        TikoTextTitle{
             id: playlistName
             anchors.left: playlistCover.right
             anchors.leftMargin: 10
             anchors.top: playlistCover.top
             text: name
             width: parent.width - playlistCover.width
-            font.bold: true
         }
 
         // 列表信息
@@ -52,7 +52,7 @@ Item {
             anchors.top: playlistName.bottom
             anchors.topMargin: 10
             width: parent.width - playlistCover.width
-            text: qsTr("包含 %1 首歌曲，时长为：%2").arg(length, BaseTool.typeConversion.durationToTimeStringNoMax(duration))
+            text: qsTr("包含 %1 首歌曲，时长为：%2").arg(musicCount).arg(BaseTool.typeConversion.durationToTimeStringNoMax(duration))
         }
 
         //播放列表
@@ -85,9 +85,11 @@ Item {
             //显示所有歌曲列表
             TikoButtonNormal{
                 Layout.minimumWidth: 70
-                textLine.text: qsTr("歌曲") + musicList.length.toString()
+                textLine.text: qsTr("歌曲") + musicCount.toString()
                 icon.source: "qrc:/image/music.png"
-                onLeftClicked: {}
+                onLeftClicked: {
+                    musicListView.reset()
+                }
             }
 
             //显示喜爱歌曲列表
@@ -95,7 +97,10 @@ Item {
                 Layout.minimumWidth: 70
                 textLine.text: qsTr("喜爱")
                 icon.source: "qrc:/image/love.png"
-                onLeftClicked: {}
+                onLeftClicked: {
+                    musicListView.onlyLove = !musicListView.onlyLove
+                    musicListView.reset()
+                }
             }
 
             //排序
@@ -182,13 +187,13 @@ Item {
         }
     }
 
-    MusicListView{
+    ListViewMusic{
         id: musicListView
-        width: playerPlayList.width - 40
-        height: playerPlayList.height - showView.height - 20
         anchors.top: showView.bottom
-        anchors.topMargin: 20
+        anchors.bottom: playerPlayList.bottom
         anchors.left: playerPlayList.left
-        anchors.leftMargin: 5
+        anchors.right: playerPlayList.right
+        anchors.margins: TikoSeit.emphasizeMargins
+        dataLoader.loadEnable: true
     }
 }

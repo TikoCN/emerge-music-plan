@@ -21,10 +21,10 @@ Item{
         TikoButtonCombox{
             width: 150
             data: ["0.1", "0.3", "0.5", "1", "2", "3"]
-            show: 3
+            currentIndex: 3
             helpText: qsTr("播放速度：")
-            onShowTextChanged: {
-                var rate = Number(showText)
+            onCurrentIndexChanged: {
+                var rate = Number(currentText)
                 MediaPlayer.player.setPlaybackRate(rate)
             }
         }
@@ -33,12 +33,12 @@ Item{
             width: 150
             data: [qsTr("逐字模式"), qsTr("逐词模式")]
             helpText: qsTr("工作模式：")
-            onShowChanged: editLrcPage.mode = show
+            onCurrentIndexChanged: editLrcPage.mode = show
         }
 
         TikoButtonNormal {
             width: 150
-            text: qsTr("HLRC模式")
+            textLine.text: qsTr("HLRC模式")
             onClicked: hlrcMode.visible = !hlrcMode.visible
         }
 
@@ -51,35 +51,35 @@ Item{
             TikoButtonNormal{
                 width: 150
                 icon.source: "qrc:/image/lineStart.png"
-                text: qsTr("行开始") + " : " + editLrcPage.lineStart.toString()
+                textLine.text: qsTr("行开始") + " : " + editLrcPage.lineStart.toString()
                 onClicked: editLrcPage.lineStart = MediaPlayer.player.position
             }
 
             TikoButtonNormal{
                 width: 150
                 icon.source: "qrc:/image/lineEnd.png"
-                text: qsTr("行结束")
+                textLine.text: qsTr("行结束")
                 onClicked: editLrcPage.hlrcInsertLineTime()
             }
 
             TikoButtonNormal{
                 width: 150
                 icon.source: "qrc:/image/wordStart.png"
-                text: qsTr("词开始") + " : " + editLrcPage.wordStart.toString()
+                textLine.text: qsTr("词开始") + " : " + editLrcPage.wordStart.toString()
                 onClicked: editLrcPage.wordStart = MediaPlayer.player.position
             }
 
             TikoButtonNormal{
                 width: 150
                 icon.source: "qrc:/image/wordEnd.png"
-                text: qsTr("词结束")
+                textLine.text: qsTr("词结束")
                 onClicked: editLrcPage.hlrcInsertWordTime()
             }
 
             TikoButtonNormal{
                 width: 150
                 icon.source: "qrc:/image/wordEnd.png"
-                text: qsTr("连续词结束")
+                textLine.text: qsTr("连续词结束")
                 onClicked: {
                     editLrcPage.wordStart = MediaPlayer.player.position
                     editLrcPage.hlrcInsertWordTime()
@@ -89,14 +89,14 @@ Item{
             TikoButtonNormal{
                 width: 150
                 icon.source: "qrc:/image/yes.png"
-                text: qsTr("保存.hlrc")
+                textLine.text: qsTr("保存.hlrc")
                 onClicked: BaseTool.fileManagement.writeFileText(editLrcPage.getBaseUrl + ".hlrc", lrcShow.text)
             }
         }
 
         TikoButtonNormal {
             width: 150
-            text: qsTr("LRC模式")
+            textLine.text: qsTr("LRC模式")
             onClicked: lrcMode.visible = !lrcMode.visible
         }
 
@@ -109,7 +109,7 @@ Item{
             TikoButtonNormal{
                 width: 150
                 icon.source:"qrc:/image/lineReplaceTime.png"
-                text:qsTr("修正时间戳")
+                textLine.text:qsTr("修正时间戳")
                 onClicked: {
                     editLrcPage.timeWork(0)
                     editLrcPage.cursorNext()
@@ -119,21 +119,21 @@ Item{
             TikoButtonNormal{
                 width: 150
                 icon.source: "qrc:/image/lineAddTime.png"
-                text: qsTr("添加时间戳")
+                textLine.text: qsTr("添加时间戳")
                 onClicked: editLrcPage.timeWork(1)
             }
 
             TikoButtonNormal{
                 width: 150
                 icon.source: "qrc:/image/lineDeleteTime.png"
-                text: qsTr("删除时间戳")
+                textLine.text: qsTr("删除时间戳")
                 onClicked: editLrcPage.timeWork(2)
             }
 
             TikoButtonNormal{
                 width: 150
                 icon.source: "qrc:/image/yes.png"
-                text: qsTr("保存.lrc")
+                textLine.text: qsTr("保存.lrc")
                 onClicked: BaseTool.fileManagement.wrtiLrcData(musicId, lrcShow.text)
             }
         }

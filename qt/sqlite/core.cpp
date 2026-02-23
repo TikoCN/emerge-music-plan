@@ -84,7 +84,7 @@ void Core::stmtFree(sqlite3_stmt *stmt)
     }
 }
 
-void Core::sqlExec(const char *sql, sqlite3_callback back, void *data)
+void Core::sqlExecuteCallBack(const char *sql, const sqlite3_callback back, void *data)
 {
     m_r = sqlite3_exec(m_db, sql, back, data, &m_error);
     if (m_r != SQLITE_OK) {
@@ -92,6 +92,11 @@ void Core::sqlExec(const char *sql, sqlite3_callback back, void *data)
         throwError(error);
     }
 
+}
+
+void Core::sqlExecute(const char *sql, QString error) {
+    m_r = sqlite3_exec(m_db, sql, nullptr, nullptr, &m_error);
+    if (m_r != SQLITE_OK) throwError(error);
 }
 
 Core::Core(TLog *log)

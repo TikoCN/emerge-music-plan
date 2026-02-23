@@ -13,6 +13,7 @@ QtObject {
 
     // 字体颜色相关
     property TikoTheme theme: TikoTheme{}
+    property TikoTheme antiTheme: TikoTheme{}
 
     // 字体管理
     property font benchmarkFont: Setting.benchmarkFont
@@ -22,6 +23,10 @@ QtObject {
         theme.setDynamicColor(themeColor, isLightTheme)
         theme.textTheme.setColor(isLightTheme)
         theme.baseTheme.setColor(themeColor, isLightTheme)
+
+        antiTheme.setDynamicColor(themeColor, !isLightTheme)
+        antiTheme.textTheme.setColor(!isLightTheme)
+        antiTheme.baseTheme.setColor(themeColor, !isLightTheme)
     }
 
     // 基于WCAG相对亮度计算
@@ -46,11 +51,4 @@ QtObject {
     property int normalMargins: 10
     property int emphasizeMargins: 20
     property int normalLineHeight: theme.textTheme.normalFont.pointSize * 1.3 + 2 * normalMargins
-
-    // 歌词相关
-    property color lrcNormalColor: Setting.lrcNormalColor
-    property color lrcPlayingColor: Setting.lrcPlayingColor
-
-    property font lrcFont: Setting.lrcFont
-    property font deskLrcFont: Setting.deskLrcFont
 }

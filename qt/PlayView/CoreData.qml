@@ -9,6 +9,7 @@ QtObject {
     property var playlist: []
 
     property int pageSize: 100
+    property TikoFrameless windows
 
     signal mainTurnMusicList(int page)
     signal mainTurnSeit()
@@ -19,6 +20,12 @@ QtObject {
     signal sendMsg(string msg, int type)
     signal clearData()
     signal sendErrorMsg(string msg)
+
+    signal windowShowMin()
+    signal windowShowMax()
+    signal windowClose()
+
+    signal autoUpdateUI()
 
     function editMusic(parent, musicId){
         var component = Qt.createComponent("toolEditMusicPage/ToolEditMusic.qml")
@@ -31,5 +38,12 @@ QtObject {
         else {
             console.log(component.errorString())
         }
+    }
+
+    property Timer internalTimer: Timer {
+        interval: 20
+        running: true
+        repeat: true
+        onTriggered: autoUpdateUI()
     }
 }

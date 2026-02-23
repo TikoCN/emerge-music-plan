@@ -9,21 +9,19 @@ using MusicPtr = QSharedPointer<class Music>;
 
 class Music {
 public:
-    QString title;
-    QStringList artistList;
-    QString url;
-    QString album;
-    QString lastEdit;
-    long long duration{};
-    long long lastEditTime{};
-    long long insetTime{};
-    int id{};
-    int level;
-    int playNumber;
-    int albumId{};
-    bool isLove;
-
-    Music();
+    QString title = QObject::tr("未知标题");
+    QString artist = {QObject::tr("未知歌手")};
+    QString album = {QObject::tr("未知专辑")};
+    QString url = "";
+    QString lastEdit = "";
+    QString nameKey = "";
+    long long duration = 0;
+    long long lastEditTime = 0;
+    long long insetTime = 0;
+    int id = -1;
+    int level = 0;
+    int playNumber = 0;
+    bool isLove = false;
 
     // 读取元数据
     void setMedia(const MediaData &data);
@@ -45,8 +43,6 @@ public:
 
     //格式转换
     void setSuffix(const QString &type) const;
-
-    [[nodiscard]] QString getArtist() const;
 
     [[nodiscard]] QJsonObject getJsonObject() const;
 };

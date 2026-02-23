@@ -4,7 +4,7 @@ QtObject {
     property int loadPos: 0                 // 当前已加载位置
     property bool loadingMore: false       // 是否正在加载
 
-    property bool loadEnable: false
+    property bool loadEnable: true
     property bool loadIsFinish: false
 
     signal loadData(int index)
@@ -23,5 +23,11 @@ QtObject {
 
     function reset() {
         loadPos = 0
+        loadIsFinish = false
+    }
+
+    function resetData() {
+        reset()
+        loadMore()
     }
 }

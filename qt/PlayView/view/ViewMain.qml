@@ -20,104 +20,58 @@ Item {
         topRightRadius: 10
     }
 
-    TikoButtonIcon{
+    TikoButtonIconLittle {
         id: closeButton
         anchors.right: parent.right
         anchors.top: parent.top
         anchors.margins: TikoSeit.normalMargins
         icon.source: "qrc:/image/close.png"
-        onClicked: window.close()
+        onClicked: CoreData.windowClose()
         //qsTr("关闭")
     }
 
-    TikoButtonIcon{
+    TikoButtonIconLittle {
         id: maxButton
         anchors.right: closeButton.left
         anchors.top: closeButton.top
         anchors.rightMargin: TikoSeit.normalMargins
-        icon.source: window.visibility === 4 ? "qrc:/image/normal.png" : "qrc:/image/max.png"
+        icon.source: CoreData.windows.visibility === 4 ? "qrc:/image/normal.png" : "qrc:/image/max.png"
         //qsTr("最大化")
-        onClicked: window.visibility === 4 ? window.showNormal() : window.showMaximized()
+        onClicked: CoreData.windowShowMax()
     }
 
-    TikoButtonIcon{
+    TikoButtonIconLittle {
         id: minButton
         anchors.top: closeButton.top
         anchors.right: maxButton.left
         anchors.rightMargin: TikoSeit.normalMargins
         icon.source: "qrc:/image/min.png"
-        onClicked: window.showMinimized()
+        onClicked: CoreData.windowShowMin()
         //qsTr("最小化")
     }
 
-    StackView{
+    StackView {
         id: stackView
         anchors.top: closeButton.bottom
         width: parent.width
         height: parent.height - closeButton.height
         initialItem: seitPage
+        clip: true
         z: -1
     }
 
-    PageSeit {
-        id: seitPage
-        visible: false
-    }
-
-    PageLibrary {
-        id: libraryPage
-        visible: false
-    }
-
-    PageRecommend {
-        id: mainPage
-        visible: false
-    }
-
-    ShowPageAlbum {
-        id: albumPlayer
-        visible: false
-    }
-
-    ShowPageArtist {
-        id: artistPlayer
-        visible: false
-    }
-
-    Component{
-        id: playlistListCom
-        ShowPagePlayList {
-            visible: false
-        }
-    }
+    PageSeit {id: seitPage; visible: false}
+    PageLibrary {id: libraryPage; visible: false}
+    PageRecommend {id: recommendPage; visible: false}
+    ShowPageAlbum {id: albumPlayer; visible: false}
+    ShowPageArtist {id: artistPlayer; visible: false}
+    ShowPagePlayList {id: playlistPlayer; visible: false }
 
     //切换到列表
     function turnToMusicList(page){
-
-        var list = null
-        for (var i=0;i<playList.length;i++) {
-            if (playList[i].playlistId === page)
-                list = playList[i]
-        }
-
-        if (list === null) {
-            if (playlistListCom.status === Component.Ready) {
-                list = playlistListCom.createObject(mainView)
-                list.setPlayListId(page)
-            }
-
-            if (playList.length >= 3) {
-                var newList = []
-                for (i=1;i<playList.length;i++) {
-                    newList.push(playList[i])
-                }
-                playList = newList
-                playList.push(list)
-            }
-        }
-
-        if(stackView.currentItem !== list){
-            stackView.replace(list)
+        playlistPlayer.setPlayListId(page)
+        if(stackView.currentItem != playlistPlayer){
+            stackView.replace(playlistPlayer)
         }
     }
 
@@ -149,12 +103,12 @@ Item {
     }
 
     function buildData(){
-        mainPage.buildRand()
+        recommendPage.buildRand()
     }
 
     function turnToMain(){
-        if(stackView.currentItem != mainPage){
-            stackView.replace(mainPage)
+        if(stackView.currentItem != recommendPage){
+            stackView.replace(recommendPage)
         }
     }
 

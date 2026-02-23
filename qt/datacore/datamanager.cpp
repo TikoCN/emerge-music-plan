@@ -6,23 +6,23 @@
 
 DataManager::DataManager()
 {
-    sql = SQLite::getInstance();
-    log = TLog::getInstance();
+    m_sql = SQLite::getInstance();
+    m_loger = TLog::getInstance();
 }
 
 AlbumPtr DataManager::getAlbumCore(const int id)
 {
     m_albumMutex.lock();
 
-    log->logInfo(QString("获得 Album %1").arg(id));
-
     AlbumPtr album = nullptr;
     if (m_albumHash.contains(id)) {
         album = m_albumHash.value(id);
     } else {
-        album = sql->getAlbum(id);
+        album = m_sql->getAlbum(id);
         if (album != nullptr) {
             m_albumHash.insert(id, album);
+        } else {
+            m_loger->logError(QString("获取 %1 AlbumCorePtr失败").arg(id));
         }
     }
 
@@ -42,15 +42,16 @@ QJsonObject DataManager::getAlbumJson(const int id)
 ArtistPtr DataManager::getArtistCore(const int id)
 {
     m_artistMutex.lock();
-    log->logInfo(QString("获得 Artist %1").arg(id));
 
     ArtistPtr artist = nullptr;
     if (m_artistHash.contains(id)) {
         artist = m_artistHash.value(id);
     } else {
-        artist = sql->getArtist(id);
+        artist = m_sql->getArtist(id);
         if (artist != nullptr) {
             m_artistHash.insert(id, artist);
+        } else {
+            m_loger->logError(QString("获取 %1 ArtistCorePtr失败").arg(id));
         }
     }
 
@@ -70,15 +71,16 @@ QJsonObject DataManager::getArtistJson(const int id)
 MusicPtr DataManager::getMusicCore(const int id)
 {
     m_musicMutex.lock();
-    log->logInfo(QString("获得 Music %1").arg(id));
 
     MusicPtr music = nullptr;
     if (m_musicHash.contains(id)) {
         music = m_musicHash.value(id);
     } else {
-        music = sql->getMusic(id);
+        music = m_sql->getMusic(id);
         if (music != nullptr) {
             m_musicHash.insert(id, music);
+        } else {
+            m_loger->logError(QString("获取 %1 MusicCorePtr失败").arg(id));
         }
     }
 
@@ -89,7 +91,7 @@ MusicPtr DataManager::getMusicCore(const int id)
 
 QList<MusicPtr> DataManager::getMusicCoreList(const QList<int>& idList)
 {
-    log->logInfo(QString("获得 Music %1").arg(idList.size()));
+    m_loger->logInfo(QString("获得 Music %1").arg(idList.size()));
 
     QList<MusicPtr> musicList;
     QList<int> newIdList;
@@ -109,6 +111,11 @@ QList<MusicPtr> DataManager::getMusicCoreList(const QList<int>& idList)
 QJsonObject DataManager::getMusicJson(const int id)
 {
     const MusicPtr music = getMusicCore(id);
+    if (music == nullptr) {
+        m_loger->logError("获取MusicCore失败");
+        return {};
+    };
+
     QJsonObject json = music->getJsonObject();
     return json;
 }
@@ -116,15 +123,16 @@ QJsonObject DataManager::getMusicJson(const int id)
 PlayListPtr DataManager::getPlayListCore(const int id)
 {
     m_playlistMutex.lock();
-    log->logInfo(QString("获得 PlayList %1").arg(id));
 
     PlayListPtr playlist = nullptr;
     if (m_playlistHash.contains(id)) {
         playlist = m_playlistHash.value(id);
     } else {
-        playlist = sql->getList(id);
+        playlist = m_sql->getList(id);
         if (playlist != nullptr) {
             m_playlistHash.insert(id, playlist);
+        } else {
+            m_loger->logError(QString("获取 %1 PlayCorePtr失败").arg(id));
         }
     }
 
@@ -143,7 +151,7 @@ QJsonObject DataManager::getPlayListJson(const int id)
 void DataManager::releaseAlbum(const int id)
 {
     m_albumMutex.lock();
-    log->logError(tr("执行释放") +
+    m_loger->logError(tr("执行释放") +
                                   tr("专辑ID:%1").arg(id));
     m_albumHash.remove(id);
     m_albumMutex.unlock();
@@ -152,8 +160,7 @@ void DataManager::releaseAlbum(const int id)
 void DataManager::releaseArtist(const int id)
 {
     m_artistMutex.lock();
-    log->logError(tr("执行释放") +
-                                  tr("歌手ID:%1").arg(id));
+    m_loger->logInfo(tr("执行释放") + tr("歌手ID:%1").arg(id));
     m_artistHash.remove(id);
     m_artistMutex.unlock();
 }
@@ -161,8 +168,7 @@ void DataManager::releaseArtist(const int id)
 void DataManager::releaseMusic(const int id)
 {
     m_musicMutex.lock();
-    log->logError(tr("执行释放") +
-                                  tr("歌曲ID:%1").arg(id));
+    m_loger->logInfo(tr("执行释放") + tr("歌曲ID:%1").arg(id));
     m_musicHash.remove(id);
     m_musicMutex.unlock();
 }
@@ -170,8 +176,7 @@ void DataManager::releaseMusic(const int id)
 void DataManager::releasePlayList(const int id)
 {
     m_playlistMutex.lock();
-    log->logError(tr("执行释放") +
-                                  tr("播放列表ID:%1").arg(id));
+    m_loger->logInfo(tr("执行释放") + tr("播放列表ID:%1").arg(id));
     m_playlistHash.remove(id);
     m_playlistMutex.unlock();
 }

@@ -17,7 +17,7 @@ TikoButtonBase {
 
     TikoDynamicIcon {
         id: iconItem
-        anchors.fill: parent
+        anchors.centerIn: parent
         dynamicState: iconButton.dynamicState
     }
 

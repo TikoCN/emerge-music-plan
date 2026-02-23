@@ -39,7 +39,7 @@ void ImageControl::writeUrlNullFlag(const QString& url, const bool flag)
     }
 
     if (m_urlNullList.size() > MAX_HASH_SIZE) {
-        QString deleteUrl = m_urlNullList.takeFirst();
+        const QString deleteUrl = m_urlNullList.takeFirst();
         m_urlNullHash.remove(deleteUrl);
     }
 }

@@ -17,9 +17,10 @@ private:
     QFileInfoList m_fileInfoList;
     QList<MediaData> m_dataList;
     QSet<QString> m_artistSet;
-    QSet<QString> m_albumLSet;
+    QSet<QString> m_albumSet;
     QSet<QString> m_playlistSet;
     QList<QPair<QString, QString>> m_artistMusicList;
+    QList<QPair<QString, QString>> m_albumMusicList;
     QList<QPair<QString, QString>> m_playlistMusicList;
 
     QThreadPool *m_pool;
