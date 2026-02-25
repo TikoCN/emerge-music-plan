@@ -14,7 +14,7 @@ CoreButtonBase {
     loadIcon: "image://cover/musicFile?id=" +
               musicId.toString() +
               "&radius=10"
-    normalIcon: "qrc:/image/exe.png"
+    normalIcon: "qrc:/image/music.png"
 
     onMenu: createMenu(this)
     onPage: playMusic()

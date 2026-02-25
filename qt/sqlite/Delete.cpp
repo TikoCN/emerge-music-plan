@@ -3,7 +3,7 @@
 //
 
 #include "delete.h"
-#include "baseclass/dataexception.h"
+#include "baseclass/DataException.h"
 
 /*
  * @brief 删除"正在播放列表"中 position 的大于 position 的 musicId

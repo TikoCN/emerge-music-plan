@@ -1,6 +1,5 @@
 <RCC>
     <qresource prefix="/">
-        <file>image/default.png</file>
         <file>image/album.png</file>
         <file>image/more.png</file>
         <file>image/unInt.png</file>
@@ -21,7 +20,6 @@
         <file>image/editLrc.png</file>
         <file>image/asc.png</file>
         <file>image/desc.png</file>
-        <file>image/else.png</file>
         <file>image/size-.png</file>
         <file>image/size+.png</file>
         <file>image/min.png</file>
@@ -34,8 +32,6 @@
         <file>image/music.png</file>
         <file>image/rename.png</file>
         <file>image/copy.png</file>
-        <file>image/cover.png</file>
-        <file>image/exe.png</file>
         <file>image/dir.png</file>
         <file>image/play.png</file>
         <file>image/stop.png</file>
@@ -47,7 +43,6 @@
         <file>image/loop0.png</file>
         <file>image/seit.png</file>
         <file>image/back.png</file>
-        <file>image/main.png</file>
         <file>image/loop2.png</file>
         <file>image/lock.png</file>
         <file>image/unlock.png</file>
@@ -55,5 +50,10 @@
         <file>image/move.png</file>
         <file>image/italic.png</file>
         <file>image/value.png</file>
+        <file>image/home.png</file>
+        <file>image/style.png</file>
+        <file>image/load.png</file>
+        <file>image/loop3.png</file>
+        <file>image/cover.png</file>
     </qresource>
 </RCC>

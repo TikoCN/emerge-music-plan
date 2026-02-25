@@ -15,10 +15,6 @@ qt_standard_project_setup(REQUIRES 6.8)
 
 qt_add_executable(appmusicPlay
     main.cpp
-        sqlite/Delete.cpp
-        sqlite/Delete.h
-        baseclass/LiteralConstant.cpp
-        baseclass/LiteralConstant.h
 )
 
 qt_policy(SET QTP0004 NEW)
@@ -30,42 +26,46 @@ qt_add_qml_module(appmusicPlay
         VERSION 1.0
         SOURCES
         baseclass/SortType.h
-        setting.h setting.cpp
-        online.h online.cpp
-        ffmpeg.h ffmpeg.cpp
-        sqlite/sqlite.h sqlite/sqlite.cpp
-        sqlite/append.h sqlite/append.cpp
-        sqlite/update.h sqlite/update.cpp
-        sqlite/get.h sqlite/get.cpp
-        sqlite/core.h sqlite/core.cpp
-        baseclass/album.h baseclass/album.cpp
-        baseclass/lrcdata.h baseclass/lrcdata.cpp
-        baseclass/music.h baseclass/music.cpp
-        baseclass/playlist.h baseclass/playlist.cpp
-        baseclass/artist.h baseclass/artist.cpp
-        baseclass/mediadata.h
-        load/taskcenter.h load/taskcenter.cpp
-        load/selectmusicurl.h load/selectmusicurl.cpp
-        load/buildmusiccore.h load/buildmusiccore.cpp
-        tlog.h tlog.cpp
-        namekey.h namekey.cpp
-        basetool/filemanagement.h basetool/filemanagement.cpp
-        imageload/imagecontrol.h imageload/imagecontrol.cpp
-        imageload/imageprovider.h imageload/imageprovider.cpp
-        datacore/datamanager.h datacore/datamanager.cpp
-        datacore/dataactive.h datacore/dataactive.cpp
-        basetool/typeconversion.h basetool/typeconversion.cpp
-        basetool/basetool.h basetool/basetool.cpp
-        basetool/qmlactive.h basetool/qmlactive.cpp
-        mediaplay/mediaplaydata.h mediaplay/mediaplaydata.cpp
-        mediaplay/lrcdatacontrol.h mediaplay/lrcdatacontrol.cpp
-        mediaplay/mediaplayer.h mediaplay/mediaplayer.cpp
-        baseclass/dataexception.h
+        Setting.h Setting.cpp
+        OnLine.h OnLine.cpp
+        FFmpeg.h FFmpeg.cpp
 
+        sqlite/Sqlite.h sqlite/Sqlite.cpp
+        sqlite/Append.h sqlite/Append.cpp
+        sqlite/Update.h sqlite/Update.cpp
+        sqlite/Get.h sqlite/Get.cpp
+        sqlite/Core.h sqlite/Core.cpp
+        sqlite/Delete.h sqlite/Delete.cpp
+
+
+        baseclass/DataException.h
+        baseclass/Album.h baseclass/Album.cpp
+        baseclass/LrcData.h baseclass/LrcData.cpp
+        baseclass/Music.h baseclass/Music.cpp
+        baseclass/Playlist.h baseclass/Playlist.cpp
+        baseclass/Artist.h baseclass/Artist.cpp
+        baseclass/LiteralConstant.h baseclass/LiteralConstant.cpp
+        baseclass/MediaData.h
+
+        load/TaskCenter.h load/TaskCenter.cpp
+        load/SelectMusicUrl.h load/SelectMusicUrl.cpp
+        load/BuildMusicCore.h load/BuildMusicCore.cpp
+        Tlog.h Tlog.cpp
+        NameKey.h NameKey.cpp
+        basetool/FileManagement.h basetool/FileManagement.cpp
+        imageload/ImageControl.h imageload/ImageControl.cpp
+        imageload/ImageProvider.h imageload/ImageProvider.cpp
+        datacore/DataManager.h datacore/DataManager.cpp
+        datacore/DataActive.h datacore/DataActive.cpp
+        basetool/TypeConversion.h basetool/TypeConversion.cpp
+        basetool/BaseTool.h basetool/BaseTool.cpp
+        basetool/QmlActive.h basetool/QmlActive.cpp
+        mediaplay/MediaplayData.h mediaplay/MediaplayData.cpp
+        mediaplay/LrcDataControl.h mediaplay/LrcDataControl.cpp
+        mediaplay/Mediaplayer.h mediaplay/Mediaplayer.cpp
         RESOURCES
         ui.qrc  # 资源文件（图片/字体等）
 )
-
 
 target_link_libraries(appmusicPlay PRIVATE TikoLib)
 target_link_libraries(appmusicPlay PRIVATE PlayViewLib)

@@ -4,15 +4,15 @@
 #include <QObject>
 #include <QProcess>
 
-#include "setting.h"
-#include "load/taskcenter.h"
-#include "mediaplay/mediaplayer.h"
-#include "online.h"
-#include "datacore/dataactive.h"
-#include "sqlite/sqlite.h"
-#include "basetool/basetool.h"
-#include "imageload/imagecontrol.h"
-#include "imageload/imageprovider.h"
+#include "Setting.h"
+#include "load/TaskCenter.h"
+#include "mediaplay/Mediaplayer.h"
+#include "OnLine.h"
+#include "datacore/DataActive.h"
+#include "sqlite/Sqlite.h"
+#include "basetool/BaseTool.h"
+#include "imageload/ImageControl.h"
+#include "imageload/ImageProvider.h"
 
 SQLite *SQLite::instance = nullptr;
 Setting* Setting::instance = nullptr;

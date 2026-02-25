@@ -148,13 +148,13 @@ MouseArea {
             onClicked: window.stackCenter()
         }
 
-        //返回主页
+        //样式
         TikoButtonIconLittle {
             id: style
             anchors.left: back.right
             anchors.margins: TikoSeit.emphasizeMargins
-            //text: qsTr("返回")
-            icon.source: "qrc:/image/back.png"
+            //text: qsTr("样式")
+            icon.source: "qrc:/image/style.png"
             onClicked: typeSelect.open()
         }
 

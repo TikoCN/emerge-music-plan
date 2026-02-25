@@ -30,7 +30,7 @@ Item{
             width: min
             height: min
             loadUrl: style.icon
-            normalUrl: "qrc:/image/exe.png"
+            normalUrl: "qrc:/image/music.png"
             property double min: Math.min(leftShow.height * 0.5, leftShow.width * 0.8)
         }
 

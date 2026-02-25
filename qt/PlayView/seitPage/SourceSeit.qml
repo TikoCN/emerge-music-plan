@@ -59,9 +59,7 @@ TikoRightVessel {
 
                 delegate: TikoTextLine {
                     text: url
-                    height: 40
                     width: sourceListColumn.width
-                    padding: 10
 
                     TikoButtonIcon{
                         anchors.right: parent.right

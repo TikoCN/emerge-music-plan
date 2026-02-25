@@ -195,22 +195,19 @@ Item {
             icon.source: "qrc:/image/lrc.png"
             //text: qsTr("桌面歌词")
             onClicked: {
-                if(deskLrcTool === null){
-                    deskLrcTool = deskLrcMake.createObject()
-                    deskLrcTool.show()
-                }
-                else if(deskLrcTool.visible === true){
-                    deskLrcTool.hide()
+                if(deskLrcWindow.visible === true){
+                    deskLrcWindow.hide()
                 }
                 else{
-                    deskLrcTool.show()
+                    deskLrcWindow.show()
                 }
-            }
-            property ToolDeskLrc deskLrcTool
 
-            Component{
-                id: deskLrcMake
-                ToolDeskLrc{}
+                icon.compulsion.isHover = deskLrcWindow.visible
+            }
+
+            ToolDeskLrc {
+                id: deskLrcWindow
+                visible: false
             }
         }
 

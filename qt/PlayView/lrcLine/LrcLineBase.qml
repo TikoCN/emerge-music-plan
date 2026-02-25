@@ -35,8 +35,11 @@ Item {
         id: drawLrc
         visible: false
         anchors.fill: lrcLine
+        renderStrategy: Canvas.Threaded
+
         onPaint: {
-            updateHeight()
+            if (initPos === false)
+                updateHeight()
 
             const ctx = getContext("2d")
             // 清除画布
@@ -128,8 +131,6 @@ Item {
     }
 
     function updateHeight(){
-        if(initPos) return
-
         const maxH = maxFontMetrics.boundingRect.height
         const lrc = lrcLine.textList
 

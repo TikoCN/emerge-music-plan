@@ -23,7 +23,7 @@ Item {
             model: [
                 {name:"专辑", icon:"qrc:/image/album.png", click: stackAlbum},
                 {name:"歌手", icon:"qrc:/image/artist.png", click: stackArtist},
-                {name:"音乐", icon:"qrc:/image/default.png", click: stackMusic}
+                {name:"音乐", icon:"qrc:/image/cover.png", click: stackMusic}
             ]
 
             delegate: TikoButtonNormal {

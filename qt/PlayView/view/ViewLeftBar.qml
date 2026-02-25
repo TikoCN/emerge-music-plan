@@ -51,7 +51,7 @@ Item {
                 }
 
                 model: [
-                    {icon: "qrc:/image/main.png", click: CoreData.mainTurnMain},
+                    {icon: "qrc:/image/home.png", click: CoreData.mainTurnMain},
                     {icon: "qrc:/image/album.png", click: CoreData.mainTurnLibraryPage},
                     {icon: "qrc:/image/seit.png", click: CoreData.mainTurnSeit}
                 ]

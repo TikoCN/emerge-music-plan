@@ -151,7 +151,7 @@ Item {
                             width: 30
                             height: parent.height
                             onClicked: createMenu(musicLine)
-                            icon.source: "qrc:/image/else.png"
+                            icon.source: "qrc:/image/more.png"
                         }
                     }
                 }

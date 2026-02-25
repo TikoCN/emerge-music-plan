@@ -23,7 +23,7 @@ Window{
 
     Rectangle{
         anchors.fill: parent
-        color: TikoSeit.theme.baseTheme.transparentNormal
+        color: TikoSeit.theme.baseTheme.transparentEmphasize
         opacity: deskLrcToolArea.containsMouse ? 1 : 0
     }
 

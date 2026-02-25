@@ -10,7 +10,7 @@ ShowPageBase {
     id: playerPlayList
     property int playlistId: -1
 
-    normalIcon: "qrc:/image/default.png"
+    normalIcon: "qrc:/image/list.png"
     loadIcon: "image://cover/playlistFile?id=" +
               playlistId.toString() +
               "&radius=10"
