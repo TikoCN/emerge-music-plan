@@ -18,6 +18,7 @@ Item {
         color: TikoSeit.theme.baseTheme.transparentNormal
         topLeftRadius: 10
         topRightRadius: 10
+        z: -1
     }
 
     TikoButtonIconLittle {

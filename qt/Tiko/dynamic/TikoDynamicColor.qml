@@ -5,6 +5,7 @@ QtObject {
     property color pressedColor: Qt.rgba(1, 0, 0, 0.8)
     property color disabledColor: Qt.rgba(0, 0, 0, 0.1)
     property color normalColor: Qt.rgba(0, 0, 0, 1)
+    property color highlightColor: Qt.rgba(0, 0, 0, 1)
 
     property bool isNull: false
     function setBenchmarkColor(benchmarkColor, isLightTheme) {
@@ -27,13 +28,21 @@ QtObject {
         // Hover - 恢复部分基准色特征
         hoverColor = Qt.hsla(
             (hslHue + 0.02) % 1,
-            Math.min(1, hslSaturation * 0.6),  // 恢复部分饱和度
+            Math.min(1, hslSaturation * 0.4),  // 恢复部分饱和度
             hoverLightness,
             a
         )
 
         // Pressed
         pressedColor = Qt.hsla(
+            (hslHue - 0.01) % 1,
+            Math.min(1, hslSaturation * 0.6),  // 恢复更多饱和度
+            pressedLightness,
+            a
+        )
+
+        // highlightColor
+        highlightColor = Qt.hsla(
             (hslHue - 0.01) % 1,
             Math.min(1, hslSaturation * 0.8),  // 恢复更多饱和度
             pressedLightness,

@@ -17,7 +17,7 @@ Item {
         anchors.left: libraryPage.left
         anchors.margins: TikoSeit.emphasizeMargins
         spacing: TikoSeit.emphasizeMargins
-        property string selectText: ""
+        property string selectText: "qrc:/image/cover.png"
 
         Repeater {
             model: [
@@ -29,8 +29,8 @@ Item {
             delegate: TikoButtonNormal {
                 icon.source: modelData.icon
                 textLine.text: modelData.name
-                icon.compulsion.isPressed: toolRow.selectText === textLine.text
-                textLine.compulsion.isPressed: toolRow.selectText === textLine.text
+                icon.dynamicState.isHighlight: (toolRow.selectText === textLine.text)
+                textLine.dynamicState.isHighlight: (toolRow.selectText === textLine.text)
                 onClicked: {
                     if (toolRow.selectText === textLine.text) return
 

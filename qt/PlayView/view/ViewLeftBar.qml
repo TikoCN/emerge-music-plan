@@ -42,7 +42,7 @@ Item {
                         icon.source: modelData.icon
                         icon.width: 32
                         icon.height: icon.width
-                        icon.compulsion.isHover: root.showText === modelData.icon
+                        icon.dynamicState.isHighlight: (root.showText === modelData.icon)
                         onClicked: {
                             root.showText = modelData.icon
                             modelData.click()

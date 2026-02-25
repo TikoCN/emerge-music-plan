@@ -22,7 +22,9 @@ protected:
     QMediaPlayer *m_player;//播放设备
     QAudioOutput *m_audioOutput;//音频输出
     QAudioBufferOutput *m_bufferOutput;//缓冲区输出
+    QVector<double> m_lastSamples;//处理之后的音乐样本
     QVector<double> m_allSamples;//处理之后的音乐样本
+
 
     Q_PROPERTY(QMediaPlayer *player READ getPlayer CONSTANT)
     Q_PROPERTY(QAudioOutput *audioOutput READ getAudioOutput CONSTANT)

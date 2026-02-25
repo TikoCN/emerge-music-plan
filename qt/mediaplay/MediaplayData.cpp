@@ -1,4 +1,7 @@
 #include "MediaplayData.h"
+
+#include <iostream>
+
 #include "fftw3.h"
 #include <QAudioOutput>
 
@@ -24,6 +27,7 @@ MediaPlayData::MediaPlayData(BaseTool *baseTool, DataActive *dataActive, TLog *l
 }
 
 void MediaPlayData::clearData() {
+    m_lastSamples.clear();
     m_allSamples.clear();
 
     //发送信号，表示完成
@@ -56,22 +60,25 @@ QMediaPlayer *MediaPlayData::getPlayer() const {
 void MediaPlayData::buildFrequencySpectrum(const QAudioBuffer &buffer) {
     //得到所有音频样本
     const auto *samples = buffer.constData<qint16>();
-    const int all = static_cast<int>(buffer.frameCount()); //采样单元
-    const int sample = static_cast<int>(buffer.sampleCount()); //总频道数
+    const int all = static_cast<int>(buffer.frameCount()); //帧数
+    const int sample = static_cast<int>(buffer.sampleCount()); //样本数
+    const int sampleRate = qMin(buffer.format().sampleRate(), 44100);
 
     if (all != 0) {
-        const long long alone = sample / all;
+        const int alone = sample / all;
         QVector<double> data(all);
 
-        for (int i = 0; i < all; i++) {
-            data[i] = 0.0;
-            for (int j = 0; j < alone && i * alone + j < sample; j++) {
-                data[i] += static_cast<double>(samples[i * alone + j]) / static_cast<double>(alone);
+        // 将多声道音频样本（例如立体声的左右声道）混合为单声道
+        for (int i = 0; i < all; ++i) {
+            double sum = 0.0;
+            const int base = i * alone;
+            for (int j = 0; j < alone; ++j) {
+                sum += samples[base + j];
             }
+            data[i] = sum / alone;  // 平均幅度
         }
 
         //计算傅里叶变换
-        QVector<double> out(all);
         // 创建一个FFTW计划
         auto *in_ptr = static_cast<fftw_complex *>(fftw_malloc(sizeof(fftw_complex) * all));
         auto *out_ptr = static_cast<fftw_complex *>(fftw_malloc(sizeof(fftw_complex) * all));
@@ -87,67 +94,61 @@ void MediaPlayData::buildFrequencySpectrum(const QAudioBuffer &buffer) {
         fftw_plan plan = fftw_plan_dft_1d(all, in_ptr, out_ptr, FFTW_FORWARD, FFTW_ESTIMATE);
         fftw_execute(plan);
 
-        // 将结果从fftw_complex数组复制回std::vector
-        for (int i = 0; i < all; ++i) {
-            out[i] = sqrt(out_ptr[i][0] * out_ptr[i][0] + out_ptr[i][1] * out_ptr[i][1]);
+        // 计算幅度谱
+        const int useLength = all / 2;
+        for (int i = 0; i < useLength; ++i) {
+            data[i] = sqrt(out_ptr[i][0] * out_ptr[i][0] + out_ptr[i][1] * out_ptr[i][1]);
         }
-
+        data.resize(useLength);
         // 清理
         fftw_destroy_plan(plan);
         fftw_free(in_ptr);
         fftw_free(out_ptr);
-        data = out;
+
+        //频率轴对数缩放
+        constexpr int targetBins = 120;
+        QVector<double> cache(targetBins);
+        cache.resize(targetBins);
+        for (int i = 0; i < targetBins; ++i) {
+            const double freq = 20 * std::pow(sampleRate/40, static_cast<double>(i)/targetBins); // 20Hz~20kHz 对数分布
+            const int index = static_cast<int>(freq) * useLength * 2/ sampleRate; // 映射到 FFT 索引
+            cache[i] = data[index];
+        }
+        data = cache;
 
         //归一化
         double maxHeight = 0.0, minHeight = 0.0;
-        for (int i = 0; i < data.size() / 2; i++) {
-            if (data[i] > maxHeight) {
-                maxHeight = data[i];
+        for (const double i : data) {
+            if (i > maxHeight) {
+                maxHeight = i;
             }
-            if (data[i] < minHeight) {
-                minHeight = data[i];
+            if (i < minHeight) {
+                minHeight = i;
             }
         }
-        for (int i = 0; i < data.size() / 2; i++) {
-            data[i] = (data[i] - minHeight) / (maxHeight - minHeight);
-            data[i] = data[i] < 0 ? 0 : data[i];
+        for (double & i : data) {
+            i = (i - minHeight) / (maxHeight - minHeight);
+            i = i < 0 ? 0 : i;
         }
 
-        QList<double> sampleList = data.mid(0, all / 2);
-        if (m_allSamples.size() != sampleList.size()) {
-            m_allSamples.clear();
-            m_allSamples.fill(0.0, sampleList.size());
-        }
+        // 对齐数据长度
+        if (m_allSamples.size() != data.size()) {}
+        m_allSamples.resize(data.size());
 
         //时间平滑函数
-        for (int i = 0; i < sampleList.size() && i < m_allSamples.size(); i++) {
-            if (std::isfinite(sampleList[i])) {
+        for (int i = 0; i < data.size() && i < m_allSamples.size(); i++) {
+            if (std::isfinite(data[i])) {
                 //判断是不是有理数
-                if (sampleList[i] > m_allSamples[i]) {
+                if (data[i] > m_allSamples[i]) {
                     constexpr double smoothConstantUp = 0.8;
-                    m_allSamples[i] = smoothConstantUp * sampleList[i] + (1 - smoothConstantUp) * m_allSamples[i];
+                    m_allSamples[i] = smoothConstantUp * data[i] + (1 - smoothConstantUp) * m_allSamples[i];
                 } else {
                     constexpr double smoothConstantDown = 0.08;
-                    m_allSamples[i] = smoothConstantDown * sampleList[i] + (1 - smoothConstantDown) * m_allSamples[i];
+                    m_allSamples[i] = smoothConstantDown * data[i] + (1 - smoothConstantDown) * m_allSamples[i];
                 }
             }
         }
 
-        constexpr int aim = 120;
-        long long cell = m_allSamples.size() / aim;
-        QVector<double> outSamples; //处理之后的音乐样本
-        outSamples.fill(0, aim);
-        cell = cell <= 0 ? 1 : cell;
-        for (int i = 0; i < aim && i * cell < m_allSamples.size(); i++) {
-            double max = m_allSamples[i * cell];
-
-            for (int j = 1; j < cell && i * cell + j < m_allSamples.size(); j++) {
-                if (max < m_allSamples[i * cell + j]) {
-                    max = m_allSamples[i * cell + j];
-                }
-            }
-            outSamples[i] = max;
-        }
-        emit cppDrawLine(outSamples);
+        emit cppDrawLine(m_allSamples);
     }
 }

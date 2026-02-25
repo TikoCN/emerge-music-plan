@@ -5,47 +5,50 @@ TikoTextLine {
     id: dynamicTextLine
     property TikoDynamicColor dynamicColor: TikoSeit.theme.foregroundDynamicColor
     property TikoDynamicState dynamicState: null
-    property TikoDynamicState compulsion: compulsionState
 
     property bool enableUnifiedColor: false
     property color unifiedColor: Qt.black
 
     states: [
         State {
+            name: "disabled"
+            when: (dynamicState != null && dynamicState.isDisabled)
+            PropertyChanges {
+                target: dynamicTextLine
+                color: dynamicColor.normalColor
+            }
+        },
+        State {
+            name: "pressed"
+            when: (dynamicState != null && dynamicState.isPressed)
+            PropertyChanges {
+                target: dynamicTextLine
+                color: dynamicColor.normalColor
+            }
+        },
+        State {
             name: "hover"
-            when: compulsionState.isHover || (dynamicState != null && dynamicState.isHover)
+            when: (dynamicState != null && dynamicState.isHover)
             PropertyChanges {
                 target: dynamicTextLine
                 color: dynamicColor.hoverColor
             }
         },
         State {
-            name: "pressed"
-            when: compulsionState.isPressed || (dynamicState != null && dynamicState.isPressed)
+            name: "highlight"
+            when: (dynamicState != null && dynamicState.isHighlight)
             PropertyChanges {
                 target: dynamicTextLine
-                color: dynamicColor.normalColor
-            }
-        },
-        State {
-            name: "disabled"
-            when: compulsionState.isDisabled || (dynamicState != null && dynamicState.isDisabled)
-            PropertyChanges {
-                target: dynamicTextLine
-                color: dynamicColor.normalColor
+                color: dynamicColor.highlightColor
             }
         },
         State {
             name: "normal"
-            when: compulsionState.isNormal || (dynamicState != null && dynamicState.isNormal)
+            when: (dynamicState != null && dynamicState.isNormal)
             PropertyChanges {
                 target: dynamicTextLine
                 color: dynamicColor.normalColor
             }
         }
     ]
-
-    TikoDynamicState {
-        id: compulsionState
-    }
 }

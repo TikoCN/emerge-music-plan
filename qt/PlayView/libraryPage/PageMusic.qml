@@ -16,8 +16,7 @@ PageButtonBase {
 
         dataLoader.onLoadData:(index) => {
                        let list = SQLData.getMusicByKey(currentKey, CoreData.pageSize, index)
-                       list.forEach(id => {gridModel.append({id: id})})
-                       if (list.length !== CoreData.pageSize) load.loadIsFinish = true
+                       appendList(list)
                    }
     }
 }

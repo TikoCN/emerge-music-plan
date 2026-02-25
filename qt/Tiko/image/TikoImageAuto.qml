@@ -6,8 +6,8 @@ TikoImage{
     source: normalUrl
     enableUnifiedColor: String(source) === normalUrl
 
-    property int loadMsTime: 100
-    property int freeMsTime: 100
+    property int loadMsTime: 300
+    property int freeMsTime: 300
     property string normalUrl: ""
     property string loadUrl: ""
     property bool extraLoadFlag: true

@@ -1,12 +1,12 @@
-import QtQuick.Effects
 import QtQuick
-
-Image{
+import QtQuick.Effects
+import Tiko
+Image {
     id: imageColorAutoView
-    sourceSize.width: width
-    sourceSize.height: height
     width: 20
     height: 20
+    sourceSize.width: width
+    sourceSize.height: height
     asynchronous: true
     cache: true
     mipmap: true
@@ -14,14 +14,11 @@ Image{
     smooth: true
 
     property bool enableUnifiedColor: true
-    property color unifiedColor: Qt.red
+    property color unifiedColor: TikoSeit.theme.baseTheme.foregroundNormal
 
-    MultiEffect {
-        id: iconShow
-        anchors.fill: imageColorAutoView
-        source: imageColorAutoView
+    layer.enabled: true
+    layer.effect: MultiEffect {
         colorization: enableUnifiedColor ? 1 : 0
         colorizationColor: unifiedColor
     }
 }
-

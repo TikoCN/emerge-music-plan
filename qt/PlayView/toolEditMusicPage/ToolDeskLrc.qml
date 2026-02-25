@@ -8,7 +8,6 @@ Window{
     id: deskLrcTool
     x: Setting.lrcTopPoint.x
     y: Setting.lrcTopPoint.y
-
     color:"#00000000"
     flags: Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint | Qt.Tool
     title: qsTr("桌面歌词")

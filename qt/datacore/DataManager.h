@@ -6,7 +6,7 @@
 #include "baseclass/Playlist.h"
 #include "baseclass/Artist.h"
 #include "baseclass/Album.h"
-#include "sqlite/sqlite.h"
+#include "sqlite/Sqlite.h"
 #include <QJsonObject>
 
 class DataManager : public QObject

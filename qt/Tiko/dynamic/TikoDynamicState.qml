@@ -5,4 +5,5 @@ QtObject {
     property bool isHover: false
     property bool isPressed: false
     property bool isDisabled: false
+    property bool isHighlight: false
 }

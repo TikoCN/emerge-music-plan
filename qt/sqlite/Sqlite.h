@@ -1,6 +1,6 @@
 #ifndef SQLITE_H
 #define SQLITE_H
-#include "get.h"
+#include "Get.h"
 
 class SQLite : public Get
 {

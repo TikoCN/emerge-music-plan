@@ -2,7 +2,7 @@
 #define CORE_H
 
 #include "sqlite3.h"
-#include "tlog.h"
+#include "Tlog.h"
 #include "baseclass/SortType.h"
 #include "baseclass/LiteralConstant.h"
 

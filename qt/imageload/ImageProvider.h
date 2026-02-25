@@ -4,8 +4,8 @@
 #include <QThreadPool>
 #include <QRunnable>
 #include <QQuickImageResponse>
-#include "imageload/imagecontrol.h"
-#include "datacore/dataactive.h"
+#include "imageload/ImageControl.h"
+#include "datacore/DataActive.h"
 
 class ImageResponse : public QQuickImageResponse, public QRunnable{
     Q_OBJECT

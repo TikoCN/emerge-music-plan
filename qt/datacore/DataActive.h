@@ -1,6 +1,6 @@
 #ifndef DATAACTIVE_H
 #define DATAACTIVE_H
-#include "datamanager.h"
+#include "DataManager.h"
 
 class DataActive : public DataManager
 {

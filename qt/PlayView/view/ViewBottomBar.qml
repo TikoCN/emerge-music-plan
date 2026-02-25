@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Window
 import QtQuick.Controls.Basic
+import QtQuick.Layouts
 import QtQml
 import MediaerAPI   
 import Tiko
@@ -28,7 +29,7 @@ Item {
                 anchors.fill: parent
                 onClicked: {
                     if (MediaPlayer.playingMusicId !== -1)
-                        window.stackMusicPaly()
+                        CoreData.windows.stackMusicPaly()
                 }
             }
         }
@@ -60,59 +61,47 @@ Item {
             anchors.right: nextMusicUp.left
             anchors.rightMargin: TikoSeit.emphasizeMargins
             anchors.verticalCenter: parent.verticalCenter
+            icon.source: "qrc:/image/loop"+ MediaPlayer.loopType +".png"
             //text: qsTr("设置循环模式")
-            onClicked: loopSelect.open()
-            Component.onCompleted: setLoopType(MediaPlayer.loopType)
-
-            TikoPopup{
-                id: loopSelect
-                parent: loopButton
-                y: loopButton.y-height
-                width: 140
-                height: 150
-
-                contentItem: Column {
-                    spacing: TikoSeit.normalMargins
-
-                    TikoButtonNormal {
-                        id: loop0
-                        textLine.text: qsTr("顺序播放")
-                        icon.source: "qrc:/image/loop0.png"
-                        onLeftClicked: loopButton.setLoopType(0)
-                        width: parent.width
-                    }
-
-                    TikoButtonNormal {
-                        id: loop1
-                        textLine.text: qsTr("随机循环")
-                        icon.source: "qrc:/image/loop1.png"
-                        onLeftClicked: loopButton.setLoopType(1)
-                        width: parent.width
-                    }
-
-                    TikoButtonNormal {
-                        id: loop2
-                        textLine.text: qsTr("单曲循环")
-                        icon.source: "qrc:/image/loop2.png"
-                        onLeftClicked: loopButton.setLoopType(2)
-                        width: parent.width
-                    }
-                }
+            onClicked: {
+                var pop = loopSelectCom.createObject()
+                pop.open()
             }
 
-            function setLoopType(loopType){
-                switch (loopType){
-                case 0:
-                    loopButton.icon.source = loop0.icon.source
-                    break
-                case 1:
-                    loopButton.icon.source = loop1.icon.source
-                    break
-                case 2:
-                    loopButton.icon.source = loop2.icon.source
-                    break
+            Component {
+                id: loopSelectCom
+                TikoPopup{
+                    id: loopSelect
+                    parent: loopButton
+                    y: - loopButton.height - height
+                    x: (-width + loopButton.width) / 2
+                    width: 140
+                    height: loopColumnLayout.height + TikoSeit.normalMargins * 2
+
+                    ColumnLayout {
+                        id: loopColumnLayout
+                        spacing: TikoSeit.normalMargins
+
+                        Repeater {
+                            delegate: TikoButtonNormal {
+                                id: loop0
+                                textLine.text: modelData.text
+                                icon.source: modelData.icon
+                                onLeftClicked:  {
+                                    MediaPlayer.loopType = modelData.type
+                                    loopSelect.destroy()
+                                }
+                                width: parent.width
+                            }
+
+                            model: [
+                                {text:qsTr("顺序播放"), type:0, icon:"qrc:/image/loop0.png"},
+                                {text:qsTr("随机循环"), type:1, icon:"qrc:/image/loop1.png"},
+                                {text:qsTr("单曲循环"), type:2, icon:"qrc:/image/loop2.png"}
+                            ]
+                        }
+                    }
                 }
-                MediaPlayer.loopType = loopType
             }
         }
 
@@ -193,21 +182,25 @@ Item {
             anchors.rightMargin: TikoSeit.emphasizeMargins
             anchors.verticalCenter: parent.verticalCenter
             icon.source: "qrc:/image/lrc.png"
+            icon.dynamicState.isHighlight: (deskLrcWindow !== null)
             //text: qsTr("桌面歌词")
-            onClicked: {
-                if(deskLrcWindow.visible === true){
-                    deskLrcWindow.hide()
-                }
-                else{
+            onAnyClicked: {
+                if(deskLrcWindow === null){
+                    deskLrcWindow = deskLrcCom.createObject()
                     deskLrcWindow.show()
                 }
-
-                icon.compulsion.isHover = deskLrcWindow.visible
+                else{
+                    deskLrcWindow.close()
+                    deskLrcWindow.destroy()
+                    deskLrcWindow = null
+                }
             }
 
-            ToolDeskLrc {
-                id: deskLrcWindow
-                visible: false
+            property ToolDeskLrc deskLrcWindow: null
+            Component {
+                id: deskLrcCom
+                ToolDeskLrc {
+                }
             }
         }
 

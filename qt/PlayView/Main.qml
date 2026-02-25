@@ -5,7 +5,7 @@ import QtQml
 import MediaerAPI
 import Tiko
 import PlayView
-
+import QtQuick.Effects
 
 TikoFrameless{
     id: window
@@ -33,6 +33,7 @@ TikoFrameless{
     Item{
         id: editPage
         anchors.fill: parent
+        anchors.margins: TikoSeit.subitemSpace
 
         //圆角背景
         Rectangle{
@@ -79,6 +80,16 @@ TikoFrameless{
             width: parent.width
             y: showType === 0 ? 10 + barView.height : editPage.height
         }
+    }
+
+    MultiEffect {
+        source: editPage
+        anchors.fill: editPage
+        shadowEnabled: true
+        shadowBlur: 0.5
+        shadowColor: "#80000000"
+        shadowHorizontalOffset: 0
+        shadowVerticalOffset: 0
     }
 
     PageMusicPlay {

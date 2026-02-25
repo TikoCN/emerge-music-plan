@@ -3,8 +3,8 @@
 
 #include <QMediaPlayer>
 #include <QPixmap>
-#include "mediaplay/lrcdatacontrol.h"
-#include "sqlite/sqlite.h"
+#include "mediaplay/LrcDataControl.h"
+#include "sqlite/Sqlite.h"
 
 class MediaPlayer :public LrcDataControl
 {

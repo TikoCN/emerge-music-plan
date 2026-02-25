@@ -8,7 +8,7 @@ import DataType
 QtObject {
     property var playlist: []
 
-    property int pageSize: 100
+    property int pageSize: 30
     property TikoFrameless windows
 
     signal mainTurnMusicList(int page)
