@@ -39,7 +39,6 @@ void MediaPlayData::updateAudioOutPut() const {
     if (m_audioOutput->device().id() != nowOut->device().id()) {
         m_audioOutput->setDevice(nowOut->device());
 
-
         m_player->setAudioOutput(m_audioOutput);
     }
     delete nowOut;
@@ -105,29 +104,17 @@ void MediaPlayData::buildFrequencySpectrum(const QAudioBuffer &buffer) {
         fftw_free(in_ptr);
         fftw_free(out_ptr);
 
-        //频率轴对数缩放
-        constexpr int targetBins = 120;
-        QVector<double> cache(targetBins);
-        cache.resize(targetBins);
-        for (int i = 0; i < targetBins; ++i) {
-            const double freq = 20 * std::pow(sampleRate/40, static_cast<double>(i)/targetBins); // 20Hz~20kHz 对数分布
-            const int index = static_cast<int>(freq) * useLength * 2/ sampleRate; // 映射到 FFT 索引
-            cache[i] = data[index];
-        }
-        data = cache;
-
         //归一化
-        double maxHeight = 0.0, minHeight = 0.0;
-        for (const double i : data) {
-            if (i > maxHeight) {
-                maxHeight = i;
+        for (int i = 0; i < data.size(); i++) {
+            if (data[i] > m_maxHeightValue) {
+                m_maxHeightValue = data[i];
             }
-            if (i < minHeight) {
-                minHeight = i;
+            if (data[i] < m_minHeightValue) {
+                m_minHeightValue = data[i];
             }
         }
         for (double & i : data) {
-            i = (i - minHeight) / (maxHeight - minHeight);
+            i = (i - m_minHeightValue) / (m_maxHeightValue - m_minHeightValue);
             i = i < 0 ? 0 : i;
         }
 
@@ -149,6 +136,26 @@ void MediaPlayData::buildFrequencySpectrum(const QAudioBuffer &buffer) {
             }
         }
 
-        emit cppDrawLine(m_allSamples);
+        // 降采样
+        const int aim = qMin(m_allSamples.size(), 120);
+        int cell = m_allSamples.size() / aim;
+        data.resize(aim);
+        for (int i = 0; i < aim; i++) {
+            const int basePos = i * cell;
+            if (basePos < m_allSamples.size()) {
+                data[i] = 0;
+                continue;
+            }
+
+            double max = m_allSamples[basePos];
+            for (int j = 1; j < cell && basePos + j < m_allSamples.size(); j++) {
+                if (max < m_allSamples[basePos + j]) {
+                    max = m_allSamples[basePos + j];
+                }
+            }
+            data[i] = max;
+        }
+
+        emit bufferSampleChanged();
     }
 }

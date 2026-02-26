@@ -8,14 +8,21 @@ Item{
     property string artist: qsTr("标题")
     property string title: qsTr("标题")
     property string icon: ""
-    property bool show: false
 
-    onShowChanged: {
-        if (show) {
+    onVisibleChanged: {
+        if (visible) {
             lrcShow.buildLrcList()
+            moveItem.moveTimer.start()
         } else {
             lrcShow.clearData()
+            moveItem.moveTimer.stop()
         }
+    }
+
+    BackImageMove {
+        id: moveItem
+        anchors.fill: parent
+        iconUrl: style.icon
     }
 
     Item{
@@ -155,15 +162,6 @@ Item{
             anchors.horizontalCenter: rightShow.horizontalCenter
             width: rightShow.width * 0.8
             height: rightShow.height * 0.8
-        }
-    }
-
-
-    //关联
-    Connections{
-        target: MediaPlayer
-        function onCppDrawLine(){
-            canvas.requestPaint()
         }
     }
 }

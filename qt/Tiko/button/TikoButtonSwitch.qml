@@ -8,17 +8,27 @@ TikoButtonBase {
     textLine: textLineItem
     property color useingColor: TikoSeit.theme.baseTheme.borderEmphasize
     property color unuseColor: TikoSeit.theme.baseTheme.backgroundEmphasize
+    property color useingShowColor: TikoSeit.theme.baseTheme.themeNormal
+    property color unuseShowColor: TikoSeit.theme.baseTheme.foregroundEmphasize
+    property int useingX: box.width - show.width - box.spacer
+    property int unuseX: box.spacer
     property double fontOpacity: 0.3
 
     onCheckChanged: {
-        colorAnimation.start()
-        propertyAnimation.start()
+        activeTrueAnim.stop()
+        activeFalseAnim.stop()
+
+        if (check) {
+            activeTrueAnim.start()
+        } else {
+            activeFalseAnim.start()
+        }
     }
 
     Rectangle{
         id: box
-        color: switchButton.check ? switchButton.useingColor : switchButton.unuseColor
-        border.color: !switchButton.check ? switchButton.useingColor : switchButton.unuseColor
+        color: check ? useingColor : unuseColor
+        border.color: !check ? useingColor : unuseColor
         height: switchButton.height * 0.6
         width: height * 1.7
         anchors.verticalCenter: switchButton.verticalCenter
@@ -28,33 +38,63 @@ TikoButtonBase {
 
         Rectangle{
             id: show
-            x: check ? box.width - show.width - box.spacer: box.spacer
+            x: check ? useingX: unuseX
             y: box.spacer
             width: height
             height: box.height - box.spacer * 2
-            color: TikoSeit.theme.baseTheme.themeTransition
+            color: check ? useingShowColor : unuseShowColor
             radius: height * 0.5
         }
 
-        PropertyAnimation{
-            id: propertyAnimation
-            target: show
-            property: "x"
-            from: !switchButton.check ? box.width - show.width - box.spacer: box.spacer
-            to: switchButton.check ? box.width - show.width - box.spacer: box.spacer
-            duration: 500
+        ParallelAnimation {
+            id: activeTrueAnim
+            PropertyAnimation{
+                target: show
+                property: "x"
+                from: unuseX
+                to: useingX
+                duration: 500
+            }
+            PropertyAnimation{
+                target: show
+                property: "color"
+                from: unuseShowColor
+                to: useingShowColor
+                duration: 500
+            }
+            ColorAnimation {
+                target: box
+                property: "color"
+                from: unuseColor
+                to: useingColor
+                duration: 500
+            }
         }
 
-        ColorAnimation {
-            id: colorAnimation
-            target: box
-            property: "color"
-            from: !switchButton.check ? switchButton.useingColor : switchButton.unuseColor
-            to: switchButton.check ? switchButton.useingColor : switchButton.unuseColor
-            duration: 500
+        ParallelAnimation {
+            id: activeFalseAnim
+            PropertyAnimation{
+                target: show
+                property: "x"
+                from: useingX
+                to: unuseX
+                duration: 500
+            }
+            PropertyAnimation{
+                target: show
+                property: "color"
+                from: useingShowColor
+                to: unuseShowColor
+                duration: 500
+            }
+            ColorAnimation {
+                target: box
+                property: "color"
+                from: useingColor
+                to: unuseColor
+                duration: 500
+            }
         }
-
-
     }
 
     TikoDynamicTextLine{
@@ -62,7 +102,7 @@ TikoButtonBase {
         anchors.left: box.right
         anchors.leftMargin: 10
         height: switchButton.height
-        width: switchButton.width - box.width - 20
+        width: switchButton.width - box.width - TikoSeit.emphasizeMargins
         opacity: check ? 1 : fontOpacity
     }
 }

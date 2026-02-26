@@ -102,7 +102,7 @@ Canvas{
 
     //关联
     Connections {
-        target: CoreData
-        function onAutoUpdateUI (){requestPaint()}
+        target: MediaPlayer
+        function onBufferSampleChanged (){requestPaint()}
     }
 }

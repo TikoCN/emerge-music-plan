@@ -118,6 +118,7 @@ qt_add_qml_module(PlayViewLib
         QML_FILES GeneralControls/PlayDown.qml
         QML_FILES GeneralControls/PlayState.qml
         QML_FILES AudioVisualizationRectangle/AudioVsualizationCircle.qml
+        QML_FILES back/BackImageMove.qml
 )
 
 # 链接 QtQuick 依赖（纯 QML 模块也需要显式链接）

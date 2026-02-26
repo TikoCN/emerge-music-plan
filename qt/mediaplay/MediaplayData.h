@@ -24,7 +24,8 @@ protected:
     QAudioBufferOutput *m_bufferOutput;//缓冲区输出
     QVector<double> m_lastSamples;//处理之后的音乐样本
     QVector<double> m_allSamples;//处理之后的音乐样本
-
+    double m_maxHeightValue;
+    double m_minHeightValue;
 
     Q_PROPERTY(QMediaPlayer *player READ getPlayer CONSTANT)
     Q_PROPERTY(QAudioOutput *audioOutput READ getAudioOutput CONSTANT)
@@ -49,7 +50,7 @@ signals:
     //清空数据以及播放列表
     void finishClearData();
     //绘制音频波形
-    void cppDrawLine(QVector<double>);
+    void bufferSampleChanged();
 };
 
 #endif // MEDIAPLAYDATA_H

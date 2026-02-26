@@ -26,7 +26,7 @@ Canvas{
     }
 
     Connections {
-        target: CoreData
-        function onAutoUpdateUI (){requestPaint()}
+        target: MediaPlayer
+        function onBufferSampleChanged (){requestPaint()}
     }
 }

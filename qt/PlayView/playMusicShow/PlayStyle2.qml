@@ -10,6 +10,11 @@ Item{
     property string icon: ""
     property bool show: false
 
+    BackImage {
+        anchors.fill: parent
+        source: style.icon
+    }
+
     AudioVsualizationCircle {
         id: canvas
         anchors.fill: style

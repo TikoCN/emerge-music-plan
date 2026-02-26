@@ -35,7 +35,7 @@ TikoRightVessel{
                 width: 300
                 textLine.text: modelData.text
                 check: Setting[modelData.prop]
-                onCheckChanged: Setting[modelData.prop] = check
+                onClicked: Setting[modelData.prop] = !Setting[modelData.prop]
             }
         }
     }

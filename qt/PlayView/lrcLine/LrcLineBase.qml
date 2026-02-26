@@ -27,9 +27,9 @@ Item {
     property color normalColor: Qt.rgba(0.9, 0.9, 0.9, 1)
     property Canvas lrcCanvas: drawLrc
 
-    onWidthChanged: initPos = false
-    onLrcIdChanged: initPos = false
-    onLrcFontChanged: initPos = false
+    onWidthChanged: {initPos = false; drawLrc.requestPaint()}
+    onLrcIdChanged: {initPos = false; drawLrc.requestPaint()}
+    onLrcFontChanged: {initPos = false; drawLrc.requestPaint()}
 
     Canvas {
         id: drawLrc

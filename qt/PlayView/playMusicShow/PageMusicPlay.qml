@@ -18,12 +18,6 @@ MouseArea {
     onTypeChanged: updateShowModel()
     onShowChanged: updateShowModel()
 
-    BackImage {
-        id:backImage
-        anchors.fill: parent
-        iconUrl: pageMain.icon
-    }
-
     Loader{
         id: loaderStyle
         width: pageMain.width
@@ -36,7 +30,6 @@ MouseArea {
                 artist: pageMain.artist
                 title: pageMain.title
                 icon: pageMain.icon
-                show: pageMain.show
             }
         }
 
@@ -46,7 +39,6 @@ MouseArea {
                 artist: pageMain.artist
                 title: pageMain.title
                 icon: pageMain.icon
-                show: pageMain.show
             }
         }
 
@@ -182,12 +174,10 @@ MouseArea {
     }
 
     function actionStart(){
-        backImage.moveTimer.start()
         pageMain.show = true
     }
 
     function actionEnd() {
-        backImage.moveTimer.stop()
         pageMain.show = false
     }
 

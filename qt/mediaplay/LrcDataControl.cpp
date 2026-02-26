@@ -18,6 +18,8 @@ LrcDataControl::LrcDataControl(BaseTool *baseTool, DataActive *dataActive, TLog 
       , m_playingLrcId(-1) {
     connect(m_player, &QMediaPlayer::playingChanged, this, [=](const bool isPlaying) {
         if (isPlaying) {
+            m_maxHeightValue = 0;
+            m_minHeightValue = 100;
             m_updateLrcTimer->start(20);
         } else {
             m_updateLrcTimer->stop();
