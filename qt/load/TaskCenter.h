@@ -60,7 +60,7 @@ public:
     void start();
 
     void appendInfo(const QFileInfoList& fileInfoList);
-    void appendMedia(QList<MediaData> dataList);
+    void appendMedia(const QList<MediaData>& dataList);
 };
 
 

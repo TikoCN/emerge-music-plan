@@ -30,7 +30,7 @@ Item {
             anchors.left: parent.left
             anchors.leftMargin: 10
             normalUrl: normalIcon
-            loadUrl: loadIcon
+            baseUrl: loadIcon
             width: 200
             height: 200
         }

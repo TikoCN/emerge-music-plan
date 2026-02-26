@@ -16,8 +16,9 @@ void MediaPlayer::playMusicByListId(const int musicListId) {
 }
 
 
-/*
- * 下一目标
+/**
+ * @brief 播放下一首歌曲
+ * @param forward 前进方向
  */
 void MediaPlayer::playNext(const int forward) {
     const int max = static_cast<int>(m_musicList.size());
@@ -53,7 +54,6 @@ QString MediaPlayer::getTimeString() const {
     return time.toString("mm:ss.zzz");
 }
 
-
 MediaPlayer::MediaPlayer(BaseTool *baseTool, DataActive *dataActive, TLog *log, SQLite *sql, QObject *parent)
     : LrcDataControl(baseTool, dataActive, log, parent)
       , m_sqlite(sql) {
@@ -86,6 +86,11 @@ void MediaPlayer::setLoopType(const int newLoopType) {
     emit loopTypeChanged();
 }
 
+/**
+ * @brief 根据 歌曲id列表 建立正在播放队列，并设置初始播放位置
+ * @param list 歌曲id列表
+ * @param playMusicInListId 初始播放位置，默认为 0
+ */
 void MediaPlayer::buildPlayingList(QList<int> list, const int playMusicInListId) {
     m_sqlite->deletePlayingList(0);
     m_sqlite->appendPlayingListMusic(list, 0);

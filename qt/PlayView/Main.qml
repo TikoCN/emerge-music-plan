@@ -35,15 +35,24 @@ TikoFrameless{
         anchors.fill: parent
         anchors.margins: TikoSeit.subitemSpace
 
+        layer.enabled: true
+        layer.effect: MultiEffect {
+            shadowEnabled: true
+            shadowBlur: 0.5
+            shadowColor: "#80000000"
+            shadowHorizontalOffset: 0
+            shadowVerticalOffset: 0
+        }
+
         //圆角背景
         Rectangle{
             id: editPageBack
-            width: parent.width
-            height: parent.height
+            anchors.fill: editPage
             topLeftRadius: 10
             topRightRadius: 10
             color: TikoSeit.theme.baseTheme.backgroundNormal
             y: showType === 0 ? 0 : -height
+            z: -1
 
             Rectangle{
                 anchors.fill: parent
@@ -62,7 +71,7 @@ TikoFrameless{
             width: parent.width - barView.width - 20
             height: barView.height
             anchors.left: barView.right
-            y: showType === 0 ? 10 : -height
+            y: 10
         }
 
         ViewLeftBar{
@@ -70,7 +79,7 @@ TikoFrameless{
             height: parent.height - bottomView.height - 10
             width: 300
             x: 10
-            y: showType === 0 ? 10 : -height
+            y: 10
         }
 
         //底部导航
@@ -78,41 +87,34 @@ TikoFrameless{
             id: bottomView
             height: 90
             width: parent.width
-            y: showType === 0 ? 10 + barView.height : editPage.height
+            y: 10 + barView.height
         }
-    }
 
-    MultiEffect {
-        source: editPage
-        anchors.fill: editPage
-        shadowEnabled: true
-        shadowBlur: 0.5
-        shadowColor: "#80000000"
-        shadowHorizontalOffset: 0
-        shadowVerticalOffset: 0
-    }
+        PageMusicPlay {
+            id: musicPlayPage
+            width: parent.width
+            height: parent.height
+            y: parent.height
+            opacity: 0
+        }
 
-    PageMusicPlay {
-        id: musicPlayPage
-        width: parent.width
-        height: parent.height
-        y: showType === 1 ? 0 : parent.height
-        clip: true
-    }
+        property int duration: 500
+        property int inType: Easing.InOutQuad
+        property int outType: Easing.InOutQuad
 
-    // 切换到音乐播放界面动画
-    SequentialAnimation {
-        id: trunToMusicPlayAnimation
-        onFinished: showType = 1
+        // 切换到音乐播放界面动画
+        ParallelAnimation {
+            id: trunToMusicPlayAnimation
+            onFinished: showType = 1
 
-        ParallelAnimation{
+            // 出
             NumberAnimation {
                 targets: [mainView, barView]
                 property: "y"
                 from: 10
                 to: -mainView.height
-                duration: 300
-                easing.type: Easing.InOutQuad
+                duration: editPage.duration
+                easing.type: editPage.outType
             }
 
             NumberAnimation {
@@ -120,19 +122,27 @@ TikoFrameless{
                 property: "y"
                 from: 10 + barView.height
                 to: editPage.height
-                duration: 300
-                easing.type: Easing.InOutQuad
+                duration: editPage.duration
+                easing.type: editPage.outType
             }
-        }
 
-        ParallelAnimation {
+            NumberAnimation {
+                targets: [mainView, barView, bottomView]
+                property: "opacity"
+                from: 1
+                to: 0
+                duration: editPage.duration
+                easing.type: editPage.outType
+            }
+
+            // 进
             NumberAnimation {
                 target: editPageBack
                 property: "y"
                 from: 0
                 to: -editPage.height
-                duration: 300
-                easing.type: Easing.InOutQuad
+                duration: editPage.duration
+                easing.type: editPage.inType
             }
 
             NumberAnimation {
@@ -140,24 +150,37 @@ TikoFrameless{
                 property: "y"
                 from: musicPlayPage.height
                 to: 0
-                duration: 300
-                easing.type: Easing.InOutQuad
+                duration: editPage.duration
+                easing.type: editPage.inType
             }
-        }
-    }
 
-    SequentialAnimation {
-        id: trunToMainAnimation
-        onFinished: showType = 0
+            NumberAnimation {
+                target: musicPlayPage
+                property: "opacity"
+                from: 0
+                to: 1
+                duration: editPage.duration
+                easing.type: editPage.inType
+            }
+
+        }
 
         ParallelAnimation {
+            id: trunToMainAnimation
+            onFinished: {
+                musicPlayPage.actionEnd()
+                showType = 0
+            }
+
+
+            // 出
             NumberAnimation {
                 target: editPageBack
                 property: "y"
                 from: -editPage.height
                 to: 0
-                duration: 300
-                easing.type: Easing.InOutQuad
+                duration: editPage.duration
+                easing.type: editPage.outType
             }
 
             NumberAnimation {
@@ -165,19 +188,27 @@ TikoFrameless{
                 property: "y"
                 from: 0
                 to: musicPlayPage.height
-                duration: 300
-                easing.type: Easing.InOutQuad
+                duration: editPage.duration
+                easing.type: editPage.outType
             }
-        }
 
-        ParallelAnimation{
+            NumberAnimation {
+                target: musicPlayPage
+                property: "opacity"
+                from: 1
+                to: 0
+                duration: editPage.duration
+                easing.type: editPage.outType
+            }
+
+            // 进
             NumberAnimation {
                 targets: [mainView, barView]
                 property: "y"
                 from: -mainView.height
                 to: 10
-                duration: 300
-                easing.type: Easing.InOutQuad
+                duration: editPage.duration
+                easing.type: editPage.inType
             }
 
             NumberAnimation {
@@ -185,18 +216,28 @@ TikoFrameless{
                 property: "y"
                 from: editPage.height
                 to: 10 + barView.height
-                duration: 300
-                easing.type: Easing.InOutQuad
+                duration: editPage.duration
+                easing.type: editPage.inType
             }
+
+            NumberAnimation {
+                targets: [mainView, barView, bottomView]
+                property: "opacity"
+                from: 0
+                to: 1
+                duration: editPage.duration
+                easing.type: editPage.inType
+            }
+        }
+
+        ViewPlayingList {
+            id: playingPlayList
+            width: parent.width * 2 / 3
+            height: parent.height - bottomView.height
+            y:10
         }
     }
 
-    ViewPlayingList {
-        id: playingPlayList
-        width: parent.width * 2 / 3
-        height: parent.height - bottomView.height
-        y:10
-    }
 
     //切换到主页
     function stackMusicPaly(){
@@ -211,7 +252,8 @@ TikoFrameless{
 
     //切换到编辑页
     function stackCenter(){
-        musicPlayPage.actionEnd()
+        // 移动到动画结束
+        // musicPlayPage.actionEnd()
         trunToMainAnimation.start()
     }
 

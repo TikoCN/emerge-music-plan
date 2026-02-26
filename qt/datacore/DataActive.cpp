@@ -1,5 +1,5 @@
 #include "DataActive.h"
-#include "sqlite/sqlite.h"
+#include "sqlite/Sqlite.h"
 #include <QDir>
 #include <algorithm>
 #include "namekey.h"
@@ -124,7 +124,7 @@ void DataActive::updateMusicLevel(const int musicId, const bool level)
     m_sql->updateMusic(music);
 }
 
-void DataActive::updatePlayListName(int playListId, QString name) {
+void DataActive::updatePlayListName(const int playListId, const QString &name) {
     const PlayListPtr playList = getPlayListCore(playListId);
     if (playList.isNull()) {
         m_loger->logError("更新列表姓名失败");
@@ -146,7 +146,7 @@ void DataActive::updatePlayListSort(int playListId, int sort) {
     m_sql->updatePlayList(playList);
 }
 
-void DataActive::updateArtistName(int artistId, QString name) {
+void DataActive::updateArtistName(const int artistId, const QString &name) {
     const ArtistPtr artist = getArtistCore(artistId);
     if (artist.isNull()) {
         m_loger->logError("更新歌手名称失败");
@@ -168,7 +168,7 @@ void DataActive::updateArtistSort(int artistId, int sort) {
     m_sql->updateArtist(artist);
 }
 
-void DataActive::updateAlbumName(int albumId, QString name) {
+void DataActive::updateAlbumName(const int albumId, const QString &name) {
     const AlbumPtr album = getAlbumCore(albumId);
     if (album.isNull()) {
         m_loger->logError("更新专辑名称失败");

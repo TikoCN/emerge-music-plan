@@ -6,19 +6,29 @@ import Tiko
 import PlayView
 
 //纯色底片
-AutoCoverImage{
-    id: backCover
-    anchors.fill: parent
-    visible: false
-    loadMsTime: 10
+Rectangle{
+    color: TikoSeit.theme.baseTheme.backgroundNormal
+    property string iconUrl: ""
+    clip: true
 
-    layer.enabled: true
-    layer.effect: MultiEffect {
+    //模糊背景
+    AutoCoverImage {
+        id: backCover
+        anchors.fill: parent
+        loadMsTime: 1
+        visible: false
+        loadFlag: true
+        baseUrl: iconUrl
+    }
+
+    MultiEffect {
         id: effectCover
         autoPaddingEnabled: true
         source: backCover
+        width: parent.width * 1.5
+        height: parent.height * 1.5
         blurEnabled: true
-        blurMax: 10
+        blurMax: 50
         blur: 1.0
     }
 

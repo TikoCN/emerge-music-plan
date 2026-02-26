@@ -8,9 +8,10 @@ Item{
     property string artist: qsTr("标题")
     property string title: qsTr("标题")
     property string icon: ""
+    property bool show: false
 
-    onVisibleChanged: {
-        if (visible) {
+    onShowChanged: {
+        if (show) {
             lrcShow.buildLrcList()
             moveItem.moveTimer.start()
         } else {
@@ -30,13 +31,13 @@ Item{
         width: style.width / 2
         height: style.height
 
-        TikoImageAuto {
+        AutoCoverImage {
             id: cover
             anchors.horizontalCenter: leftShow.horizontalCenter
             y: leftShow.height * 0.1
             width: min
             height: min
-            loadUrl: style.icon
+            baseUrl: style.icon
             normalUrl: "qrc:/image/music.png"
             property double min: Math.min(leftShow.height * 0.5, leftShow.width * 0.8)
         }

@@ -9,7 +9,8 @@ MediaPlayData::MediaPlayData(BaseTool *baseTool, DataActive *dataActive, TLog *l
     : QObject(parent),
       m_baseTool(baseTool),
       m_dataActive(dataActive),
-      m_loger(loger) {
+      m_loger(loger)
+{
     m_player = new QMediaPlayer; //播放设备
     m_audioOutput = new QAudioOutput; //音频输出
     m_bufferOutput = new QAudioBufferOutput; //缓冲区输出
@@ -61,13 +62,12 @@ void MediaPlayData::buildFrequencySpectrum(const QAudioBuffer &buffer) {
     const auto *samples = buffer.constData<qint16>();
     const int all = static_cast<int>(buffer.frameCount()); //帧数
     const int sample = static_cast<int>(buffer.sampleCount()); //样本数
-    const int sampleRate = qMin(buffer.format().sampleRate(), 44100);
 
     if (all != 0) {
         const int alone = sample / all;
         QVector<double> data(all);
 
-        // 将多声道音频样本（例如立体声的左右声道）混合为单声道
+        // 将多声道音频样本（例如立体声左,右声道）混合为单声道
         for (int i = 0; i < all; ++i) {
             double sum = 0.0;
             const int base = i * alone;
@@ -105,12 +105,12 @@ void MediaPlayData::buildFrequencySpectrum(const QAudioBuffer &buffer) {
         fftw_free(out_ptr);
 
         //归一化
-        for (int i = 0; i < data.size(); i++) {
-            if (data[i] > m_maxHeightValue) {
-                m_maxHeightValue = data[i];
+        for (const double i : data) {
+            if (i > m_maxHeightValue) {
+                m_maxHeightValue = i;
             }
-            if (data[i] < m_minHeightValue) {
-                m_minHeightValue = data[i];
+            if (i < m_minHeightValue) {
+                m_minHeightValue = i;
             }
         }
         for (double & i : data) {
@@ -137,8 +137,8 @@ void MediaPlayData::buildFrequencySpectrum(const QAudioBuffer &buffer) {
         }
 
         // 降采样
-        const int aim = qMin(m_allSamples.size(), 120);
-        int cell = m_allSamples.size() / aim;
+        const int aim = static_cast<int>(qMin(m_allSamples.size(), 120));
+        const int cell = static_cast<int>(m_allSamples.size() / aim);
         data.resize(aim);
         for (int i = 0; i < aim; i++) {
             const int basePos = i * cell;

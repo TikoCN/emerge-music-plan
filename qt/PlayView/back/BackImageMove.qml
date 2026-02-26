@@ -10,23 +10,25 @@ Rectangle{
     color: TikoSeit.theme.baseTheme.backgroundNormal
     property string iconUrl: ""
     property Timer moveTimer: moveTimerItem
+    clip: true
 
     //模糊背景
     AutoCoverImage {
         id: backCover
         width: 100
         height: 100
+        loadMsTime: 1
         visible: false
-        loadMsTime: 10
-        source: iconUrl
+        loadFlag: true
+        baseUrl: iconUrl
     }
 
     MultiEffect {
         id: effectCover
         autoPaddingEnabled: true
         source: backCover
-        width: pageMain.width * 5
-        height: pageMain.height * 5
+        width: parent.width * 3
+        height: parent.height * 3
         blurEnabled: true
         blurMax: 50
         blur: 1.0

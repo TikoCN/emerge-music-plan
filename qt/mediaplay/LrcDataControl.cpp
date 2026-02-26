@@ -16,7 +16,7 @@ void LrcDataControl::setPlayingPosition(long newPlayingPosition)
 LrcDataControl::LrcDataControl(BaseTool *baseTool, DataActive *dataActive, TLog *log, QObject *parent)
     : MediaPlayData(baseTool, dataActive, log, parent)
       , m_playingLrcId(-1) {
-    connect(m_player, &QMediaPlayer::playingChanged, this, [=](const bool isPlaying) {
+    connect(m_player, &QMediaPlayer::playingChanged, this, [this](const bool isPlaying) {
         if (isPlaying) {
             m_maxHeightValue = 0;
             m_minHeightValue = 100;
@@ -31,7 +31,7 @@ LrcDataControl::LrcDataControl(BaseTool *baseTool, DataActive *dataActive, TLog 
     });
 
     m_updateLrcTimer = new QTimer(this);
-    connect(m_updateLrcTimer, &QTimer::timeout, this, [=]() {
+    connect(m_updateLrcTimer, &QTimer::timeout, this, [this]() {
         m_startTime += m_updateLrcTimer->interval();
         m_playingPosition = m_startTime + m_player->position();
         selectPlayLrc(m_playingPosition);

@@ -11,8 +11,8 @@ Item{
     property bool show: false
 
     BackImage {
-        anchors.fill: parent
-        source: style.icon
+        anchors.fill: style
+        iconUrl: style.icon
     }
 
     AudioVsualizationCircle {

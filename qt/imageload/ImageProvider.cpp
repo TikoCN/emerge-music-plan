@@ -5,10 +5,10 @@
 #include <QPainterPath>
 #include <QImageReader>
 #include <utility>
-#include "sqlite/sqlite.h"
-#include "ffmpeg.h"
-#include "basetool/basetool.h"
-#include "datacore/dataactive.h"
+#include "sqlite/Sqlite.h"
+#include "FFmpeg.h"
+#include "basetool/Basetool.h"
+#include "datacore/DataActive.h"
 
 namespace {
 // 匿名命名空间，只在当前文件可见
@@ -70,24 +70,29 @@ void ImageResponse::loadPlayListCover(const bool isOnline)
     }
 }
 
+/**
+ * @brief 加载 歌手 封面
+ * @param isOnline 是否下载网络封面
+ */
 void ImageResponse::loadArtistCover(const bool isOnline)
 {
     const ArtistPtr artist = data->getArtistCore(m_loadId);
-    if (artist.isNull()) {
-        return;
-    }
+    if (artist.isNull()) {return;}
 
     const QString name = artist->name;
-
-    if (const QString url = FileManagement::getArtistCoverUrl(name);
-        !loadImageFile(url) && isOnline) {
-        TLog::getInstance()->logIgnore(
-            tr("歌手") +
-            tr("封面加载失败") +
-            tr("开始下载封面"));
+    const QString url = FileManagement::getArtistCoverUrl(name);
+    bool isNoLoad = !loadImageFile(url);
+    if (isNoLoad && isOnline) {
+        TLog::getInstance()->logInfo(tr("歌手封面加载失败，开始下载封面"));
 
         OnLine::downArtistCover(name, url);
-        loadImageFile(url);
+        isNoLoad = !loadImageFile(url);
+    }
+
+    // 加载”歌手“第一首”歌曲“作为封面
+    if (isNoLoad) {
+        m_loadMusicId = SQLite::getInstance()->getArtistMusicFirst(m_loadId);
+        loadMusicCover(m_loadMusicId);
     }
 }
 
@@ -99,15 +104,19 @@ void ImageResponse::loadAlbumCover(const bool isOnline)
     }
 
     const QString name = album->name;
+    const QString url = FileManagement::getAlbumCoverUrl(name);
+    bool isNoLoad = !loadImageFile(url);
+    if (isNoLoad && isOnline){
+        TLog::getInstance()->logIgnore(tr("专辑封面加载失败，开始下载封面"));
 
-    if (const QString url = FileManagement::getAlbumCoverUrl(name); !loadImageFile(url) && isOnline){
-        TLog::getInstance()->logIgnore(
-            tr("专辑") +
-            tr("封面加载失败") +
-            tr("开始下载封面"));
         OnLine::downAlbumCover(name, url);
-        // 重新加载
-        loadImageFile(url);
+        isNoLoad = !loadImageFile(url);
+    }
+
+    // 加载”专辑“第一首”歌曲“作为封面
+    if (isNoLoad) {
+        m_loadMusicId = SQLite::getInstance()->getAlbumMusicFirst(m_loadId);
+        loadMusicCover(m_loadMusicId);
     }
 }
 
@@ -147,9 +156,10 @@ bool ImageResponse::loadImageFile(const QString& url)
 ImageResponse::ImageResponse(QString url, const QSize &requestedSize)
     :m_requestedSize(requestedSize)
 {
-    m_url = std::move(url) + QString("&width:%1&height:%2")
-    .arg(requestedSize.width())
-    .arg(requestedSize.height());
+    m_loadId = -1;
+    m_loadMusicId = 1;
+    m_radius = 0;
+    m_url = std::move(url);
     setAutoDelete(false);
     ctr = ImageControl::getInstance();
     data = DataActive::getInstance();

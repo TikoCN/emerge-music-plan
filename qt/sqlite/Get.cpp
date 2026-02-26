@@ -27,13 +27,13 @@ QStringList Get::getArtistKeys() {
     return keyList;
 }
 
-/*
+/**
  * @brief 根据key得到对应 artist
  * @param key 名称关键词
  * @param size 页大小
  * @param start 初始未知
  * @return 返回的artist ID列表
- */
+ **/
 QList<int> Get::getArtistByKey(const QString &key, const int size, const int start) {
     QList<int> artistList;
     sqlite3_stmt *stmt = nullptr;
@@ -152,7 +152,7 @@ QList<int> Get::getArtistMusic(const int id, const int size, const int start, co
     return list;
 }
 
-QList<int> Get::getArtistMusicAll(const int id, int sort) {
+QList<int> Get::getArtistMusicAll(const int id, const int sort) {
     QList<int> list;
     sqlite3_stmt *stmt = nullptr;
 
@@ -216,7 +216,7 @@ int Get::getArtistMusicFirst(const int artistId) {
     return musicId;
 }
 
-int Get::getAlbumMusicFirst(int albumId) {
+int Get::getAlbumMusicFirst(const int albumId) {
     int musicId = -1;
     sqlite3_stmt *stmt = nullptr;
     try {

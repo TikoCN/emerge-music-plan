@@ -5,7 +5,7 @@
 #include "delete.h"
 #include "baseclass/DataException.h"
 
-/*
+/**
  * @brief 删除"正在播放列表"中 position 的大于 position 的 musicId
  * @param position 起始位置
  */

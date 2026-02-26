@@ -42,7 +42,7 @@ TikoButtonBase {
         height: width
         anchors.horizontalCenter: parent.horizontalCenter
         normalUrl: normalIcon
-        loadUrl: loadIcon
+        baseUrl: loadIcon
 
         PropertyAnimation on y {
             id: upAnim

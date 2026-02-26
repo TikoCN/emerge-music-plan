@@ -32,6 +32,7 @@ qt_add_qml_module(PlayViewLib
         Main.qml
         CoreData.qml
         AutoCoverImage.qml
+        LoadBase.qml
         # 播放器页面相关
         player/ShowPagePlayList.qml
         player/ShowPageAlbum.qml
@@ -107,9 +108,11 @@ qt_add_qml_module(PlayViewLib
 
         back/BackImage.qml
         back/BackWater.qml
+        back/BackImageMove.qml
 
-        LoadBase.qml
         QML_FILES AudioVisualizationRectangle/AudioVsualizationRect.qml
+        QML_FILES AudioVisualizationRectangle/AudioVsualizationCircle.qml
+
         QML_FILES GeneralControls/PositionControl.qml
         QML_FILES GeneralControls/WindowClose.qml
         QML_FILES GeneralControls/WindowMax.qml
@@ -117,8 +120,6 @@ qt_add_qml_module(PlayViewLib
         QML_FILES GeneralControls/PlayUp.qml
         QML_FILES GeneralControls/PlayDown.qml
         QML_FILES GeneralControls/PlayState.qml
-        QML_FILES AudioVisualizationRectangle/AudioVsualizationCircle.qml
-        QML_FILES back/BackImageMove.qml
 )
 
 # 链接 QtQuick 依赖（纯 QML 模块也需要显式链接）

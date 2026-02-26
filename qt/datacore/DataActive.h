@@ -28,13 +28,13 @@ public:
     Q_INVOKABLE void updateMusicLove(int musicId, bool isLove);
     Q_INVOKABLE void updateMusicLevel(int musicId, bool level);
 
-    Q_INVOKABLE void updatePlayListName(int playListId, QString name);
+    Q_INVOKABLE void updatePlayListName(int playListId, const QString &name);
     Q_INVOKABLE void updatePlayListSort(int playListId, int sort);
 
-    Q_INVOKABLE void updateArtistName(int artistId, QString name);
+    Q_INVOKABLE void updateArtistName(int artistId, const QString &name);
     Q_INVOKABLE void updateArtistSort(int artistId, int sort);
 
-    Q_INVOKABLE void updateAlbumName(int albumId, QString name);
+    Q_INVOKABLE void updateAlbumName(int albumId, const QString &name);
     Q_INVOKABLE void updateAlbumSort(int albumId, int sort);
 
     Q_INVOKABLE void updateALLNameKey() const;

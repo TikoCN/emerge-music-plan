@@ -1,7 +1,7 @@
 #include "DataManager.h"
 
-#include "sqlite/sqlite.h"
-#include "tlog.h"
+#include "sqlite/Sqlite.h"
+#include "Tlog.h"
 #include <QDir>
 
 DataManager::DataManager()
@@ -195,21 +195,21 @@ void DataManager::deleteOutCache(DataManager::CORE_TYPE type, int id)
 
     //删除
     if (m_deleteList.size() > 50) {
-        QPair<DataManager::CORE_TYPE, int> deleteDataActive = m_deleteList.takeFirst();
+        const auto [fst, snd] = m_deleteList.takeFirst();
         m_deleteListMutex.unlock();
 
-        switch (deleteDataActive.first) {
+        switch (fst) {
         case DataManager::CORE_TYPE::ALBUM:
-            releaseAlbum(deleteDataActive.second);
+            releaseAlbum(snd);
             break;
         case DataManager::CORE_TYPE::ARTIST:
-            releaseArtist(deleteDataActive.second);
+            releaseArtist(snd);
             break;
         case DataManager::CORE_TYPE::MUSIC:
-            releaseMusic(deleteDataActive.second);
+            releaseMusic(snd);
             break;
         case DataManager::CORE_TYPE::PLAYLIST:
-            releasePlayList(deleteDataActive.second);
+            releasePlayList(snd);
             break;
         default:
             break;

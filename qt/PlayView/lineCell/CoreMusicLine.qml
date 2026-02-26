@@ -67,7 +67,7 @@ Item {
                 width: 50
                 height: 50
                 normalUrl: "qrc:/image/music.png"
-                loadUrl: "image://cover/musicFile?id=" +
+                baseUrl: "image://cover/musicFile?id=" +
                          musicId.toString() +
                          "&radius=10"
             }

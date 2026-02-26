@@ -1,11 +1,10 @@
 #include "TaskCenter.h"
-#include <QDir>
 #include "BuildMusicCore.h"
 #include "SelectMusicUrl.h"
-#include "setting.h"
-#include "sqlite/sqlite.h"
-#include "datacore/dataactive.h"
-#include "tlog.h"
+#include "Setting.h"
+#include "sqlite/Sqlite.h"
+#include "datacore/DataActive.h"
+#include "Tlog.h"
 
 TaskCenter::TaskCenter()
 {
@@ -136,36 +135,35 @@ void TaskCenter::appendInfo(const QFileInfoList& fileInfoList)
     }
 }
 
-void TaskCenter::appendMedia(QList<MediaData> dataList)
+void TaskCenter::appendMedia(const QList<MediaData>& dataList)
 {
     m_dataList.append(dataList);
-    for (MediaData &i : dataList) {
-        const MediaData *data = &i;
+    for (const MediaData &data : dataList) {
          static QRegularExpression rx("[,;]+");
 
-        const auto artistList = data->artist.split(rx);
+        const auto artistList = data.artist.split(rx);
         for (const QString& artist : artistList) {
             m_artistSet.insert(artist);
             QPair<QString, QString> pair;
-            pair.first = data->url;
+            pair.first = data.url;
             pair.second = artist;
             m_artistMusicList.append(pair);
         }
         
-        const auto albumList = data->album.split(rx);
+        const auto albumList = data.album.split(rx);
         for (const QString& album : albumList) {
             m_albumSet.insert(album);
             QPair<QString, QString> pair;
-            pair.first = data->url;
+            pair.first = data.url;
             pair.second = album;
             m_albumMusicList.append(pair);
         }
 
-        m_playlistSet.insert(data->dir);
-        m_dataList.append(*data);
+        m_playlistSet.insert(data.dir);
+        m_dataList.append(data);
         QPair<QString, QString> pair;
-        pair.first = data->url;
-        pair.second = data->dir;
+        pair.first = data.url;
+        pair.second = data.dir;
         m_playlistMusicList.append(pair);
     }
     m_work--;

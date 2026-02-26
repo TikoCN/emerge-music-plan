@@ -451,7 +451,7 @@ bool Append::appendPlayingListMusic(const QList<int> &musicList, int start) {
     sqlite3_stmt *stmt = nullptr;
 
     try {
-        // 构建 SQL：INSERT OR IGNORE INTO playinglist(music_id, position) VALUES(?, ?)
+        // 构建 SQL：INSERT OR IGNORE INTO playing List(music_id, position) VALUES(?, ?)
         const auto sql = QString("INSERT OR IGNORE INTO %1(%2, %3) VALUES(?, ?)")
             .arg(LiteralConstant::Table::PLAYINGLIST)
             .arg(LiteralConstant::Column::MUSIC_ID)

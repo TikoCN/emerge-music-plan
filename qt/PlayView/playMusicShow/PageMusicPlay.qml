@@ -21,8 +21,7 @@ MouseArea {
     Loader{
         id: loaderStyle
         width: pageMain.width
-        height: pageMain.height - back.height
-        y: back.height
+        height: pageMain.height
 
         Component {
             id: playStyleCom1
@@ -30,6 +29,7 @@ MouseArea {
                 artist: pageMain.artist
                 title: pageMain.title
                 icon: pageMain.icon
+                show: pageMain.show
             }
         }
 
@@ -39,6 +39,7 @@ MouseArea {
                 artist: pageMain.artist
                 title: pageMain.title
                 icon: pageMain.icon
+                show: pageMain.show
             }
         }
 
@@ -49,8 +50,7 @@ MouseArea {
                 artist = json.artist
                 title = json.title
                 icon = "image://cover/musicOnLine?id=" +
-                        MediaPlayer.playingMusicId.toString() +
-                        "&radius=10&highLight"
+                        MediaPlayer.playingMusicId.toString() + "&radius=10"
             }
         }
     }
@@ -59,8 +59,8 @@ MouseArea {
     Drawer {
         id: typeSelect
         edge: Qt.RightEdge
-        width: pageMain.width * 0.3
-        height: pageMain.height
+        width: CoreData.windows.width * 0.3
+        height: CoreData.windows.height
 
         Rectangle {
             id: background
@@ -88,7 +88,6 @@ MouseArea {
                     type = modelData.id
                 }
             }
-
 
             model: [{id:1},{id:2}]
         }
