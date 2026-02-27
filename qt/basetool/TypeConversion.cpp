@@ -1,5 +1,6 @@
 #include "TypeConversion.h"
 #include <QDateTime>
+#include <QtConcurrent/QtConcurrent>
 
 TypeConversion::TypeConversion(QObject *parent)
     : QObject{parent}
@@ -81,4 +82,12 @@ QList<QString> TypeConversion::stringToStringList(const QString &str)
     if(!str.contains("String:") || str == "String:")
         return {};
     return str.split("String:")[1].split(";").toList();
+}
+
+QList<int> TypeConversion::sqlStringListToIntList(const QStringList &strList) {
+    QList<int> list;
+    for (int i = 0; i < strList.length(); i++) {
+        list.append(strList[i].toInt());
+    }
+    return list;
 }

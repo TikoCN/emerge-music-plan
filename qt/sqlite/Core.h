@@ -4,13 +4,15 @@
 #include "sqlite3.h"
 #include "Tlog.h"
 #include "baseclass/SortType.h"
+#include "basetool/BaseTool.h"
 #include "baseclass/LiteralConstant.h"
 
 class Core : public QObject
 {
     Q_OBJECT
 protected:
-    TLog *tlog;
+    TLog *m_loger;
+    BaseTool *m_tool;
     sqlite3 *m_db = nullptr;
     int m_r = 0;
     char *m_error = nullptr;
@@ -34,7 +36,7 @@ protected:
     void sqlExecute(const char *sql, QString error);
 
 public:
-    explicit Core(TLog *log);
+    explicit Core(TLog *log, BaseTool *tool);
     bool commit();
 
     bool begin();

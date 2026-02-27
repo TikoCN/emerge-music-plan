@@ -14,11 +14,11 @@ Item {
     ListView {
         id: keyListView
         orientation: ListView.Horizontal
+        width: parent.width
         currentIndex: 0
         height: 40
         anchors.left: parent.left
         anchors.margins: 30
-        spacing: 10
         highlightRangeMode: ListView.ApplyRange
         preferredHighlightBegin: width / 4
         preferredHighlightEnd: width / 4
@@ -28,14 +28,13 @@ Item {
             id: keyModel
         }
 
-        delegate: TikoTextLine {
-            text: model.key
+        delegate: TikoButtonNormal {
+            textLine.text: model.key
             height: 40
             opacity: ListView.isCurrentItem ? 1 : 0.3
-
-            MouseArea {
-                anchors.fill: parent
-                onClicked: currentKey = model.key
+            onClicked: {
+                keyListView.currentIndex = model.id
+                currentKey = model.key
             }
         }
     }
@@ -57,7 +56,10 @@ Item {
     function listToKeyModel(list){
         if (list.length <= 0) return
 
-        list.forEach(key => {keyModel.append({key: key})})
+        for (let i = 0; i < list.length; i++) {
+            keyModel.append({key: list[i], id:i})
+        }
+
         currentKey = list[0]
     }
 

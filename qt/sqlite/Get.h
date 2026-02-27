@@ -13,7 +13,7 @@ class Get : public Delete
 {
     Q_OBJECT
 public:
-    explicit Get(TLog *log) : Delete(log) {};
+    explicit Get(TLog *log, BaseTool *tool) : Delete(log, tool) {};
 
     // 歌手
     Q_INVOKABLE QStringList getArtistKeys();

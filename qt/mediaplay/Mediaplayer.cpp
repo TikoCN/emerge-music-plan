@@ -12,6 +12,8 @@ void MediaPlayer::playMusicByListId(const int musicListId) {
     m_playingMusicId = m_playingMusic->id;
     m_player->setSource(m_playingMusic->url);
     m_PlayingMusicListId = musicListId;
+
+    m_loger->logInfo(QString("播放音乐，正在播放 音乐 listid%1").arg(musicListId));
     loadLrcList(m_playingMusicId);
 }
 
@@ -92,34 +94,37 @@ void MediaPlayer::setLoopType(const int newLoopType) {
  * @param playMusicInListId 初始播放位置，默认为 0
  */
 void MediaPlayer::buildPlayingList(QList<int> list, const int playMusicInListId) {
-    m_sqlite->deletePlayingList(0);
-    m_sqlite->appendPlayingListMusic(list, 0);
-
     m_musicList = std::move(list);
     playMusicByListId(playMusicInListId);
     emit musicListBuild();
-}
 
-void MediaPlayer::buildPlayingId(const int musicId) {
-    buildPlayingList({musicId});
+    // 同步的数据库
+    m_sqlite->deletePlayingList(0);
+    m_sqlite->appendPlayingListMusic(list, 0);
 }
 
 void MediaPlayer::buildPlayingArtist(const int artistId, const int listId) {
     const auto artist = m_dataActive->getArtistCore(artistId);
     const auto musicList = m_sqlite->getArtistMusicAll(artistId, artist->sortType);
     buildPlayingList(musicList, listId);
+
+    m_loger->logUser(QString("播放歌手音乐%1").arg(artistId));
 }
 
 void MediaPlayer::buildPlayingAlbum(const int albumId, const int listId) {
     const auto album = m_dataActive->getAlbumCore(albumId);
     const auto musicList = m_sqlite->getAlbumMusicAll(albumId, album->sortType);
     buildPlayingList(musicList, listId);
+
+    m_loger->logUser(QString("播放专辑音乐%1").arg(albumId));
 }
 
 void MediaPlayer::buildPlayingPlayList(const int playListId, const int listId) {
     const auto playList = m_dataActive->getPlayListCore(playListId);
     const auto musicList = m_sqlite->getPlayListMusicAll(playListId, playList->sortType);
     buildPlayingList(musicList, listId);
+
+    m_loger->logUser(QString("播放列表音乐%1").arg(playListId));
 }
 
 void MediaPlayer::insertPlayingArtist(const int artistId) {
@@ -163,29 +168,23 @@ void MediaPlayer::insertPlayingList(const QList<int> &list) {
     const QList<int> leftList = m_musicList.sliced(0, m_PlayingMusicListId);
     const QList<int> rightList = std::move(list) + m_musicList.sliced(m_PlayingMusicListId);
 
-    m_sqlite->deletePlayingList(m_PlayingMusicListId);
-    m_sqlite->appendPlayingListMusic(rightList, m_PlayingMusicListId);
-
     m_musicList.clear();
     m_musicList.append(std::move(leftList));
     m_musicList.append(std::move(rightList));
     emit musicListBuild();
-}
 
-void MediaPlayer::insertPlayingId(const int musicId) {
-    insertPlayingList({musicId});
+    // 同步数据库
+    m_sqlite->deletePlayingList(m_PlayingMusicListId);
+    m_sqlite->appendPlayingListMusic(rightList, m_PlayingMusicListId);
 }
 
 void MediaPlayer::appendPlayingList(const QList<int> &list) {
     const int length = list.size();
-    m_sqlite->appendPlayingListMusic(list, length);
-
     m_musicList.append(list);
     emit musicListBuild();
-}
 
-void MediaPlayer::appendPlayingId(const int musicId) {
-    appendPlayingList({musicId});
+    // 同步到数据库
+    m_sqlite->appendPlayingListMusic(list, length);
 }
 
 QList<int> MediaPlayer::getMusicList(const int size, const int start) const {

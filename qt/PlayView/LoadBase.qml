@@ -6,28 +6,30 @@ QtObject {
 
     property bool loadEnable: true
     property bool loadIsFinish: false
+    property bool loadInit: false
 
     signal loadData(int index)
-
+    signal loadInitData()
 
     function loadMore() {
-        if(!loadEnable || loadIsFinish || loadingMore) return
+        if(!loadEnable || loadIsFinish || !loadInit || loadingMore ) return
 
         loadingMore = true
 
         loadData(loadPos)
-        loadPos += CoreData.pageSize
 
         loadingMore = false
     }
 
     function reset() {
         loadPos = 0
+        loadInit = false
         loadIsFinish = false
+        init()
     }
 
-    function resetData() {
-        reset()
-        loadMore()
+    function init () {
+        loadInitData()
+        loadInit = true
     }
 }

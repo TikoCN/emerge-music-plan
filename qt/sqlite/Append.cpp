@@ -36,7 +36,7 @@ bool Append::appendMusic(const QList<MediaData> &dataList) {
         stmtPrepare(&appendMusicStmt, appendMusicSql.toUtf8());
         stmtPrepare(&getAlbumIDStmt, getAlbumIDSql.toUtf8());
 
-        NameKey key(tlog);
+        NameKey key(m_loger);
 
         for (const MediaData &data: dataList) {
             stmtReset(getAlbumIDStmt);
@@ -55,7 +55,7 @@ bool Append::appendMusic(const QList<MediaData> &dataList) {
             stmtStep(appendMusicStmt);
         }
     } catch (const DataException &e) {
-        tlog->logError(e.errorMessage());
+        m_loger->logError(e.errorMessage());
         result = false;
     }
 
@@ -82,7 +82,7 @@ bool Append::appendAlbum(const QStringList &albumList) {
             .arg(LiteralConstant::Column::NAME_KEY)     // key 字段
             .arg(LiteralConstant::Column::SORT);
         stmtPrepare(&stmt, sql.toUtf8());
-        NameKey key(tlog);
+        NameKey key(m_loger);
 
         for (const QString &i: albumList) {
             stmtReset(stmt);
@@ -92,7 +92,7 @@ bool Append::appendAlbum(const QStringList &albumList) {
             stmtStep(stmt);
         }
     } catch (const DataException &e) {
-        tlog->logError(e.errorMessage());
+        m_loger->logError(e.errorMessage());
         result = false;
     }
 
@@ -117,7 +117,7 @@ bool Append::appendAlbumMusic(int id, const QList<int> &musicList) {
             stmtStep(stmt);
         }
     } catch (const DataException &e) {
-        tlog->logError(e.errorMessage());
+        m_loger->logError(e.errorMessage());
         result = false;
     }
 
@@ -171,7 +171,7 @@ bool Append::appendAlbumMusic(const QList<QPair<QString, QString>> &pairList) {
             stmtStep(appendStmt);
         }
     } catch (const DataException &e) {
-        tlog->logError(e.errorMessage());
+        m_loger->logError(e.errorMessage());
         result = false;
     }
 
@@ -198,10 +198,9 @@ bool Append::appendArtist(const QStringList &artistList) {
             .arg(LiteralConstant::Column::NAME_KEY)      // key 字段
             .arg(LiteralConstant::Column::SORT);
         stmtPrepare(&stmt, sql.toUtf8());
-        NameKey key(tlog);
+        NameKey key(m_loger);
 
         for (const QString &i: artistList) {
-            qDebug() << i;
             stmtReset(stmt);
             stmtBindText(stmt, 1, i);
             stmtBindText(stmt, 2, key.find(i));
@@ -209,7 +208,7 @@ bool Append::appendArtist(const QStringList &artistList) {
             stmtStep(stmt);
         }
     } catch (const DataException &e) {
-        tlog->logError(e.errorMessage());
+        m_loger->logError(e.errorMessage());
         result = false;
     }
 
@@ -234,7 +233,7 @@ bool Append::appendArtistMusic(const int id, const QList<int> &musicList) {
             stmtStep(stmt);
         }
     } catch (const DataException &e) {
-        tlog->logError(e.errorMessage());
+        m_loger->logError(e.errorMessage());
         result = false;
     }
 
@@ -288,7 +287,7 @@ bool Append::appendArtistMusic(const QList<QPair<QString, QString> > &pairList) 
             stmtStep(appendStmt);
         }
     } catch (const DataException &e) {
-        tlog->logError(e.errorMessage());
+        m_loger->logError(e.errorMessage());
         result = false;
     }
 
@@ -327,7 +326,7 @@ bool Append::appendDirPlayList(const QStringList &urlList) {
             stmtStep(stmt);
         }
     } catch (const DataException &e) {
-        tlog->logError(e.errorMessage());
+        m_loger->logError(e.errorMessage());
         result = false;
     }
 
@@ -354,7 +353,7 @@ bool Append::appendUserPlayList(const QString &name) {
         stmtBindInt(stmt, 4, 1);
         stmtStep(stmt);
     } catch (const DataException &e) {
-        tlog->logError(e.errorMessage());
+        m_loger->logError(e.errorMessage());
         result = false;
     }
 
@@ -379,7 +378,7 @@ bool Append::appendPlayListMusic(const int id, const QList<int> &musicList) {
             stmtStep(stmt);
         }
     } catch (const DataException &e) {
-        tlog->logError(e.errorMessage());
+        m_loger->logError(e.errorMessage());
         result = false;
     }
     stmtFree(stmt);
@@ -431,7 +430,7 @@ bool Append::appendPlayListMusic(const QList<QPair<QString, QString> > &pairList
             stmtStep(appendStmt);
         }
     } catch (const DataException &e) {
-        tlog->logError(e.errorMessage());
+        m_loger->logError(e.errorMessage());
         result = false;
     }
 
@@ -466,7 +465,7 @@ bool Append::appendPlayingListMusic(const QList<int> &musicList, int start) {
         }
 
     } catch (const DataException &e) {
-        tlog->logError(e.errorMessage());
+        m_loger->logError(e.errorMessage());
         result = false;
     }
 

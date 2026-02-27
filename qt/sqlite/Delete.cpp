@@ -23,7 +23,7 @@ bool Delete::deletePlayingList(const int position) {
         stmtStep(stmt);
 
     } catch (const DataException &e) {
-        tlog->logError(e.errorMessage());
+        m_loger->logError(e.errorMessage());
         result = false;
     }
 

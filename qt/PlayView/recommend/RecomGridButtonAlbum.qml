@@ -7,7 +7,7 @@ RecomGridButtonBase {
     text: qsTr("随机推荐专辑")
 
     delegateItem: GridButtonAlbum {
-        dataLoader.onLoadData: {
+        dataLoader.onLoadInitData: {
             let list = SQLData.getAlbumRandList()
             appendList(list)
         }

@@ -99,8 +99,9 @@ void Core::sqlExecute(const char *sql, QString error) {
     if (m_r != SQLITE_OK) throwError(error);
 }
 
-Core::Core(TLog *log)
-    :tlog(log){
+Core::Core(TLog *log, BaseTool *tool)
+    :m_loger(log),
+m_tool(tool){
 }
 
 bool Core::begin()
@@ -109,7 +110,7 @@ bool Core::begin()
         m_r = sqlite3_exec(m_db, "BEGIN TRANSACTION;", nullptr, nullptr, &m_error);
         if (m_r != SQLITE_OK) throwError("开始事务失败");
     } catch (const DataException &e) {
-        tlog->logError(e.errorMessage());
+        m_loger->logError(e.errorMessage());
         return false;
     }
     return true;
@@ -121,7 +122,7 @@ bool Core::rollback()
         m_r = sqlite3_exec(m_db, "ROLLBACK;", nullptr, nullptr, &m_error);
         if (m_r != SQLITE_OK) throwError("回滚事务失败");
     } catch (const DataException &e) {
-        tlog->logError(e.errorMessage());
+        m_loger->logError(e.errorMessage());
         return false;
     }
     return true;
@@ -133,7 +134,7 @@ bool Core::commit()
         m_r = sqlite3_exec(m_db, "COMMIT;", nullptr, nullptr, &m_error);
         if (m_r != SQLITE_OK) throwError("结束事务失败");
     } catch (const DataException &e) {
-        tlog->logError(e.errorMessage());
+        m_loger->logError(e.errorMessage());
         return false;
     }
     return true;

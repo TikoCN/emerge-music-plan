@@ -39,7 +39,7 @@ bool Update::updateMusic(const QList<MusicPtr>& musicList)
             stmtStep(stmt);
         }
     } catch (const DataException &e) {
-        tlog->logError(e.errorMessage());
+        m_loger->logError(e.errorMessage());
         result = false;
     }
 
@@ -68,7 +68,7 @@ bool Update::updatePlayList(const PlayListPtr& playlist)
         stmtBindInt(stmt, 3, playlist->id);
         stmtStep(stmt);
     } catch (const DataException &e) {
-        tlog->logError(e.errorMessage());
+        m_loger->logError(e.errorMessage());
         result = false;
     }
     stmtFree(stmt);
@@ -105,7 +105,7 @@ bool Update::updatePlayingListMusic(const QList<int> &musicIdList, int start) {
         }
 
     } catch (const DataException &e) {
-        tlog->logError(e.errorMessage());
+        m_loger->logError(e.errorMessage());
         result = false;
     }
     stmtFree(stmt);
@@ -133,7 +133,7 @@ bool Update::updateArtist(const ArtistPtr& artist)
         stmtBindInt(stmt, 3, artist->id);
         stmtStep(stmt);
     } catch (const DataException &e) {
-        tlog->logError(e.errorMessage());
+        m_loger->logError(e.errorMessage());
         result = false;
     }
     stmtFree(stmt);
@@ -167,7 +167,7 @@ bool Update::updateAlbum(const AlbumPtr& album)
         stmtBindInt(stmt, 3, album->id);
         stmtStep(stmt);
     } catch (const DataException &e) {
-        tlog->logError(e.errorMessage());
+        m_loger->logError(e.errorMessage());
         result = false;
     }
     stmtFree(stmt);
@@ -202,7 +202,7 @@ bool Update::updateAlbumNameKey(const QStringList &albumName, const QStringList 
             ++key;
         }
     } catch (const DataException &e) {
-        tlog->logError(e.errorMessage());
+        m_loger->logError(e.errorMessage());
         result = false;
     }
     stmtFree(stmt);
@@ -231,7 +231,7 @@ bool Update::updateArtistNameKey(const QStringList &artistName, const QStringLis
             ++key;
         }
     } catch (const DataException &e) {
-        tlog->logError(e.errorMessage());
+        m_loger->logError(e.errorMessage());
         result = false;
     }
     stmtFree(stmt);
@@ -263,7 +263,7 @@ bool Update::updatePlayListMusic(const QList<int>& musicIdList, const int playli
             stmtStep(stmt);
         }
     } catch (const DataException &e) {
-        tlog->logError(e.errorMessage());
+        m_loger->logError(e.errorMessage());
         result = false;
     }
     stmtFree(stmt);
@@ -295,7 +295,7 @@ bool Update::updateArtistMusic(const QList<int>& musicIdList, const int artistNe
             stmtStep(stmt);
         }
     } catch (const DataException &e) {
-        tlog->logError(e.errorMessage());
+        m_loger->logError(e.errorMessage());
         result = false;
     }
     stmtFree(stmt);
@@ -327,7 +327,7 @@ bool Update::updateAlbumMusic(const QList<int>& musicIdList, const int albumNewI
             stmtStep(stmt);
         }
     } catch (const DataException &e) {
-        tlog->logError(e.errorMessage());
+        m_loger->logError(e.errorMessage());
         result = false;
     }
     stmtFree(stmt);

@@ -20,6 +20,7 @@ public:
     Q_INVOKABLE static QList<int> stringToIntList(const QString& str);
     Q_INVOKABLE static QList<long long> stringToLongList(const QString& str);
     Q_INVOKABLE static QList<QString> stringToStringList(const QString &str) ;
+    Q_INVOKABLE static QList<int> sqlStringListToIntList(const QStringList &strList);
 signals:
 };
 

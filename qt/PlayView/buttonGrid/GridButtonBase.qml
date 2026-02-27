@@ -29,11 +29,13 @@ GridView {
     }
 
     onAtYEndChanged: {
-        if (atYEnd && flow === GridView.LeftToRight) dataLoader.loadMore()
+        if (atYEnd && flow === GridView.LeftToRight)
+            dataLoader.loadMore()
     }
 
     onAtXEndChanged: {
-        if (atXEnd && flow === GridView.TopToBottom) dataLoader.loadMore()
+        if (atXEnd && flow === GridView.TopToBottom)
+            dataLoader.loadMore()
     }
 
     function setGridHeight(cell) {
@@ -45,7 +47,7 @@ GridView {
     }
 
     function reset() {
-        dataLoader.reset()
         gridModelItem.clear()
+        dataLoader.reset()
     }
 }

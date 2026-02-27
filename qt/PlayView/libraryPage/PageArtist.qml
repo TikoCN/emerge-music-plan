@@ -15,6 +15,11 @@ PageButtonBase {
         autoHeightEnable: false
         flow: GridView.LeftToRight
 
+        dataLoader.onLoadInitData: {
+            let list = SQLData.getArtistByKey(currentKey, CoreData.pageSize, 0)
+            appendList(list)
+        }
+
         dataLoader.onLoadData:(index) => {
                        let list = SQLData.getArtistByKey(currentKey, CoreData.pageSize, index)
                        appendList(list)

@@ -58,11 +58,13 @@ ListView{
                               })
         }
 
-        if (list.length !== CoreData.pageSize) dataLoader.loadIsFinish = true
+        if (list.length !== CoreData.pageSize)
+            dataLoader.loadIsFinish = true
+        dataLoader.loadPos += list.length
     }
 
     function reset() {
-        dataLoader.reset()
         musicModel.clear()
+        dataLoader.reset()
     }
 }

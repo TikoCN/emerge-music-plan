@@ -12,7 +12,7 @@ class Update : public Append
     Q_OBJECT
 public:
 
-    explicit Update(TLog * log) : Append(log) {};
+    explicit Update(TLog * log, BaseTool *tool) : Append(log, tool) {};
 
     // 更新条目
     bool updateMusic(const MusicPtr &music);

@@ -32,10 +32,10 @@ int main(int argc, char *argv[]) {
     //建立
     TLog::buildInstance();                                      // 0
     TLog *tlog = TLog::getInstance();
-    SQLite::buildInstance(tlog);                                // 1
-    SQLite *sql = SQLite::getInstance();
     BaseTool::buildInstance();                                  // 1
     BaseTool *baseTool = BaseTool::getInstance();
+    SQLite::buildInstance(tlog, baseTool);                       // 2
+    SQLite *sql = SQLite::getInstance();
 
     DataActive::buildInstance();                                 // 2
     DataActive *dataActive = DataActive::getInstance();

@@ -11,6 +11,8 @@ GridButtonBase {
 
     function appendList(list) {
         list.forEach(id => {gridModel.append({id: id})})
-        if (list.length !== CoreData.pageSize) dataLoader.loadIsFinish = true
+        if (list.length !== CoreData.pageSize)
+            dataLoader.loadIsFinish = true
+        dataLoader.loadPos += list.length
     }
 }

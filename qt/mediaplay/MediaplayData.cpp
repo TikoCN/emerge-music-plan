@@ -62,19 +62,19 @@ void MediaPlayData::buildFrequencySpectrum(const QAudioBuffer &buffer) {
     const auto *samples = buffer.constData<qint16>();
     const int all = static_cast<int>(buffer.frameCount()); //帧数
     const int sample = static_cast<int>(buffer.sampleCount()); //样本数
+    const int channel = buffer.format().channelCount();
 
     if (all != 0) {
-        const int alone = sample / all;
         QVector<double> data(all);
 
         // 将多声道音频样本（例如立体声左,右声道）混合为单声道
         for (int i = 0; i < all; ++i) {
             double sum = 0.0;
-            const int base = i * alone;
-            for (int j = 0; j < alone; ++j) {
+            const int base = i * channel;
+            for (int j = 0; j < channel; ++j) {
                 sum += samples[base + j];
             }
-            data[i] = sum / alone;  // 平均幅度
+            data[i] = sum / channel;  // 平均幅度
         }
 
         //计算傅里叶变换

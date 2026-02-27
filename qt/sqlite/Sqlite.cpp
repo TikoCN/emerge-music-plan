@@ -6,8 +6,8 @@ SQLite *SQLite::getInstance() {
     return instance;
 }
 
-SQLite::SQLite(TLog *log)
-    : Get(log) {
+SQLite::SQLite(TLog *log, BaseTool *tool)
+    : Get(log, tool) {
     m_error = nullptr;
 
     try {
@@ -39,7 +39,7 @@ SQLite::SQLite(TLog *log)
         if (value == 8) return;
         else if (value > 0) throwError("数据库异常，请删除 data.m_db 文件, 或者更新数据文件版本");
 
-        tlog->logError(QString("只存在%1表").arg(value));
+        m_loger->logError(QString("只存在%1表").arg(value));
         createTableMusic();
         createTablePlayList();
         createTablePlayinglist();
@@ -50,7 +50,7 @@ SQLite::SQLite(TLog *log)
         createTableAlbumMusic();
 
     } catch (const DataException &e) {
-        tlog->logError(e.errorMessage());
+        m_loger->logError(e.errorMessage());
         return;
     }
 }
@@ -74,7 +74,7 @@ bool SQLite::selectNewMusic(const QFileInfoList &infoList, QFileInfoList *newInf
                 newInfoList->append(i);
         }
     } catch (const DataException &e) {
-        tlog->logError(e.errorMessage());
+        m_loger->logError(e.errorMessage());
         flag = false;
     }
 
@@ -100,7 +100,7 @@ QList<QString> SQLite::clearNullPlayListItem() {
             }
         }
     } catch (const DataException &e) {
-        tlog->logError(e.errorMessage());
+        m_loger->logError(e.errorMessage());
     }
 
     stmtFree(stmt);
@@ -279,7 +279,7 @@ QList<QString> SQLite::clearNullMusicItem() {
             }
         }
     } catch (const DataException &e) {
-        tlog->logError(e.errorMessage());
+        m_loger->logError(e.errorMessage());
     }
 
     stmtFree(stmt);

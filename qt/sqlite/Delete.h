@@ -11,7 +11,7 @@ class Delete : public Update{
     Q_OBJECT
 public:
 
-    explicit Delete(TLog * log) : Update(log) {};
+    explicit Delete(TLog * log, BaseTool *tool) : Update(log, tool) {};
 
     bool deletePlayingList(int position);
 };

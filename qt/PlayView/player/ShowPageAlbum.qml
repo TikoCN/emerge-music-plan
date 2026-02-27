@@ -27,6 +27,11 @@ ShowPageBase{
         musicList.reset()
     }
 
+    musicList.dataLoader.onLoadInitData: {
+        let list = SQLData.getAlbumMusic(albumId, CoreData.pageSize, 0, sort)
+        musicList.appendList(list)
+    }
+
     musicList.dataLoader.onLoadData: (index)=>{
                                          let list = SQLData.getAlbumMusic(albumId, CoreData.pageSize, musicList.dataLoader.loadPos, sort)
                                          musicList.appendList(list)

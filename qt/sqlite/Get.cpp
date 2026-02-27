@@ -21,7 +21,7 @@ QStringList Get::getArtistKeys() {
 
         sqlExecuteCallBack(sql.toUtf8(), callback, &keyList);
     } catch (const DataException &e) {
-        tlog->logError(e.errorMessage());
+        m_loger->logError(e.errorMessage());
         return keyList;
     }
     return keyList;
@@ -33,7 +33,7 @@ QStringList Get::getArtistKeys() {
  * @param size 页大小
  * @param start 初始未知
  * @return 返回的artist ID列表
- **/
+ */
 QList<int> Get::getArtistByKey(const QString &key, const int size, const int start) {
     QList<int> artistList;
     sqlite3_stmt *stmt = nullptr;
@@ -53,7 +53,7 @@ QList<int> Get::getArtistByKey(const QString &key, const int size, const int sta
             artistList.append(id);
         }
     } catch (const DataException &e) {
-        tlog->logError(e.errorMessage());
+        m_loger->logError(e.errorMessage());
         artistList.clear();
     }
 
@@ -120,7 +120,7 @@ QHash<int, ArtistPtr> Get::getArtist(const QList<int> &idList) {
             artistHash.insert(i, artist);
         }
     } catch (const DataException &e) {
-        tlog->logError(e.errorMessage());
+        m_loger->logError(e.errorMessage());
         artistHash.clear();
     }
 
@@ -140,12 +140,13 @@ QList<int> Get::getArtistMusic(const int id, const int size, const int start, co
         stmtBindInt(stmt, 1, id);
         stmtBindInt(stmt, 2, size);
         stmtBindInt(stmt, 3, start);
-        while (stmtStep(stmt)) {
-            const int aim = sqlite3_column_int(stmt, 0);
-            list.append(aim);
-        }
+        stmtStep(stmt);
+
+        const QStringList strList = QString::fromUtf8(sqlite3_column_text(stmt, 0)).split(",");
+        list = TypeConversion::sqlStringListToIntList(strList);
+
     } catch (const DataException &e) {
-        tlog->logError(e.errorMessage());
+        m_loger->logError(e.errorMessage());
         list.clear();
     }
     stmtFree(stmt);
@@ -162,12 +163,13 @@ QList<int> Get::getArtistMusicAll(const int id, const int sort) {
                                                LiteralConstant::Column::ARTIST_ID, false);
         stmtPrepare(&stmt, sql.toUtf8());
         stmtBindInt(stmt, 1, id);
-        while (stmtStep(stmt)) {
-            const int aim = sqlite3_column_int(stmt, 0);
-            list.append(aim);
-        }
+        stmtStep(stmt);
+
+        const QStringList strList = QString::fromUtf8(sqlite3_column_text(stmt, 0)).split(",");
+        list = TypeConversion::sqlStringListToIntList(strList);
+
     } catch (const DataException &e) {
-        tlog->logError(e.errorMessage());
+        m_loger->logError(e.errorMessage());
         list.clear();
     }
     stmtFree(stmt);
@@ -175,7 +177,7 @@ QList<int> Get::getArtistMusicAll(const int id, const int sort) {
 }
 
 QList<int> Get::getAlbumMusicAll(const int id, const int sort) {
-    QList<int> musicList;
+    QList<int> list;
     sqlite3_stmt *stmt = nullptr;
     try {
         // SELECT music_id FROM album_music WHERE album_id = ?
@@ -184,16 +186,17 @@ QList<int> Get::getAlbumMusicAll(const int id, const int sort) {
                                                LiteralConstant::Column::ALBUM_ID, false);
         stmtPrepare(&stmt, sql.toUtf8());
         stmtBindInt(stmt, 1, id);
-        while (stmtStep(stmt)) {
-            const int musicId = sqlite3_column_int(stmt, 0);
-            musicList.append(musicId);
-        };
+        stmtStep(stmt);
+
+        const QStringList strList = QString::fromUtf8(sqlite3_column_text(stmt, 0)).split(",");
+        list = TypeConversion::sqlStringListToIntList(strList);
+
     } catch (const DataException &e) {
-        tlog->logError(e.errorMessage());
+        m_loger->logError(e.errorMessage());
     }
 
     stmtFree(stmt);
-    return musicList;
+    return list;
 }
 
 int Get::getArtistMusicFirst(const int artistId) {
@@ -210,7 +213,7 @@ int Get::getArtistMusicFirst(const int artistId) {
         stmtStep(stmt);
         musicId = sqlite3_column_int(stmt, 0);
     } catch (const DataException &e) {
-        tlog->logError(e.errorMessage());
+        m_loger->logError(e.errorMessage());
     }
     stmtFree(stmt);
     return musicId;
@@ -230,7 +233,7 @@ int Get::getAlbumMusicFirst(const int albumId) {
         stmtStep(stmt);
         musicId = sqlite3_column_int(stmt, 0);
     } catch (const DataException &e) {
-        tlog->logError(e.errorMessage());
+        m_loger->logError(e.errorMessage());
     }
     stmtFree(stmt);
     return musicId;
@@ -251,7 +254,7 @@ int Get::getPlayListMusicFirst(int playListId) {
         stmtStep(stmt);
         musicId = sqlite3_column_int(stmt, 0);
     } catch (const DataException &e) {
-        tlog->logError(e.errorMessage());
+        m_loger->logError(e.errorMessage());
     }
     stmtFree(stmt);
     return musicId;
@@ -280,7 +283,7 @@ QStringList Get::getAlbumKeys() {
 
         sqlExecuteCallBack(sql.toUtf8(), callback, &keyList);
     } catch (const DataException &e) {
-        tlog->logError(e.errorMessage());
+        m_loger->logError(e.errorMessage());
         return keyList;
     }
     return keyList;
@@ -305,7 +308,7 @@ QList<int> Get::getAlbumByKey(const QString &key, int size, int start) {
             albumList.append(id);
         }
     } catch (const DataException &e) {
-        tlog->logError(e.errorMessage());
+        m_loger->logError(e.errorMessage());
         albumList.clear();
     }
     stmtFree(stmt);
@@ -369,7 +372,7 @@ QHash<int, AlbumPtr> Get::getAlbum(const QList<int> &idList) {
             albumHash.insert(i, album);
         }
     } catch (const DataException &e) {
-        tlog->logError(e.errorMessage());
+        m_loger->logError(e.errorMessage());
         albumHash.clear();
     }
     stmtFree(stmt);
@@ -377,7 +380,7 @@ QHash<int, AlbumPtr> Get::getAlbum(const QList<int> &idList) {
 }
 
 QList<int> Get::getAlbumMusic(const int id, const int size, const int start, const int sort) {
-    QList<int> musicList;
+    QList<int> list;
     sqlite3_stmt *stmt = nullptr;
     try {
         const auto sql = getSelectMusicSortSql(sort,
@@ -387,16 +390,16 @@ QList<int> Get::getAlbumMusic(const int id, const int size, const int start, con
         stmtBindInt(stmt, 1, id);
         stmtBindInt(stmt, 2, size);
         stmtBindInt(stmt, 3, start);
-        while (stmtStep(stmt)) {
-            const int musicId = sqlite3_column_int(stmt, 0);
-            musicList.append(musicId);
-        };
+        stmtStep(stmt);
+
+        const QStringList strList = QString::fromUtf8(sqlite3_column_text(stmt, 0)).split(",");
+        list = TypeConversion::sqlStringListToIntList(strList);
     } catch (const DataException &e) {
-        tlog->logError(e.errorMessage());
+        m_loger->logError(e.errorMessage());
     }
 
     stmtFree(stmt);
-    return musicList;
+    return list;
 }
 
 QStringList Get::getMusicKeys() {
@@ -415,7 +418,7 @@ QStringList Get::getMusicKeys() {
 
         sqlExecuteCallBack(sql.toUtf8(), callback, &keyList);
     } catch (const DataException &e) {
-        tlog->logError(e.errorMessage());
+        m_loger->logError(e.errorMessage());
         return keyList;
     }
     return keyList;
@@ -440,7 +443,7 @@ QList<int> Get::getMusicByKey(const QString &key, const int size, const int star
             list.append(id);
         }
     } catch (const DataException &e) {
-        tlog->logError(e.errorMessage());
+        m_loger->logError(e.errorMessage());
         list.clear();
     }
     stmtFree(stmt);
@@ -461,7 +464,7 @@ QString Get::getMusicUrl(const int id) {
         stmtStep(stmt);
         url = QString::fromUtf8(sqlite3_column_text(stmt, 0));
     } catch (const DataException &e) {
-        tlog->logError(e.errorMessage());
+        m_loger->logError(e.errorMessage());
     }
     stmtFree(stmt);
     return url;
@@ -527,7 +530,7 @@ QHash<int, MusicPtr> Get::getMusic(const QList<int> &idList) {
             hash.insert(i, music);
         }
     } catch (const DataException &e) {
-        tlog->logError(e.errorMessage());
+        m_loger->logError(e.errorMessage());
         hash.clear();
     }
     stmtFree(stmt);
@@ -564,7 +567,7 @@ QString Get::getAllList() {
 
         sqlExecuteCallBack(sql.toUtf8(), callback, &array);
     } catch (const DataException &e) {
-        tlog->logError(e.errorMessage());
+        m_loger->logError(e.errorMessage());
         return "";
     }
 
@@ -609,7 +612,7 @@ PlayListPtr Get::getList(const int id) {
         playlist->musicConut = sqlite3_column_int(stmt, 6);
         playlist->firstMusic = sqlite3_column_int(stmt, 7);
     } catch (const DataException &e) {
-        tlog->logError(e.errorMessage());
+        m_loger->logError(e.errorMessage());
     }
     stmtFree(stmt);
     return playlist;
@@ -627,19 +630,20 @@ QList<int> Get::getPlayListMusic(const int id, const int size, const int start, 
         stmtBindInt(stmt, 1, id);
         stmtBindInt(stmt, 2, size);
         stmtBindInt(stmt, 3, start);
-        while (stmtStep(stmt)) {
-            const int aim = sqlite3_column_int(stmt, 0);
-            list.append(aim);
-        }
+        stmtStep(stmt);
+
+        const QStringList strList = QString::fromUtf8(sqlite3_column_text(stmt, 0)).split(",");
+        list = TypeConversion::sqlStringListToIntList(strList);
+
     } catch (const DataException &e) {
-        tlog->logError(e.errorMessage());
+        m_loger->logError(e.errorMessage());
         list.clear();
     }
     stmtFree(stmt);
     return list;
 }
 
-QList<int> Get::getPlayListMusicAll(const int id, int sort) {
+QList<int> Get::getPlayListMusicAll(const int id, const int sort) {
     QList<int> list;
     sqlite3_stmt *stmt = nullptr;
 
@@ -649,12 +653,13 @@ QList<int> Get::getPlayListMusicAll(const int id, int sort) {
                                                LiteralConstant::Column::PLAYLIST_ID, false);
         stmtPrepare(&stmt, sql.toUtf8());
         stmtBindInt(stmt, 1, id);
-        while (stmtStep(stmt)) {
-            const int aim = sqlite3_column_int(stmt, 0);
-            list.append(aim);
-        }
+        stmtStep(stmt);
+
+        const QStringList strList = QString::fromUtf8(sqlite3_column_text(stmt, 0)).split(",");
+        list = TypeConversion::sqlStringListToIntList(strList);
+
     } catch (const DataException &e) {
-        tlog->logError(e.errorMessage());
+        m_loger->logError(e.errorMessage());
         list.clear();
     }
     stmtFree(stmt);
@@ -710,7 +715,7 @@ QList<int> Get::getIntList(const QString &sql) {
     try {
         sqlExecuteCallBack(sql.toUtf8(), idListCallBack, &idList);
     } catch (const DataException &e) {
-        tlog->logError(e.errorMessage());
+        m_loger->logError(e.errorMessage());
         return {};
     }
     return idList;
@@ -751,7 +756,7 @@ int Get::checkArtistName(const QString &name) {
         stmtStep(stmt);
         r = sqlite3_column_int(stmt, 0);
     } catch (const DataException &e) {
-        tlog->logError(e.errorMessage());
+        m_loger->logError(e.errorMessage());
     }
 
     stmtFree(stmt);
@@ -774,7 +779,7 @@ int Get::checkAlbumName(const QString &name) {
         stmtStep(stmt);
         r = sqlite3_column_int(stmt, 0);
     } catch (const DataException &e) {
-        tlog->logError(e.errorMessage());
+        m_loger->logError(e.errorMessage());
     }
 
     stmtFree(stmt);
@@ -797,7 +802,7 @@ int Get::checkPlayListName(const QString &name) {
         stmtStep(stmt);
         r = sqlite3_column_int(stmt, 0);
     } catch (const DataException &e) {
-        tlog->logError(e.errorMessage());
+        m_loger->logError(e.errorMessage());
     }
     stmtFree(stmt);
     return r;
@@ -819,7 +824,7 @@ QStringList Get::getAlbumNameList(const int size, const int start) {
             albumNameList.append(name);
         };
     } catch (const DataException &e) {
-        tlog->logError(e.errorMessage());
+        m_loger->logError(e.errorMessage());
     }
 
     stmtFree(stmt);
@@ -842,7 +847,7 @@ QStringList Get::getArtistNameList(const int size, const int start) {
             artistNameList.append(name);
         };
     } catch (const DataException &e) {
-        tlog->logError(e.errorMessage());
+        m_loger->logError(e.errorMessage());
     }
 
     stmtFree(stmt);
@@ -949,9 +954,9 @@ QString Get::getSelectMusicSortSql(const int sort, const QString &masterTable, c
             break;
     }
 
-    QString litmit = "";
+    QString limit = "";
     if (isLimit) {
-        litmit = "LIMIT ? OFFSET ?";
+        limit = "LIMIT ? OFFSET ?";
     }
 
     // 按 music 表的列排序，需要连接 album_music 或 artist_music
@@ -963,7 +968,7 @@ QString Get::getSelectMusicSortSql(const int sort, const QString &masterTable, c
         // WHERE master.masterColumn = ?
         // ORDER BY aim.orderColumn sortDic
         // LIMIT ? OFFSET ?
-        sql = QString("SELECT aim.%1 "
+        sql = QString("SELECT GROUP_CONCAT(aim.%1) as musicList "
                     "FROM %2 aim "
                     "JOIN %3 master ON master.%1 = aim.%1 "
                     "WHERE master.%4 = ? "
@@ -975,7 +980,7 @@ QString Get::getSelectMusicSortSql(const int sort, const QString &masterTable, c
                 .arg(masterColumn) // %4 album/artist
                 .arg(orderColumn) // %5 排序列名
                 .arg(sortDic) // %6 ASC/DESC
-                .arg(litmit); //7
+                .arg(limit); //7
     } else {
         // SELECT aim_link.music_id
         // FROM aimLinkTable aim_link
@@ -984,7 +989,7 @@ QString Get::getSelectMusicSortSql(const int sort, const QString &masterTable, c
         // WHERE master.masterColumn = ?
         // ORDER BY aim_link.orderColumn sortDic
         // LIMIT ? OFFSET ?
-        sql = QString("SELECT aim_link.%1 "
+        sql = QString("SELECT GROUP_CONCAT(aim_link.%1) as musicList "
                     "FROM %2 aim_link "
                     "JOIN %3 aim ON aim.%4 = aim_link.%4 "
                     "JOIN %5 master ON master.%1 = aim_link.%1 "
@@ -999,7 +1004,7 @@ QString Get::getSelectMusicSortSql(const int sort, const QString &masterTable, c
                 .arg(masterColumn) // %6
                 .arg(orderColumn) // %7
                 .arg(sortDic) // %8
-                .arg(litmit); //9
+                .arg(limit); //9
     }
 
     return sql;

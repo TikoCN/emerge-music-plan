@@ -9,9 +9,9 @@ public:
     static SQLite *instance;
     static SQLite *getInstance();
 
-    static void buildInstance(TLog *tlog){
+    static void buildInstance(TLog *tlog, BaseTool *tool){
         if (instance == nullptr) {
-            instance = new SQLite(tlog);
+            instance = new SQLite(tlog, tool);
         }
     }
 
@@ -39,7 +39,7 @@ public:
     void createTableAlbumMusic();
 
 private:
-    explicit SQLite(TLog *log);
+    explicit SQLite(TLog *log, BaseTool *tool);
     ~SQLite() override;
 
 };

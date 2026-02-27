@@ -8,8 +8,8 @@ class Append : public Core
 {
     Q_OBJECT
 public:
-    explicit Append(TLog *log)
-        :Core(log) {}
+    explicit Append(TLog *log, BaseTool *tool)
+        :Core(log, tool) {}
 
     // 附加条目
     bool appendMusic(const MediaData &data);

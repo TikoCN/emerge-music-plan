@@ -21,5 +21,9 @@ Item {
         anchors.topMargin: 6
         width: coreButtonGird.width
         sourceComponent: delegateItem
+
+        onLoaded: {
+            item.dataLoader.init()
+        }
     }
 }
