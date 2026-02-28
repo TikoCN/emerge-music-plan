@@ -13,29 +13,40 @@ class FrequencySpectrum : public QObject {
 public:
     FrequencySpectrum();
     ~FrequencySpectrum() override;
-    QVector<double> lastData;
 
     // 混合通道
     static void mixChannels(int frameCount, int channelCount, QVector<double> &data);
 
-    static void applyHannWindow(QVector<double> &data);
+    void applyHannWindow();
 
-    static void performFFT(int frameCount, int sampleRate, QVector<double> &data);
+    void performFFT();
 
-    static void normalizeData(QVector<double> &data);
+    void normalizeData();
 
-    void smoothData(QVector<double> &data);
+    void applyWeight();
 
-    static void downsampleData(QVector<double> &data);
+    void smoothData();
+
+    void downsampleData();
+
+    void transform();
 
     //计算音频
-    void runSpectrum(const QAudioBuffer& buffer);
+    void runSpectrum(const QAudioBuffer &buffer);
+
+    static QVector<double> getOriginalData(const QAudioBuffer &buffer);
 
     signals:
     void dataFinished(QVector<double>);
 
 private:
     QThread *m_thread;
+    QVector<double> lastData;
+    QVector<double> data;
+    QVector<double> originalData;
+    int sampleCount;
+    int sampleRate;
+    const int fftwSize;
 
 };
 

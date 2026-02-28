@@ -13,15 +13,15 @@ Canvas{
         // 清除画布
         ctx.clearRect(0, 0, width, height)
         const inList = MediaPlayer.allSamples
-        const w = 3;
-        const length = width / w;
+        const length = inList.length
+        const w = Math.min(width/length, 3)
 
         ctx.fillStyle = showColor
         ctx.strokeStyle = showColor
         //上半部分方形
         for(let i=0; i<length && i<inList.length; i++){
-            ctx.fillRect(i*(w + 3), height,
-                        w, -height/2 * inList[i])
+            ctx.fillRect(i*(w + 1), height,
+                        w, (-height/2 * inList[i]) - 1)
         }
     }
 
