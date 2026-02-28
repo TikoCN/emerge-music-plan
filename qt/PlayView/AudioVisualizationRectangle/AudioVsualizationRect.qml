@@ -21,7 +21,7 @@ Canvas{
         //上半部分方形
         for(let i=0; i<length && i<inList.length; i++){
             ctx.fillRect(i*(w + 3), height,
-                        w, -height/3 * inList[i])
+                        w, -height/2 * inList[i])
         }
     }
 

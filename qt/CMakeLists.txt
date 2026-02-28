@@ -15,6 +15,8 @@ qt_standard_project_setup(REQUIRES 6.8)
 
 qt_add_executable(appmusicPlay
     main.cpp
+        mediaplay/FrequencySpectrum.cpp
+        mediaplay/FrequencySpectrum.h
 )
 
 qt_policy(SET QTP0004 NEW)
