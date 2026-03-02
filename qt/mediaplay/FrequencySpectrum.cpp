@@ -38,17 +38,15 @@ inline void FrequencySpectrum::mixChannels(const int frameCount, const int chann
 
 inline void FrequencySpectrum::applyHannWindow() {
     // 加窗
-    const int N = static_cast<int>(data.size());                 // 获取数据长度
-    for (int i = 0; i < N; ++i) {               // 遍历每个样本点
+    const int N = static_cast<int>(data.size());
+    for (int i = 0; i < N; ++i) {
         const double window = 0.5 * (1 - std::cos(2 * M_PI * i / (N - 1)));
         data[i] *= window;                       // 将原始数据乘以窗系数
     }
 }
 
 inline void FrequencySpectrum::performFFT() {
-
     //计算傅里叶变换
-    // 创建一个FFTW计划
     auto *in_ptr = static_cast<fftw_complex *>(fftw_malloc(sizeof(fftw_complex) * fftwSize));
     auto *out_ptr = static_cast<fftw_complex *>(fftw_malloc(sizeof(fftw_complex) * fftwSize));
 
@@ -65,14 +63,13 @@ inline void FrequencySpectrum::performFFT() {
 
     // 计算幅度谱
     const int useLength = fftwSize / 2;
-    for (int i = 1; i < useLength; ++i) {
+    for (int i = 0; i < useLength; ++i) {
         data[i] = std::sqrt(
             out_ptr[i][0] * out_ptr[i][0] +
             out_ptr[i][1] * out_ptr[i][1]
         );
     }
-    data.remove(20);
-    data.resize(useLength - 20);
+    data.resize(useLength);
 
     // 清理
     fftw_destroy_plan(plan);
@@ -83,28 +80,12 @@ inline void FrequencySpectrum::performFFT() {
 inline void FrequencySpectrum::normalizeData() {
 
     //归一化
-    double maxVal = 0.0;
-    double minVal = 0.0;
-    for (const double i : data) {
-        maxVal = std::max(i, maxVal);
-        minVal = std::min(i, minVal);
-    }
     for (double & val : data) {
-        //val = std::abs(val / maxVal);
-        val = (val - minVal) / (maxVal - minVal);
+        val /= fftwSize * 0.09;
+        if (val > 0.3) {
+            val = val * 0.5 + 0.1;
+        }
         val = std::max(val, 0.0);
-    }
-}
-
-inline void FrequencySpectrum::applyWeight() {
-    if (data.empty() || 0 == sampleRate) return;
-
-    const auto len = static_cast<int>(data.size());
-
-    // 转换为dB
-
-    for (int i = 0; i < len; ++i) {
-        data[i] = 20.0 * log10(data[i] / len + 1e-10);
     }
 }
 
@@ -130,17 +111,20 @@ inline void FrequencySpectrum::smoothData() {
 
 inline void FrequencySpectrum::downsampleData() {
     // 降采样
-    int i = 0, hz = 0;
-    double max = fftwSize / fftwSize;
-    double aim = std::min(120, (int)data.length());
-    double cell = max / aim;
+    int lastId = -1;
+    double hz = 0;
+    const double max = sampleRate / fftwSize;
+    const double aim = std::min(100, static_cast<int>(data.length()));
+    const double cell = max / aim;
 
     for (int i = 0; i < aim; ++i) {
-        double aimN = i * cell;
+        const double aimN = i * cell;
         hz = std::exp(aimN);
-        const int n = hz * fftwSize / sampleRate;
-        if (n < data.size())
+        const unsigned int n = (unsigned int)(hz * (double)fftwSize / (double)sampleRate);
+        if (lastId != n && n < data.size()) {
             data[i] = data[n];
+            lastId = n;
+        }
     }
     data.resize(aim);
 
@@ -152,7 +136,7 @@ void FrequencySpectrum::transform() {
     QVector<double> result;
     const int n = static_cast<int>(input.size());
 
-    // 逆序收集偶数索引元素（从最后一个偶数索引开始）
+    // 逆序收集偶数索引元素
     for (int i = (n % 2 == 0 ? n - 2 : n - 1); i >= 0; i -= 2) {
         result.append(input[i]);
     }
@@ -168,18 +152,18 @@ void FrequencySpectrum::runSpectrum(const QAudioBuffer &buffer) {
     const int channelCount = buffer.format().channelCount();
     sampleRate = buffer.format().sampleRate();
 
-    int cell = 1;
+    originalData = getOriginalData(buffer);
+    mixChannels(frameCount, channelCount, originalData);
 
-    QVector<double> cache = getOriginalData(buffer);
-    mixChannels(frameCount, channelCount, cache);
+    const int len = originalData.length();
 
-    originalData.append(std::move(cache));
-    if (originalData.length() < fftwSize) {
-        return;
+    fftwSize = 1;
+    while (fftwSize < len) {
+        fftwSize <<= 1;;
     }
 
-    data = std::move(QVector<double>(originalData.begin(), originalData.begin() + fftwSize));
-    originalData.erase(originalData.begin(), originalData.begin() + fftwSize);
+    originalData.resize(fftwSize);
+    data = originalData;
 
     applyHannWindow();
 
@@ -189,11 +173,8 @@ void FrequencySpectrum::runSpectrum(const QAudioBuffer &buffer) {
     // 降采样
     downsampleData();
 
-    // // 计算dp
-    applyWeight();
-
     // 整体偏移
-    transform();
+    //transform();
 
     normalizeData();
 

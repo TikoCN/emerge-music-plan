@@ -4,8 +4,10 @@
 #include <utility>
 
 void MediaPlayer::playMusicByListId(const int musicListId) {
-    if (musicListId >= m_musicList.size() || musicListId < 0)
+    if (musicListId >= m_musicList.size() || musicListId < 0) {
+        m_loger->logError(QString("播放越界歌曲 %1").arg(musicListId));
         return;
+    }
 
     m_playingMusic = m_dataActive->getMusicCore(m_musicList[musicListId]);
     m_playingMusic->playNumber++;
@@ -13,8 +15,8 @@ void MediaPlayer::playMusicByListId(const int musicListId) {
     m_player->setSource(m_playingMusic->url);
     m_PlayingMusicListId = musicListId;
 
-    m_loger->logInfo(QString("播放音乐，正在播放 音乐 listid%1").arg(musicListId));
     loadLrcList(m_playingMusicId);
+    m_loger->logInfo(QString("播放音乐，正在播放 音乐 listid%1").arg(musicListId));
 }
 
 
@@ -100,7 +102,7 @@ void MediaPlayer::buildPlayingList(QList<int> list, const int playMusicInListId)
 
     // 同步的数据库
     m_sqlite->deletePlayingList(0);
-    m_sqlite->appendPlayingListMusic(list, 0);
+    m_sqlite->appendPlayingListMusic(m_musicList, 0);
 }
 
 void MediaPlayer::buildPlayingArtist(const int artistId, const int listId) {

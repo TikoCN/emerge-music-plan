@@ -23,8 +23,6 @@ public:
 
     void normalizeData();
 
-    void applyWeight();
-
     void smoothData();
 
     void downsampleData();
@@ -46,7 +44,7 @@ private:
     QVector<double> originalData;
     int sampleCount;
     int sampleRate;
-    const int fftwSize;
+    int fftwSize;
 
 };
 
