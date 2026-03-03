@@ -27,8 +27,6 @@ public:
 
     void downsampleData();
 
-    void transform();
-
     //计算音频
     void runSpectrum(const QAudioBuffer &buffer);
 
@@ -42,8 +40,8 @@ private:
     QVector<double> lastData;
     QVector<double> data;
     QVector<double> originalData;
-    int sampleCount;
-    int sampleRate;
+    int sampleCount{};
+    int sampleRate{};
     int fftwSize;
 
 };

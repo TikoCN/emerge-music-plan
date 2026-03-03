@@ -48,7 +48,6 @@ SQLite::SQLite(TLog *log, BaseTool *tool)
         createTableArtistMusic();
         createTableAlbum();
         createTableAlbumMusic();
-
     } catch (const DataException &e) {
         m_loger->logError(e.errorMessage());
         return;
@@ -109,26 +108,26 @@ QList<QString> SQLite::clearNullPlayListItem() {
 
 void SQLite::createTableMusic() {
     const auto sql = QString("CREATE TABLE IF NOT EXISTS %1("
-            "%2 INTEGER PRIMARY KEY,"
-            "%3 TEXT NOT NULL,"
-            "%4 INT NOT NULL,"
-            "%5 INT NOT NULL,"
-            "%6 INT NOT NULL,"
-            "%7 INT NOT NULL,"
-            "%8 INT NOT NULL,"
-            "%9 TEXT NOT NULL UNIQUE,"
-            "%10 TEXT NOT NULL "
-            ")")
-    .arg(LiteralConstant::Table::MUSIC)
-    .arg(LiteralConstant::Column::MUSIC_ID)
-    .arg(LiteralConstant::Column::TITLE)
-    .arg(LiteralConstant::Column::DURATION)
-    .arg(LiteralConstant::Column::LAST_EDIT_TIME)
-    .arg(LiteralConstant::Column::LEVEL)
-    .arg(LiteralConstant::Column::IS_LOVE)
-    .arg(LiteralConstant::Column::PLAY_NUMBER)
-    .arg(LiteralConstant::Column::URL)
-    .arg(LiteralConstant::Column::NAME_KEY);
+                "%2 INTEGER PRIMARY KEY,"
+                "%3 TEXT NOT NULL,"
+                "%4 INT NOT NULL,"
+                "%5 INT NOT NULL,"
+                "%6 INT NOT NULL,"
+                "%7 INT NOT NULL,"
+                "%8 INT NOT NULL,"
+                "%9 TEXT NOT NULL UNIQUE,"
+                "%10 TEXT NOT NULL "
+                ")")
+            .arg(LiteralConstant::Table::MUSIC)
+            .arg(LiteralConstant::Column::MUSIC_ID)
+            .arg(LiteralConstant::Column::TITLE)
+            .arg(LiteralConstant::Column::DURATION)
+            .arg(LiteralConstant::Column::LAST_EDIT_TIME)
+            .arg(LiteralConstant::Column::LEVEL)
+            .arg(LiteralConstant::Column::IS_LOVE)
+            .arg(LiteralConstant::Column::PLAY_NUMBER)
+            .arg(LiteralConstant::Column::URL)
+            .arg(LiteralConstant::Column::NAME_KEY);
 
     // 执行sql
     sqlExecute(sql.toUtf8(), "创建music表失败");
@@ -137,100 +136,100 @@ void SQLite::createTableMusic() {
 void SQLite::createTablePlayinglist() {
     // 检测 playinglist
     const auto sql = QString("CREATE TABLE IF NOT EXISTS %1("
-            "%2 INTEGER PRIMARY KEY,"
-            "%3 INTEGER NOT NULL,"
-            "FOREIGN KEY (%3) REFERENCES %4(%3) ON DELETE CASCADE"
-            ")")
-    .arg(LiteralConstant::Table::PLAYINGLIST)
-    .arg(LiteralConstant::Column::POSITION)
-    .arg(LiteralConstant::Column::MUSIC_ID)
-    .arg(LiteralConstant::Table::MUSIC);
+                "%2 INTEGER PRIMARY KEY,"
+                "%3 INTEGER NOT NULL,"
+                "FOREIGN KEY (%3) REFERENCES %4(%3) ON DELETE CASCADE"
+                ")")
+            .arg(LiteralConstant::Table::PLAYINGLIST)
+            .arg(LiteralConstant::Column::POSITION)
+            .arg(LiteralConstant::Column::MUSIC_ID)
+            .arg(LiteralConstant::Table::MUSIC);
     // 执行sql
     sqlExecute(sql.toUtf8(), "创建 playinglist 表失败");
 }
 
 void SQLite::createTablePlayList() {
     const auto sql = QString(
-        "CREATE TABLE IF NOT EXISTS %1("
-        "%2 INTEGER PRIMARY KEY,"
-        "%3 TEXT NOT NULL,"
-        "%4 TEXT UNIQUE,"
-        "%5 INT NOT NULL, "
-        "%6 INT NOT NULL "
-        ")")
-        .arg(LiteralConstant::Table::PLAYLIST)       // %1
-        .arg(LiteralConstant::Column::PLAYLIST_ID)   // %2
-        .arg(LiteralConstant::Column::PLAYLIST_NAME) // %3
-        .arg(LiteralConstant::Column::URL)           // %4
-        .arg(LiteralConstant::Column::IS_DIR)        // %5
-        .arg(LiteralConstant::Column::SORT);         // %6
+                "CREATE TABLE IF NOT EXISTS %1("
+                "%2 INTEGER PRIMARY KEY,"
+                "%3 TEXT NOT NULL,"
+                "%4 TEXT UNIQUE,"
+                "%5 INT NOT NULL, "
+                "%6 INT NOT NULL "
+                ")")
+            .arg(LiteralConstant::Table::PLAYLIST) // %1
+            .arg(LiteralConstant::Column::PLAYLIST_ID) // %2
+            .arg(LiteralConstant::Column::PLAYLIST_NAME) // %3
+            .arg(LiteralConstant::Column::URL) // %4
+            .arg(LiteralConstant::Column::IS_DIR) // %5
+            .arg(LiteralConstant::Column::SORT); // %6
     sqlExecute(sql.toUtf8(), "创建 playlist 表失败");
 }
 
 void SQLite::createTablePlayListMuisc() {
     const auto sql = QString(
-        "CREATE TABLE IF NOT EXISTS %1("
-        "%2 INTEGER NOT NULL,"
-        "%3 INTEGER NOT NULL,"
-        "PRIMARY KEY (%2, %3),"
-        "FOREIGN KEY (%2) REFERENCES %4(%2) ON DELETE CASCADE,"
-        "FOREIGN KEY (%3) REFERENCES %5(%3) ON DELETE CASCADE"
-        ")")
-        .arg(LiteralConstant::Table::PLAYLIST_MUSIC)                 // %1
-        .arg(LiteralConstant::Column::MUSIC_ID)                      // %2
-        .arg(LiteralConstant::Column::PLAYLIST_ID)                   // %3
-        .arg(LiteralConstant::Table::MUSIC)                          // %4
-        .arg(LiteralConstant::Table::PLAYLIST);                      // %5
+                "CREATE TABLE IF NOT EXISTS %1("
+                "%2 INTEGER NOT NULL,"
+                "%3 INTEGER NOT NULL,"
+                "PRIMARY KEY (%2, %3),"
+                "FOREIGN KEY (%2) REFERENCES %4(%2) ON DELETE CASCADE,"
+                "FOREIGN KEY (%3) REFERENCES %5(%3) ON DELETE CASCADE"
+                ")")
+            .arg(LiteralConstant::Table::PLAYLIST_MUSIC) // %1
+            .arg(LiteralConstant::Column::MUSIC_ID) // %2
+            .arg(LiteralConstant::Column::PLAYLIST_ID) // %3
+            .arg(LiteralConstant::Table::MUSIC) // %4
+            .arg(LiteralConstant::Table::PLAYLIST); // %5
     sqlExecute(sql.toUtf8(), "创建 playlist_music 表失败");
 }
 
 void SQLite::createTableArtist() {
     const auto sql = QString(
-        "CREATE TABLE IF NOT EXISTS %1("
-        "%2 INTEGER PRIMARY KEY,"
-        "%3 TEXT NOT NULL UNIQUE,"
-        "%4 TEXT NOT NULL, "
-        "%5 INT NOT NULL"
-        ")")
-        .arg(LiteralConstant::Table::ARTIST)                     // %1
-        .arg(LiteralConstant::Column::ARTIST_ID)                 // %2
-        .arg(LiteralConstant::Column::ARTIST_NAME)               // %3
-        .arg(LiteralConstant::Column::NAME_KEY)                  // %4
-        .arg(LiteralConstant::Column::SORT);                     // %5
+                "CREATE TABLE IF NOT EXISTS %1("
+                "%2 INTEGER PRIMARY KEY,"
+                "%3 TEXT NOT NULL UNIQUE,"
+                "%4 TEXT NOT NULL, "
+                "%5 INT NOT NULL"
+                ")")
+            .arg(LiteralConstant::Table::ARTIST) // %1
+            .arg(LiteralConstant::Column::ARTIST_ID) // %2
+            .arg(LiteralConstant::Column::ARTIST_NAME) // %3
+            .arg(LiteralConstant::Column::NAME_KEY) // %4
+            .arg(LiteralConstant::Column::SORT); // %5
     sqlExecute(sql.toUtf8(), "创建 artist 表失败");
 }
 
 void SQLite::createTableArtistMusic() {
     const auto sql = QString(
-        "CREATE TABLE IF NOT EXISTS %1("
-        "%2 INTEGER NOT NULL,"
-        "%3 INTEGER NOT NULL,"
-        "PRIMARY KEY (%2, %3),"
-        "FOREIGN KEY (%2) REFERENCES %4(%2) ON DELETE CASCADE,"
-        "FOREIGN KEY (%3) REFERENCES %5(%3) ON DELETE CASCADE"
-        ")")
-        .arg(LiteralConstant::Table::ARTIST_MUSIC)                // %1
-        .arg(LiteralConstant::Column::MUSIC_ID)                   // %2
-        .arg(LiteralConstant::Column::ARTIST_ID)                  // %3
-        .arg(LiteralConstant::Table::MUSIC)                       // %4
-        .arg(LiteralConstant::Table::ARTIST);                     // %5
+                "CREATE TABLE IF NOT EXISTS %1("
+                "%2 INTEGER NOT NULL,"
+                "%3 INTEGER NOT NULL,"
+                "PRIMARY KEY (%2, %3),"
+                "FOREIGN KEY (%2) REFERENCES %4(%2) ON DELETE CASCADE,"
+                "FOREIGN KEY (%3) REFERENCES %5(%3) ON DELETE CASCADE"
+                ")")
+            .arg(LiteralConstant::Table::ARTIST_MUSIC) // %1
+            .arg(LiteralConstant::Column::MUSIC_ID) // %2
+            .arg(LiteralConstant::Column::ARTIST_ID) // %3
+            .arg(LiteralConstant::Table::MUSIC) // %4
+            .arg(LiteralConstant::Table::ARTIST); // %5
     sqlExecute(sql.toUtf8(), "创建 artist_music 表失败");
 }
 
 void SQLite::createTableAlbum() {
     // 原 SQL 中 "sort INT NO NULL" 疑似笔误，已按 "NOT NULL" 处理
     const auto sql = QString(
-        "CREATE TABLE IF NOT EXISTS %1("
-        "%2 INTEGER PRIMARY KEY,"
-        "%3 TEXT NOT NULL UNIQUE,"
-        "%4 TEXT NOT NULL, "
-        "%5 INT NOT NULL"
-        ")")
-        .arg(LiteralConstant::Table::ALBUM)                       // %1
-        .arg(LiteralConstant::Column::ALBUM_ID)                   // %2
-        .arg(LiteralConstant::Column::ALBUM_NAME)                 // %3
-        .arg(LiteralConstant::Column::NAME_KEY)                   // %4
-        .arg(LiteralConstant::Column::SORT);                      // %5
+                "CREATE TABLE IF NOT EXISTS %1("
+                "%2 INTEGER PRIMARY KEY,"
+                "%3 TEXT NOT NULL UNIQUE,"
+                "%4 TEXT NOT NULL, "
+                "%5 INT NOT NULL"
+                ")")
+            .arg(LiteralConstant::Table::ALBUM) // %1
+            .arg(LiteralConstant::Column::ALBUM_ID) // %2
+            .arg(LiteralConstant::Column::ALBUM_NAME) // %3
+            .arg(LiteralConstant::Column::NAME_KEY) // %4
+            .arg(LiteralConstant::Column::SORT); // %5
     sqlExecute(sql.toUtf8(), "创建 album 表失败");
 }
 

@@ -4,7 +4,6 @@
 
 #ifndef MUSICPLAY_DELETE_H
 #define MUSICPLAY_DELETE_H
-#include <QObject>
 #include "Update.h"
 
 class Delete : public Update{

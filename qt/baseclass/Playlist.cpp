@@ -9,7 +9,7 @@ QJsonObject PlayList::getJsonObject() const {
     json.insert("isDir", isDir);
     json.insert("duration", duration);
     json.insert("musicCount", musicConut);
-    json.insert("sort", static_cast<int>(sortType));
+    json.insert("sort", sortType);
     json.insert("url", url);
     return json;
 }

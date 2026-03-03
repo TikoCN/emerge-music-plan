@@ -14,7 +14,8 @@ Canvas{
         ctx.clearRect(0, 0, width, height)
         const inList = MediaPlayer.allSamples
         const length = inList.length
-        const w = Math.min(width/length, 3)
+        const w = Math.max(width/length, 0.05)
+        const space = w > 3 ? 1 : 0
 
         ctx.fillStyle = showColor
         ctx.strokeStyle = showColor

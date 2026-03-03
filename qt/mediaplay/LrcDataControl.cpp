@@ -5,8 +5,7 @@
 /*
  * 加载歌词
  */
-void LrcDataControl::setPlayingPosition(long newPlayingPosition)
-{
+void LrcDataControl::setPlayingPosition(long newPlayingPosition) {
     if (m_playingPosition == newPlayingPosition)
         return;
     m_playingPosition = newPlayingPosition;
@@ -68,7 +67,7 @@ void LrcDataControl::selectPlayLrc(const qint64 time) {
     }
 }
 
-long LrcDataControl::getPlayingPosition() const {
+long long LrcDataControl::getPlayingPosition() const {
     return m_playingPosition;
 }
 

@@ -9,7 +9,7 @@ ImageControl::~ImageControl()
 bool ImageControl::getUrlNullFlag(QString url) {
     QMutexLocker locker(&m_urlNullMutex);
 
-    if(url.contains("image://cover/"))
+    if (url.contains("image://cover/"))
         url = url.split("image://cover/").last();
     else
         return false;
@@ -26,8 +26,7 @@ bool ImageControl::getUrlNullFlag(QString url) {
     return false;
 }
 
-void ImageControl::writeUrlNullFlag(const QString& url, const bool flag)
-{
+void ImageControl::writeUrlNullFlag(const QString &url, const bool flag) {
     QMutexLocker locker(&m_urlNullMutex);
 
     m_urlNullHash.insert(url, flag);
@@ -44,8 +43,7 @@ void ImageControl::writeUrlNullFlag(const QString& url, const bool flag)
     }
 }
 
-QImage ImageControl::getImgCache(const QString& url)
-{
+QImage ImageControl::getImgCache(const QString &url) {
     QMutexLocker locker(&m_imgCacheMutex);
 
     if (m_imgCacheHash.contains(url)) {
@@ -59,8 +57,7 @@ QImage ImageControl::getImgCache(const QString& url)
     return {};
 }
 
-void ImageControl::writeImgCache(const QString& url, const QImage &img)
-{
+void ImageControl::writeImgCache(const QString &url, const QImage &img) {
     QMutexLocker locker(&m_imgCacheMutex);
     m_imgCacheHash.insert(url, img);
 

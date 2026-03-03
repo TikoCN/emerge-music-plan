@@ -10,6 +10,6 @@ QJsonObject Artist::getJsonObject() const {
     json.insert("duration", duration);
     json.insert("musicCount", musicCount);
     json.insert("lineKey", lineKey);
-    json.insert("sort", static_cast<int>(sortType));
+    json.insert("sort", sortType);
     return json;
 }

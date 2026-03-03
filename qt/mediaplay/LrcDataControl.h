@@ -13,8 +13,8 @@ protected:
     QList<LrcDataPtr> m_lrcList;//歌词
     int m_playingLrcId;
     QTimer *m_updateLrcTimer;
-    long m_startTime;
-    long m_playingPosition;
+    long long m_startTime;
+    long long m_playingPosition;
 
 public:
     explicit LrcDataControl(BaseTool *baseTool, DataActive *dataActive, TLog *log, QObject *parent = nullptr);
@@ -33,7 +33,7 @@ public:
     //选择当前播放歌词
     void selectPlayLrc(qint64 time);
 
-    [[nodiscard]] long getPlayingPosition() const;
+    [[nodiscard]] long long getPlayingPosition() const;
     [[nodiscard]] int getPlayingLrcId() const;
 
     void setPlayingPosition(long newPlayingPosition);

@@ -335,14 +335,14 @@ void FileManagement::makeAllDir() {
     QDir dir(QDir::currentPath());
 
     if (!dir.mkpath("data")) {
-        qDebug()<<"創建data文件夹失敗";
+        qDebug() << "創建data文件夹失敗";
     }
 
     dir.cd("data");
     if (!dir.mkpath("log")) {
-        qDebug()<<"創建log文件夹失敗";
+        qDebug() << "創建log文件夹失敗";
     }
     if (!dir.mkpath("namekey")) {
-        qDebug()<<"創建namekey文件夹失敗";
+        qDebug() << "創建namekey文件夹失敗";
     }
 }

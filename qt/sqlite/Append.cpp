@@ -17,21 +17,22 @@ bool Append::appendMusic(const QList<MediaData> &dataList) {
     try {
         // 构建 SQL：SELECT album_id FROM album WHERE name=? LIMIT 1
         const auto getAlbumIDSql = QString("SELECT %1 FROM %2 WHERE %3=? LIMIT 1")
-            .arg(LiteralConstant::Column::ALBUM_ID)
-            .arg(LiteralConstant::Table::ALBUM)
-            .arg(LiteralConstant::Column::ALBUM_NAME);  // 注意：实际列名可能为 "name"，请确认常量值
+                .arg(LiteralConstant::Column::ALBUM_ID)
+                .arg(LiteralConstant::Table::ALBUM)
+                .arg(LiteralConstant::Column::ALBUM_NAME); // 注意：实际列名可能为 "name"，请确认常量值
 
         // 构建 SQL：INSERT OR IGNORE INTO music(...) VALUES(...)
-        const auto appendMusicSql = QString("INSERT OR IGNORE INTO %1(%2, %3, %4, %5, %6, %7, %8, %9) VALUES(?, ?, ?, ?, ?, ?, ?, ?)")
-            .arg(LiteralConstant::Table::MUSIC)
-            .arg(LiteralConstant::Column::TITLE)
-            .arg(LiteralConstant::Column::DURATION)
-            .arg(LiteralConstant::Column::LAST_EDIT_TIME)   // insert_time 字段
-            .arg(LiteralConstant::Column::LEVEL)
-            .arg(LiteralConstant::Column::IS_LOVE)
-            .arg(LiteralConstant::Column::PLAY_NUMBER)
-            .arg(LiteralConstant::Column::URL)
-            .arg(LiteralConstant::Column::NAME_KEY);        // key 字段，请确认常量值是否为 "key"
+        const auto appendMusicSql = QString(
+                    "INSERT OR IGNORE INTO %1(%2, %3, %4, %5, %6, %7, %8, %9) VALUES(?, ?, ?, ?, ?, ?, ?, ?)")
+                .arg(LiteralConstant::Table::MUSIC)
+                .arg(LiteralConstant::Column::TITLE)
+                .arg(LiteralConstant::Column::DURATION)
+                .arg(LiteralConstant::Column::LAST_EDIT_TIME) // insert_time 字段
+                .arg(LiteralConstant::Column::LEVEL)
+                .arg(LiteralConstant::Column::IS_LOVE)
+                .arg(LiteralConstant::Column::PLAY_NUMBER)
+                .arg(LiteralConstant::Column::URL)
+                .arg(LiteralConstant::Column::NAME_KEY); // key 字段，请确认常量值是否为 "key"
 
         stmtPrepare(&appendMusicStmt, appendMusicSql.toUtf8());
         stmtPrepare(&getAlbumIDStmt, getAlbumIDSql.toUtf8());
@@ -41,7 +42,7 @@ bool Append::appendMusic(const QList<MediaData> &dataList) {
         for (const MediaData &data: dataList) {
             stmtReset(getAlbumIDStmt);
             stmtBindText(getAlbumIDStmt, 1, data.album);
-            stmtStep(getAlbumIDStmt);   // 注意：此查询结果未使用，可能是遗留代码
+            stmtStep(getAlbumIDStmt); // 注意：此查询结果未使用，可能是遗留代码
 
             stmtReset(appendMusicStmt);
             stmtBindText(appendMusicStmt, 1, data.title);
@@ -77,10 +78,10 @@ bool Append::appendAlbum(const QStringList &albumList) {
     try {
         // 构建 SQL：INSERT OR IGNORE INTO album(name, key, sort) VALUES(?, ?, ?)
         const auto sql = QString("INSERT OR IGNORE INTO %1(%2, %3, %4) VALUES(?, ?, ?)")
-            .arg(LiteralConstant::Table::ALBUM)
-            .arg(LiteralConstant::Column::ALBUM_NAME)   // 注意：实际列名可能为 "name"
-            .arg(LiteralConstant::Column::NAME_KEY)     // key 字段
-            .arg(LiteralConstant::Column::SORT);
+                .arg(LiteralConstant::Table::ALBUM)
+                .arg(LiteralConstant::Column::ALBUM_NAME) // 注意：实际列名可能为 "name"
+                .arg(LiteralConstant::Column::NAME_KEY) // key 字段
+                .arg(LiteralConstant::Column::SORT);
         stmtPrepare(&stmt, sql.toUtf8());
         NameKey key(m_loger);
 
@@ -106,9 +107,9 @@ bool Append::appendAlbumMusic(int id, const QList<int> &musicList) {
     try {
         // 构建 SQL：INSERT OR IGNORE INTO album_music(album_id, music_id) VALUES(?, ?)
         const auto sql = QString("INSERT OR IGNORE INTO %1(%2, %3) VALUES(?, ?)")
-            .arg(LiteralConstant::Table::ALBUM_MUSIC)
-            .arg(LiteralConstant::Column::ALBUM_ID)
-            .arg(LiteralConstant::Column::MUSIC_ID);
+                .arg(LiteralConstant::Table::ALBUM_MUSIC)
+                .arg(LiteralConstant::Column::ALBUM_ID)
+                .arg(LiteralConstant::Column::MUSIC_ID);
         stmtPrepare(&stmt, sql.toUtf8());
         for (const int i: musicList) {
             stmtReset(stmt);
@@ -131,7 +132,7 @@ bool Append::appendAlbumMusic(const QPair<QString, QString> &pair) {
     return appendAlbumMusic(dataList);
 }
 
-bool Append::appendAlbumMusic(const QList<QPair<QString, QString>> &pairList) {
+bool Append::appendAlbumMusic(const QList<QPair<QString, QString> > &pairList) {
     bool result = true;
     sqlite3_stmt *appendStmt = nullptr;
     sqlite3_stmt *getIdStmt = nullptr;
@@ -139,20 +140,20 @@ bool Append::appendAlbumMusic(const QList<QPair<QString, QString>> &pairList) {
     try {
         // 构建 getIdSql：获取 music_id 和 album_id
         const auto getIdSql = QString("SELECT"
-                "(SELECT %1 FROM %2 WHERE %3 = ? LIMIT 1) AS %1,"
-                "(SELECT %4 FROM %5 WHERE %6 = ? LIMIT 1) AS %4")
-            .arg(LiteralConstant::Column::MUSIC_ID)
-            .arg(LiteralConstant::Table::MUSIC)
-            .arg(LiteralConstant::Column::URL)
-            .arg(LiteralConstant::Column::ALBUM_ID)
-            .arg(LiteralConstant::Table::ALBUM)
-            .arg(LiteralConstant::Column::ALBUM_NAME);   // 注意：实际列名可能为 "name"
+                    "(SELECT %1 FROM %2 WHERE %3 = ? LIMIT 1) AS %1,"
+                    "(SELECT %4 FROM %5 WHERE %6 = ? LIMIT 1) AS %4")
+                .arg(LiteralConstant::Column::MUSIC_ID)
+                .arg(LiteralConstant::Table::MUSIC)
+                .arg(LiteralConstant::Column::URL)
+                .arg(LiteralConstant::Column::ALBUM_ID)
+                .arg(LiteralConstant::Table::ALBUM)
+                .arg(LiteralConstant::Column::ALBUM_NAME); // 注意：实际列名可能为 "name"
 
         // 构建 appendSql：INSERT OR IGNORE INTO album_music(album_id, music_id) VALUES(?, ?)
         const auto appendSql = QString("INSERT OR IGNORE INTO %1(%2, %3) VALUES(?, ?)")
-            .arg(LiteralConstant::Table::ALBUM_MUSIC)
-            .arg(LiteralConstant::Column::ALBUM_ID)
-            .arg(LiteralConstant::Column::MUSIC_ID);
+                .arg(LiteralConstant::Table::ALBUM_MUSIC)
+                .arg(LiteralConstant::Column::ALBUM_ID)
+                .arg(LiteralConstant::Column::MUSIC_ID);
 
         stmtPrepare(&appendStmt, appendSql.toUtf8());
         stmtPrepare(&getIdStmt, getIdSql.toUtf8());
@@ -193,10 +194,10 @@ bool Append::appendArtist(const QStringList &artistList) {
     try {
         // 构建 SQL：INSERT OR IGNORE INTO artist(name, key, sort) VALUES(?, ?, ?)
         const auto sql = QString("INSERT OR IGNORE INTO %1(%2, %3, %4) VALUES(?, ?, ?)")
-            .arg(LiteralConstant::Table::ARTIST)
-            .arg(LiteralConstant::Column::ARTIST_NAME)   // 注意：实际列名可能为 "name"
-            .arg(LiteralConstant::Column::NAME_KEY)      // key 字段
-            .arg(LiteralConstant::Column::SORT);
+                .arg(LiteralConstant::Table::ARTIST)
+                .arg(LiteralConstant::Column::ARTIST_NAME) // 注意：实际列名可能为 "name"
+                .arg(LiteralConstant::Column::NAME_KEY) // key 字段
+                .arg(LiteralConstant::Column::SORT);
         stmtPrepare(&stmt, sql.toUtf8());
         NameKey key(m_loger);
 
@@ -222,9 +223,9 @@ bool Append::appendArtistMusic(const int id, const QList<int> &musicList) {
     try {
         // 构建 SQL：INSERT OR IGNORE INTO artist_music(artist_id, music_id) VALUES(?, ?)
         const auto sql = QString("INSERT OR IGNORE INTO %1(%2, %3) VALUES(?, ?)")
-            .arg(LiteralConstant::Table::ARTIST_MUSIC)
-            .arg(LiteralConstant::Column::ARTIST_ID)
-            .arg(LiteralConstant::Column::MUSIC_ID);
+                .arg(LiteralConstant::Table::ARTIST_MUSIC)
+                .arg(LiteralConstant::Column::ARTIST_ID)
+                .arg(LiteralConstant::Column::MUSIC_ID);
         stmtPrepare(&stmt, sql.toUtf8());
         for (const int i: musicList) {
             stmtReset(stmt);
@@ -255,20 +256,20 @@ bool Append::appendArtistMusic(const QList<QPair<QString, QString> > &pairList) 
     try {
         // 构建 getIdSql：获取 music_id 和 artist_id
         const auto getIdSql = QString("SELECT"
-                "(SELECT %1 FROM %2 WHERE %3 = ? LIMIT 1) AS %1,"
-                "(SELECT %4 FROM %5 WHERE %6 = ? LIMIT 1) AS %4")
-            .arg(LiteralConstant::Column::MUSIC_ID)
-            .arg(LiteralConstant::Table::MUSIC)
-            .arg(LiteralConstant::Column::URL)
-            .arg(LiteralConstant::Column::ARTIST_ID)
-            .arg(LiteralConstant::Table::ARTIST)
-            .arg(LiteralConstant::Column::ARTIST_NAME);   // 注意：实际列名可能为 "name"
+                    "(SELECT %1 FROM %2 WHERE %3 = ? LIMIT 1) AS %1,"
+                    "(SELECT %4 FROM %5 WHERE %6 = ? LIMIT 1) AS %4")
+                .arg(LiteralConstant::Column::MUSIC_ID)
+                .arg(LiteralConstant::Table::MUSIC)
+                .arg(LiteralConstant::Column::URL)
+                .arg(LiteralConstant::Column::ARTIST_ID)
+                .arg(LiteralConstant::Table::ARTIST)
+                .arg(LiteralConstant::Column::ARTIST_NAME); // 注意：实际列名可能为 "name"
 
         // 构建 appendSql：INSERT OR IGNORE INTO artist_music(artist_id, music_id) VALUES(?, ?)
         const auto appendSql = QString("INSERT OR IGNORE INTO %1(%2, %3) VALUES(?, ?)")
-            .arg(LiteralConstant::Table::ARTIST_MUSIC)
-            .arg(LiteralConstant::Column::ARTIST_ID)
-            .arg(LiteralConstant::Column::MUSIC_ID);
+                .arg(LiteralConstant::Table::ARTIST_MUSIC)
+                .arg(LiteralConstant::Column::ARTIST_ID)
+                .arg(LiteralConstant::Column::MUSIC_ID);
 
         stmtPrepare(&appendStmt, appendSql.toUtf8());
         stmtPrepare(&getIdStmt, getIdSql.toUtf8());
@@ -309,11 +310,11 @@ bool Append::appendDirPlayList(const QStringList &urlList) {
     try {
         // 构建 SQL：INSERT OR IGNORE INTO playlist(name, sort, url, is_dir) VALUES(?, ?, ?, ?)
         const auto sql = QString("INSERT OR IGNORE INTO %1(%2, %3, %4, %5) VALUES(?, ?, ?, ?)")
-            .arg(LiteralConstant::Table::PLAYLIST)
-            .arg(LiteralConstant::Column::PLAYLIST_NAME)   // 注意：实际列名可能为 "name"
-            .arg(LiteralConstant::Column::SORT)
-            .arg(LiteralConstant::Column::URL)
-            .arg(LiteralConstant::Column::IS_DIR);
+                .arg(LiteralConstant::Table::PLAYLIST)
+                .arg(LiteralConstant::Column::PLAYLIST_NAME) // 注意：实际列名可能为 "name"
+                .arg(LiteralConstant::Column::SORT)
+                .arg(LiteralConstant::Column::URL)
+                .arg(LiteralConstant::Column::IS_DIR);
         stmtPrepare(&stmt, sql.toUtf8());
         for (const QString &i: urlList) {
             stmtReset(stmt);
@@ -341,11 +342,11 @@ bool Append::appendUserPlayList(const QString &name) {
     try {
         // 构建 SQL：INSERT OR IGNORE INTO playlist(name, sort, url, is_dir) VALUES(?, ?, ?, ?)
         const auto sql = QString("INSERT OR IGNORE INTO %1(%2, %3, %4, %5) VALUES(?, ?, ?, ?)")
-            .arg(LiteralConstant::Table::PLAYLIST)
-            .arg(LiteralConstant::Column::PLAYLIST_NAME)   // 注意：实际列名可能为 "name"
-            .arg(LiteralConstant::Column::SORT)
-            .arg(LiteralConstant::Column::URL)
-            .arg(LiteralConstant::Column::IS_DIR);
+                .arg(LiteralConstant::Table::PLAYLIST)
+                .arg(LiteralConstant::Column::PLAYLIST_NAME) // 注意：实际列名可能为 "name"
+                .arg(LiteralConstant::Column::SORT)
+                .arg(LiteralConstant::Column::URL)
+                .arg(LiteralConstant::Column::IS_DIR);
         stmtPrepare(&stmt, sql.toUtf8());
         stmtBindText(stmt, 1, name);
         stmtBindInt(stmt, 2, 0);
@@ -367,9 +368,9 @@ bool Append::appendPlayListMusic(const int id, const QList<int> &musicList) {
     try {
         // 注意：原 SQL 使用了 "list_music"，根据常量应为 playlist_music
         const auto sql = QString("INSERT OR IGNORE INTO %1(%2, %3) VALUES(?, ?)")
-            .arg(LiteralConstant::Table::PLAYLIST_MUSIC)
-            .arg(LiteralConstant::Column::PLAYLIST_ID)   // 注意：实际列名可能为 "list_id"
-            .arg(LiteralConstant::Column::MUSIC_ID);
+                .arg(LiteralConstant::Table::PLAYLIST_MUSIC)
+                .arg(LiteralConstant::Column::PLAYLIST_ID) // 注意：实际列名可能为 "list_id"
+                .arg(LiteralConstant::Column::MUSIC_ID);
         stmtPrepare(&stmt, sql.toUtf8());
         for (const int i: musicList) {
             stmtReset(stmt);
@@ -399,19 +400,19 @@ bool Append::appendPlayListMusic(const QList<QPair<QString, QString> > &pairList
     try {
         // 构建 getIdSql：获取 music_id 和 list_id
         const auto getIdSql = QString("SELECT"
-                "(SELECT %1 FROM %2 WHERE %3 = ? LIMIT 1) AS %1,"
-                "(SELECT %4 FROM %5 WHERE %3 = ? LIMIT 1) AS %4")
-            .arg(LiteralConstant::Column::MUSIC_ID)
-            .arg(LiteralConstant::Table::MUSIC)
-            .arg(LiteralConstant::Column::URL)
-            .arg(LiteralConstant::Column::PLAYLIST_ID)   // 注意：实际列名可能为 "list_id"
-            .arg(LiteralConstant::Table::PLAYLIST);
+                    "(SELECT %1 FROM %2 WHERE %3 = ? LIMIT 1) AS %1,"
+                    "(SELECT %4 FROM %5 WHERE %3 = ? LIMIT 1) AS %4")
+                .arg(LiteralConstant::Column::MUSIC_ID)
+                .arg(LiteralConstant::Table::MUSIC)
+                .arg(LiteralConstant::Column::URL)
+                .arg(LiteralConstant::Column::PLAYLIST_ID) // 注意：实际列名可能为 "list_id"
+                .arg(LiteralConstant::Table::PLAYLIST);
 
         // 构建 appendSql：INSERT OR IGNORE INTO playlist_music(list_id, music_id) VALUES(?, ?)
         const auto appendSql = QString("INSERT OR IGNORE INTO %1(%2, %3) VALUES(?, ?)")
-            .arg(LiteralConstant::Table::PLAYLIST_MUSIC)
-            .arg(LiteralConstant::Column::PLAYLIST_ID)   // 注意：实际列名可能为 "list_id"
-            .arg(LiteralConstant::Column::MUSIC_ID);
+                .arg(LiteralConstant::Table::PLAYLIST_MUSIC)
+                .arg(LiteralConstant::Column::PLAYLIST_ID) // 注意：实际列名可能为 "list_id"
+                .arg(LiteralConstant::Column::MUSIC_ID);
 
         stmtPrepare(&appendStmt, appendSql.toUtf8());
         stmtPrepare(&getIdStmt, getIdSql.toUtf8());
@@ -452,9 +453,9 @@ bool Append::appendPlayingListMusic(const QList<int> &musicList, int start) {
     try {
         // 构建 SQL：INSERT OR IGNORE INTO playing List(music_id, position) VALUES(?, ?)
         const auto sql = QString("INSERT OR IGNORE INTO %1(%2, %3) VALUES(?, ?)")
-            .arg(LiteralConstant::Table::PLAYINGLIST)
-            .arg(LiteralConstant::Column::MUSIC_ID)
-            .arg(LiteralConstant::Column::POSITION);
+                .arg(LiteralConstant::Table::PLAYINGLIST)
+                .arg(LiteralConstant::Column::MUSIC_ID)
+                .arg(LiteralConstant::Column::POSITION);
         stmtPrepare(&stmt, sql.toUtf8());
 
         for (int i = 0; i < musicList.length(); i++) {
@@ -463,7 +464,6 @@ bool Append::appendPlayingListMusic(const QList<int> &musicList, int start) {
             stmtBindInt(stmt, 2, start + i);
             stmtStep(stmt);
         }
-
     } catch (const DataException &e) {
         m_loger->logError(e.errorMessage());
         result = false;

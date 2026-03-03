@@ -11,7 +11,7 @@
 #include <QDebug>
 
 FrequencySpectrum::FrequencySpectrum()
-: fftwSize(2048) {
+    : fftwSize(2048) {
     m_thread = new QThread;
     m_thread->start();
     moveToThread(m_thread);
@@ -31,7 +31,7 @@ inline void FrequencySpectrum::mixChannels(const int frameCount, const int chann
         for (int j = 0; j < channelCount; ++j) {
             sum += data[base + j];
         }
-        data[i] = sum / channelCount;  // 平均幅度
+        data[i] = sum / channelCount; // 平均幅度
     }
     data.resize(frameCount);
 }
@@ -41,7 +41,7 @@ inline void FrequencySpectrum::applyHannWindow() {
     const int N = static_cast<int>(data.size());
     for (int i = 0; i < N; ++i) {
         const double window = 0.5 * (1 - std::cos(2 * M_PI * i / (N - 1)));
-        data[i] *= window;                       // 将原始数据乘以窗系数
+        data[i] *= window; // 将原始数据乘以窗系数
     }
 }
 
@@ -78,9 +78,8 @@ inline void FrequencySpectrum::performFFT() {
 }
 
 inline void FrequencySpectrum::normalizeData() {
-
     //归一化
-    for (double & val : data) {
+    for (double &val: data) {
         val /= fftwSize * 0.09;
         if (val > 0.3) {
             val = val * 0.5 + 0.1;
@@ -104,47 +103,40 @@ inline void FrequencySpectrum::smoothData() {
         if (data[i] < lastData[i]) {
             constexpr double smoothConstantDown = 0.2;
             data[i] = smoothConstantDown * data[i] + (1.0 - smoothConstantDown) * lastData[i];
+        } else {
+            constexpr double smoothConstantUp = 0.8;
+            data[i] = smoothConstantUp * data[i] + (1.0 - smoothConstantUp) * lastData[i];
         }
+    }
+
+    // 当前平滑
+    QVector<double> smooth(data.size());
+    smooth[0] = data[0];
+    for (int i = 1; i < data.size(); ++i) {
+        smooth[i] = smooth[i - 1] + (data[i] - smooth[i - 1]) * 0.8;
+        data[i] = smooth[i];
     }
     lastData = data;
 }
 
 inline void FrequencySpectrum::downsampleData() {
     // 降采样
-    int lastId = -1;
+    unsigned int lastId = 0;
     double hz = 0;
-    const double max = sampleRate / fftwSize;
-    const double aim = std::min(100, static_cast<int>(data.length()));
+    const double max = static_cast<double>(sampleRate) / fftwSize;
+    const double aim = std::min(60, static_cast<int>(data.length()));
     const double cell = max / aim;
 
     for (int i = 0; i < aim; ++i) {
         const double aimN = i * cell;
         hz = std::exp(aimN);
-        const unsigned int n = (unsigned int)(hz * (double)fftwSize / (double)sampleRate);
+        const auto n = static_cast<unsigned int>(hz * static_cast<double>(fftwSize) / static_cast<double>(sampleRate));
         if (lastId != n && n < data.size()) {
             data[i] = data[n];
             lastId = n;
         }
     }
-    data.resize(aim);
-
-}
-
-void FrequencySpectrum::transform() {
-    QVector<double> input = data;
-
-    QVector<double> result;
-    const int n = static_cast<int>(input.size());
-
-    // 逆序收集偶数索引元素
-    for (int i = (n % 2 == 0 ? n - 2 : n - 1); i >= 0; i -= 2) {
-        result.append(input[i]);
-    }
-    // 顺序收集奇数索引元素
-    for (int i = 1; i < n; i += 2) {
-        result.append(input[i]);
-    }
-    data = std::move(result);
+    data.resize(static_cast<int>(aim));
 }
 
 void FrequencySpectrum::runSpectrum(const QAudioBuffer &buffer) {
@@ -155,7 +147,7 @@ void FrequencySpectrum::runSpectrum(const QAudioBuffer &buffer) {
     originalData = getOriginalData(buffer);
     mixChannels(frameCount, channelCount, originalData);
 
-    const int len = originalData.length();
+    const int len = static_cast<int>(originalData.length());
 
     fftwSize = 1;
     while (fftwSize < len) {
@@ -173,9 +165,6 @@ void FrequencySpectrum::runSpectrum(const QAudioBuffer &buffer) {
     // 降采样
     downsampleData();
 
-    // 整体偏移
-    //transform();
-
     normalizeData();
 
     smoothData();
@@ -189,45 +178,45 @@ QVector<double> FrequencySpectrum::getOriginalData(const QAudioBuffer &buffer) {
     QVector<double> samples(totalSamples);
 
     switch (format.sampleFormat()) {
-    case QAudioFormat::UInt8: {
-        const quint8 *data = buffer.constData<quint8>();
-        for (int i = 0; i < totalSamples; ++i) {
-            // 8位无符号：范围 0~255，归一化到 -1.0~1.0
-            samples[i] = (data[i] / 128.0) - 1.0;
+        case QAudioFormat::UInt8: {
+            const auto *data = buffer.constData<quint8>();
+            for (int i = 0; i < totalSamples; ++i) {
+                // 8位无符号：范围 0~255，归一化到 -1.0~1.0
+                samples[i] = (data[i] / 128.0) - 1.0;
+            }
+            break;
         }
-        break;
-    }
 
-    case QAudioFormat::Int16: {
-        const qint16 *data = buffer.constData<qint16>();
-        for (int i = 0; i < totalSamples; ++i) {
-            // 16位有符号：范围 -32768~32767，除以 32768 归一化
-            samples[i] = data[i] / 32768.0;
+        case QAudioFormat::Int16: {
+            const auto *data = buffer.constData<qint16>();
+            for (int i = 0; i < totalSamples; ++i) {
+                // 16位有符号：范围 -32768~32767，除以 32768 归一化
+                samples[i] = data[i] / 32768.0;
+            }
+            break;
         }
-        break;
-    }
 
-    case QAudioFormat::Int32: {
-        const qint32 *data = buffer.constData<qint32>();
-        for (int i = 0; i < totalSamples; ++i) {
-            // 32位有符号：范围 -2147483648~2147483647，除以 2147483648 归一化
-            samples[i] = data[i] / 2147483648.0;
+        case QAudioFormat::Int32: {
+            const auto *data = buffer.constData<qint32>();
+            for (int i = 0; i < totalSamples; ++i) {
+                // 32位有符号：范围 -2147483648~2147483647，除以 2147483648 归一化
+                samples[i] = data[i] / 2147483648.0;
+            }
+            break;
         }
-        break;
-    }
 
-    case QAudioFormat::Float: {
-        const float *data = buffer.constData<float>();
-        for (int i = 0; i < totalSamples; ++i) {
-            // float 已经是归一化的 -1.0~1.0
-            samples[i] = data[i];
+        case QAudioFormat::Float: {
+            const auto *data = buffer.constData<float>();
+            for (int i = 0; i < totalSamples; ++i) {
+                // float 已经是归一化的 -1.0~1.0
+                samples[i] = data[i];
+            }
+            break;
         }
-        break;
-    }
 
-    default:
-        samples.resize(0);
-        break;
+        default:
+            samples.resize(0);
+            break;
     }
 
     return std::move(samples);

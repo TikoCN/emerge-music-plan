@@ -1,6 +1,7 @@
 #include "LrcData.h"
 #include "basetool/basetool.h"
 #include <QJsonObject>
+
 LrcData::LrcData()
     : id(0)
       , startTime(0)

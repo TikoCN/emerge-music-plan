@@ -8,87 +8,86 @@ void DataActive::appendPlayList(const QString &name) const {
     m_sql->appendUserPlayList(name);
 }
 
-QList<int> DataActive::musicListSort(const QList<int> &musicIdList, SORT_TYPE sort)
-{
+QList<int> DataActive::musicListSort(const QList<int> &musicIdList, const SORT_TYPE sort) {
     QList<MusicPtr> musicList = getMusicCoreList(musicIdList);
     QList<int> newIdList;
 
     switch (sort) {
-    case SORT_ALBUM_ASC:
-        std::ranges::sort(musicList, [](const MusicPtr& a, const MusicPtr& b)->bool{
-            return a->album > b->album;
-        });
-        break;
-    case SORT_ALBUM_DESC:
-        std::ranges::sort(musicList, [](const MusicPtr& a, const MusicPtr& b)->bool{
-            return a->album < b->album;
-        });
-        break;
-    case SORT_ARTIST_ASC:
-        std::ranges::sort(musicList, [](const MusicPtr& a, const MusicPtr& b)->bool{
-            return a->artist > b->artist;
-        });
-        break;
-    case SORT_ARTIST_DESC:
-        std::ranges::sort(musicList, [](const MusicPtr& a, const MusicPtr& b)->bool{
-            return a->artist < b->artist;
-        });
-        break;
-    case SORT_DURATION_ASC:
-        std::ranges::sort(musicList, [](const MusicPtr& a, const MusicPtr& b)->bool{
-            return a->duration > b->duration;
-        });
-        break;
-    case SORT_DURATION_DESC:
-        std::ranges::sort(musicList, [](const MusicPtr& a, const MusicPtr& b)->bool{
-            return a->duration < b->duration;
-        });
-        break;
-    case SORT_LAST_EDIT_TIME_ASC:
-        std::ranges::sort(musicList, [](const MusicPtr& a, const MusicPtr& b)->bool{
-            return a->lastEditTime > b->lastEditTime;
-        });
-        break;
-    case SORT_LAST_EDIT_TIME_DESC:
-        std::ranges::sort(musicList, [](const MusicPtr& a, const MusicPtr& b)->bool{
-            return a->lastEditTime < b->lastEditTime;
-        });
-        break;
-    case SORT_LEVEL_ASC:
-        std::ranges::sort(musicList, [](const MusicPtr& a, const MusicPtr& b)->bool{
-            return a->level > b->level;
-        });
-        break;
-    case SORT_LEVEL_DESC:
-        std::ranges::sort(musicList, [](const MusicPtr& a, const MusicPtr& b)->bool{
-            return a->level < b->level;
-        });
-        break;
-    case SORT_PLAY_NUMBER_ASC:
-        std::ranges::sort(musicList, [](const MusicPtr& a, const MusicPtr &b)->bool{
-            return a->playNumber > b->playNumber;
-        });
-        break;
-    case SORT_PLAY_NUMBER_DESC:
-        std::ranges::sort(musicList, [](const MusicPtr& a, const MusicPtr& b)->bool{
-            return a->playNumber < b->playNumber;
-        });
-        break;
-    case SORT_TITTLE_ASC:
-        std::ranges::sort(musicList, [](const MusicPtr& a, const MusicPtr &b)->bool{
-            return a->title > b->title;
-        });
-        break;
-    case SORT_TITTLE_DESC:
-        std::ranges::sort(musicList, [](const MusicPtr& a, const MusicPtr &b)->bool{
-            return a->title < b->title;
-        });
-        break;
-    default:
-        break;
+        case SORT_ALBUM_ASC:
+            std::ranges::sort(musicList, [](const MusicPtr &a, const MusicPtr &b)-> bool {
+                return a->album > b->album;
+            });
+            break;
+        case SORT_ALBUM_DESC:
+            std::ranges::sort(musicList, [](const MusicPtr &a, const MusicPtr &b)-> bool {
+                return a->album < b->album;
+            });
+            break;
+        case SORT_ARTIST_ASC:
+            std::ranges::sort(musicList, [](const MusicPtr &a, const MusicPtr &b)-> bool {
+                return a->artist > b->artist;
+            });
+            break;
+        case SORT_ARTIST_DESC:
+            std::ranges::sort(musicList, [](const MusicPtr &a, const MusicPtr &b)-> bool {
+                return a->artist < b->artist;
+            });
+            break;
+        case SORT_DURATION_ASC:
+            std::ranges::sort(musicList, [](const MusicPtr &a, const MusicPtr &b)-> bool {
+                return a->duration > b->duration;
+            });
+            break;
+        case SORT_DURATION_DESC:
+            std::ranges::sort(musicList, [](const MusicPtr &a, const MusicPtr &b)-> bool {
+                return a->duration < b->duration;
+            });
+            break;
+        case SORT_LAST_EDIT_TIME_ASC:
+            std::ranges::sort(musicList, [](const MusicPtr &a, const MusicPtr &b)-> bool {
+                return a->lastEditTime > b->lastEditTime;
+            });
+            break;
+        case SORT_LAST_EDIT_TIME_DESC:
+            std::ranges::sort(musicList, [](const MusicPtr &a, const MusicPtr &b)-> bool {
+                return a->lastEditTime < b->lastEditTime;
+            });
+            break;
+        case SORT_LEVEL_ASC:
+            std::ranges::sort(musicList, [](const MusicPtr &a, const MusicPtr &b)-> bool {
+                return a->level > b->level;
+            });
+            break;
+        case SORT_LEVEL_DESC:
+            std::ranges::sort(musicList, [](const MusicPtr &a, const MusicPtr &b)-> bool {
+                return a->level < b->level;
+            });
+            break;
+        case SORT_PLAY_NUMBER_ASC:
+            std::ranges::sort(musicList, [](const MusicPtr &a, const MusicPtr &b)-> bool {
+                return a->playNumber > b->playNumber;
+            });
+            break;
+        case SORT_PLAY_NUMBER_DESC:
+            std::ranges::sort(musicList, [](const MusicPtr &a, const MusicPtr &b)-> bool {
+                return a->playNumber < b->playNumber;
+            });
+            break;
+        case SORT_TITTLE_ASC:
+            std::ranges::sort(musicList, [](const MusicPtr &a, const MusicPtr &b)-> bool {
+                return a->title > b->title;
+            });
+            break;
+        case SORT_TITTLE_DESC:
+            std::ranges::sort(musicList, [](const MusicPtr &a, const MusicPtr &b)-> bool {
+                return a->title < b->title;
+            });
+            break;
+        default:
+            break;
     }
 
-    for (const MusicPtr & i : musicList) {
+    for (const MusicPtr &i: musicList) {
         newIdList.append(i->id);
     }
 
@@ -100,8 +99,7 @@ void DataActive::clearNullItem() const {
     m_sql->clearNullPlayListItem();
 }
 
-void DataActive::updateMusicLove(const int musicId, const bool isLove)
-{
+void DataActive::updateMusicLove(const int musicId, const bool isLove) {
     const MusicPtr music = getMusicCore(musicId);
     if (music.isNull()) {
         m_loger->logError("更新歌曲喜爱失败");
@@ -112,8 +110,7 @@ void DataActive::updateMusicLove(const int musicId, const bool isLove)
     m_sql->updateMusic(music);
 }
 
-void DataActive::updateMusicLevel(const int musicId, const bool level)
-{
+void DataActive::updateMusicLevel(const int musicId, const bool level) {
     const MusicPtr music = getMusicCore(musicId);
     if (music.isNull()) {
         m_loger->logError("更新歌曲评级失败");
@@ -191,7 +188,6 @@ void DataActive::updateAlbumSort(const int albumId, int sort) {
 }
 
 void DataActive::updateALLNameKey() const {
-
     NameKey nameKey(m_loger);
 
     int startPos = 0;
@@ -203,7 +199,7 @@ void DataActive::updateALLNameKey() const {
         resultSize = static_cast<int>(nameList.size());
         startPos += resultSize;
 
-        for (const QString &name : nameList) {
+        for (const QString &name: nameList) {
             const QString &key = nameKey.find(name);
             nameKeyList.append(key);
         }
@@ -219,7 +215,7 @@ void DataActive::updateALLNameKey() const {
         resultSize = static_cast<int>(nameList.size());
         startPos += resultSize;
 
-        for (const QString &name : nameList) {
+        for (const QString &name: nameList) {
             const QString &key = nameKey.find(name);
             nameKeyList.append(key);
         }

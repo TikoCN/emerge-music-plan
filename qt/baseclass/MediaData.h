@@ -2,7 +2,6 @@
 #define MEDIADATA_H
 
 #include <QString>
-#include <QStringList>
 #include <QObject>
 
 struct MediaData {

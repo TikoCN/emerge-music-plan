@@ -4,14 +4,12 @@
 #include "Tlog.h"
 #include <QDir>
 
-DataManager::DataManager()
-{
+DataManager::DataManager() {
     m_sql = SQLite::getInstance();
     m_loger = TLog::getInstance();
 }
 
-AlbumPtr DataManager::getAlbumCore(const int id)
-{
+AlbumPtr DataManager::getAlbumCore(const int id) {
     m_albumMutex.lock();
 
     AlbumPtr album = nullptr;
@@ -27,20 +25,18 @@ AlbumPtr DataManager::getAlbumCore(const int id)
     }
 
     m_albumMutex.unlock();
-    deleteOutCache(DataManager::CORE_TYPE::ALBUM, id);
+    deleteOutCache(ALBUM, id);
     return album;
 }
 
-QJsonObject DataManager::getAlbumJson(const int id)
-{
+QJsonObject DataManager::getAlbumJson(const int id) {
     const AlbumPtr album = getAlbumCore(id);
     QJsonObject json = album->getJsonObject();
 
     return json;
 }
 
-ArtistPtr DataManager::getArtistCore(const int id)
-{
+ArtistPtr DataManager::getArtistCore(const int id) {
     m_artistMutex.lock();
 
     ArtistPtr artist = nullptr;
@@ -56,20 +52,18 @@ ArtistPtr DataManager::getArtistCore(const int id)
     }
 
     m_artistMutex.unlock();
-    deleteOutCache(DataManager::CORE_TYPE::ARTIST, id);
+    deleteOutCache(ARTIST, id);
     return artist;
 }
 
-QJsonObject DataManager::getArtistJson(const int id)
-{
+QJsonObject DataManager::getArtistJson(const int id) {
     const ArtistPtr artist = getArtistCore(id);
     QJsonObject json = artist->getJsonObject();
 
     return json;
 }
 
-MusicPtr DataManager::getMusicCore(const int id)
-{
+MusicPtr DataManager::getMusicCore(const int id) {
     m_musicMutex.lock();
 
     MusicPtr music = nullptr;
@@ -85,17 +79,16 @@ MusicPtr DataManager::getMusicCore(const int id)
     }
 
     m_musicMutex.unlock();
-    deleteOutCache(DataManager::CORE_TYPE::MUSIC, id);
+    deleteOutCache(MUSIC, id);
     return music;
 }
 
-QList<MusicPtr> DataManager::getMusicCoreList(const QList<int>& idList)
-{
+QList<MusicPtr> DataManager::getMusicCoreList(const QList<int> &idList) {
     m_loger->logInfo(QString("获得 Music %1").arg(idList.size()));
 
     QList<MusicPtr> musicList;
     QList<int> newIdList;
-    for (int i : idList) {
+    for (int i: idList) {
         if (!m_musicHash.contains(i))
             newIdList.append(i);
         else
@@ -108,8 +101,7 @@ QList<MusicPtr> DataManager::getMusicCoreList(const QList<int>& idList)
     return musicList;
 }
 
-QJsonObject DataManager::getMusicJson(const int id)
-{
+QJsonObject DataManager::getMusicJson(const int id) {
     const MusicPtr music = getMusicCore(id);
     if (music == nullptr) {
         m_loger->logError("获取MusicCore失败");
@@ -120,8 +112,7 @@ QJsonObject DataManager::getMusicJson(const int id)
     return json;
 }
 
-PlayListPtr DataManager::getPlayListCore(const int id)
-{
+PlayListPtr DataManager::getPlayListCore(const int id) {
     m_playlistMutex.lock();
 
     PlayListPtr playlist = nullptr;
@@ -137,56 +128,50 @@ PlayListPtr DataManager::getPlayListCore(const int id)
     }
 
     m_playlistMutex.unlock();
-    deleteOutCache(DataManager::CORE_TYPE::PLAYLIST, id);
+    deleteOutCache(PLAYLIST, id);
     return playlist;
 }
 
-QJsonObject DataManager::getPlayListJson(const int id)
-{
-    PlayListPtr playlist = getPlayListCore(id);
+QJsonObject DataManager::getPlayListJson(const int id) {
+    const PlayListPtr playlist = getPlayListCore(id);
     QJsonObject json = playlist->getJsonObject();
     return json;
 }
 
-void DataManager::releaseAlbum(const int id)
-{
+void DataManager::releaseAlbum(const int id) {
     m_albumMutex.lock();
     m_loger->logError(tr("执行释放") +
-                                  tr("专辑ID:%1").arg(id));
+                      tr("专辑ID:%1").arg(id));
     m_albumHash.remove(id);
     m_albumMutex.unlock();
 }
 
-void DataManager::releaseArtist(const int id)
-{
+void DataManager::releaseArtist(const int id) {
     m_artistMutex.lock();
     m_loger->logInfo(tr("执行释放") + tr("歌手ID:%1").arg(id));
     m_artistHash.remove(id);
     m_artistMutex.unlock();
 }
 
-void DataManager::releaseMusic(const int id)
-{
+void DataManager::releaseMusic(const int id) {
     m_musicMutex.lock();
     m_loger->logInfo(tr("执行释放") + tr("歌曲ID:%1").arg(id));
     m_musicHash.remove(id);
     m_musicMutex.unlock();
 }
 
-void DataManager::releasePlayList(const int id)
-{
+void DataManager::releasePlayList(const int id) {
     m_playlistMutex.lock();
     m_loger->logInfo(tr("执行释放") + tr("播放列表ID:%1").arg(id));
     m_playlistHash.remove(id);
     m_playlistMutex.unlock();
 }
 
-void DataManager::deleteOutCache(DataManager::CORE_TYPE type, int id)
-{
+void DataManager::deleteOutCache(CORE_TYPE type, int id) {
     m_deleteListMutex.lock();
 
     //插入
-    const QPair<DataManager::CORE_TYPE, int> pair(type, id);
+    const QPair pair(type, id);
     if (const long long pos = m_deleteList.indexOf(pair); pos != -1) {
         m_deleteList.move(pos, m_deleteList.size() - 1);
     } else {
@@ -199,23 +184,22 @@ void DataManager::deleteOutCache(DataManager::CORE_TYPE type, int id)
         m_deleteListMutex.unlock();
 
         switch (fst) {
-        case DataManager::CORE_TYPE::ALBUM:
-            releaseAlbum(snd);
-            break;
-        case DataManager::CORE_TYPE::ARTIST:
-            releaseArtist(snd);
-            break;
-        case DataManager::CORE_TYPE::MUSIC:
-            releaseMusic(snd);
-            break;
-        case DataManager::CORE_TYPE::PLAYLIST:
-            releasePlayList(snd);
-            break;
-        default:
-            break;
+            case ALBUM:
+                releaseAlbum(snd);
+                break;
+            case ARTIST:
+                releaseArtist(snd);
+                break;
+            case MUSIC:
+                releaseMusic(snd);
+                break;
+            case PLAYLIST:
+                releasePlayList(snd);
+                break;
+            default:
+                break;
         }
     } else {
         m_deleteListMutex.unlock();
     }
 }
-

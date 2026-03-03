@@ -3,15 +3,13 @@
 #include <utility>
 
 SelectMusicUrl::SelectMusicUrl(QFileInfoList list)
-    : m_list(std::move(list))
-{
+    : m_list(std::move(list)) {
     setAutoDelete(true);
 }
 
-void SelectMusicUrl::run()
-{
+void SelectMusicUrl::run() {
     QFileInfoList musicList;
-    for(const QFileInfo & i : m_list){
+    for (const QFileInfo &i: m_list) {
         if (QString suffix = i.suffix(); !m_musicSuffix.contains(suffix))
             continue;
 

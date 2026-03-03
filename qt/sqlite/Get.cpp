@@ -144,7 +144,6 @@ QList<int> Get::getArtistMusic(const int id, const int size, const int start, co
 
         const QStringList strList = QString::fromUtf8(sqlite3_column_text(stmt, 0)).split(",");
         list = TypeConversion::sqlStringListToIntList(strList);
-
     } catch (const DataException &e) {
         m_loger->logError(e.errorMessage());
         list.clear();
@@ -167,7 +166,6 @@ QList<int> Get::getArtistMusicAll(const int id, const int sort) {
 
         const QStringList strList = QString::fromUtf8(sqlite3_column_text(stmt, 0)).split(",");
         list = TypeConversion::sqlStringListToIntList(strList);
-
     } catch (const DataException &e) {
         m_loger->logError(e.errorMessage());
         list.clear();
@@ -190,7 +188,6 @@ QList<int> Get::getAlbumMusicAll(const int id, const int sort) {
 
         const QStringList strList = QString::fromUtf8(sqlite3_column_text(stmt, 0)).split(",");
         list = TypeConversion::sqlStringListToIntList(strList);
-
     } catch (const DataException &e) {
         m_loger->logError(e.errorMessage());
     }
@@ -261,9 +258,9 @@ int Get::getPlayListMusicFirst(int playListId) {
 }
 
 QList<int> Get::getPlayingListMusic() {
-    const auto sql = QString("SELECT %1 FROM "+LiteralConstant::Table::PLAYINGLIST+" ORDER BY %2 ASC")
-        .arg(LiteralConstant::Column::MUSIC_ID)
-        .arg(LiteralConstant::Column::POSITION);
+    const auto sql = QString("SELECT %1 FROM " + LiteralConstant::Table::PLAYINGLIST + " ORDER BY %2 ASC")
+            .arg(LiteralConstant::Column::MUSIC_ID)
+            .arg(LiteralConstant::Column::POSITION);
     return getIntList(sql.toUtf8());
 }
 
@@ -485,28 +482,28 @@ QHash<int, MusicPtr> Get::getMusic(const QList<int> &idList) {
     sqlite3_stmt *stmt = nullptr;
     try {
         const auto sql = QString(
-                    "SELECT m.%1, m.%2, m.%3, m.%4, m.%5, m.%6, m.%7, m.%8, "
-                    "GROUP_CONCAT(alb.%9) as album_names, GROUP_CONCAT(art.%10) AS artist_names "
-                    "FROM " +LiteralConstant::Table::MUSIC +" m "
-                    "JOIN "+LiteralConstant::Table::ALBUM_MUSIC+" alb_m ON alb_m.%1 = m.%1 "
-                    "JOIN "+LiteralConstant::Table::ALBUM+" alb ON alb.%11 = alb_m.%11 "
-                    "JOIN "+LiteralConstant::Table::ARTIST_MUSIC+" art_m ON art_m.%1 = m.%1 "
-                    "JOIN "+LiteralConstant::Table::ARTIST+" art ON art.%12 = art_m.%12 "
-                    "WHERE m.%1 = ? "
-                    "GROUP BY m.%1")
-        .arg(LiteralConstant::Column::MUSIC_ID)// 1
-        .arg(LiteralConstant::Column::TITLE)// 2
-        .arg(LiteralConstant::Column::DURATION)// 3
-        .arg(LiteralConstant::Column::LAST_EDIT_TIME)// 4
-        .arg(LiteralConstant::Column::LEVEL)// 5
-        .arg(LiteralConstant::Column::IS_LOVE)// 6
-        .arg(LiteralConstant::Column::PLAY_NUMBER)// 7
-        .arg(LiteralConstant::Column::URL)// 8
-        .arg(LiteralConstant::Column::ALBUM_NAME)// 9
-        .arg(LiteralConstant::Column::ARTIST_NAME)// 10
-        .arg(LiteralConstant::Column::ALBUM_ID)// 11
-        .arg(LiteralConstant::Column::ARTIST_ID)// 12
-        ;
+                            "SELECT m.%1, m.%2, m.%3, m.%4, m.%5, m.%6, m.%7, m.%8, "
+                            "GROUP_CONCAT(alb.%9) as album_names, GROUP_CONCAT(art.%10) AS artist_names "
+                            "FROM " + LiteralConstant::Table::MUSIC + " m "
+                            "JOIN " + LiteralConstant::Table::ALBUM_MUSIC + " alb_m ON alb_m.%1 = m.%1 "
+                            "JOIN " + LiteralConstant::Table::ALBUM + " alb ON alb.%11 = alb_m.%11 "
+                            "JOIN " + LiteralConstant::Table::ARTIST_MUSIC + " art_m ON art_m.%1 = m.%1 "
+                            "JOIN " + LiteralConstant::Table::ARTIST + " art ON art.%12 = art_m.%12 "
+                            "WHERE m.%1 = ? "
+                            "GROUP BY m.%1")
+                        .arg(LiteralConstant::Column::MUSIC_ID) // 1
+                        .arg(LiteralConstant::Column::TITLE) // 2
+                        .arg(LiteralConstant::Column::DURATION) // 3
+                        .arg(LiteralConstant::Column::LAST_EDIT_TIME) // 4
+                        .arg(LiteralConstant::Column::LEVEL) // 5
+                        .arg(LiteralConstant::Column::IS_LOVE) // 6
+                        .arg(LiteralConstant::Column::PLAY_NUMBER) // 7
+                        .arg(LiteralConstant::Column::URL) // 8
+                        .arg(LiteralConstant::Column::ALBUM_NAME) // 9
+                        .arg(LiteralConstant::Column::ARTIST_NAME) // 10
+                        .arg(LiteralConstant::Column::ALBUM_ID) // 11
+                        .arg(LiteralConstant::Column::ARTIST_ID) // 12
+                ;
 
         stmtPrepare(&stmt, sql.toUtf8());
         for (int i: idList) {
@@ -634,7 +631,6 @@ QList<int> Get::getPlayListMusic(const int id, const int size, const int start, 
 
         const QStringList strList = QString::fromUtf8(sqlite3_column_text(stmt, 0)).split(",");
         list = TypeConversion::sqlStringListToIntList(strList);
-
     } catch (const DataException &e) {
         m_loger->logError(e.errorMessage());
         list.clear();
@@ -657,7 +653,6 @@ QList<int> Get::getPlayListMusicAll(const int id, const int sort) {
 
         const QStringList strList = QString::fromUtf8(sqlite3_column_text(stmt, 0)).split(",");
         list = TypeConversion::sqlStringListToIntList(strList);
-
     } catch (const DataException &e) {
         m_loger->logError(e.errorMessage());
         list.clear();

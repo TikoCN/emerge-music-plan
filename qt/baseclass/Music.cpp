@@ -125,4 +125,3 @@ void Music::setSuffix(const QString &type) const {
         TLog::getInstance()->logInfo(QObject::tr("转换完成"));
     }
 }
-

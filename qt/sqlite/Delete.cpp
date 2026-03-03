@@ -16,12 +16,11 @@ bool Delete::deletePlayingList(const int position) {
     try {
         // DELETE FROM playinglist WHERE position >= ?
         const auto sql = QString("DELETE FROM %1 WHERE %2 >= ?")
-            .arg(LiteralConstant::Table::PLAYINGLIST)
-            .arg(LiteralConstant::Column::POSITION);
+                .arg(LiteralConstant::Table::PLAYINGLIST)
+                .arg(LiteralConstant::Column::POSITION);
         stmtPrepare(&stmt, sql.toUtf8());
         stmtBindInt(stmt, 1, position);
         stmtStep(stmt);
-
     } catch (const DataException &e) {
         m_loger->logError(e.errorMessage());
         result = false;

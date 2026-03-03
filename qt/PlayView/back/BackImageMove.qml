@@ -105,6 +105,6 @@ Rectangle{
 
     Rectangle{
         anchors.fill: parent
-        color: TikoSeit.theme.baseTheme.transparentAntiEmphasize
+        color: TikoSeit.theme.baseTheme.transparentAntiNormal
     }
 }

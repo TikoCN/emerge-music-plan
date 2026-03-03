@@ -2,27 +2,26 @@
 
 #include <iostream>
 
-#include "fftw3.h"
 #include <QAudioOutput>
 
 MediaPlayData::MediaPlayData(BaseTool *baseTool, DataActive *dataActive, TLog *loger, QObject *parent)
     : QObject(parent),
       m_baseTool(baseTool),
       m_dataActive(dataActive),
-      m_loger(loger)
-{
+      m_loger(loger) {
     m_player = new QMediaPlayer; //播放设备
     m_audioOutput = new QAudioOutput; //音频输出
     m_bufferOutput = new QAudioBufferOutput; //缓冲区输出
-    m_frequencySpectrum = new FrequencySpectrum;//音频计算
+    m_frequencySpectrum = new FrequencySpectrum; //音频计算
 
     m_player->setAudioOutput(m_audioOutput);
     m_player->setAudioBufferOutput(m_bufferOutput);
 
     m_dataActive = DataActive::getInstance();
 
-    connect(m_bufferOutput, &QAudioBufferOutput::audioBufferReceived, m_frequencySpectrum, &FrequencySpectrum::runSpectrum);
-    connect(m_frequencySpectrum, &FrequencySpectrum::dataFinished, this, [this](QVector<double> data) {
+    connect(m_bufferOutput, &QAudioBufferOutput::audioBufferReceived, m_frequencySpectrum,
+            &FrequencySpectrum::runSpectrum);
+    connect(m_frequencySpectrum, &FrequencySpectrum::dataFinished, this, [this](const QVector<double> &data) {
         m_allSamples = data;
         emit bufferSampleChanged();
     });

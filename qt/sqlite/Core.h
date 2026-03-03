@@ -3,7 +3,6 @@
 
 #include "sqlite3.h"
 #include "Tlog.h"
-#include "baseclass/SortType.h"
 #include "basetool/BaseTool.h"
 #include "baseclass/LiteralConstant.h"
 
@@ -33,7 +32,7 @@ protected:
 
     void sqlExecuteCallBack(const char *sql, sqlite3_callback back, void *data);
 
-    void sqlExecute(const char *sql, QString error);
+    void sqlExecute(const char *sql, const QString& error);
 
 public:
     explicit Core(TLog *log, BaseTool *tool);

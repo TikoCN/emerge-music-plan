@@ -24,7 +24,7 @@ private:
     QList<QPair<QString, QString>> m_playlistMusicList;
 
     QThreadPool *m_pool;
-    int m_work{};                      //工作单元数量
+    int m_work;                      //工作单元数量
 
     // 写入数据库
     void writeDataSQL();

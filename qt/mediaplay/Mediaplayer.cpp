@@ -62,6 +62,8 @@ MediaPlayer::MediaPlayer(BaseTool *baseTool, DataActive *dataActive, TLog *log, 
     : LrcDataControl(baseTool, dataActive, log, parent)
       , m_sqlite(sql) {
     m_loopType = 0;
+    m_playingMusicId = -1;
+    m_PlayingMusicListId = -1;
 
     connect(m_player, &QMediaPlayer::mediaStatusChanged, this, [this](const QMediaPlayer::MediaStatus staus) {
         switch (staus) {
@@ -156,7 +158,7 @@ void MediaPlayer::appendPlayingArtist(const int artistId) {
 void MediaPlayer::appendPlayingAlbum(const int albumId) {
     const auto album = m_dataActive->getAlbumCore(albumId);
     const auto musicList = m_sqlite->getPlayListMusicAll(albumId, album->sortType);
-    m_sqlite->updatePlayingListMusic(musicList, m_musicList.size());
+    m_sqlite->updatePlayingListMusic(musicList, static_cast<int>(m_musicList.size()));
     appendPlayingList(musicList);
 }
 
@@ -171,8 +173,8 @@ void MediaPlayer::insertPlayingList(const QList<int> &list) {
     const QList<int> rightList = std::move(list) + m_musicList.sliced(m_PlayingMusicListId);
 
     m_musicList.clear();
-    m_musicList.append(std::move(leftList));
-    m_musicList.append(std::move(rightList));
+    m_musicList.append(leftList);
+    m_musicList.append(rightList);
     emit musicListBuild();
 
     // 同步数据库
@@ -181,7 +183,7 @@ void MediaPlayer::insertPlayingList(const QList<int> &list) {
 }
 
 void MediaPlayer::appendPlayingList(const QList<int> &list) {
-    const int length = list.size();
+    const int length = static_cast<int>(list.size());
     m_musicList.append(list);
     emit musicListBuild();
 
@@ -203,7 +205,7 @@ void MediaPlayer::setPlayingMusicListId(const int playingMusicListId) {
 }
 
 int MediaPlayer::getPlayingMusicListId() const {
-    return  m_PlayingMusicListId;
+    return m_PlayingMusicListId;
 }
 
 int MediaPlayer::playingMusicId() const {

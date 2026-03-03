@@ -1,6 +1,5 @@
 #ifndef NAMEKEY_H
 #define NAMEKEY_H
-#include <QHash>
 #include <QFileInfo>
 #include "Tlog.h"
 class NameKey

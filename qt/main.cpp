@@ -15,11 +15,11 @@
 #include "imageload/ImageProvider.h"
 
 SQLite *SQLite::instance = nullptr;
-Setting* Setting::instance = nullptr;
-TaskCenter* TaskCenter::instance = nullptr;
-MediaPlayer* MediaPlayer::instance = nullptr;
-DataActive* DataActive::instance = nullptr;
-OnLine* OnLine::instance = nullptr;
+Setting *Setting::instance = nullptr;
+TaskCenter *TaskCenter::instance = nullptr;
+MediaPlayer *MediaPlayer::instance = nullptr;
+DataActive *DataActive::instance = nullptr;
+OnLine *OnLine::instance = nullptr;
 TLog *TLog::instance = nullptr;
 BaseTool *BaseTool::instance = nullptr;
 ImageControl *ImageControl::instance = nullptr;
@@ -30,21 +30,21 @@ int main(int argc, char *argv[]) {
     FileManagement::makeAllDir();
 
     //建立
-    TLog::buildInstance();                                      // 0
+    TLog::buildInstance(); // 0
     TLog *tlog = TLog::getInstance();
-    BaseTool::buildInstance();                                  // 1
+    BaseTool::buildInstance(); // 1
     BaseTool *baseTool = BaseTool::getInstance();
-    SQLite::buildInstance(tlog, baseTool);                       // 2
+    SQLite::buildInstance(tlog, baseTool); // 2
     SQLite *sql = SQLite::getInstance();
 
-    DataActive::buildInstance();                                 // 2
+    DataActive::buildInstance(); // 2
     DataActive *dataActive = DataActive::getInstance();
 
-    MediaPlayer::buildInstance(baseTool, dataActive, tlog, sql);      // 3
-    Setting::buildInstance();                                    // 3
-    TaskCenter::buildInstance();                                 // 3
-    OnLine::buildInstance();                                     // 3
-    ImageControl::buildInstance();                               // 3
+    MediaPlayer::buildInstance(baseTool, dataActive, tlog, sql); // 3
+    Setting::buildInstance(); // 3
+    TaskCenter::buildInstance(); // 3
+    OnLine::buildInstance(); // 3
+    ImageControl::buildInstance(); // 3
 
     //获得单例指针
     Setting *seit = Setting::getInstance();
@@ -54,7 +54,7 @@ int main(int argc, char *argv[]) {
     ImageControl *imgCtr = ImageControl::getInstance();
 
     // 注册单例
-    qmlRegisterSingletonInstance<BaseTool>("MediaerAPI", 1, 0, "BaseTool", baseTool);  // 0
+    qmlRegisterSingletonInstance<BaseTool>("MediaerAPI", 1, 0, "BaseTool", baseTool); // 0
     qmlRegisterSingletonInstance<Setting>("MediaerAPI", 1, 0, "Setting", seit);
     qmlRegisterSingletonInstance<MediaPlayer>("MediaerAPI", 1, 0, "MediaPlayer", mediaPlayer);
     qmlRegisterSingletonInstance<OnLine>("MediaerAPI", 1, 0, "OnLine", onLine);

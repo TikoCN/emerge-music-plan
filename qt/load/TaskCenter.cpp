@@ -6,16 +6,14 @@
 #include "datacore/DataActive.h"
 #include "Tlog.h"
 
-TaskCenter::TaskCenter()
-{
+TaskCenter::TaskCenter() {
     m_thread = new QThread;
     m_pool = new QThreadPool;
     this->moveToThread(m_thread);
     m_thread->start();
 }
 
-TaskCenter::~TaskCenter()
-{
+TaskCenter::~TaskCenter() {
     m_thread->quit();
     m_thread->wait();
     delete m_thread;
@@ -25,18 +23,17 @@ TaskCenter::~TaskCenter()
 /*
  *遍历文件夹得到所有子文件
  */
-void TaskCenter::filterFileInfo(const QStringList& dirPath)
-{
-    for (const auto & i : dirPath) {
+void TaskCenter::filterFileInfo(const QStringList &dirPath) {
+    for (const auto &i: dirPath) {
         QDir dir(QUrl(i).toLocalFile());
 
         //得到子文件
-        dir.setFilter(QDir::Files |QDir::NoDotAndDotDot);
+        dir.setFilter(QDir::Files | QDir::NoDotAndDotDot);
         QFileInfoList fileList = dir.entryInfoList();
         m_fileInfoList.append(fileList);
 
         //得到子文件夹
-        dir.setFilter(QDir::Dirs |QDir::NoDotAndDotDot);
+        dir.setFilter(QDir::Dirs | QDir::NoDotAndDotDot);
         filterFileInfo(dir.entryInfoList());
     }
 
@@ -44,29 +41,27 @@ void TaskCenter::filterFileInfo(const QStringList& dirPath)
 }
 
 // 变量文件夹，捕获所有的音乐文件
-void TaskCenter::filterFileInfo(const QFileInfoList& fileInfoList)
-{
-    for (const QFileInfo & i : fileInfoList) {
+void TaskCenter::filterFileInfo(const QFileInfoList &fileInfoList) {
+    for (const QFileInfo &i: fileInfoList) {
         QDir dir(i.filePath());
 
         //得到子文件
-        dir.setFilter(QDir::Files |QDir::NoDotAndDotDot);
+        dir.setFilter(QDir::Files | QDir::NoDotAndDotDot);
         QFileInfoList fileList = dir.entryInfoList();
         m_fileInfoList.append(fileList);
 
         //得到子文件夹
-        dir.setFilter(QDir::Dirs |QDir::NoDotAndDotDot);
+        dir.setFilter(QDir::Dirs | QDir::NoDotAndDotDot);
         filterFileInfo(dir.entryInfoList());
     }
 }
 
-void TaskCenter::selectFile()
-{
+void TaskCenter::selectFile() {
     long long cell = 0;
     m_pool->setMaxThreadCount(Setting::getInstance()->getMaxThreadNumber());
     m_work = 0;
 
-    for (long long i = 0; i < m_fileInfoList.size(); i+=cell) {
+    for (long long i = 0; i < m_fileInfoList.size(); i += cell) {
         m_work++;
         cell = 20;
         if (i + cell >= m_fileInfoList.size()) cell = m_fileInfoList.size() - i;
@@ -78,18 +73,19 @@ void TaskCenter::selectFile()
     m_fileInfoList.clear();
 }
 
-void TaskCenter::loadMedia()
-{
+void TaskCenter::loadMedia() {
     long long cell = 0;
     m_pool->setMaxThreadCount(Setting::getInstance()->getMaxThreadNumber());
     m_work = 0;
 
     if (m_fileInfoList.empty()) {
-        emit DataActive::getInstance()->finish();
+        emit DataActive::getInstance()
+        ->
+        finish();
         TLog::getInstance()->logLoad("加载完成");
     }
 
-    for (long long i = 0; i < m_fileInfoList.size(); i+=cell) {
+    for (long long i = 0; i < m_fileInfoList.size(); i += cell) {
         m_work++;
         cell = 20;
         if (i + cell >= m_fileInfoList.size()) cell = m_fileInfoList.size() - i;
@@ -103,8 +99,7 @@ void TaskCenter::loadMedia()
 /*
  *删除数据
  */
-void TaskCenter::clearData()
-{
+void TaskCenter::clearData() {
     m_dataList.clear();
     m_albumSet.clear();
     m_artistSet.clear();
@@ -113,17 +108,15 @@ void TaskCenter::clearData()
     m_playlistMusicList.clear();
 }
 
-void TaskCenter::start()
-{
+void TaskCenter::start() {
     filterFileInfo(Setting::getInstance()->getSourceList());
     selectFile();
 }
 
-void TaskCenter::appendInfo(const QFileInfoList& fileInfoList)
-{
+void TaskCenter::appendInfo(const QFileInfoList &fileInfoList) {
     m_fileInfoList.append(fileInfoList);
     m_work--;
-    if (m_work == 0 ) {
+    if (m_work == 0) {
         QFileInfoList newInfoList;
         TLog::getInstance()->logLoad(QString("sql筛选拥有歌曲文件，共 %1").arg(m_fileInfoList.size()));
 
@@ -135,23 +128,22 @@ void TaskCenter::appendInfo(const QFileInfoList& fileInfoList)
     }
 }
 
-void TaskCenter::appendMedia(const QList<MediaData>& dataList)
-{
+void TaskCenter::appendMedia(const QList<MediaData> &dataList) {
     m_dataList.append(dataList);
-    for (const MediaData &data : dataList) {
-         static QRegularExpression rx("[,;]+");
+    for (const MediaData &data: dataList) {
+        static QRegularExpression rx("[,;]+");
 
         const auto artistList = data.artist.split(rx);
-        for (const QString& artist : artistList) {
+        for (const QString &artist: artistList) {
             m_artistSet.insert(artist);
             QPair<QString, QString> pair;
             pair.first = data.url;
             pair.second = artist;
             m_artistMusicList.append(pair);
         }
-        
+
         const auto albumList = data.album.split(rx);
-        for (const QString& album : albumList) {
+        for (const QString &album: albumList) {
             m_albumSet.insert(album);
             QPair<QString, QString> pair;
             pair.first = data.url;
@@ -171,13 +163,14 @@ void TaskCenter::appendMedia(const QList<MediaData>& dataList)
     if (m_work == 0) {
         writeDataSQL();
         clearData();
-        emit DataActive::getInstance()->finish();
+        emit DataActive::getInstance()
+        ->
+        finish();
         TLog::getInstance()->logLoad("加载完成");
     }
 }
 
-void TaskCenter::writeDataSQL()
-{
+void TaskCenter::writeDataSQL() {
     SQLite *sql = SQLite::getInstance();
     sql->begin();
     sql->appendAlbum(QStringList(m_albumSet.begin(), m_albumSet.end()));
