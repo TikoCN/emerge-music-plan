@@ -47,14 +47,19 @@ int main(int argc, char *argv[]) {
     ImageControl::buildInstance(); // 3
 
     //获得单例指针
-    Setting *seit = Setting::getInstance();
-    MediaPlayer *mediaPlayer = MediaPlayer::getInstance();
-    const TaskCenter *center = TaskCenter::getInstance();
-    OnLine *onLine = OnLine::getInstance();
-    ImageControl *imgCtr = ImageControl::getInstance();
+    const auto seit = Setting::getInstance();
+    const auto mediaPlayer = MediaPlayer::getInstance();
+    const auto center = TaskCenter::getInstance();
+    const auto onLine = OnLine::getInstance();
+    const auto imgCtr = ImageControl::getInstance();
+    const auto imgPrd = new ImageProvider();
 
+    qmlRegisterUncreatableType<Album>("MediaerAPI", 1, 0, "albumData","无法直接创建Album实例");
+    qmlRegisterUncreatableType<Music>("MediaerAPI", 1, 0, "musicData","无法直接创建Music实例");
+    qmlRegisterUncreatableType<PlayList>("MediaerAPI", 1, 0, "playListData","无法直接创建PlayList实例");
+    qmlRegisterUncreatableType<Artist>("MediaerAPI", 1, 0, "artistData","无法直接创建Artist实例");
     // 注册单例
-    qmlRegisterSingletonInstance<BaseTool>("MediaerAPI", 1, 0, "BaseTool", baseTool); // 0
+    qmlRegisterSingletonInstance<BaseTool>("MediaerAPI", 1, 0, "BaseTool", baseTool);
     qmlRegisterSingletonInstance<Setting>("MediaerAPI", 1, 0, "Setting", seit);
     qmlRegisterSingletonInstance<MediaPlayer>("MediaerAPI", 1, 0, "MediaPlayer", mediaPlayer);
     qmlRegisterSingletonInstance<OnLine>("MediaerAPI", 1, 0, "OnLine", onLine);
@@ -70,8 +75,8 @@ int main(int argc, char *argv[]) {
     QObject::connect(seit, &Setting::loadMusics, center, &TaskCenter::start);
 
     QObject::connect(mediaPlayer, &MediaPlayer::downLrc, onLine, &OnLine::downLrc);
-    QObject::connect(mediaPlayer->getAudioOutput(), &QAudioOutput::volumeChanged, seit, [seit](const float volume) {
-        seit->setParameter(LiteralConstant::VOLUME, volume);
+    QObject::connect(mediaPlayer->getAudioOutput(), &QAudioOutput::volumeChanged, seit, [](const float volume) {
+        Setting::setParameter(LiteralConstant::VOLUME, volume);
     });
 
     QObject::connect(onLine, &OnLine::lrcDowned, mediaPlayer, &MediaPlayer::loadLrcList);
@@ -86,7 +91,7 @@ int main(int argc, char *argv[]) {
         &app,
         []() { QCoreApplication::exit(-1); },
         Qt::QueuedConnection);
-    engine.addImageProvider("cover", new ImageProvider);
+    engine.addImageProvider("cover", imgPrd);
     engine.loadFromModule("PlayView", "Main");
 
     return QGuiApplication::exec();

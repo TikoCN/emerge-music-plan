@@ -66,7 +66,10 @@ qt_add_qml_module(appmusicPlay
         mediaplay/LrcDataControl.h mediaplay/LrcDataControl.cpp
         mediaplay/Mediaplayer.h mediaplay/Mediaplayer.cpp
         RESOURCES
-        ui.qrc  # 资源文件（图片/字体等）
+        ui.qrc
+        SOURCES macro/SynchronizationAttribute.h
+        SOURCES macro/ConstantProperty.h
+        SOURCES macro/SettingAttribute.h  # 资源文件（图片/字体等）
 )
 
 target_link_libraries(appmusicPlay PRIVATE TikoLib)

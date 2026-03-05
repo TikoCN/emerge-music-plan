@@ -109,7 +109,7 @@ void MediaPlayer::buildPlayingList(QList<int> list, const int playMusicInListId)
 
 void MediaPlayer::buildPlayingArtist(const int artistId, const int listId) {
     const auto artist = m_dataActive->getArtistCore(artistId);
-    const auto musicList = m_sqlite->getArtistMusicAll(artistId, artist->sortType);
+    const auto musicList = m_sqlite->getArtistMusicAll(artistId, artist->sort);
     buildPlayingList(musicList, listId);
 
     m_loger->logUser(QString("播放歌手音乐%1").arg(artistId));
@@ -117,7 +117,7 @@ void MediaPlayer::buildPlayingArtist(const int artistId, const int listId) {
 
 void MediaPlayer::buildPlayingAlbum(const int albumId, const int listId) {
     const auto album = m_dataActive->getAlbumCore(albumId);
-    const auto musicList = m_sqlite->getAlbumMusicAll(albumId, album->sortType);
+    const auto musicList = m_sqlite->getAlbumMusicAll(albumId, album->sort);
     buildPlayingList(musicList, listId);
 
     m_loger->logUser(QString("播放专辑音乐%1").arg(albumId));
@@ -125,7 +125,7 @@ void MediaPlayer::buildPlayingAlbum(const int albumId, const int listId) {
 
 void MediaPlayer::buildPlayingPlayList(const int playListId, const int listId) {
     const auto playList = m_dataActive->getPlayListCore(playListId);
-    const auto musicList = m_sqlite->getPlayListMusicAll(playListId, playList->sortType);
+    const auto musicList = m_sqlite->getPlayListMusicAll(playListId, playList->sort);
     buildPlayingList(musicList, listId);
 
     m_loger->logUser(QString("播放列表音乐%1").arg(playListId));
@@ -133,38 +133,38 @@ void MediaPlayer::buildPlayingPlayList(const int playListId, const int listId) {
 
 void MediaPlayer::insertPlayingArtist(const int artistId) {
     const auto artist = m_dataActive->getArtistCore(artistId);
-    const auto musicList = m_sqlite->getArtistMusicAll(artistId, artist->sortType);
+    const auto musicList = m_sqlite->getArtistMusicAll(artistId, artist->sort);
     insertPlayingList(musicList);
 }
 
 void MediaPlayer::insertPlayingAlbum(const int albumId) {
     const auto album = m_dataActive->getAlbumCore(albumId);
-    const auto musicList = m_sqlite->getAlbumMusicAll(albumId, album->sortType);
+    const auto musicList = m_sqlite->getAlbumMusicAll(albumId, album->sort);
     insertPlayingList(musicList);
 }
 
 void MediaPlayer::insertPlayingPlayList(const int playListId) {
     const auto playList = m_dataActive->getPlayListCore(playListId);
-    const auto musicList = m_sqlite->getPlayListMusicAll(playListId, playList->sortType);
+    const auto musicList = m_sqlite->getPlayListMusicAll(playListId, playList->sort);
     insertPlayingList(musicList);
 }
 
 void MediaPlayer::appendPlayingArtist(const int artistId) {
     const auto artist = m_dataActive->getArtistCore(artistId);
-    const auto musicList = m_sqlite->getArtistMusicAll(artistId, artist->sortType);
+    const auto musicList = m_sqlite->getArtistMusicAll(artistId, artist->sort);
     appendPlayingList(musicList);
 }
 
 void MediaPlayer::appendPlayingAlbum(const int albumId) {
     const auto album = m_dataActive->getAlbumCore(albumId);
-    const auto musicList = m_sqlite->getPlayListMusicAll(albumId, album->sortType);
+    const auto musicList = m_sqlite->getPlayListMusicAll(albumId, album->sort);
     m_sqlite->updatePlayingListMusic(musicList, static_cast<int>(m_musicList.size()));
     appendPlayingList(musicList);
 }
 
 void MediaPlayer::appendPlayingPlayList(const int playListId) {
     const auto playList = m_dataActive->getPlayListCore(playListId);
-    const auto musicList = m_sqlite->getPlayListMusicAll(playListId, playList->sortType);
+    const auto musicList = m_sqlite->getPlayListMusicAll(playListId, playList->sort);
     appendPlayingList(musicList);
 }
 

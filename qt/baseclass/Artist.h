@@ -3,20 +3,25 @@
 
 #include <QObject>
 #include "SortType.h"
+#include "macro/ConstantProperty.h"
 
 using ArtistPtr = QSharedPointer<class Artist>;
 
 class Artist {
+    Q_GADGET
 public:
-    int musicCount = 0; // 音乐条目总数
-    QString name = QObject::tr("未知歌手");
-    QString lineKey = "";
-    long long duration = 0;
-    int id = -1;
-    int firstMusic = 0;
-    SORT_TYPE sortType = SORT_TITTLE_ASC;
+    QT_CONSTANT_PROPERTY(QString, name, Name)
+    QT_CONSTANT_PROPERTY(QString, nameKey, NameKey)
+    QT_CONSTANT_PROPERTY(long long, duration, Duration)
+    QT_CONSTANT_PROPERTY(int, firstMusic, FirstMusic)
+    QT_CONSTANT_PROPERTY(int, musicCount, MusicCount)
+    QT_CONSTANT_PROPERTY(int, id, Id)
+    QT_CONSTANT_PROPERTY(int, sort, Sort)
 
+    Artist();
     [[nodiscard]] QJsonObject getJsonObject() const;
 };
+
+Q_DECLARE_METATYPE(Artist)
 
 #endif // ARTIST_H

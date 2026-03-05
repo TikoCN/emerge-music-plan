@@ -15,6 +15,8 @@ bool Append::appendMusic(const QList<MediaData> &dataList) {
     sqlite3_stmt *getAlbumIDStmt = nullptr;
 
     try {
+        begin();
+
         // 构建 SQL：SELECT album_id FROM album WHERE name=? LIMIT 1
         const auto getAlbumIDSql = QString("SELECT %1 FROM %2 WHERE %3=? LIMIT 1")
                 .arg(LiteralConstant::Column::ALBUM_ID)
@@ -55,7 +57,10 @@ bool Append::appendMusic(const QList<MediaData> &dataList) {
             stmtBindText(appendMusicStmt, 8, key.find(data.title));
             stmtStep(appendMusicStmt);
         }
+
+        commit();
     } catch (const DataException &e) {
+        rollback();
         m_loger->logError(e.errorMessage());
         result = false;
     }
@@ -76,6 +81,8 @@ bool Append::appendAlbum(const QStringList &albumList) {
     sqlite3_stmt *stmt = nullptr;
 
     try {
+        begin();
+
         // 构建 SQL：INSERT OR IGNORE INTO album(name, key, sort) VALUES(?, ?, ?)
         const auto sql = QString("INSERT OR IGNORE INTO %1(%2, %3, %4) VALUES(?, ?, ?)")
                 .arg(LiteralConstant::Table::ALBUM)
@@ -92,7 +99,10 @@ bool Append::appendAlbum(const QStringList &albumList) {
             stmtBindInt(stmt, 3, 1);
             stmtStep(stmt);
         }
+
+        commit();
     } catch (const DataException &e) {
+        rollback();
         m_loger->logError(e.errorMessage());
         result = false;
     }
@@ -105,6 +115,8 @@ bool Append::appendAlbumMusic(int id, const QList<int> &musicList) {
     bool result = true;
     sqlite3_stmt *stmt = nullptr;
     try {
+        begin();
+
         // 构建 SQL：INSERT OR IGNORE INTO album_music(album_id, music_id) VALUES(?, ?)
         const auto sql = QString("INSERT OR IGNORE INTO %1(%2, %3) VALUES(?, ?)")
                 .arg(LiteralConstant::Table::ALBUM_MUSIC)
@@ -117,7 +129,10 @@ bool Append::appendAlbumMusic(int id, const QList<int> &musicList) {
             stmtBindInt(stmt, 2, i);
             stmtStep(stmt);
         }
+
+        commit();
     } catch (const DataException &e) {
+        rollback();
         m_loger->logError(e.errorMessage());
         result = false;
     }
@@ -138,6 +153,8 @@ bool Append::appendAlbumMusic(const QList<QPair<QString, QString> > &pairList) {
     sqlite3_stmt *getIdStmt = nullptr;
 
     try {
+        begin();
+
         // 构建 getIdSql：获取 music_id 和 album_id
         const auto getIdSql = QString("SELECT"
                     "(SELECT %1 FROM %2 WHERE %3 = ? LIMIT 1) AS %1,"
@@ -171,7 +188,10 @@ bool Append::appendAlbumMusic(const QList<QPair<QString, QString> > &pairList) {
             stmtBindInt(appendStmt, 2, music_id);
             stmtStep(appendStmt);
         }
+
+        commit();
     } catch (const DataException &e) {
+        rollback();
         m_loger->logError(e.errorMessage());
         result = false;
     }
@@ -192,6 +212,7 @@ bool Append::appendArtist(const QStringList &artistList) {
     sqlite3_stmt *stmt = nullptr;
 
     try {
+        begin();
         // 构建 SQL：INSERT OR IGNORE INTO artist(name, key, sort) VALUES(?, ?, ?)
         const auto sql = QString("INSERT OR IGNORE INTO %1(%2, %3, %4) VALUES(?, ?, ?)")
                 .arg(LiteralConstant::Table::ARTIST)
@@ -208,7 +229,9 @@ bool Append::appendArtist(const QStringList &artistList) {
             stmtBindInt(stmt, 3, 1);
             stmtStep(stmt);
         }
+        commit();
     } catch (const DataException &e) {
+        rollback();
         m_loger->logError(e.errorMessage());
         result = false;
     }
@@ -221,6 +244,7 @@ bool Append::appendArtistMusic(const int id, const QList<int> &musicList) {
     bool result = true;
     sqlite3_stmt *stmt = nullptr;
     try {
+        begin();
         // 构建 SQL：INSERT OR IGNORE INTO artist_music(artist_id, music_id) VALUES(?, ?)
         const auto sql = QString("INSERT OR IGNORE INTO %1(%2, %3) VALUES(?, ?)")
                 .arg(LiteralConstant::Table::ARTIST_MUSIC)
@@ -233,7 +257,9 @@ bool Append::appendArtistMusic(const int id, const QList<int> &musicList) {
             stmtBindInt(stmt, 2, i);
             stmtStep(stmt);
         }
+        commit();
     } catch (const DataException &e) {
+        rollback();
         m_loger->logError(e.errorMessage());
         result = false;
     }
@@ -254,6 +280,7 @@ bool Append::appendArtistMusic(const QList<QPair<QString, QString> > &pairList) 
     sqlite3_stmt *getIdStmt = nullptr;
 
     try {
+        begin();
         // 构建 getIdSql：获取 music_id 和 artist_id
         const auto getIdSql = QString("SELECT"
                     "(SELECT %1 FROM %2 WHERE %3 = ? LIMIT 1) AS %1,"
@@ -287,7 +314,9 @@ bool Append::appendArtistMusic(const QList<QPair<QString, QString> > &pairList) 
             stmtBindInt(appendStmt, 2, music_id);
             stmtStep(appendStmt);
         }
+        commit();
     } catch (const DataException &e) {
+        rollback();
         m_loger->logError(e.errorMessage());
         result = false;
     }
@@ -308,6 +337,7 @@ bool Append::appendDirPlayList(const QStringList &urlList) {
     sqlite3_stmt *stmt = nullptr;
 
     try {
+        begin();
         // 构建 SQL：INSERT OR IGNORE INTO playlist(name, sort, url, is_dir) VALUES(?, ?, ?, ?)
         const auto sql = QString("INSERT OR IGNORE INTO %1(%2, %3, %4, %5) VALUES(?, ?, ?, ?)")
                 .arg(LiteralConstant::Table::PLAYLIST)
@@ -326,7 +356,9 @@ bool Append::appendDirPlayList(const QStringList &urlList) {
             stmtBindInt(stmt, 4, 1);
             stmtStep(stmt);
         }
+        commit();
     } catch (const DataException &e) {
+        rollback();
         m_loger->logError(e.errorMessage());
         result = false;
     }
@@ -366,6 +398,7 @@ bool Append::appendPlayListMusic(const int id, const QList<int> &musicList) {
     bool result = true;
     sqlite3_stmt *stmt = nullptr;
     try {
+        begin();
         // 注意：原 SQL 使用了 "list_music"，根据常量应为 playlist_music
         const auto sql = QString("INSERT OR IGNORE INTO %1(%2, %3) VALUES(?, ?)")
                 .arg(LiteralConstant::Table::PLAYLIST_MUSIC)
@@ -378,7 +411,9 @@ bool Append::appendPlayListMusic(const int id, const QList<int> &musicList) {
             stmtBindInt(stmt, 2, i);
             stmtStep(stmt);
         }
+        commit();
     } catch (const DataException &e) {
+        rollback();
         m_loger->logError(e.errorMessage());
         result = false;
     }
@@ -398,6 +433,7 @@ bool Append::appendPlayListMusic(const QList<QPair<QString, QString> > &pairList
     sqlite3_stmt *getIdStmt = nullptr;
 
     try {
+        begin();
         // 构建 getIdSql：获取 music_id 和 list_id
         const auto getIdSql = QString("SELECT"
                     "(SELECT %1 FROM %2 WHERE %3 = ? LIMIT 1) AS %1,"
@@ -430,7 +466,9 @@ bool Append::appendPlayListMusic(const QList<QPair<QString, QString> > &pairList
             stmtBindInt(appendStmt, 2, music_id);
             stmtStep(appendStmt);
         }
+        commit();
     } catch (const DataException &e) {
+        rollback();
         m_loger->logError(e.errorMessage());
         result = false;
     }
@@ -469,6 +507,7 @@ bool Append::appendPlayingListMusic(const QList<int> &musicList, int start) {
 
         commit();
     } catch (const DataException &e) {
+        rollback();
         m_loger->logError(e.errorMessage());
         result = false;
     }

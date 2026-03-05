@@ -7,6 +7,11 @@ import DataType
 ShowPageBase{
     id: artistPlayer
     property int artistId: -1
+    property artistData artist
+    sort: artist.sort
+    duration: artist.duration
+    name: artist.name
+    musicCount: artist.musicCount
 
     normalIcon: "qrc:/image/artist.png"
     loadIcon: "image://cover/artistFile?id=" +
@@ -18,11 +23,7 @@ ShowPageBase{
             return
         artistPlayer.artistId = artistId
 
-        const json = DataActive.getArtistJson(artistId);
-        sort = json.sort
-        duration = json.duration
-        name = json.name
-        musicCount = json.musicCount
+        artist = DataActive.getArtistData(artistId);
 
         musicList.reset()
     }

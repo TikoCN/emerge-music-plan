@@ -111,8 +111,8 @@ QHash<int, ArtistPtr> Get::getArtist(const QList<int> &idList) {
 
             artist->name = QString::fromUtf8(sqlite3_column_text(stmt, 0));
             artist->id = sqlite3_column_int(stmt, 1);
-            artist->lineKey = QString::fromUtf8(sqlite3_column_text(stmt, 2));
-            artist->sortType = static_cast<SORT_TYPE>(sqlite3_column_int(stmt, 3));
+            artist->nameKey = QString::fromUtf8(sqlite3_column_text(stmt, 2));
+            artist->sort = static_cast<SORT_TYPE>(sqlite3_column_int(stmt, 3));
             artist->musicCount = sqlite3_column_int(stmt, 4);
             artist->duration = sqlite3_column_int64(stmt, 5);
             artist->firstMusic = sqlite3_column_int(stmt, 6);
@@ -360,8 +360,8 @@ QHash<int, AlbumPtr> Get::getAlbum(const QList<int> &idList) {
 
             album->name = QString::fromUtf8(sqlite3_column_text(stmt, 0));
             album->id = sqlite3_column_int(stmt, 1);
-            album->lineKey = QString::fromUtf8(sqlite3_column_text(stmt, 2));
-            album->sortType = static_cast<SORT_TYPE>(sqlite3_column_int(stmt, 3));
+            album->nameKey = QString::fromUtf8(sqlite3_column_text(stmt, 2));
+            album->sort = static_cast<SORT_TYPE>(sqlite3_column_int(stmt, 3));
             album->musicCount = sqlite3_column_int(stmt, 4);
             album->duration = sqlite3_column_int64(stmt, 5);
             album->firstMusic = sqlite3_column_int(stmt, 6);
@@ -602,11 +602,11 @@ PlayListPtr Get::getList(const int id) {
 
         playlist->id = sqlite3_column_int(stmt, 0);
         playlist->name = QString::fromUtf8(sqlite3_column_text(stmt, 1));
-        playlist->sortType = static_cast<SORT_TYPE>(sqlite3_column_int(stmt, 2));
+        playlist->sort = static_cast<SORT_TYPE>(sqlite3_column_int(stmt, 2));
         playlist->url = QString::fromUtf8(sqlite3_column_text(stmt, 3));
         playlist->isDir = sqlite3_column_int(stmt, 4) == 1;
         playlist->duration = sqlite3_column_int64(stmt, 5);
-        playlist->musicConut = sqlite3_column_int(stmt, 6);
+        playlist->musicCount = sqlite3_column_int(stmt, 6);
         playlist->firstMusic = sqlite3_column_int(stmt, 7);
     } catch (const DataException &e) {
         m_loger->logError(e.errorMessage());

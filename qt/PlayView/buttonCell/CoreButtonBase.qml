@@ -17,9 +17,9 @@ TikoButtonBase {
     property string subtitle: ""
     property int space: 10
 
-    signal menu()
-    signal page()
-    signal play()
+    signal menu() // 菜单
+    signal page() // 跳到页面
+    signal play() // 播放
     property Rectangle hoverItem: null
 
     dynamicState.onIsHoverChanged: {

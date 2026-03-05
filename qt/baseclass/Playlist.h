@@ -2,22 +2,26 @@
 #define PLAYLIST_H
 
 #include <QObject>
-#include "SortType.h"
+#include "macro/ConstantProperty.h"
 
 using PlayListPtr = QSharedPointer<class PlayList>;
 
 class PlayList {
+    Q_GADGET
 public:
-    QString name = QObject::tr("新建列表"); //列表名
-    QString url = ""; //文件夹路径
-    long long duration = 0;
-    int id = -1; //列表id
-    int musicConut = 0; // 音乐条目总数
-    bool isDir = false;
-    bool isShow = true;
-    int firstMusic = 0;
-    SORT_TYPE sortType = SORT_TITTLE_ASC;
+    QT_CONSTANT_PROPERTY(QString, name, Name)    // 列表名，
+    QT_CONSTANT_PROPERTY(QString, url, Url)      // 文件夹路径，默认值
+    QT_CONSTANT_PROPERTY(long long, duration, Duration)
+    QT_CONSTANT_PROPERTY(bool, isDir, IsDir)
+    QT_CONSTANT_PROPERTY(bool, isShow, IsShow)
+    QT_CONSTANT_PROPERTY(int, firstMusic, FirstMusic)
+    QT_CONSTANT_PROPERTY(int, id, Id)            // 列表id，
+    QT_CONSTANT_PROPERTY(int, musicCount, MusicCount)  // 音乐条目总数
+    QT_CONSTANT_PROPERTY(int, sort, Sort)  // 默认值
 
+    PlayList();
     [[nodiscard]] QJsonObject getJsonObject() const;
 };
+
+Q_DECLARE_METATYPE(PlayList)
 #endif // PLAYLIST_H

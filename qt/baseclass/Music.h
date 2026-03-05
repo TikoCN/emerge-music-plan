@@ -2,26 +2,31 @@
 #define MUSIC_H
 
 #include "MediaData.h"
-#include <QObject>
+#include "macro/ConstantProperty.h"
 #include <QFileInfo>
+
+#include "Album.h"
 
 using MusicPtr = QSharedPointer<class Music>;
 
 class Music {
+    Q_GADGET
 public:
-    QString title = QObject::tr("未知标题");
-    QString artist = {QObject::tr("未知歌手")};
-    QString album = {QObject::tr("未知专辑")};
-    QString url = "";
-    QString lastEdit = "";
-    QString nameKey = "";
-    long long duration = 0;
-    long long lastEditTime = 0;
-    long long insetTime = 0;
-    int id = -1;
-    int level = 0;
-    int playNumber = 0;
-    bool isLove = false;
+    QT_CONSTANT_PROPERTY(QString, title, Title)
+    QT_CONSTANT_PROPERTY(QString, artist, Artist)
+    QT_CONSTANT_PROPERTY(QString, album, Album)
+    QT_CONSTANT_PROPERTY(QString, url, Url)
+    QT_CONSTANT_PROPERTY(QString, lastEdit, LastEdit)
+    QT_CONSTANT_PROPERTY(QString, nameKey, NameKey)
+    QT_CONSTANT_PROPERTY(long long, duration, Duration)
+    QT_CONSTANT_PROPERTY(long long, lastEditTime, LastEditTime)
+    QT_CONSTANT_PROPERTY(long long, insetTime, InsetTime)
+    QT_CONSTANT_PROPERTY(int, id, Id)
+    QT_CONSTANT_PROPERTY(int, level, Level)
+    QT_CONSTANT_PROPERTY(int, playNumber, PlayNumber)
+    QT_CONSTANT_PROPERTY(bool, isLove, IsLove)
+
+    Music();
 
     // 读取元数据
     void setMedia(const MediaData &data);
@@ -47,4 +52,5 @@ public:
     [[nodiscard]] QJsonObject getJsonObject() const;
 };
 
+Q_DECLARE_METATYPE(Music)
 #endif // MUSIC_H

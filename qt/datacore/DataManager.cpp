@@ -36,6 +36,33 @@ QJsonObject DataManager::getAlbumJson(const int id) {
     return json;
 }
 
+Album DataManager::getAlbumData(const int id) {
+    const AlbumPtr album = getAlbumCore(id);
+    if (album != nullptr) {
+        return *album;
+    }
+
+    return {};
+}
+
+Music DataManager::getMusicData(const int id) {
+    const MusicPtr music = getMusicCore(id);
+    if (music != nullptr) {
+        return *music;
+    }
+
+    return {};
+}
+
+PlayList DataManager::getPlayListData(const int id) {
+    const PlayListPtr playList = getPlayListCore(id);
+    if (playList != nullptr) {
+        return *playList;
+    }
+
+    return {};
+}
+
 ArtistPtr DataManager::getArtistCore(const int id) {
     m_artistMutex.lock();
 
@@ -61,6 +88,15 @@ QJsonObject DataManager::getArtistJson(const int id) {
     QJsonObject json = artist->getJsonObject();
 
     return json;
+}
+
+Artist DataManager::getArtistData(const int id) {
+    const ArtistPtr artist = getArtistCore(id);
+    if (artist != nullptr) {
+        return *artist;
+    }
+
+    return {};
 }
 
 MusicPtr DataManager::getMusicCore(const int id) {

@@ -139,7 +139,7 @@ void DataActive::updatePlayListSort(int playListId, int sort) {
         return;
     }
 
-    playList->sortType = static_cast<SORT_TYPE>(sort);
+    playList->sort = static_cast<SORT_TYPE>(sort);
     m_sql->updatePlayList(playList);
 }
 
@@ -154,14 +154,14 @@ void DataActive::updateArtistName(const int artistId, const QString &name) {
     m_sql->updateArtist(artist);
 }
 
-void DataActive::updateArtistSort(int artistId, int sort) {
+void DataActive::updateArtistSort(const int artistId, const int sort) {
     const ArtistPtr artist = getArtistCore(artistId);
     if (artist.isNull()) {
         m_loger->logError("更新歌手排序失败");
         return;
     }
 
-    artist->sortType = static_cast<SORT_TYPE>(sort);
+    artist->sort = sort;
     m_sql->updateArtist(artist);
 }
 
@@ -183,7 +183,7 @@ void DataActive::updateAlbumSort(const int albumId, int sort) {
         return;
     }
 
-    album->sortType = static_cast<SORT_TYPE>(sort);
+    album->sort = static_cast<SORT_TYPE>(sort);
     m_sql->updateAlbum(album);
 }
 

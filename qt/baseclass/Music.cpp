@@ -21,6 +21,16 @@ QJsonObject Music::getJsonObject() const {
     return json;
 }
 
+Music::Music()
+    : duration(0),
+      lastEditTime(0),
+      insetTime(0),
+      id(0),
+      level(0),
+      playNumber(0),
+      isLove(false) {
+}
+
 void Music::setMedia(const MediaData &data) {
     title = data.title;
     artist = data.artist;

@@ -18,18 +18,18 @@ TikoMenu {
 
     TikoMenuItem {
         text: qsTr("播放")
-        onClicked: MediaPlayer.buildPlayingListByMusicList(musicList)
+        onClicked: MediaPlayer.buildPlayingAlbum(albumId)
         icon.source: "qrc:/image/play.png"
     }
 
     TikoMenuItem {
         text: qsTr("添加到播放队列")
-        onClicked: MediaPlayer.appendPlayingListByMusicList(musicList)
+        onClicked: MediaPlayer.appendPlayingAlbum(albumId)
     }
 
     TikoMenuItem {
         text: qsTr("添加到正在下一首播放")
-        onClicked: MediaPlayer.insertPlayingListByMusicList(musicList)
+        onClicked: MediaPlayer.insertPlayingAlbum(albumId)
     }
 
     TikoMenuSpeacer{}
@@ -48,7 +48,7 @@ TikoMenu {
             id: addMenu
             TikoMenuItem {
                 text: name
-                onTriggered: DataActive.playlistAppendMusic(playlistId, albumId)
+                // todo onTriggered: DataActive.playlistAppendMusic(playlistId, albumId)
                 enabled: !isDir
             }
         }

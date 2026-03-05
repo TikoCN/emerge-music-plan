@@ -8,7 +8,9 @@ CoreButtonBase {
     id: albumButton
 
     property int albumId: -1
-    property var musicList: []
+    property albumData album
+    name: album.name
+    subtitle: subtitle = BaseTool.typeConversion.timeToString(Number(album.duration))
 
     normalIcon: "qrc:/image/album.png"
     loadIcon: "image://cover/albumFile?id=" +
@@ -18,12 +20,7 @@ CoreButtonBase {
     onMenu: createMenu(this)
     onPlay: MediaPlayer.buildPlayingListByMusicList(musicList)
 
-    onAlbumIdChanged: {
-        const json = DataActive.getAlbumJson(albumId);
-        name = json.name
-        subtitle = BaseTool.typeConversion.timeToString(Number(json.duration))
-        musicList = json.musicList
-    }
+    onAlbumIdChanged: album = DataActive.getAlbumData(albumId)
 
     Component {
         id: menuComponent

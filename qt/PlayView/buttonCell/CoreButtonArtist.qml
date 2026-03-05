@@ -8,7 +8,10 @@ CoreButtonBase {
     id: artistButton
 
     property int artistId: -1
-    property var musicList: []
+    property artistData artist
+    name: artist.name
+    subtitle: BaseTool.typeConversion.timeToString(Number(artist.duration))
+
 
     normalIcon: "qrc:/image/artist.png"
     loadIcon: "image://cover/artistFile?id=" +
@@ -16,20 +19,14 @@ CoreButtonBase {
               "&radius=10"
     onPage: CoreData.mainTurnArtistPlayer(artistId)
     onMenu: createMenu(this)
-    onPlay: MediaPlayer.buildPlayingListByMusicList(musicList)
+    onPlay: MediaPlayer.buildPlayingArtist(artistId)
 
-    onArtistIdChanged: {
-        const json = DataActive.getArtistJson(artistId);
-        name = json.name
-        subtitle = BaseTool.typeConversion.timeToString(Number(json.duration))
-        musicList = json.musicList
-    }
+    onArtistIdChanged: artist = DataActive.getArtistData(artistId)
 
     Component {
         id: menuComponent
         MenuArtist {
             artistId: artistButton.artistId
-            musicList: artistButton.musicList
             name: artistButton.name
         }
     }

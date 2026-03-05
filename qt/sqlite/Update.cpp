@@ -12,6 +12,7 @@ bool Update::updateMusic(const QList<MusicPtr> &musicList) {
     bool result = true;
     sqlite3_stmt *stmt = nullptr;
     try {
+        begin();
         // UPDATE music SET title = ?, duration = ?, level = ?, love = ?, play_number = ?, url = ? WHERE music_id = ?
         const auto sql = QString("UPDATE %1 SET %2 = ?, %3 = ?, %4 = ?, %5 = ?, %6 = ?, %7 = ? WHERE %8 = ?")
                 .arg(LiteralConstant::Table::MUSIC) // %1
@@ -36,7 +37,9 @@ bool Update::updateMusic(const QList<MusicPtr> &musicList) {
             stmtBindInt(stmt, 7, music->id);
             stmtStep(stmt);
         }
+        commit();
     } catch (const DataException &e) {
+        rollback();
         m_loger->logError(e.errorMessage());
         result = false;
     }
@@ -61,7 +64,7 @@ bool Update::updatePlayList(const PlayListPtr &playlist) {
         stmtPrepare(&stmt, sql.toUtf8());
         stmtReset(stmt);
         stmtBindText(stmt, 1, playlist->name);
-        stmtBindInt(stmt, 2, (int) playlist->sortType);
+        stmtBindInt(stmt, 2, (int) playlist->sort);
         stmtBindInt(stmt, 3, playlist->id);
         stmtStep(stmt);
     } catch (const DataException &e) {
@@ -86,6 +89,7 @@ bool Update::updatePlayingListMusic(const QList<int> &musicIdList, int start) {
     bool result = true;
     sqlite3_stmt *stmt = nullptr;
     try {
+        begin();
         // UPDATE playinglist SET position = ? WHERE music_id = ?
         const auto sql = QString("UPDATE %1 SET %2 = ? WHERE %3 = ?")
                 .arg(LiteralConstant::Table::PLAYINGLIST) // %1
@@ -99,7 +103,9 @@ bool Update::updatePlayingListMusic(const QList<int> &musicIdList, int start) {
             stmtBindInt(stmt, 2, musicIdList[i]);
             stmtStep(stmt);
         }
+        commit();
     } catch (const DataException &e) {
+        rollback();
         m_loger->logError(e.errorMessage());
         result = false;
     }
@@ -123,7 +129,7 @@ bool Update::updateArtist(const ArtistPtr &artist) {
         stmtPrepare(&stmt, sql.toUtf8());
         stmtReset(stmt);
         stmtBindText(stmt, 1, artist->name);
-        stmtBindText(stmt, 2, artist->lineKey);
+        stmtBindText(stmt, 2, artist->nameKey);
         stmtBindInt(stmt, 3, artist->id);
         stmtStep(stmt);
     } catch (const DataException &e) {
@@ -155,7 +161,7 @@ bool Update::updateAlbum(const AlbumPtr &album) {
         stmtPrepare(&stmt, sql.toUtf8());
         stmtReset(stmt);
         stmtBindText(stmt, 1, album->name);
-        stmtBindText(stmt, 2, album->lineKey);
+        stmtBindText(stmt, 2, album->nameKey);
         stmtBindInt(stmt, 3, album->id);
         stmtStep(stmt);
     } catch (const DataException &e) {
@@ -175,6 +181,7 @@ bool Update::updateAlbumNameKey(const QStringList &albumName, const QStringList 
     bool result = true;
     sqlite3_stmt *stmt = nullptr;
     try {
+        begin();
         // UPDATE album SET key = ? WHERE name = ?
         const auto sql = QString("UPDATE %1 SET %2 = ? WHERE %3 = ?")
                 .arg(LiteralConstant::Table::ALBUM) // %1
@@ -192,7 +199,9 @@ bool Update::updateAlbumNameKey(const QStringList &albumName, const QStringList 
             ++name;
             ++key;
         }
+        commit();
     } catch (const DataException &e) {
+        rollback();
         m_loger->logError(e.errorMessage());
         result = false;
     }
@@ -204,6 +213,7 @@ bool Update::updateArtistNameKey(const QStringList &artistName, const QStringLis
     bool result = true;
     sqlite3_stmt *stmt = nullptr;
     try {
+        begin();
         // UPDATE artist SET key = ? WHERE name = ?
         const auto sql = QString("UPDATE %1 SET %2 = ? WHERE %3 = ?")
                 .arg(LiteralConstant::Table::ARTIST) // %1
@@ -221,7 +231,9 @@ bool Update::updateArtistNameKey(const QStringList &artistName, const QStringLis
             ++name;
             ++key;
         }
+        commit();
     } catch (const DataException &e) {
+        rollback();
         m_loger->logError(e.errorMessage());
         result = false;
     }
@@ -233,6 +245,7 @@ bool Update::updatePlayListMusic(const QList<int> &musicIdList, const int playli
     bool result = true;
     sqlite3_stmt *stmt = nullptr;
     try {
+        begin();
         // 正确的 SQL：仅在目标播放列表中不存在该音乐时才更新
         const auto sql = QString(
                     "UPDATE %1 SET %2 = ? "
@@ -252,7 +265,9 @@ bool Update::updatePlayListMusic(const QList<int> &musicIdList, const int playli
             stmtBindInt(stmt, 5, playlistNewId);
             stmtStep(stmt);
         }
+        commit();
     } catch (const DataException &e) {
+        rollback();
         m_loger->logError(e.errorMessage());
         result = false;
     }
@@ -264,6 +279,7 @@ bool Update::updateArtistMusic(const QList<int> &musicIdList, const int artistNe
     bool result = true;
     sqlite3_stmt *stmt = nullptr;
     try {
+        begin();
         // 修正：使用正确的表名 artist_music，并添加重复检查
         const auto sql = QString(
                     "UPDATE %1 SET %2 = ? "
@@ -283,7 +299,9 @@ bool Update::updateArtistMusic(const QList<int> &musicIdList, const int artistNe
             stmtBindInt(stmt, 5, artistNewId);
             stmtStep(stmt);
         }
+        commit();
     } catch (const DataException &e) {
+        rollback();
         m_loger->logError(e.errorMessage());
         result = false;
     }
@@ -295,6 +313,7 @@ bool Update::updateAlbumMusic(const QList<int> &musicIdList, const int albumNewI
     bool result = true;
     sqlite3_stmt *stmt = nullptr;
     try {
+        begin();
         // 修正：应更新 album_music 表，而非 music 表
         const auto sql = QString(
                     "UPDATE %1 SET %2 = ? "
@@ -314,7 +333,9 @@ bool Update::updateAlbumMusic(const QList<int> &musicIdList, const int albumNewI
             stmtBindInt(stmt, 5, albumNewId);
             stmtStep(stmt);
         }
+        commit();
     } catch (const DataException &e) {
+        begin();
         m_loger->logError(e.errorMessage());
         result = false;
     }

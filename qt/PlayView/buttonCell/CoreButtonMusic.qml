@@ -9,8 +9,11 @@ CoreButtonBase {
 
     property int musicId: -1
     property int type: 0
+    property musicData music
     signal playMusic()
 
+    name: music.title
+    subtitle: music.artist
     loadIcon: "image://cover/musicFile?id=" +
               musicId.toString() +
               "&radius=10"
@@ -20,11 +23,7 @@ CoreButtonBase {
     onPage: playMusic()
     onPlay: playMusic()
 
-    onMusicIdChanged: {
-        const Json = DataActive.getMusicJson(musicId);
-        name = Json.title
-        subtitle = Json.artist
-    }
+    onMusicIdChanged: music = DataActive.getMusicData(musicId)
 
     Component {
         id: menuComponent

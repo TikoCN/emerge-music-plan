@@ -13,18 +13,13 @@ TikoMenu{
 
     property int musicId: -1
     property int type: 0
-    property string musicTitle: ""
-    property string artist : ""
-    property string album: ""
-    property string fileUrl: ""
+    property musicData music
+    property string musicTitle: music.title
+    property string artist: music.artist
+    property string album: music.album
+    property string fileUrl: music.url
 
-    Component.onCompleted:{
-        const Json = DataActive.getMusicJson(musicId);
-        musicTitle = Json.title
-        artist = Json.artist
-        album = Json.album
-        fileUrl = Json.url
-    }
+    Component.onCompleted: music = DataActive.getMusicData(musicId)
 
     TikoMenuItem {
         text: qsTr("播放")

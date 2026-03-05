@@ -91,8 +91,6 @@ void Setting::writeData() const {
     ini->setValue(m_themeColorKey, m_themeColor.name(QColor::HexArgb));
     ini->setValue(m_lrcNormalColorKey, m_lrcNormalColor.name(QColor::HexArgb));
     ini->setValue(m_lrcPlayingColorKey, m_lrcPlayingColor.name(QColor::HexArgb));
-    ini->setValue(m_textBenchmarkColorKey, m_textBenchmarkColor.name(QColor::HexArgb));
-    ini->setValue(m_buttonBenchmarkColorKey, m_buttonBenchmarkColor.name(QColor::HexArgb));
     // 字体设置写入
     ini->setValue(m_lrcFontKey, m_lrcFont.toString());
     ini->setValue(m_deskLrcFontKey, m_deskLrcFont.toString());
@@ -125,8 +123,6 @@ Setting::Setting()
 
     // 颜色属性默认值
     m_themeColor = Qt::red;
-    m_buttonBenchmarkColor = Qt::blue;
-    m_textBenchmarkColor = Qt::blue;
 
     // 歌词颜色默认值
     m_lrcNormalColor = Qt::black;

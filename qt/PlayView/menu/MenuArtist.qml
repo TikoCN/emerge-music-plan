@@ -7,7 +7,6 @@ import PlayView
 TikoMenu {
     id: artistMenu
     property var inputPopup: null
-    property var musicList: []
     property int artistId: -1
     property string name: ""
 
@@ -18,18 +17,18 @@ TikoMenu {
 
     TikoMenuItem {
         text: qsTr("播放")
-        onClicked: MediaPlayer.buildPlayingListByMusicList(musicList)
+        onClicked: MediaPlayer.buildPlayingArtist(artistId)
         icon.source: "qrc:/image/play.png"
     }
 
     TikoMenuItem {
         text: qsTr("添加到播放队列")
-        onClicked: MediaPlayer.appendPlayingListByMusicList(musicList)
+        onClicked: MediaPlayer.appendPlayingArtist(artistId)
     }
 
     TikoMenuItem {
         text: qsTr("添加到正在下一首播放")
-        onClicked: MediaPlayer.insertPlayingListByMusicList(musicList)
+        onClicked: MediaPlayer.insertPlayingArtist(artistId)
     }
 
     TikoMenuSpeacer{}
@@ -48,7 +47,7 @@ TikoMenu {
             id: addMenu
             TikoMenuItem {
                 text: name
-                onTriggered: DataActive.playlistAppendMusic(playlistId, musicList)
+                // todo onTriggered: DataActive.playlistAppendMusic(playlistId, musicList)
                 enabled: !isDir
             }
         }
