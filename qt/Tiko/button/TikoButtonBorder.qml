@@ -9,16 +9,16 @@ TikoButtonComplete {
     textLine: textLineItem
     background: backgroundItem
 
-    TikoDynamicTextLine {
-        id: textLineItem
-        anchors.centerIn: completeButton
-    }
-
     TikoDynamicBackGround {
         id: backgroundItem
         dynamicState: completeButton.dynamicState
         anchors.fill: parent
-        z: -1
+    }
+
+    TikoDynamicTextLine {
+        id: textLineItem
+        dynamicState: completeButton.dynamicState
+        anchors.centerIn: completeButton
     }
 
     Component.onCompleted: {

@@ -5,8 +5,7 @@ import Tiko
 
 TikoButtonBase {
     id: normalButton
-    property int outHeight : 0
-    implicitHeight: Math.max(iconItem.implicitHeight, textLineItem.implicitHeight) + outHeight
+    implicitHeight: textLineItem.height + TikoSeit.normalMargins * 2
     implicitWidth: childrenRect.width
     icon: iconItem
     textLine: textLineItem

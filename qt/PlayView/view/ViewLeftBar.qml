@@ -99,7 +99,7 @@ Item {
 
                 delegate: Rectangle {
                     width: parent.width
-                    height: norMalButton.implicitHeight + TikoSeit.emphasizeMargins
+                    height: norMalButton.implicitHeight + TikoSeit.normalMargins
                     radius: 10
                     color: root.showText === norMalButton.textLine.text ? TikoSeit.theme.baseTheme.transparentEmphasize : "#00000000"
 

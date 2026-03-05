@@ -36,8 +36,6 @@ bool Setting::getParameterList() {
 
     // 颜色管理
     m_themeColor = QColor::fromString(ini->value(m_themeColorKey).toString());
-    m_textBenchmarkColor = QColor::fromString(ini->value(m_textBenchmarkColorKey).toString());
-    m_buttonBenchmarkColor = QColor::fromString(ini->value(m_buttonBenchmarkColorKey).toString());
 
     // 歌词相关颜色
     m_lrcNormalColor = QColor::fromString(ini->value(m_lrcNormalColorKey).toString());
@@ -100,7 +98,7 @@ void Setting::writeData() const {
     ini->setValue(m_deskLrcFontKey, m_deskLrcFont.toString());
     ini->setValue(m_benchmarkFontKey, m_benchmarkFont.toString());
 
-    ini->setValue(m_lrcTopPointKey, m_lrcTopPoint.x());
+    ini->setValue(m_lrcTopPointKey, m_lrcTopPoint);
 
     ini->setValue(m_windowRectKey, m_windowRect);
 
@@ -131,11 +129,11 @@ Setting::Setting()
     m_textBenchmarkColor = Qt::blue;
 
     // 歌词颜色默认值
-    m_lrcNormalColor = Qt::white; // 常规颜色 - 白色
-    m_lrcPlayingColor = Qt::red; // 播放颜色 - 红色
+    m_lrcNormalColor = Qt::black;
+    m_lrcPlayingColor = Qt::red;
 
     // 字体属性默认值
-    m_lrcFont = QFont("Microsoft YaHei", 16, QFont::Normal); // 歌词字体
+    m_lrcFont = QFont("Microsoft YaHei", 16, QFont::Bold); // 歌词字体
     m_deskLrcFont = QFont("Microsoft YaHei", 20, QFont::Bold); // 桌面歌词字体
     m_benchmarkFont = QFont("Microsoft YaHei", 13, QFont::Normal);
 

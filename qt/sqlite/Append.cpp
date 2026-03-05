@@ -451,6 +451,8 @@ bool Append::appendPlayingListMusic(const QList<int> &musicList, int start) {
     sqlite3_stmt *stmt = nullptr;
 
     try {
+        begin();
+
         // 构建 SQL：INSERT OR IGNORE INTO playing List(music_id, position) VALUES(?, ?)
         const auto sql = QString("INSERT OR IGNORE INTO %1(%2, %3) VALUES(?, ?)")
                 .arg(LiteralConstant::Table::PLAYINGLIST)
@@ -464,6 +466,8 @@ bool Append::appendPlayingListMusic(const QList<int> &musicList, int start) {
             stmtBindInt(stmt, 2, start + i);
             stmtStep(stmt);
         }
+
+        commit();
     } catch (const DataException &e) {
         m_loger->logError(e.errorMessage());
         result = false;

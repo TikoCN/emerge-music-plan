@@ -37,36 +37,36 @@ private:
 
     const QString m_iniUrl;
 
-    QT_SETTING_PROPERTY(int, maxThreadNumber, MaxThreadNumber);
+    QT_SETTING_PROPERTY(int, maxThreadNumber, MaxThreadNumber)
     
-    QT_SETTING_PROPERTY(QStringList, sourceList, SourceList);
+    QT_SETTING_PROPERTY(QStringList, sourceList, SourceList)
 
     // 颜色管理
     QT_SETTING_PROPERTY(QColor, themeColor, themeColor)
-    QT_SETTING_PROPERTY(QColor, buttonBenchmarkColor, ButtonBenchmarkColor);
-    QT_SETTING_PROPERTY(QColor, textBenchmarkColor, TextBenchmarkColor);
+    QT_SETTING_PROPERTY(QColor, buttonBenchmarkColor, ButtonBenchmarkColor)
+    QT_SETTING_PROPERTY(QColor, textBenchmarkColor, TextBenchmarkColor)
     // 歌词相关
-    QT_SETTING_PROPERTY(QColor, lrcNormalColor, LrcNormalColor);
-    QT_SETTING_PROPERTY(QColor, lrcPlayingColor, LrcPlayingColor);
+    QT_SETTING_PROPERTY(QColor, lrcNormalColor, LrcNormalColor)
+    QT_SETTING_PROPERTY(QColor, lrcPlayingColor, LrcPlayingColor)
 
-    QT_SETTING_PROPERTY(QFont, benchmarkFont, benchmarkFont);
-    QT_SETTING_PROPERTY(QFont, lrcFont, lrcFont);
-    QT_SETTING_PROPERTY(QFont, deskLrcFont, DeskLrcFont);
+    QT_SETTING_PROPERTY(QFont, benchmarkFont, benchmarkFont)
+    QT_SETTING_PROPERTY(QFont, lrcFont, lrcFont)
+    QT_SETTING_PROPERTY(QFont, deskLrcFont, DeskLrcFont)
 
     // 定位
-    QT_SETTING_PROPERTY(QRectF, windowRect, WindowRect);
-    QT_SETTING_PROPERTY(QPointF, lrcTopPoint, LrcTopPoint);
+    QT_SETTING_PROPERTY(QRectF, windowRect, WindowRect)
+    QT_SETTING_PROPERTY(QPointF, lrcTopPoint, LrcTopPoint)
 
-    QT_SETTING_PROPERTY(bool, isLightTheme, IsLightTheme);
+    QT_SETTING_PROPERTY(bool, isLightTheme, IsLightTheme)
 
-    QT_SETTING_PROPERTY(bool, isOnLine, IsOnLine);
-    QT_SETTING_PROPERTY(bool, isGetCoverFromNetEase, IsGetCoverFromNetEase);
-    QT_SETTING_PROPERTY(bool, isGetCoverFromBing, IsGetCoverFromBing);
-    QT_SETTING_PROPERTY(bool, isGetCoverFromBaidu, IsGetCoverFromBaidu);
-    QT_SETTING_PROPERTY(bool, isGetCoverFromQQMusic, IsGetCoverFromQQMusic);
+    QT_SETTING_PROPERTY(bool, isOnLine, IsOnLine)
+    QT_SETTING_PROPERTY(bool, isGetCoverFromNetEase, IsGetCoverFromNetEase)
+    QT_SETTING_PROPERTY(bool, isGetCoverFromBing, IsGetCoverFromBing)
+    QT_SETTING_PROPERTY(bool, isGetCoverFromBaidu, IsGetCoverFromBaidu)
+    QT_SETTING_PROPERTY(bool, isGetCoverFromQQMusic, IsGetCoverFromQQMusic)
 
-    QT_SETTING_PROPERTY(bool, isGetLrcFromNetEase, IsGetLrcFromNetEase);
-    QT_SETTING_PROPERTY(bool, isGetLrcFromQQMusic, IsGetLrcFromQQMusic);
+    QT_SETTING_PROPERTY(bool, isGetLrcFromNetEase, IsGetLrcFromNetEase)
+    QT_SETTING_PROPERTY(bool, isGetLrcFromQQMusic, IsGetLrcFromQQMusic)
 
 public:
     static Setting* getInstance(){

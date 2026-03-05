@@ -21,7 +21,6 @@ Rectangle {
         anchors.margins: TikoSeit.normalMargins
     }
 
-
     TikoButtonCombox {
         id: fontFamiliesCombox
         data: Qt.fontFamilies()
@@ -29,8 +28,10 @@ Rectangle {
         anchors.top: titleLine.bottom
         anchors.topMargin: TikoSeit.subitemSpace
         helpText: qsTr("字体：")
+        currentText: selectedFont.family
         onCurrentIndexChanged: {
-            selectedFont.family = currentText
+            if (selectedFont.family !== currentText)
+                selectedFont.family = currentText
         }
     }
 
@@ -41,8 +42,10 @@ Rectangle {
         anchors.rightMargin: TikoSeit.normalMargins
         anchors.top: fontFamiliesCombox.top
         helpText: qsTr("字号：")
+        currentText: selectedFont.pointSize
         onCurrentIndexChanged: {
-            selectedFont.pointSize = currentText
+            if (selectedFont.pointSize !== currentText)
+                selectedFont.pointSize = currentText
         }
     }
 

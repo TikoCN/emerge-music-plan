@@ -7,9 +7,8 @@ Text {
     elide: Text.ElideRight
     verticalAlignment: Text.AlignVCenter
     clip: true
-    height: font.pixelSize
-    width: minWidth + outWidth
-    property int minWidth: text.length * font.pixelSize
+    height: font.pixelSize * 1.5
+    width: text.length * font.pixelSize + outWidth
     property int outWidth: 0
 
     color: TikoSeit.theme.textTheme.normalColor

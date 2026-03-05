@@ -58,7 +58,6 @@ Item {
         height: parent.height - closeButton.height
         initialItem: seitPage
         clip: true
-        z: -1
     }
 
     PageSeit {id: seitPage; visible: false}
