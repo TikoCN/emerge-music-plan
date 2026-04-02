@@ -15,8 +15,6 @@ qt_standard_project_setup(REQUIRES 6.8)
 
 qt_add_executable(appmusicPlay
     main.cpp
-        mediaplay/FrequencySpectrum.cpp
-        mediaplay/FrequencySpectrum.h
 )
 
 qt_policy(SET QTP0004 NEW)
@@ -39,7 +37,6 @@ qt_add_qml_module(appmusicPlay
         sqlite/Core.h sqlite/Core.cpp
         sqlite/Delete.h sqlite/Delete.cpp
 
-
         baseclass/DataException.h
         baseclass/Album.h baseclass/Album.cpp
         baseclass/LrcData.h baseclass/LrcData.cpp
@@ -48,6 +45,7 @@ qt_add_qml_module(appmusicPlay
         baseclass/Artist.h baseclass/Artist.cpp
         baseclass/LiteralConstant.h baseclass/LiteralConstant.cpp
         baseclass/MediaData.h
+        baseclass/LruCache.h
 
         load/TaskCenter.h load/TaskCenter.cpp
         load/SelectMusicUrl.h load/SelectMusicUrl.cpp
@@ -65,9 +63,12 @@ qt_add_qml_module(appmusicPlay
         mediaplay/MediaplayData.h mediaplay/MediaplayData.cpp
         mediaplay/LrcDataControl.h mediaplay/LrcDataControl.cpp
         mediaplay/Mediaplayer.h mediaplay/Mediaplayer.cpp
+        mediaplay/FrequencySpectrum.cpp
+        mediaplay/FrequencySpectrum.h
+
         RESOURCES
         ui.qrc
-        SOURCES macro/SynchronizationAttribute.h
+        SOURCES macro/NotifyProperty.h
         SOURCES macro/ConstantProperty.h
         SOURCES macro/SettingAttribute.h  # 资源文件（图片/字体等）
 )

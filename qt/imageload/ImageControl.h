@@ -5,47 +5,38 @@
 #include <QImage>
 #include <QDebug>
 #include <QMutex>
+#include "baseclass/LruCache.h"
 
 class ImageControl : public QObject
 {
     Q_OBJECT
 private:
-    static ImageControl* instance;
-    QHash<QString, bool> m_urlNullHash;
-    QStringList m_urlNullList;
-    QMutex m_urlNullMutex;
+    struct CacheCell {
+        bool isNUll;
+        QImage img;
+        QSize size;
+        explicit CacheCell(const QImage &img) : isNUll(false), img(img) {}
+    };
 
-    QHash<QString, QImage> m_imgCacheHash;
-    QStringList m_imgCacheList;
-    QMutex m_imgCacheMutex;
-
-    const int MAX_HASH_SIZE = 50;
+    // 缓存
+    const int MAX_CACHE_SIZE = 50;
+    LruCache<QString, CacheCell> m_cache{MAX_CACHE_SIZE};
+    QMutex m_mutex;
 
     explicit ImageControl();
     ~ImageControl() override;
 public:
 
     static ImageControl* getInstance(){
-        return instance;
+        static ImageControl instance;
+        return &instance;
     }
 
-    static void buildInstance(){
-        if(instance == nullptr){
-            instance = new ImageControl;
-        }
-    }
-
-    static void freeInstance(){
-            delete instance;
-    }
-
-    Q_INVOKABLE bool getUrlNullFlag(QString url);
-
+    void writeImgCache(const QString &url, const QImage &img);
     QImage getImgCache(const QString& url);
 
-    void writeImgCache(const QString& url, const QImage &img);
-
-    void writeUrlNullFlag(const QString& url, bool flag);
+    void writeUrlNullFlag(const QString &url, bool flag);
+    Q_INVOKABLE bool getUrlNullFlag(const QString &url);
 };
 
 #endif // IMAGECONTROL_H

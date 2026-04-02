@@ -15,11 +15,12 @@ Item {
     property var endList: []
     property var textList: []
     property var helpTextList: []
-    property int wordStop: 0
     property var wordListX: []
     property var wordListY: []
     property var wordListWidth: []
+    property string fontcss: ""
     property bool isPlay: true
+    property bool isEffect: false
     property bool aloneLine: false
     property bool initPos: false
 
@@ -29,13 +30,16 @@ Item {
 
     onWidthChanged: {initPos = false; drawLrc.requestPaint()}
     onLrcIdChanged: {initPos = false; drawLrc.requestPaint()}
-    onLrcFontChanged: {initPos = false; drawLrc.requestPaint()}
+    onLrcFontChanged: {
+        fontcss = fontToCssString(lrcFont)
+        initPos = false
+        drawLrc.requestPaint()
+    }
 
     Canvas {
         id: drawLrc
         visible: false
         anchors.fill: lrcLine
-        renderStrategy: Canvas.Threaded
 
         onPaint: {
             if (initPos === false)
@@ -44,44 +48,43 @@ Item {
             const ctx = getContext("2d")
             // 清除画布
             ctx.clearRect(0, 0, width, height)
-            ctx.font = fontToCssString(lrcFont)
+            ctx.font = fontcss
             const lrc = lrcLine.textList
             let overF = 0.0 //超出当前字长
             let i = 0
             let wordId = 0
 
-            let playingPos = MediaPlayer.playingPosition
+            let playingPos = isPlay ? MediaPlayer.playingPosition : 0
             //计算主文本
             for(i=0; i<lrc.length; i++, wordId++){
-                //计算字长
+                overF = 0
+                ctx.fillStyle = lrcLine.normalColor;
 
-                if(playingPos < lrcLine.startList[i] || !isPlay){
-                    overF = 0
-                    ctx.fillStyle = lrcLine.normalColor;
-                }
-                else if(playingPos >= lrcLine.endList[i]){
-                    overF = 1
-                    ctx.fillStyle = lrcLine.playingColor;
-                }
-                else{
-                    overF = (playingPos - lrcLine.startList[i]) /
-                            (lrcLine.endList[i] - lrcLine.startList[i])
-                    overF = overF || 0
+                if (isPlay) {
+                    if(playingPos >= lrcLine.endList[i]){
+                        overF = 1
+                        ctx.fillStyle = lrcLine.playingColor;
+                    }
+                    else if (playingPos > startList[i] && playingPos < endList[i]){
+                        overF = (playingPos - lrcLine.startList[i]) /
+                                (lrcLine.endList[i] - lrcLine.startList[i])
+                        overF = overF || 0
 
-                    // 创建线性渐变（从左到右）
-                    const gradient = ctx.createLinearGradient(wordListX[wordId],
-                                                              wordListY[wordId],
-                                                              wordListX[wordId] + wordListWidth[wordId],
-                                                              wordListY[wordId]);
+                        // 创建线性渐变（从左到右）
+                        const gradient = ctx.createLinearGradient(wordListX[wordId],
+                                                                  wordListY[wordId],
+                                                                  wordListX[wordId] + wordListWidth[wordId],
+                                                                  wordListY[wordId]);
 
-                    // 添加颜色停止点（0~1 范围）
-                    gradient.addColorStop(0, lrcLine.playingColor);
-                    gradient.addColorStop(overF, lrcLine.playingColor);
-                    gradient.addColorStop(overF, lrcLine.normalColor);
-                    gradient.addColorStop(1, lrcLine.normalColor);
+                        // 添加颜色停止点（0~1 范围）
+                        gradient.addColorStop(0, lrcLine.playingColor);
+                        gradient.addColorStop(Math.max(0, overF-0.05), lrcLine.playingColor);
+                        gradient.addColorStop(overF, lrcLine.normalColor);
+                        gradient.addColorStop(1, lrcLine.normalColor);
 
-                    // 设置填充样式为渐变
-                    ctx.fillStyle = gradient;
+                        // 设置填充样式为渐变
+                        ctx.fillStyle = gradient;
+                    }
                 }
 
                 ctx.fillText(lrc[i], wordListX[wordId], wordListY[wordId] - overF * 3)
@@ -145,7 +148,6 @@ Item {
         wordListX = []
         wordListY = []
         wordListWidth = []
-        wordStop = textList.length
 
         let lineUp = () =>{
             startX = space

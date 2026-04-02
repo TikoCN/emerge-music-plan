@@ -59,7 +59,6 @@ MouseArea {
         }
         model: ListModel {
             id: lrcDataList
-
         }
     }
 

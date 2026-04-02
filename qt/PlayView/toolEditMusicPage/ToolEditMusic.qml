@@ -21,7 +21,7 @@ TikoFrameless {
 
     Item{
         id: tool
-        width: parent.width - 20
+        width: toolEditMusic.width - 20
         height: 50
         anchors.margins: 10
         anchors.top: parent.top

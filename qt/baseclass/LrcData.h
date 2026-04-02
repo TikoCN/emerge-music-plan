@@ -2,20 +2,20 @@
 #define LRCDATA_H
 
 #include <QObject>
+#include "macro/ConstantProperty.h"
 
 using LrcDataPtr = QSharedPointer<class LrcData>;
 
 class LrcData {
-private:
-    QList<long long> startList;
-    QList<long long> endList;
-    QList<QString> textList;
-
+    Q_GADGET
 public:
-    int id;
-    long long startTime;
-    long long endTime;
-    QList<QString> helpTextList;
+    QT_CONSTANT_PROPERTY(QVector<QString>, textList, TextList)
+    QT_CONSTANT_PROPERTY(QVector<QString>, helpTextList, HelpTextList)
+    QT_CONSTANT_PROPERTY(QVector<long long>, startList, StartList)
+    QT_CONSTANT_PROPERTY(QVector<long long>, endList, EndList)
+    QT_CONSTANT_PROPERTY(long long, startTime, StartTime)
+    QT_CONSTANT_PROPERTY(long long, endTime, EndTime)
+    QT_CONSTANT_PROPERTY(int, id, Id)
 
     LrcData();
 
@@ -25,5 +25,7 @@ public:
 
     void copy(const LrcDataPtr &aim);
 };
+
+Q_DECLARE_METATYPE(LrcData)
 
 #endif // LRCDATA_H

@@ -7,6 +7,7 @@ LrcLineBase {
     normalColor: TikoSeit.theme.baseTheme.foregroundTransition
     lrcFont: Setting.lrcFont
     isPlay: MediaPlayer.playingLrcId === lrcId
+    onIsPlayChanged: lrcCanvas.requestPaint()
     aloneLine: false
 
     Connections {
@@ -14,7 +15,6 @@ LrcLineBase {
         function onPlayingLrcIdChanged(playingLrcId) {
             if (isPlay != (playingLrcId === lrcId)) {
                 isPlay = (playingLrcId === lrcId)
-                lrcCanvas.requestPaint()
             }
         }
     }

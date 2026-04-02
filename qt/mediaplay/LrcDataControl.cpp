@@ -90,6 +90,14 @@ QJsonObject LrcDataControl::getLrcJsonObject(const int lrcId) {
     return m_lrcList[lrcId]->getJsonObject();
 }
 
+LrcData LrcDataControl::getLrcData(const int id) {
+    if (0 <= id && id < m_lrcList.size()) {
+        return *m_lrcList[id];
+    }
+
+    return {};
+}
+
 int LrcDataControl::getLrcListLength() const {
     return static_cast<int>(m_lrcList.size());
 }

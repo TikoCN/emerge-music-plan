@@ -427,7 +427,7 @@ QList<int> Get::getMusicByKey(const QString &key, const int size, const int star
 
     try {
         // SELECT music_id FROM music WHERE key = ? LIMIT ? OFFSET ?
-        const auto sql = QString("SELECT %1 FROM %2 WHERE %3 = ? LIMIT ? OFFSET ?")
+        const auto sql = QString("SELECT GROUP_CONCAT(%1) FROM %2 WHERE %3 = ? LIMIT ? OFFSET ?")
                 .arg(LiteralConstant::Column::MUSIC_ID)
                 .arg(LiteralConstant::Table::MUSIC)
                 .arg(LiteralConstant::Column::NAME_KEY);
@@ -435,10 +435,11 @@ QList<int> Get::getMusicByKey(const QString &key, const int size, const int star
         stmtBindText(stmt, 1, key);
         stmtBindInt(stmt, 2, size);
         stmtBindInt(stmt, 3, start);
-        while (stmtStep(stmt)) {
-            const int id = sqlite3_column_int(stmt, 0);
-            list.append(id);
-        }
+
+        stmtStep(stmt);
+        const QStringList idList = QString::fromUtf8(sqlite3_column_text(stmt, 0)).split(',');
+        list = TypeConversion::sqlStringListToIntList(idList);
+
     } catch (const DataException &e) {
         m_loger->logError(e.errorMessage());
         list.clear();

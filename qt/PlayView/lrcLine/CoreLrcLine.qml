@@ -11,27 +11,16 @@ Loader {
     property color normalColor: "#80ffffff"
     property int lrcId: -1
     property var wordList: []
-    property int startTime: -1
-    property int duration: -1
-    property var startList: []
-    property var endList: []
-    property var textList: []
-    property var helpTextList: []
+    property int startTime: lrc.startTime
+    property int duration: lrc.endTime
+    property var startList: lrc.startList
+    property var endList: lrc.endList
+    property var textList: lrc.textList
+    property var helpTextList: lrc.helpTextList
+    property lrcData lrc
 
-    onLrcIdChanged: {
-        const json = MediaPlayer.getLrcJsonObject(lrcId);
-        startList = BaseTool.typeConversion.stringToLongList(json.startList)
-        endList = BaseTool.typeConversion.stringToLongList(json.endList)
-        textList = BaseTool.typeConversion.stringToStringList(json.textList)
-        helpTextList = BaseTool.typeConversion.stringToStringList(json.helpTextList)
-        startTime = Number(json.startTime)
-        duration = Number(json.endTime - json.startTime)
-        if (textList.length > 0) {
-            sourceComponent = drawLrcLineCom
-        } else {
-            sourceComponent = drawLoadLineCom
-        }
-    }
+    onLrcIdChanged: lrc = MediaPlayer.getLrcData(lrcId)
+    sourceComponent:  textList.length === 0 ? drawLoadLineCom : drawLrcLineCom
 
     Component {
         id: drawLrcLineCom
@@ -43,6 +32,9 @@ Loader {
             endList: coreLrcLine.endList
             textList: coreLrcLine.textList
             helpTextList: coreLrcLine.helpTextList
+
+            playingColor: TikoSeit.theme.baseTheme.foregroundNormal
+            normalColor: TikoSeit.theme.baseTheme.foregroundEmphasize
         }
     }
 
@@ -54,6 +46,9 @@ Loader {
             lrcId: coreLrcLine.lrcId
             startTime: coreLrcLine.startTime
             duration: coreLrcLine.duration
+
+            playingColor: TikoSeit.theme.baseTheme.foregroundNormal
+            normalColor: TikoSeit.theme.baseTheme.foregroundEmphasize
         }
     }
 

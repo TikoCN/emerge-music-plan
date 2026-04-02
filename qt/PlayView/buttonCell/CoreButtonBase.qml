@@ -37,6 +37,7 @@ TikoButtonBase {
     //封面显示区
     AutoCoverImage {
         x: mouseArea.space
+        y: mouseArea.space
         id: coverItem
         width: parent.width
         height: width

@@ -120,6 +120,9 @@ qt_add_qml_module(PlayViewLib
         QML_FILES GeneralControls/PlayUp.qml
         QML_FILES GeneralControls/PlayDown.qml
         QML_FILES GeneralControls/PlayState.qml
+        QML_FILES
+        QML_FILES
+        QML_FILES
 )
 
 # 链接 QtQuick 依赖（纯 QML 模块也需要显式链接）

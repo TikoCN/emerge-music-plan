@@ -6,69 +6,32 @@ ImageControl::ImageControl()
 ImageControl::~ImageControl()
 = default;
 
-bool ImageControl::getUrlNullFlag(QString url) {
-    QMutexLocker locker(&m_urlNullMutex);
+void ImageControl::writeImgCache(const QString &url, const QImage &img) {
+    QMutexLocker locker(&m_mutex);
 
-    if (url.contains("image://cover/"))
-        url = url.split("image://cover/").last();
-    else
-        return false;
-
-
-    if (m_urlNullHash.contains(url)) {
-        return m_urlNullHash.value(url);
-    }
-
-    if (const long long pos = m_urlNullList.indexOf(url); pos != -1) {
-        m_urlNullList.move(pos, m_urlNullList.size() - 1);
-    }
-
-    return false;
-}
-
-void ImageControl::writeUrlNullFlag(const QString &url, const bool flag) {
-    QMutexLocker locker(&m_urlNullMutex);
-
-    m_urlNullHash.insert(url, flag);
-
-    if (const long long pos = m_urlNullList.indexOf(url); pos != -1) {
-        m_urlNullList.move(pos, m_urlNullList.size() - 1);
-    } else {
-        m_urlNullList.append(url);
-    }
-
-    if (m_urlNullList.size() > MAX_HASH_SIZE) {
-        const QString deleteUrl = m_urlNullList.takeFirst();
-        m_urlNullHash.remove(deleteUrl);
-    }
+    CacheCell cell(img);
+    m_cache.put(url, std::move(cell));
 }
 
 QImage ImageControl::getImgCache(const QString &url) {
-    QMutexLocker locker(&m_imgCacheMutex);
+    QMutexLocker locker(&m_mutex);
 
-    if (m_imgCacheHash.contains(url)) {
-        return m_imgCacheHash.value(url);
-    }
-
-    if (const long long pos = m_imgCacheList.indexOf(url); pos != -1) {
-        m_imgCacheList.move(pos, m_imgCacheList.size() - 1);
-    }
-
-    return {};
+    const auto ptr = m_cache.get(url);
+    if (!ptr) {return {};}
+    return ptr->img;
 }
 
-void ImageControl::writeImgCache(const QString &url, const QImage &img) {
-    QMutexLocker locker(&m_imgCacheMutex);
-    m_imgCacheHash.insert(url, img);
+void ImageControl::writeUrlNullFlag(const QString &url, const bool flag) {
+    QMutexLocker locker(&m_mutex);
 
-    if (const long long pos = m_imgCacheList.indexOf(url); pos != -1) {
-        m_imgCacheList.move(pos, m_imgCacheList.size() - 1);
-    } else {
-        m_imgCacheList.append(url);
-    }
+    const auto it = m_cache.get(url);
+    if (it) it->isNUll = flag;
+}
 
-    if (m_imgCacheList.size() > MAX_HASH_SIZE) {
-        const QString deleteUrl = m_imgCacheList.takeFirst();
-        m_imgCacheHash.remove(deleteUrl);
-    }
+bool ImageControl::getUrlNullFlag(const QString &url) {
+    QMutexLocker locker(&m_mutex);
+
+    const auto it = m_cache.get(url);
+    if (!it) {return true;}
+    return it->isNUll;
 }

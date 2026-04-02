@@ -13,7 +13,6 @@ class ImageResponse : public QQuickImageResponse, public QRunnable{
 public:
 
     // 默认参数
-
     enum ImageType {
         MusicFile,
         MusicOnline,

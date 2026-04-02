@@ -33,12 +33,16 @@ TikoFrameless{
 
     Item{
         id: editPage
-        anchors.fill: parent
+        anchors.top: parent.top
+        anchors.bottom: parent.bottom
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.margins: space
 
         layer.enabled: true
         layer.effect: MultiEffect {
             shadowEnabled: true
-            shadowBlur: 0.
+            shadowBlur: 0.5
             shadowColor: "#80000000"
             shadowHorizontalOffset: 0
             shadowVerticalOffset: 0
@@ -46,202 +50,193 @@ TikoFrameless{
 
         property int space: isMaxSize ? 0 : 10
 
-        Item {
-            id: mainShowItem
-            anchors.top: parent.top
-            anchors.bottom: parent.bottom
-            anchors.left: parent.left
-            anchors.right: parent.right
-            anchors.margins: editPage.space
+        //圆角背景
+        Rectangle{
+            id: editPageBack
+            anchors.fill: parent
+            topLeftRadius: editPage.space
+            topRightRadius: editPage.space
+            color: TikoSeit.theme.baseTheme.backgroundNormal
+            y: showType === 0 ? 0 : -height
+            z: -1
 
-            //圆角背景
             Rectangle{
-                id: editPageBack
                 anchors.fill: parent
+                color: Qt.rgba(0,0,0,0)
+                border.color: TikoSeit.theme.baseTheme.backgroundTransition
                 topLeftRadius: editPage.space
                 topRightRadius: editPage.space
-                color: TikoSeit.theme.baseTheme.backgroundNormal
-                y: showType === 0 ? 0 : -height
-                z: -1
+                border.width: 0.5
+                opacity: 0.7
+            }
+        }
 
-                Rectangle{
-                    anchors.fill: parent
-                    color: Qt.rgba(0,0,0,0)
-                    border.color: TikoSeit.theme.baseTheme.backgroundTransition
-                    topLeftRadius: editPage.space
-                    topRightRadius: editPage.space
-                    border.width: 0.5
-                    opacity: 0.7
-                }
+        //中间内容导航
+        ViewMain{
+            id: mainView
+            width: parent.width - barView.width
+            height: barView.height
+            anchors.left: barView.right
+        }
+
+        ViewLeftBar{
+            id: barView
+            height: parent.height - bottomView.height
+            width: 300
+        }
+
+        //底部导航
+        ViewBottomBar{
+            id: bottomView
+            height: 90
+            width: parent.width
+            y: barView.height
+        }
+
+        PageMusicPlay {
+            id: musicPlayPage
+            width: parent.width
+            height: parent.height
+            y: showType === 1 ? 0 : parent.height
+            opacity: 0
+        }
+
+        property int duration: 500
+        property int inType: Easing.InOutQuad
+        property int outType: Easing.InOutQuad
+        // 切换到音乐播放界面动画
+        ParallelAnimation {
+            id: trunToMusicPlayAnimation
+            onFinished: showType = 1
+
+            // 出
+            NumberAnimation {
+                targets: [mainView, barView]
+                property: "y"
+                from: 0
+                to: -mainView.height
+                duration: editPage.duration
+                easing.type: editPage.outType
             }
 
-            //中间内容导航
-            ViewMain{
-                id: mainView
-                width: parent.width - barView.width
-                height: barView.height
-                anchors.left: barView.right
+            NumberAnimation {
+                target: bottomView
+                property: "y"
+                from: barView.height
+                to: editPage.height
+                duration: editPage.duration
+                easing.type: editPage.outType
             }
 
-            ViewLeftBar{
-                id: barView
-                height: parent.height - bottomView.height
-                width: 300
+            NumberAnimation {
+                targets: [mainView, barView, bottomView]
+                property: "opacity"
+                from: 1
+                to: 0
+                duration: editPage.duration
+                easing.type: editPage.outType
             }
 
-            //底部导航
-            ViewBottomBar{
-                id: bottomView
-                height: 90
-                width: parent.width
-                y: barView.height
+            // 进
+            NumberAnimation {
+                target: editPageBack
+                property: "y"
+                from: 0
+                to: -editPage.height
+                duration: editPage.duration
+                easing.type: editPage.inType
             }
 
-            PageMusicPlay {
-                id: musicPlayPage
-                width: parent.width
-                height: parent.height
-                y: showType === 1 ? 0 : parent.height
-                opacity: 0
+            NumberAnimation {
+                target: musicPlayPage
+                property: "y"
+                from: musicPlayPage.height
+                to: 0
+                duration: editPage.duration
+                easing.type: editPage.inType
             }
 
-            property int duration: 500
-            property int inType: Easing.InOutQuad
-            property int outType: Easing.InOutQuad
-            // 切换到音乐播放界面动画
-            ParallelAnimation {
-                id: trunToMusicPlayAnimation
-                onFinished: showType = 1
-
-                // 出
-                NumberAnimation {
-                    targets: [mainView, barView]
-                    property: "y"
-                    from: 0
-                    to: -mainView.height
-                    duration: mainShowItem.duration
-                    easing.type: mainShowItem.outType
-                }
-
-                NumberAnimation {
-                    target: bottomView
-                    property: "y"
-                    from: barView.height
-                    to: mainShowItem.height
-                    duration: mainShowItem.duration
-                    easing.type: mainShowItem.outType
-                }
-
-                NumberAnimation {
-                    targets: [mainView, barView, bottomView]
-                    property: "opacity"
-                    from: 1
-                    to: 0
-                    duration: mainShowItem.duration
-                    easing.type: mainShowItem.outType
-                }
-
-                // 进
-                NumberAnimation {
-                    target: editPageBack
-                    property: "y"
-                    from: 0
-                    to: -mainShowItem.height
-                    duration: mainShowItem.duration
-                    easing.type: mainShowItem.inType
-                }
-
-                NumberAnimation {
-                    target: musicPlayPage
-                    property: "y"
-                    from: musicPlayPage.height
-                    to: 0
-                    duration: mainShowItem.duration
-                    easing.type: mainShowItem.inType
-                }
-
-                NumberAnimation {
-                    target: musicPlayPage
-                    property: "opacity"
-                    from: 0
-                    to: 1
-                    duration: mainShowItem.duration
-                    easing.type: mainShowItem.inType
-                }
-
+            NumberAnimation {
+                target: musicPlayPage
+                property: "opacity"
+                from: 0
+                to: 1
+                duration: editPage.duration
+                easing.type: editPage.inType
             }
 
-            ParallelAnimation {
-                id: trunToMainAnimation
-                onFinished: {
-                    musicPlayPage.actionEnd()
-                    showType = 0
-                }
+        }
 
-
-                // 出
-                NumberAnimation {
-                    target: editPageBack
-                    property: "y"
-                    from: -height
-                    to: 0
-                    duration: mainShowItem.duration
-                    easing.type: mainShowItem.outType
-                }
-
-                NumberAnimation {
-                    target: musicPlayPage
-                    property: "y"
-                    from: 0
-                    to: musicPlayPage.height
-                    duration: mainShowItem.duration
-                    easing.type: mainShowItem.outType
-                }
-
-                NumberAnimation {
-                    target: musicPlayPage
-                    property: "opacity"
-                    from: 1
-                    to: 0
-                    duration: mainShowItem.duration
-                    easing.type: mainShowItem.outType
-                }
-
-                // 进
-                NumberAnimation {
-                    targets: [mainView, barView]
-                    property: "y"
-                    from: -mainView.height
-                    to: 0
-                    duration: mainShowItem.duration
-                    easing.type: mainShowItem.inType
-                }
-
-                NumberAnimation {
-                    target: bottomView
-                    property: "y"
-                    from: mainShowItem.height
-                    to: barView.height
-                    duration: mainShowItem.duration
-                    easing.type: mainShowItem.inType
-                }
-
-                NumberAnimation {
-                    targets: [mainView, barView, bottomView]
-                    property: "opacity"
-                    from: 0
-                    to: 1
-                    duration: mainShowItem.duration
-                    easing.type: mainShowItem.inType
-                }
+        ParallelAnimation {
+            id: trunToMainAnimation
+            onFinished: {
+                musicPlayPage.actionEnd()
+                showType = 0
             }
 
-            ViewPlayingList {
-                id: playingPlayList
-                width: parent.width * 2 / 3
-                height: parent.height - bottomView.height
-                y:10
+
+            // 出
+            NumberAnimation {
+                target: editPageBack
+                property: "y"
+                from: -height
+                to: 0
+                duration: editPage.duration
+                easing.type: editPage.outType
             }
+
+            NumberAnimation {
+                target: musicPlayPage
+                property: "y"
+                from: 0
+                to: musicPlayPage.height
+                duration: editPage.duration
+                easing.type: editPage.outType
+            }
+
+            NumberAnimation {
+                target: musicPlayPage
+                property: "opacity"
+                from: 1
+                to: 0
+                duration: editPage.duration
+                easing.type: editPage.outType
+            }
+
+            // 进
+            NumberAnimation {
+                targets: [mainView, barView]
+                property: "y"
+                from: -mainView.height
+                to: 0
+                duration: editPage.duration
+                easing.type: editPage.inType
+            }
+
+            NumberAnimation {
+                target: bottomView
+                property: "y"
+                from: editPage.height
+                to: barView.height
+                duration: editPage.duration
+                easing.type: editPage.inType
+            }
+
+            NumberAnimation {
+                targets: [mainView, barView, bottomView]
+                property: "opacity"
+                from: 0
+                to: 1
+                duration: editPage.duration
+                easing.type: editPage.inType
+            }
+        }
+
+        ViewPlayingList {
+            id: playingPlayList
+            width: parent.width * 2 / 3
+            height: parent.height - bottomView.height
+            y:10
         }
     }
 

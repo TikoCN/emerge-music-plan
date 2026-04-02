@@ -27,6 +27,7 @@ public:
     Q_INVOKABLE void turnToLrc(int lrcId);
 
     Q_INVOKABLE QJsonObject getLrcJsonObject(int lrcId);
+    Q_INVOKABLE LrcData getLrcData(int id);
 
     Q_INVOKABLE [[nodiscard]] int getLrcListLength() const;
 

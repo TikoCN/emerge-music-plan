@@ -28,14 +28,21 @@ GridView {
         id: gridModelItem
     }
 
-    onAtYEndChanged: {
-        if (atYEnd && flow === GridView.LeftToRight)
-            dataLoader.loadMore()
+    onAtXEndChanged: {
+        if (flow === 1) {
+            if (atXEnd) {
+                dataLoader.loadMore()
+            }
+        }
     }
 
-    onAtXEndChanged: {
-        if (atXEnd && flow === GridView.TopToBottom)
-            dataLoader.loadMore()
+    onAtYEndChanged: {
+        if (flow === 0) {
+            // 滚动到底部附近时加载更多（阈值 0.8 可自行调整）
+            if (atYEnd) {
+                dataLoader.loadMore()
+            }
+        }
     }
 
     function setGridHeight(cell) {

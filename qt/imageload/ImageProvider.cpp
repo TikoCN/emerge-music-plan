@@ -12,7 +12,7 @@
 
 namespace {
     // 匿名命名空间，只在当前文件可见
-    const QRegularExpression RX_TYPE_PATTERN(R"(([^?]+)\?)");
+    const QRegularExpression RX_TYPE_PATTERN(R"(image://cover/([^?]+)\?)");
     const QRegularExpression RX_ID_PATTERN(R"(id=(\d+))");
     const QRegularExpression RX_RADIUS_PATTERN(R"(radius=(\d+))");
 }
@@ -43,13 +43,11 @@ void ImageResponse::loadMusicCover(const bool isOnline) {
     const QString musicUrl = SQLite::getInstance()->getMusicUrl(m_loadMusicId);
     QString errorId = tr("歌曲ID: ") +
                       QString::number(m_loadMusicId);
-    const QString coverUrl = FileManagement::getBaseUrl(musicUrl) +
-                             ".jpg";
+    const QString coverUrl = FileManagement::getBaseUrl(musicUrl) + ".jpg";
 
     //提取附加封面
     if (QFile::exists(musicUrl))
         m_img = ffmpeg.getInlayCover(musicUrl);
-
 
     //加载独立封面
     if (m_img.isNull() && !loadImageFile(coverUrl) && isOnline) {
@@ -154,14 +152,13 @@ ImageResponse::ImageResponse(QString url, const QSize &requestedSize)
     m_loadMusicId = 1;
     m_radius = 0;
     m_url = std::move(url);
+    m_url = "image://cover/" + m_url;
     setAutoDelete(false);
     ctr = ImageControl::getInstance();
     data = DataActive::getInstance();
 }
 
-ImageResponse::~ImageResponse() {
-    m_img = QImage();
-}
+ImageResponse::~ImageResponse() = default;
 
 QQuickTextureFactory *ImageResponse::textureFactory() const {
     return QQuickTextureFactory::textureFactoryForImage(m_img);
@@ -186,7 +183,7 @@ void ImageResponse::run() {
     if (r.hasMatch())
         m_radius = r.capturedTexts().at(1).toInt();
 
-
+    // 具体加载
     switch (typeFromStringToEnum(m_loadType)) {
         case MusicFile:
             m_loadMusicId = m_loadId;
@@ -225,7 +222,7 @@ void ImageResponse::run() {
     } else {
         m_img = m_img.scaled(m_requestedSize, Qt::IgnoreAspectRatio);
         buildRoundImage();
-        ctr->writeImgCache(m_url, m_img);
+        ctr->writeImgCache(std::move(m_url), m_img);
     }
 
     emit finished();

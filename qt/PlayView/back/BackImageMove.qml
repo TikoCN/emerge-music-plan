@@ -103,8 +103,10 @@ Rectangle{
         }
     }
 
+    // 突出文本
     Rectangle{
         anchors.fill: parent
-        color: TikoSeit.theme.baseTheme.transparentAntiNormal
+        color: TikoSeit.theme.baseTheme.backgroundTransition
+        opacity: 0.5
     }
 }

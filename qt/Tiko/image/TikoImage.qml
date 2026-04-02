@@ -21,4 +21,24 @@ Image {
         colorization: enableUnifiedColor ? 1 : 0
         colorizationColor: unifiedColor
     }
+
+    // 监听变化
+    onWidthChanged: syncTimer.restart()
+    onHeightChanged: syncTimer.restart()
+
+    Timer {
+        id: syncTimer
+        interval: 200 // 延迟 200 毫秒同步，避开频繁的动画过程
+        repeat: false
+        onTriggered: {
+            // 只有停止变动后，才真正设置采样尺寸
+            imageColorAutoView.sourceSize.width = imageColorAutoView.width
+            imageColorAutoView.sourceSize.height = imageColorAutoView.height
+        }
+    }
+
+    opacity: status === Image.Ready ? 1 : 0
+    Behavior on opacity {
+        NumberAnimation { duration: 50 }
+    }
 }
