@@ -32,13 +32,13 @@ Music::Music()
 }
 
 void Music::setMedia(const MediaData &data) {
-    title = data.title;
-    artist = data.artist;
-    album = data.album;
+    title      = data.title;
+    artist     = data.artist;
+    album      = data.album;
     playNumber = data.playNumber;
-    isLove = data.isLove;
-    url = data.url;
-    level = data.level;
+    isLove     = data.isLove;
+    url        = data.url;
+    level      = data.level;
 }
 
 
@@ -47,8 +47,8 @@ QString Music::getMediaJson() {
 }
 
 void Music::fromFileInfo(const QFileInfo &info) {
-    url = info.filePath();
-    lastEdit = info.lastModified().toString("yy-MM-dd hh:mm:ss");
+    url          = info.filePath();
+    lastEdit     = info.lastModified().toString("yy-MM-dd hh:mm:ss");
     lastEditTime = info.lastModified().toMSecsSinceEpoch();
 }
 
@@ -104,7 +104,7 @@ bool Music::isSearch(const QString &aim) const {
  * 格式转换
 */
 void Music::setSuffix(const QString &type) const {
-    FFmpeg ffmpeg;
+    FFmpeg         ffmpeg;
     FFmpeg::Suffix suffix = FFmpeg::MP3;
     switch (const QStringList list = {"MP3", "FLAC", "ALAC", "AAC", "WMA", "PCM16", "PCM32"}; list.indexOf(type)) {
         case 0:
@@ -132,6 +132,6 @@ void Music::setSuffix(const QString &type) const {
             break;
     }
     if (ffmpeg.transformCodec(url, suffix)) {
-        TLog::getInstance()->logInfo(QObject::tr("转换完成"));
+        TLog::getInstance().logInfo(QObject::tr("转换完成"));
     }
 }

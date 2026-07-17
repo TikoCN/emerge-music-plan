@@ -5,12 +5,18 @@
 
 QString FFmpeg::suffixToString(const Suffix s) {
     switch (s) {
-        case MP3: return "mp3";
-        case FLAC: return "flac";
-        case AAC: return "aac";
-        case ALAC: return "alac";
-        case WMA: return "wma";
-        default: return "none";
+        case MP3:
+            return "mp3";
+        case FLAC:
+            return "flac";
+        case AAC:
+            return "aac";
+        case ALAC:
+            return "alac";
+        case WMA:
+            return "wma";
+        default:
+            return "none";
     }
 }
 
@@ -132,41 +138,41 @@ AVCodecContext *FFmpeg::getEncodecContext(AVCodecID id, const AVCodecParameters 
     switch (id) {
         case AV_CODEC_ID_MP3:
             codecCtx->codec_id = AV_CODEC_ID_MP3;
-            codecCtx->codec_type = AVMEDIA_TYPE_AUDIO;
-            codecCtx->sample_fmt = AV_SAMPLE_FMT_S32P;
+            codecCtx->codec_type  = AVMEDIA_TYPE_AUDIO;
+            codecCtx->sample_fmt  = AV_SAMPLE_FMT_S32P;
             codecCtx->sample_rate = 44100;
-            codecCtx->bit_rate = 320000;
+            codecCtx->bit_rate    = 320000;
             break;
         case AV_CODEC_ID_FLAC:
             codecCtx->codec_id = AV_CODEC_ID_FLAC;
-            codecCtx->codec_type = AVMEDIA_TYPE_AUDIO;
-            codecCtx->sample_fmt = AV_SAMPLE_FMT_S16;
-            codecCtx->sample_rate = 44100;
-            codecCtx->bit_rate = 0;
-            codecCtx->time_base.den = codecCtx->sample_rate;
-            codecCtx->time_base.num = 1;
+            codecCtx->codec_type          = AVMEDIA_TYPE_AUDIO;
+            codecCtx->sample_fmt          = AV_SAMPLE_FMT_S16;
+            codecCtx->sample_rate         = 44100;
+            codecCtx->bit_rate            = 0;
+            codecCtx->time_base.den       = codecCtx->sample_rate;
+            codecCtx->time_base.num       = 1;
             codecCtx->bits_per_raw_sample = 16;
             break;
         case AV_CODEC_ID_AAC:
             codecCtx->codec_id = AV_CODEC_ID_AAC;
-            codecCtx->codec_type = AVMEDIA_TYPE_AUDIO;
-            codecCtx->sample_fmt = AV_SAMPLE_FMT_FLTP;
+            codecCtx->codec_type  = AVMEDIA_TYPE_AUDIO;
+            codecCtx->sample_fmt  = AV_SAMPLE_FMT_FLTP;
             codecCtx->sample_rate = 44100;
-            codecCtx->bit_rate = 320000;
+            codecCtx->bit_rate    = 320000;
             break;
         case AV_CODEC_ID_ALAC:
             codecCtx->codec_id = AV_CODEC_ID_ALAC;
-            codecCtx->codec_type = AVMEDIA_TYPE_AUDIO;
-            codecCtx->sample_fmt = AV_SAMPLE_FMT_S16P;
+            codecCtx->codec_type  = AVMEDIA_TYPE_AUDIO;
+            codecCtx->sample_fmt  = AV_SAMPLE_FMT_S16P;
             codecCtx->sample_rate = 44100;
-            codecCtx->bit_rate = 320000;
+            codecCtx->bit_rate    = 320000;
             break;
         case AV_CODEC_ID_WMAV2:
             codecCtx->codec_id = AV_CODEC_ID_WMAV2;
-            codecCtx->codec_type = AVMEDIA_TYPE_AUDIO;
-            codecCtx->sample_fmt = AV_SAMPLE_FMT_FLTP;
+            codecCtx->codec_type  = AVMEDIA_TYPE_AUDIO;
+            codecCtx->sample_fmt  = AV_SAMPLE_FMT_FLTP;
             codecCtx->sample_rate = 44100;
-            codecCtx->bit_rate = 320000;
+            codecCtx->bit_rate    = 320000;
             break;
         default:
             break;
@@ -182,7 +188,7 @@ AVCodecContext *FFmpeg::getEncodecContext(AVCodecID id, const AVCodecParameters 
 
 AVPacket *FFmpeg::getAVPacket() {
     AVPacket *pkt = nullptr;
-    pkt = av_packet_alloc();
+    pkt           = av_packet_alloc();
     if (pkt == nullptr) {
         throw DataException("分配AVPacket数据包失败");
     }
@@ -207,7 +213,7 @@ SwrContext *FFmpeg::getSwrContext(const AVCodecContext *out, const AVCodecContex
 
 AVFrame *FFmpeg::getAVFrame() {
     AVFrame *frm = nullptr;
-    frm = av_frame_alloc();
+    frm          = av_frame_alloc();
     if (frm == nullptr) {
         throw DataException("分配AVFrame数据帧失败");
     }
@@ -229,7 +235,7 @@ void FFmpeg::logError(const QString &text) const {
 QImage FFmpeg::getInlayCover(const QString &url) {
     //从文件中读取封面
     AVFormatContext *fmtCtx = nullptr;
-    QImage img;
+    QImage           img;
     try {
         fmtCtx = getInputFormatContext(url);
 
@@ -246,7 +252,8 @@ QImage FFmpeg::getInlayCover(const QString &url) {
         logError(e.errorMessage());
     }
 
-    if (fmtCtx != nullptr) avformat_close_input(&fmtCtx);
+    if (fmtCtx != nullptr)
+        avformat_close_input(&fmtCtx);
     return img;
 }
 
@@ -254,13 +261,13 @@ QImage FFmpeg::getInlayCover(const QString &url) {
  * 将音乐文件内嵌的音乐文件中
  */
 void FFmpeg::setInlayCover(const QString &musicUrl, const QString &coverUrl) {
-    AVFormatContext *inFmtCtx = nullptr;
+    AVFormatContext *inFmtCtx  = nullptr;
     AVFormatContext *outFmtCtx = nullptr;
-    AVPacket *inPkt = nullptr;
+    AVPacket *       inPkt     = nullptr;
     try {
-        AVStream *outStream = nullptr;
-        const AVStream *inStream = nullptr;
-        QString outUrl = musicUrl;
+        AVStream *      outStream = nullptr;
+        const AVStream *inStream  = nullptr;
+        QString         outUrl    = musicUrl;
         //设置内嵌封面之后的路径
         outUrl.replace("." + outUrl.split(".").last(), "-New." + outUrl.split(".").last());
 
@@ -282,12 +289,12 @@ void FFmpeg::setInlayCover(const QString &musicUrl, const QString &coverUrl) {
         cover.close();
 
         // 分配 输入，输出上下文
-        inFmtCtx = getInputFormatContext(musicUrl);
+        inFmtCtx  = getInputFormatContext(musicUrl);
         outFmtCtx = getOutFormatContext(outUrl);
 
         int aimStream = -1;
         for (int i = 0; i < inFmtCtx->nb_streams; i++) {
-            inStream = inFmtCtx->streams[i];
+            inStream  = inFmtCtx->streams[i];
             outStream = avformat_new_stream(outFmtCtx, nullptr);
             avcodec_parameters_copy(outStream->codecpar, inStream->codecpar);
             if (inStream->codecpar->codec_type == AVMEDIA_TYPE_VIDEO && inStream->disposition &
@@ -298,13 +305,13 @@ void FFmpeg::setInlayCover(const QString &musicUrl, const QString &coverUrl) {
 
         //创建一条命封面流
         if (aimStream == -1) {
-            outStream = avformat_new_stream(outFmtCtx, nullptr);
-            outStream->codecpar->codec_id = AV_CODEC_ID_MJPEG;
+            outStream                       = avformat_new_stream(outFmtCtx, nullptr);
+            outStream->codecpar->codec_id   = AV_CODEC_ID_MJPEG;
             outStream->codecpar->codec_type = AVMEDIA_TYPE_VIDEO;
-            outStream->disposition |= AV_DISPOSITION_ATTACHED_PIC;
-            outStream->codecpar->width = 300;
-            outStream->codecpar->height = 300;
-            aimStream = outStream->index;
+            outStream->disposition          |= AV_DISPOSITION_ATTACHED_PIC;
+            outStream->codecpar->width      = 300;
+            outStream->codecpar->height     = 300;
+            aimStream                       = outStream->index;
         }
 
         av_dict_copy(&outFmtCtx->metadata, inFmtCtx->metadata, 0);
@@ -336,8 +343,8 @@ void FFmpeg::setInlayCover(const QString &musicUrl, const QString &coverUrl) {
         //拷贝数据包
         memcpy(inPkt->data, data.data(), data.size());
         inPkt->stream_index = aimStream;
-        inPkt->pts = 0;
-        inPkt->duration = inFmtCtx->duration;
+        inPkt->pts          = 0;
+        inPkt->duration     = inFmtCtx->duration;
         av_interleaved_write_frame(outFmtCtx, inPkt);
 
         //写入文件尾
@@ -361,7 +368,8 @@ void FFmpeg::setInlayCover(const QString &musicUrl, const QString &coverUrl) {
         }
         avformat_free_context(outFmtCtx);
     }
-    if (inFmtCtx != nullptr) avformat_close_input(&inFmtCtx);
+    if (inFmtCtx != nullptr)
+        avformat_close_input(&inFmtCtx);
 }
 
 /*
@@ -369,7 +377,7 @@ void FFmpeg::setInlayCover(const QString &musicUrl, const QString &coverUrl) {
  */
 QString FFmpeg::getOutUrl(QString inUrl) const {
     const QString inSuffix = inUrl.split(".").last();
-    QString aim = "mp3";
+    QString       aim      = "mp3";
     switch (suffix) {
         case MP3:
             aim = "mp3";
@@ -406,22 +414,22 @@ QString FFmpeg::getOutUrl(QString inUrl) const {
  * 对输入文件进行转码
  */
 bool FFmpeg::transformCodec(const QString &url, const Suffix aim) {
-    suffix = aim;
-    const QString &inUrl = url;
-    const QString outUrl = getOutUrl(url);
+    suffix                = aim;
+    const QString &inUrl  = url;
+    const QString  outUrl = getOutUrl(url);
 
-    AVFormatContext *inFmtCtx = nullptr; //输入上下文
-    AVFormatContext *outFmtCtx = nullptr; //输出上下文
-    QVector<SwrContext *> reSwrList; //重采样列表
-    QVector<AVCodecContext *> deList; //解码器列表
-    QVector<AVCodecContext *> enList; //编码器列表
-    AVPacket *inPkt = nullptr, *outPkt = nullptr;
-    AVFrame *inFrm = nullptr, *swrFrm = nullptr;
-    bool work = true;
+    AVFormatContext *         inFmtCtx  = nullptr; //输入上下文
+    AVFormatContext *         outFmtCtx = nullptr; //输出上下文
+    QVector<SwrContext *>     reSwrList;           //重采样列表
+    QVector<AVCodecContext *> deList;              //解码器列表
+    QVector<AVCodecContext *> enList;              //编码器列表
+    AVPacket *                inPkt = nullptr, *outPkt = nullptr;
+    AVFrame *                 inFrm = nullptr, *swrFrm = nullptr;
+    bool                      work  = true;
     try {
-        inFmtCtx = getInputFormatContext(inUrl); //输入上下文
-        outFmtCtx = getOutFormatContext(outUrl); //输出上下文
-        QVector<int> indexList; //流转换列表
+        inFmtCtx  = getInputFormatContext(inUrl); //输入上下文
+        outFmtCtx = getOutFormatContext(outUrl);  //输出上下文
+        QVector<int> indexList;                   //流转换列表
 
         //分配字长
         deList.fill(nullptr, inFmtCtx->nb_streams);
@@ -462,15 +470,15 @@ bool FFmpeg::transformCodec(const QString &url, const Suffix aim) {
 
             //生成解码器
             AVCodecContext *decodeCtx = getDecodecContext(inStream->codecpar->codec_id, inStream->codecpar);
-            deList[i] = decodeCtx; //添加的解码器列表
+            deList[i]                 = decodeCtx; //添加的解码器列表
 
             //建立编码器
             AVCodecContext *encodeCtx = getEncodecContext(outStream->codecpar->codec_id, inStream->codecpar, true);
-            enList[i] = encodeCtx; //添加到编码器列表
+            enList[i]                 = encodeCtx; //添加到编码器列表
 
             //申请重采样
             SwrContext *swr = getSwrContext(encodeCtx, decodeCtx);
-            reSwrList[i] = swr;
+            reSwrList[i]    = swr;
         }
 
         //拷贝元数据
@@ -489,9 +497,9 @@ bool FFmpeg::transformCodec(const QString &url, const Suffix aim) {
         }
 
         //读取数据设置循环解码
-        inPkt = getAVPacket();
+        inPkt  = getAVPacket();
         outPkt = getAVPacket();
-        inFrm = getAVFrame();
+        inFrm  = getAVFrame();
         swrFrm = getAVFrame();
         while (av_read_frame(inFmtCtx, inPkt) >= 0) {
             const int index = inPkt->stream_index;
@@ -513,7 +521,7 @@ bool FFmpeg::transformCodec(const QString &url, const Suffix aim) {
 
             //音频流进行解码，重采样，编码
             AVCodecContext *decodeCtx = deList[index];
-            SwrContext *swr = reSwrList[index];
+            SwrContext *    swr       = reSwrList[index];
             AVCodecContext *encodeCtx = enList[index];
             //解码数据
             m_r = avcodec_send_packet(decodeCtx, inPkt);
@@ -524,8 +532,8 @@ bool FFmpeg::transformCodec(const QString &url, const Suffix aim) {
             //获得解码之后的数据
             while (avcodec_receive_frame(decodeCtx, inFrm) >= 0) {
                 swrFrm->sample_rate = encodeCtx->sample_rate;
-                swrFrm->format = encodeCtx->sample_fmt;
-                swrFrm->ch_layout = encodeCtx->ch_layout;
+                swrFrm->format      = encodeCtx->sample_fmt;
+                swrFrm->ch_layout   = encodeCtx->ch_layout;
 
                 //重采样
                 m_r = swr_convert_frame(swr, swrFrm, inFrm);
@@ -613,7 +621,8 @@ bool FFmpeg::transformCodec(const QString &url, const Suffix aim) {
         }
         avformat_free_context(outFmtCtx);
     }
-    if (inFmtCtx != nullptr) avformat_close_input(&inFmtCtx);
+    if (inFmtCtx != nullptr)
+        avformat_close_input(&inFmtCtx);
 
     while (!reSwrList.empty()) {
         SwrContext *swr = reSwrList.takeLast();
@@ -639,11 +648,11 @@ bool FFmpeg::transformCodec(const QString &url, const Suffix aim) {
 */
 QList<AVFrame *> FFmpeg::changeFrame(AVFrame *swrFrm) const {
     QList<AVFrame *> outFrmList;
-    AVFrame *outFrm = nullptr;
-    int pos = 0;
-    int sampleNumber = 0;
-    int length = 0;
-    int frmSample = 0;
+    AVFrame *        outFrm       = nullptr;
+    int              pos          = 0;
+    int              sampleNumber = 0;
+    int              length       = 0;
+    int              frmSample    = 0;
 
     switch (suffix) {
         case MP3:
@@ -667,14 +676,14 @@ QList<AVFrame *> FFmpeg::changeFrame(AVFrame *swrFrm) const {
 
     //处理不同长度的编码，长样本截断，短样本变化编码长度
     while (pos < swrFrm->nb_samples) {
-        outFrm = av_frame_alloc();
+        outFrm              = av_frame_alloc();
         outFrm->sample_rate = swrFrm->sample_rate;
-        outFrm->format = swrFrm->format;
-        outFrm->ch_layout = swrFrm->ch_layout;
+        outFrm->format      = swrFrm->format;
+        outFrm->ch_layout   = swrFrm->ch_layout;
 
         //得到实际帧数并处理短帧
-        sampleNumber = pos + frmSample >= swrFrm->nb_samples ? swrFrm->nb_samples - pos : frmSample;
-        length = av_get_bytes_per_sample(static_cast<AVSampleFormat>(swrFrm->format));
+        sampleNumber       = pos + frmSample >= swrFrm->nb_samples ? swrFrm->nb_samples - pos : frmSample;
+        length             = av_get_bytes_per_sample(static_cast<AVSampleFormat>(swrFrm->format));
         outFrm->nb_samples = sampleNumber;
         av_frame_get_buffer(outFrm, 0);
 
@@ -692,9 +701,9 @@ QList<AVFrame *> FFmpeg::changeFrame(AVFrame *swrFrm) const {
 
 bool FFmpeg::getDict(QStringList *keys, QStringList *values, const QString &url) {
     AVFormatContext *inFmt = nullptr;
-    bool work = true;
+    bool             work  = true;
     try {
-        inFmt = getInputFormatContext(url);
+        inFmt                          = getInputFormatContext(url);
         const AVDictionaryEntry *entry = nullptr;
         while ((entry = av_dict_get(inFmt->metadata, "", entry, AV_DICT_IGNORE_SUFFIX))) {
             QString key(entry->key);
@@ -704,38 +713,42 @@ bool FFmpeg::getDict(QStringList *keys, QStringList *values, const QString &url)
         }
         // 插入其他数据
         keys->append("duration");
-        int64_t duration = inFmt->duration;
+        int64_t duration   = inFmt->duration;
         int64_t durationMs = (duration * 1000) / AV_TIME_BASE;
         values->append(QString::number(durationMs));
     } catch (const DataException &e) {
         logError(e.errorMessage());
         work = false;
     }
-    if (inFmt != nullptr) avformat_close_input(&inFmt);
+    if (inFmt != nullptr)
+        avformat_close_input(&inFmt);
     return work;
 }
 
 bool FFmpeg::getDict(MediaData *data, const QString &url) {
     QStringList keyList;
     QStringList valueList;
-    bool r = getDict(&keyList, &valueList, url);
+    bool        r = getDict(&keyList, &valueList, url);
 
-    data->url = url;
+    data->url          = url;
     const QString name = url.split("/").last();
-    data->dir = url.split("/" + name)[0];
+    data->dir          = url.split("/" + name)[0];
 
     for (int i = 0; i < keyList.size(); ++i) {
         if (keyList[i].compare("title", Qt::CaseInsensitive) == 0) {
             QString title = valueList[i];
-            if (title == "" || title.replace(" ", "") == "") title = tr("未知歌曲");
+            if (title == "" || title.replace(" ", "") == "")
+                title = tr("未知歌曲");
             data->title = title;
         } else if (keyList[i].compare("artist", Qt::CaseInsensitive) == 0) {
             QString artist = valueList[i];
-            if (artist == "" || artist.replace(" ", "") == "") artist = tr("未知歌手");
+            if (artist == "" || artist.replace(" ", "") == "")
+                artist = tr("未知歌手");
             data->artist = artist;
         } else if (keyList[i].compare("album", Qt::CaseInsensitive) == 0) {
             QString album = valueList[i];
-            if (album == "" || album.replace(" ", "") == "") album = tr("未知专辑");
+            if (album == "" || album.replace(" ", "") == "")
+                album = tr("未知专辑");
             data->album = album;
         } else if (keyList[i].compare("duration", Qt::CaseInsensitive) == 0) {
             data->duration = valueList[i].toLongLong();
@@ -751,16 +764,16 @@ bool FFmpeg::getDict(MediaData *data, const QString &url) {
 }
 
 bool FFmpeg::writeDict(QStringList key, QStringList value, const QString &inUrl, const QString &outUrl) {
-    AVFormatContext *inFmt = nullptr;
+    AVFormatContext *inFmt  = nullptr;
     AVFormatContext *outFmt = nullptr;
-    AVPacket *pkt = nullptr;
-    bool work = true;
+    AVPacket *       pkt    = nullptr;
+    bool             work   = true;
     try {
         if (key.size() != value.size()) {
             throw DataException("写入标签数据长度错误");
         }
 
-        inFmt = getInputFormatContext(inUrl);
+        inFmt  = getInputFormatContext(inUrl);
         outFmt = getOutFormatContext(outUrl);
 
         for (int i = 0; i < inFmt->nb_streams; i++) {
@@ -809,7 +822,8 @@ bool FFmpeg::writeDict(QStringList key, QStringList value, const QString &inUrl,
         work = false;
     }
 
-    if (pkt != nullptr) av_packet_free(&pkt);
+    if (pkt != nullptr)
+        av_packet_free(&pkt);
     //关闭输出上下文
     if (outFmt != nullptr) {
         //如果打开，关闭输出文件
@@ -818,6 +832,7 @@ bool FFmpeg::writeDict(QStringList key, QStringList value, const QString &inUrl,
         }
         avformat_free_context(outFmt);
     }
-    if (inFmt != nullptr) avformat_close_input(&inFmt);
+    if (inFmt != nullptr)
+        avformat_close_input(&inFmt);
     return work;
 }

@@ -6,16 +6,16 @@ project(PlayViewLib VERSION 0.1 LANGUAGES CXX)
 # 设置基础编译配置
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_AUTORCC ON)  # 统一使用大写，符合 Qt 官方规范
+set(CMAKE_AUTORCC ON)
 
-# 查找 Qt 依赖（先找依赖，再设置项目）
+# 查找 Qt 依赖
 find_package(Qt6 REQUIRED COMPONENTS Quick)
-qt_standard_project_setup(REQUIRES 6.5)  # 保持你指定的 6.5 版本要求
+qt_standard_project_setup(REQUIRES 6.5)
 
-# 创建静态库目标（纯 QML 模块用 STATIC 即可，名称和项目名一致）
+# 创建静态库目标
 add_library(PlayViewLib STATIC)
 
-# 标记单例 QML 文件（CoreData.qml 作为单例）
+# 标记单例 QML 文件
 set_source_files_properties(CoreData.qml
         PROPERTIES
         QT_QML_SINGLETON_TYPE true
@@ -23,7 +23,7 @@ set_source_files_properties(CoreData.qml
 
 # 允许 QML 模块关联到静态库
 qt_policy(SET QTP0004 NEW)
-# 添加 QML 模块（合并重复的 QML_FILES，结构更清晰）
+# 添加 QML 模块
 qt_add_qml_module(PlayViewLib
         URI PlayView                  # 模块唯一标识，主项目通过这个导入
         VERSION 1.0                   # 版本号
@@ -120,15 +120,11 @@ qt_add_qml_module(PlayViewLib
         QML_FILES GeneralControls/PlayUp.qml
         QML_FILES GeneralControls/PlayDown.qml
         QML_FILES GeneralControls/PlayState.qml
-        QML_FILES
-        QML_FILES
-        QML_FILES
 )
 
-# 链接 QtQuick 依赖（纯 QML 模块也需要显式链接）
+# 链接 QtQuick 依赖
 target_link_libraries(PlayViewLib PRIVATE Qt6::Quick)
 
-# 可选：安装配置，方便后续部署
 install(TARGETS PlayViewLib
         BUNDLE DESTINATION .
         LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}

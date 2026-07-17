@@ -12,9 +12,8 @@ void LrcDataControl::setPlayingPosition(long newPlayingPosition) {
     emit playingPositionChanged();
 }
 
-LrcDataControl::LrcDataControl(BaseTool *baseTool, DataActive *dataActive, TLog *log, QObject *parent)
-    : MediaPlayData(baseTool, dataActive, log, parent)
-      , m_playingLrcId(-1) {
+LrcDataControl::LrcDataControl()
+    : m_playingLrcId(-1) {
     connect(m_player, &QMediaPlayer::playingChanged, this, [this](const bool isPlaying) {
         if (isPlaying) {
             m_updateLrcTimer->start(20);
@@ -29,7 +28,7 @@ LrcDataControl::LrcDataControl(BaseTool *baseTool, DataActive *dataActive, TLog 
 
     m_updateLrcTimer = new QTimer(this);
     connect(m_updateLrcTimer, &QTimer::timeout, this, [this]() {
-        m_startTime += m_updateLrcTimer->interval();
+        m_startTime       += m_updateLrcTimer->interval();
         m_playingPosition = m_startTime + m_player->position();
         selectPlayLrc(m_playingPosition);
         emit lrcUpdate();
@@ -37,11 +36,11 @@ LrcDataControl::LrcDataControl(BaseTool *baseTool, DataActive *dataActive, TLog 
 }
 
 LrcDataControl::~LrcDataControl() {
-    delete m_updateLrcTimer;
+    m_updateLrcTimer->stop();
 }
 
 void LrcDataControl::loadLrcList(const int musicId) {
-    m_lrcList = FileManagement::getMusicLyricsData(musicId);
+    m_lrcList      = FileManagement::getMusicLyricsData(musicId);
     m_playingLrcId = -1;
     emit lrcLoaded();
 }
@@ -76,7 +75,7 @@ int LrcDataControl::getPlayingLrcId() const {
 }
 
 void LrcDataControl::turnToLrc(const int lrcId) {
-    m_loger->logUser(tr("跳转到歌词,lrcId: %1").arg(lrcId));
+    TLog::getInstance().logUser(tr("跳转到歌词,lrcId: %1").arg(lrcId));
 
     if (lrcId >= 0 && lrcId < m_lrcList.size()) {
         m_player->setPosition(m_lrcList[lrcId]->startTime);

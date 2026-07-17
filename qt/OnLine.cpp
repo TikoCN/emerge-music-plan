@@ -15,7 +15,7 @@ OnLine::OnLine() {
 }
 
 void OnLine::downMusicCover(const QString &key, const QString &url) {
-    const Setting *seit = Setting::getInstance();
+    const Setting *seit = &Setting::getInstance();
     if (!seit->getIsOnLine()) {
         //未开启网络模块，退出
         return;
@@ -39,7 +39,7 @@ void OnLine::downMusicCover(const QString &key, const QString &url) {
 }
 
 void OnLine::downArtistCover(const QString &key, const QString &url) {
-    const Setting *seit = Setting::getInstance();
+    const Setting *seit = &Setting::getInstance();
     if (!seit->getIsOnLine()) {
         //未开启网络模块，退出
         return;
@@ -55,7 +55,7 @@ void OnLine::downArtistCover(const QString &key, const QString &url) {
 }
 
 void OnLine::downAlbumCover(const QString &key, const QString &url) {
-    const Setting *seit = Setting::getInstance();
+    const Setting *seit = &Setting::getInstance();
     if (!seit->getIsOnLine()) {
         //未开启网络模块，退出
         return;
@@ -71,9 +71,9 @@ void OnLine::downAlbumCover(const QString &key, const QString &url) {
 }
 
 void OnLine::downMusicCoverNetEase(const QString &title, const QString &url) {
-    QNetworkRequest request;
+    QNetworkRequest       request;
     QNetworkAccessManager manager;
-    QEventLoop loop;
+    QEventLoop            loop;
     //正则表达式结果
     QRegularExpression regularExpression; //正则表达式
 
@@ -112,10 +112,10 @@ void OnLine::downMusicCoverNetEase(const QString &title, const QString &url) {
 }
 
 void OnLine::downMusicCoverQQMusic(const QString &key, const QString &url) {
-    QNetworkRequest request;
+    QNetworkRequest       request;
     QNetworkAccessManager manager;
     //正则表达式结果
-    QEventLoop loop;
+    QEventLoop         loop;
     QRegularExpression regularExpression; //正则表达式
 
     request.setUrl(QUrl("https://c.y.qq.com/soso/fcgi-bin/client_search_cp?p=1&n=2&w="
@@ -137,7 +137,7 @@ void OnLine::downMusicCoverQQMusic(const QString &key, const QString &url) {
     reply = manager.get(request);
     QEventLoop::connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
     loop.exec();
-    htmlData = reply->readAll();
+    htmlData  = reply->readAll();
     matchList = regularExpression.match(htmlData).capturedTexts();
 
     if (matchList.size() >= 2)
@@ -145,9 +145,9 @@ void OnLine::downMusicCoverQQMusic(const QString &key, const QString &url) {
 }
 
 void OnLine::downCoverBing(const QString &key, const QString &url) {
-    QNetworkRequest request;
+    QNetworkRequest       request;
     QNetworkAccessManager manager;
-    QEventLoop loop;
+    QEventLoop            loop;
     //正则表达式结果
     QRegularExpression regularExpression; //正则表达式
 
@@ -166,9 +166,9 @@ void OnLine::downCoverBing(const QString &key, const QString &url) {
 }
 
 void OnLine::downCoverBaidu(const QString &key, const QString &url) {
-    QNetworkRequest request;
+    QNetworkRequest       request;
     QNetworkAccessManager manager;
-    QEventLoop loop;
+    QEventLoop            loop;
     //正则表达式结果
     QRegularExpression regularExpression; //正则表达式
 
@@ -190,9 +190,9 @@ void OnLine::downCoverBaidu(const QString &key, const QString &url) {
 }
 
 void OnLine::writeCoverToFile(const QString &url, const QString &fileUrl) {
-    QNetworkRequest request;
+    QNetworkRequest       request;
     QNetworkAccessManager manager;
-    QEventLoop loop;
+    QEventLoop            loop;
 
     //得到实际图片数据
     request.setUrl(QUrl(url));
@@ -209,7 +209,7 @@ void OnLine::writeCoverToFile(const QString &url, const QString &fileUrl) {
 }
 
 void OnLine::downLrc(const QString &key, const QString &url, const int musicId) {
-    const Setting *seit = Setting::getInstance();
+    const Setting *seit = &Setting::getInstance();
     if (!seit->getIsOnLine()) {
         //未开启网络模块，退出
         emit lrcDowned(musicId);
@@ -227,9 +227,9 @@ void OnLine::downLrc(const QString &key, const QString &url, const int musicId) 
 }
 
 void OnLine::downLrcFromNetEase(const QString &key, const QString &url) {
-    QNetworkRequest request;
+    QNetworkRequest       request;
     QNetworkAccessManager manager;
-    QEventLoop loop;
+    QEventLoop            loop;
     //正则表达式结果
     QRegularExpression regularExpression; //正则表达式
 
@@ -272,9 +272,9 @@ void OnLine::downLrcFromNetEase(const QString &key, const QString &url) {
 }
 
 void OnLine::downLrcFromQQMusic(const QString &key, const QString &url) {
-    QNetworkRequest request;
+    QNetworkRequest       request;
     QNetworkAccessManager manager;
-    QEventLoop loop;
+    QEventLoop            loop;
     //正则表达式结果
     QRegularExpression regularExpression; //正则表达式
 

@@ -1,4 +1,7 @@
 #include "Setting.h"
+
+#include <QAudioOutput>
+
 #include "mediaplay/Mediaplayer.h"
 #include "baseclass/LiteralConstant.h"
 #include <QSettings>
@@ -20,12 +23,12 @@ bool Setting::getParameterList() {
     auto *ini = new QSettings(m_iniUrl, QSettings::IniFormat);
     ini->beginGroup("seit");
 
-    m_isLightTheme = ini->value(m_isLightThemeKey).toBool();
-    m_isOnLine = ini->value(m_isOnLineKey).toBool();
+    m_isLightTheme          = ini->value(m_isLightThemeKey).toBool();
+    m_isOnLine              = ini->value(m_isOnLineKey).toBool();
     m_isGetCoverFromNetEase = ini->value(m_isGetCoverFromNetEaseKey).toBool();
     m_isGetCoverFromQQMusic = ini->value(m_isGetCoverFromQQMusicKey).toBool();
-    m_isGetCoverFromBing = ini->value(m_isGetCoverFromBingKey).toBool();
-    m_isGetCoverFromBaidu = ini->value(m_isGetCoverFromBaiduKey).toBool();
+    m_isGetCoverFromBing    = ini->value(m_isGetCoverFromBingKey).toBool();
+    m_isGetCoverFromBaidu   = ini->value(m_isGetCoverFromBaiduKey).toBool();
 
     m_isGetLrcFromNetEase = ini->value(m_isGetLrcFromNetEaseKey).toBool();
     m_isGetLrcFromQQMusic = ini->value(m_isGetLrcFromQQMusicKey).toBool();
@@ -38,7 +41,7 @@ bool Setting::getParameterList() {
     m_themeColor = QColor::fromString(ini->value(m_themeColorKey).toString());
 
     // 歌词相关颜色
-    m_lrcNormalColor = QColor::fromString(ini->value(m_lrcNormalColorKey).toString());
+    m_lrcNormalColor  = QColor::fromString(ini->value(m_lrcNormalColorKey).toString());
     m_lrcPlayingColor = QColor::fromString(ini->value(m_lrcPlayingColorKey).toString());
 
     // 字体管理
@@ -47,9 +50,9 @@ bool Setting::getParameterList() {
     m_benchmarkFont.fromString(ini->value(m_benchmarkFontKey).toString());
 
     m_lrcTopPoint = ini->value(m_lrcTopPointKey).toPoint();
-    m_windowRect = ini->value(m_windowRectKey).toRectF();
+    m_windowRect  = ini->value(m_windowRectKey).toRectF();
 
-    MediaPlayer *player = MediaPlayer::getInstance();
+    MediaPlayer *player = &MediaPlayer::getInstance();
     player->getAudioOutput()->setVolume(ini->value(LiteralConstant::VOLUME).toFloat());
     player->setPlayingMusicListId(ini->value(LiteralConstant::PLAY_MUSIC_LIST_ID).toInt());
 
@@ -70,8 +73,8 @@ void Setting::removeUrl(const QString &url) {
 }
 
 void Setting::writeData() const {
-    const MediaPlayer *player = MediaPlayer::getInstance();
-    auto *ini = new QSettings(m_iniUrl, QSettings::IniFormat);
+    const MediaPlayer *player = &MediaPlayer::getInstance();
+    auto *             ini    = new QSettings(m_iniUrl, QSettings::IniFormat);
     ini->beginGroup("seit");
 
     ini->setValue(m_isLightThemeKey, m_isLightTheme);
@@ -110,14 +113,14 @@ void Setting::writeData() const {
 
 Setting::Setting()
     : m_iniUrl(QDir::currentPath() + "/data/setting.ini") {
-    m_isLightTheme = true;
-    m_isOnLine = true;
+    m_isLightTheme          = true;
+    m_isOnLine              = true;
     m_isGetCoverFromNetEase = true;
     m_isGetCoverFromQQMusic = true;
-    m_isGetCoverFromBing = true;
-    m_isGetCoverFromBaidu = true;
-    m_isGetLrcFromNetEase = true;
-    m_isGetLrcFromQQMusic = true;
+    m_isGetCoverFromBing    = true;
+    m_isGetCoverFromBaidu   = true;
+    m_isGetLrcFromNetEase   = true;
+    m_isGetLrcFromQQMusic   = true;
 
     m_maxThreadNumber = 10;
 
@@ -125,12 +128,12 @@ Setting::Setting()
     m_themeColor = Qt::red;
 
     // 歌词颜色默认值
-    m_lrcNormalColor = Qt::black;
+    m_lrcNormalColor  = Qt::black;
     m_lrcPlayingColor = Qt::red;
 
     // 字体属性默认值
-    m_lrcFont = QFont("Microsoft YaHei", 16, QFont::Bold); // 歌词字体
-    m_deskLrcFont = QFont("Microsoft YaHei", 20, QFont::Bold); // 桌面歌词字体
+    m_lrcFont       = QFont("Microsoft YaHei", 16, QFont::Bold); // 歌词字体
+    m_deskLrcFont   = QFont("Microsoft YaHei", 20, QFont::Bold); // 桌面歌词字体
     m_benchmarkFont = QFont("Microsoft YaHei", 13, QFont::Normal);
 
     const QRectF screen = QGuiApplication::primaryScreen()->geometry();

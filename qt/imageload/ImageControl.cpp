@@ -17,7 +17,7 @@ QImage ImageControl::getImgCache(const QString &url) {
     QMutexLocker locker(&m_mutex);
 
     const auto ptr = m_cache.get(url);
-    if (!ptr) {return {};}
+    if (!ptr) { return {}; }
     return ptr->img;
 }
 
@@ -25,13 +25,14 @@ void ImageControl::writeUrlNullFlag(const QString &url, const bool flag) {
     QMutexLocker locker(&m_mutex);
 
     const auto it = m_cache.get(url);
-    if (it) it->isNUll = flag;
+    if (it)
+        it->isNUll = flag;
 }
 
 bool ImageControl::getUrlNullFlag(const QString &url) {
     QMutexLocker locker(&m_mutex);
 
     const auto it = m_cache.get(url);
-    if (!it) {return true;}
+    if (!it) { return true; }
     return it->isNUll;
 }

@@ -8,6 +8,7 @@ using LrcDataPtr = QSharedPointer<class LrcData>;
 
 class LrcData {
     Q_GADGET
+
 public:
     QT_CONSTANT_PROPERTY(QVector<QString>, textList, TextList)
     QT_CONSTANT_PROPERTY(QVector<QString>, helpTextList, HelpTextList)

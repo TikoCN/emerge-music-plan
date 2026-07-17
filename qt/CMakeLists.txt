@@ -1,11 +1,18 @@
 cmake_minimum_required(VERSION 3.20)
 project(musicPlay VERSION 0.1 LANGUAGES CXX)
 
+if(MSVC)
+    add_compile_options(/MP)
+endif()
+
 find_package(Qt6 REQUIRED COMPONENTS Widgets)
 # windeployqt.exe
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+set(CMAKE_UNITY_BUILD ON)
+set(CMAKE_UNITY_BUILD_BATCH_SIZE 16)
 
 find_package(Qt6 REQUIRED COMPONENTS Quick)
 find_package(Qt6 REQUIRED COMPONENTS Multimedia)
@@ -84,24 +91,15 @@ find_package(unofficial-sqlite3 CONFIG REQUIRED)
 target_link_libraries(appmusicPlay PRIVATE unofficial::sqlite3::sqlite3)
 
 #link FFmpeg
-# 设置FFmpeg根目录（注意路径斜杠）
-set(FFMPEG_ROOT "C:/code/ExLib/ffmpeg")
-# 定义包含目录
-set(FFMPEG_INCLUDE_DIRS "${FFMPEG_ROOT}/include")
-# 定义库目录
-set(FFMPEG_LIBRARY_DIRS "${FFMPEG_ROOT}/lib")
-
-# 列出需要链接的FFmpeg核心库（根据实际使用的模块调整）
-set(FFMPEG_LIBRARIES
-    avcodec
-    avformat
-    avutil
-    avfilter
-    swresample
-    swscale
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(FFMPEG REQUIRED
+        libavcodec
+        libavformat
+        libavutil
+        libswscale
+        libswresample
 )
 
-# 将FFmpeg链接到目标可执行文件
 target_include_directories(appmusicPlay PRIVATE ${FFMPEG_INCLUDE_DIRS})
 target_link_directories(appmusicPlay PRIVATE ${FFMPEG_LIBRARY_DIRS})
 target_link_libraries(appmusicPlay PRIVATE ${FFMPEG_LIBRARIES})
@@ -114,7 +112,7 @@ set_target_properties(appmusicPlay PROPERTIES
     MACOSX_BUNDLE_BUNDLE_VERSION ${PROJECT_VERSION}
     MACOSX_BUNDLE_SHORT_VERSION_STRING ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
     MACOSX_BUNDLE TRUE
-    WIN32_EXECUTABLE TRUE
+    #WIN32_EXECUTABLE TRUE
     OUTPUT_NAME "music"
 )
 
@@ -132,3 +130,17 @@ install(TARGETS appmusicPlay
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
+
+# 部署
+find_program(WINDEPLOYQT_EXECUTABLE windeployqt HINTS "${CMAKE_PREFIX_PATH}/bin")
+if(WINDEPLOYQT_EXECUTABLE)
+    add_custom_command(TARGET appmusicPlay POST_BUILD
+            COMMAND "${WINDEPLOYQT_EXECUTABLE}"
+            --no-compiler-runtime
+            --no-system-d3d-compiler
+            --qmldir "${CMAKE_SOURCE_DIR}"
+            "$<TARGET_FILE:appmusicPlay>"
+            COMMENT "Deploying Qt and QML libraries to Debug directory..."
+            WORKING_DIRECTORY "$<TARGET_FILE_DIR:appmusicPlay>"
+    )
+endif()

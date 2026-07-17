@@ -3,21 +3,16 @@
 #include <iostream>
 
 #include <QAudioOutput>
+#include <QThread>
 
-MediaPlayData::MediaPlayData(BaseTool *baseTool, DataActive *dataActive, TLog *loger, QObject *parent)
-    : QObject(parent),
-      m_baseTool(baseTool),
-      m_dataActive(dataActive),
-      m_loger(loger) {
-    m_player = new QMediaPlayer; //播放设备
-    m_audioOutput = new QAudioOutput; //音频输出
-    m_bufferOutput = new QAudioBufferOutput; //缓冲区输出
-    m_frequencySpectrum = new FrequencySpectrum; //音频计算
+MediaPlayData::MediaPlayData() {
+    m_player            = new QMediaPlayer;       //播放设备
+    m_audioOutput       = new QAudioOutput;       //音频输出
+    m_bufferOutput      = new QAudioBufferOutput; //缓冲区输出
+    m_frequencySpectrum = new FrequencySpectrum;  //音频计算
 
     m_player->setAudioOutput(m_audioOutput);
     m_player->setAudioBufferOutput(m_bufferOutput);
-
-    m_dataActive = DataActive::getInstance();
 
     connect(m_bufferOutput, &QAudioBufferOutput::audioBufferReceived, m_frequencySpectrum,
             &FrequencySpectrum::runSpectrum);
@@ -32,10 +27,19 @@ MediaPlayData::MediaPlayData(BaseTool *baseTool, DataActive *dataActive, TLog *l
 }
 
 MediaPlayData::~MediaPlayData() {
-    m_player->deleteLater();
-    m_audioOutput->deleteLater();
-    m_bufferOutput->deleteLater();
-    m_frequencySpectrum->deleteLater();
+    m_player->stop();
+    disconnect(m_bufferOutput, &QAudioBufferOutput::audioBufferReceived, m_frequencySpectrum,
+               &FrequencySpectrum::runSpectrum);
+    disconnect(m_frequencySpectrum, &FrequencySpectrum::dataFinished, this, nullptr);
+    disconnect(m_player, &QMediaPlayer::positionChanged, this, nullptr);
+    if (m_frequencySpectrum != nullptr && m_frequencySpectrum->thread() != nullptr) {
+        m_frequencySpectrum->thread()->quit();
+        m_frequencySpectrum->thread()->wait();
+    }
+    delete m_frequencySpectrum;
+    delete m_bufferOutput;
+    delete m_audioOutput;
+    delete m_player;
 }
 
 void MediaPlayData::clearData() {

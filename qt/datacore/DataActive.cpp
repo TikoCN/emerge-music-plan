@@ -4,13 +4,14 @@
 #include <algorithm>
 #include "namekey.h"
 
-void DataActive::appendPlayList(const QString &name) const {
-    m_sql->appendUserPlayList(name);
+void DataActive::appendPlayList(const QString &name) {
+    if (!SQLite::getInstance().appendPort.appendUserPlayList(name))
+        TLog::getInstance().logError("插入播放列表失败");
 }
 
 QList<int> DataActive::musicListSort(const QList<int> &musicIdList, const SORT_TYPE sort) {
     QList<MusicPtr> musicList = getMusicCoreList(musicIdList);
-    QList<int> newIdList;
+    QList<int>      newIdList;
 
     switch (sort) {
         case SORT_ALBUM_ASC:
@@ -94,133 +95,133 @@ QList<int> DataActive::musicListSort(const QList<int> &musicIdList, const SORT_T
     return newIdList;
 }
 
-void DataActive::clearNullItem() const {
-    m_sql->clearNullMusicItem();
-    m_sql->clearNullPlayListItem();
+void DataActive::clearNullItem() {
+    SQLite::getInstance().clearNullMusicItem();
+    SQLite::getInstance().clearNullPlayListItem();
 }
 
 void DataActive::updateMusicLove(const int musicId, const bool isLove) {
     const MusicPtr music = getMusicCore(musicId);
     if (music.isNull()) {
-        m_loger->logError("更新歌曲喜爱失败");
+        TLog::getInstance().logError("更新歌曲喜爱失败");
         return;
     }
 
     music->isLove = isLove;
-    m_sql->updateMusic(music);
+    SQLite::getInstance().updatePort.updateMusic(music);
 }
 
 void DataActive::updateMusicLevel(const int musicId, const bool level) {
     const MusicPtr music = getMusicCore(musicId);
     if (music.isNull()) {
-        m_loger->logError("更新歌曲评级失败");
+        TLog::getInstance().logError("更新歌曲评级失败");
         return;
     }
 
     music->level = level;
-    m_sql->updateMusic(music);
+    SQLite::getInstance().updatePort.updateMusic(music);
 }
 
 void DataActive::updatePlayListName(const int playListId, const QString &name) {
     const PlayListPtr playList = getPlayListCore(playListId);
     if (playList.isNull()) {
-        m_loger->logError("更新列表姓名失败");
+        TLog::getInstance().logError("更新列表姓名失败");
         return;
     }
 
     playList->name = name;
-    m_sql->updatePlayList(playList);
+    SQLite::getInstance().updatePort.updatePlayList(playList);
 }
 
 void DataActive::updatePlayListSort(int playListId, int sort) {
     const PlayListPtr playList = getPlayListCore(playListId);
     if (playList.isNull()) {
-        m_loger->logError("更新列表排序失败");
+        TLog::getInstance().logError("更新列表排序失败");
         return;
     }
 
     playList->sort = static_cast<SORT_TYPE>(sort);
-    m_sql->updatePlayList(playList);
+    SQLite::getInstance().updatePort.updatePlayList(playList);
 }
 
 void DataActive::updateArtistName(const int artistId, const QString &name) {
     const ArtistPtr artist = getArtistCore(artistId);
     if (artist.isNull()) {
-        m_loger->logError("更新歌手名称失败");
+        TLog::getInstance().logError("更新歌手名称失败");
         return;
     }
 
     artist->name = name;
-    m_sql->updateArtist(artist);
+    SQLite::getInstance().updatePort.updateArtist(artist);
 }
 
 void DataActive::updateArtistSort(const int artistId, const int sort) {
     const ArtistPtr artist = getArtistCore(artistId);
     if (artist.isNull()) {
-        m_loger->logError("更新歌手排序失败");
+        TLog::getInstance().logError("更新歌手排序失败");
         return;
     }
 
     artist->sort = sort;
-    m_sql->updateArtist(artist);
+    SQLite::getInstance().updatePort.updateArtist(artist);
 }
 
 void DataActive::updateAlbumName(const int albumId, const QString &name) {
     const AlbumPtr album = getAlbumCore(albumId);
     if (album.isNull()) {
-        m_loger->logError("更新专辑名称失败");
+        TLog::getInstance().logError("更新专辑名称失败");
         return;
     }
 
     album->name = name;
-    m_sql->updateAlbum(album);
+    SQLite::getInstance().updatePort.updateAlbum(album);
 }
 
 void DataActive::updateAlbumSort(const int albumId, int sort) {
     const AlbumPtr album = getAlbumCore(albumId);
     if (album.isNull()) {
-        m_loger->logError("更新专辑排序失败");
+        TLog::getInstance().logError("更新专辑排序失败");
         return;
     }
 
     album->sort = static_cast<SORT_TYPE>(sort);
-    m_sql->updateAlbum(album);
+    SQLite::getInstance().updatePort.updateAlbum(album);
 }
 
 void DataActive::updateALLNameKey() const {
-    NameKey nameKey(m_loger);
+    NameKey nameKey;
 
-    int startPos = 0;
-    constexpr int maxSize = 50;
-    int resultSize = maxSize;
+    int           startPos   = 0;
+    constexpr int maxSize    = 50;
+    int           resultSize = maxSize;
     while (resultSize == maxSize) {
-        const QStringList &nameList = m_sql->getAlbumNameList(maxSize, startPos);
-        QStringList nameKeyList;
+        const QStringList &nameList = SQLite::getInstance().getPort.getAlbumNameList(maxSize, startPos);
+        QStringList        nameKeyList;
         resultSize = static_cast<int>(nameList.size());
-        startPos += resultSize;
+        startPos   += resultSize;
 
         for (const QString &name: nameList) {
             const QString &key = nameKey.find(name);
             nameKeyList.append(key);
         }
 
-        m_sql->updateAlbumNameKey(nameList, nameKeyList);
+        SQLite::getInstance().updatePort.updateAlbumNameKey(nameList, nameKeyList);
     }
 
-    startPos = 0;
+    startPos   = 0;
     resultSize = maxSize;
     while (resultSize == maxSize) {
-        const QStringList &nameList = m_sql->getArtistNameList(maxSize, startPos);
-        QStringList nameKeyList;
+        const QStringList &nameList = SQLite::getInstance().getPort.getArtistNameList(maxSize, startPos);
+        QStringList        nameKeyList;
         resultSize = static_cast<int>(nameList.size());
-        startPos += resultSize;
+        startPos   += resultSize;
 
         for (const QString &name: nameList) {
             const QString &key = nameKey.find(name);
             nameKeyList.append(key);
         }
 
-        m_sql->updateArtistNameKey(nameList, nameKeyList);
+        SQLite::getInstance().updatePort.updateArtistNameKey(nameList, nameKeyList);
     }
 }
 

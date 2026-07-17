@@ -2,28 +2,20 @@
 #define DATAACTIVE_H
 #include "DataManager.h"
 
-class DataActive : public DataManager
-{
+class DataActive : public DataManager {
     Q_OBJECT
 
 public:
-    static DataActive* getInstance() {
+    static DataActive &getInstance() {
+        static DataActive instance;
         return instance;
     }
 
-    static void buildInstance() {
-        if (instance == nullptr) {
-            instance = new DataActive;
-        }
-    }
-
-    static void freeInstance() {
-            delete instance;
-    }
     Q_INVOKABLE QList<int> musicListSort(const QList<int> &, SORT_TYPE sort);
 
-    Q_INVOKABLE void appendPlayList(const QString &name) const;
-    Q_INVOKABLE void clearNullItem() const;
+    Q_INVOKABLE void clearNullItem();
+
+    Q_INVOKABLE static void appendPlayList(const QString &name);
 
     Q_INVOKABLE void updateMusicLove(int musicId, bool isLove);
     Q_INVOKABLE void updateMusicLevel(int musicId, bool level);
@@ -48,8 +40,6 @@ signals:
 private:
     explicit DataActive();
     ~DataActive() override;
-
-    static DataActive *instance;
 };
 
 #endif // DATAACTIVE_H

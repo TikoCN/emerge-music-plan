@@ -6,18 +6,19 @@
 #define MUSICPLAY_LRCCACHE_H
 
 #include <QString>
-template <typename K, typename V>
-    class LruCache {
+
+template<typename K, typename V>
+class LruCache {
 private:
     struct Entry {
-        K key;
-        V value;
+        K         key;
+        V         value;
         long long time;
     };
 
-    std::list<Entry> valueList;
+    std::list<Entry>                                           valueList;
     std::unordered_map<K, typename std::list<Entry>::iterator> keyCache;
-    size_t cap;
+    size_t                                                     cap;
 
     /**
      * @brief 循环删除
@@ -32,7 +33,9 @@ private:
     }
 
 public:
-    explicit LruCache(const int cap) : cap(cap) {};
+    explicit LruCache(const int cap)
+        : cap(cap) {
+    };
 
     /**
      * @brief 插入、更新缓存
@@ -46,8 +49,8 @@ public:
             valueList.splice(valueList.begin(), valueList, it->second);
             it->second->value = std::move(value);
         } else {
-            valueList.emplace_front(Entry{ key, std::move(value) });
-            auto list_it = valueList.begin();
+            valueList.emplace_front(Entry{key, std::move(value)});
+            auto list_it           = valueList.begin();
             keyCache[list_it->key] = list_it;
         }
 

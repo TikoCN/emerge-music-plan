@@ -4,39 +4,40 @@
 #include "Core.h"
 #include "baseclass/MediaData.h"
 
-class Append : public Core
-{
-    Q_OBJECT
+class Append {
+private:
+    Core *core;
+
 public:
-    explicit Append(TLog *log, BaseTool *tool)
-        :Core(log, tool) {}
+    explicit Append(Core *core) : core(core) {
+    };
 
     // 附加条目
-    bool appendMusic(const MediaData &data);
-    bool appendMusic(const QList<MediaData>& data);
+    [[nodiscard]] bool appendMusic(const MediaData &data) const;
+    [[nodiscard]] bool appendMusic(const QList<MediaData> &data) const;
 
-    bool appendAlbum(const QString& album);
-    bool appendAlbum(const QStringList& albumList);
-    bool appendAlbumMusic(int id, const QList<int>& musicList);
-    bool appendAlbumMusic(const QPair<QString, QString> &pair);
-    bool appendAlbumMusic(const QList<QPair<QString, QString> > &pairList);
+    [[nodiscard]] bool appendAlbum(const QString &album) const;
+    [[nodiscard]] bool appendAlbum(const QStringList &albumList) const;
+    [[nodiscard]] bool appendAlbumMusic(int id, const QList<int> &musicList) const;
+    [[nodiscard]] bool appendAlbumMusic(const QPair<QString, QString> &pair) const;
+    [[nodiscard]] bool appendAlbumMusic(const QList<QPair<QString, QString> > &pairList) const;
 
-    bool appendArtist(const QString& artist);
-    bool appendArtist(const QStringList& artistList);
-    bool appendArtistMusic(int id, const QList<int>& musicList);
-    bool appendArtistMusic(const QPair<QString, QString> &pair);
-    bool appendArtistMusic(const QList<QPair<QString, QString> > &pairList);
+    [[nodiscard]] bool appendArtist(const QString &artist) const;
+    [[nodiscard]] bool appendArtist(const QStringList &artistList) const;
+    [[nodiscard]] bool appendArtistMusic(int id, const QList<int> &musicList) const;
+    [[nodiscard]] bool appendArtistMusic(const QPair<QString, QString> &pair) const;
+    [[nodiscard]] bool appendArtistMusic(const QList<QPair<QString, QString> > &pairList) const;
 
-    bool appendDirPlayList(const QString& url);
-    bool appendDirPlayList(const QStringList&  urlList);
+    [[nodiscard]] bool appendDirPlayList(const QString &url) const;
+    [[nodiscard]] bool appendDirPlayList(const QStringList &urlList) const;
 
-    bool appendUserPlayList(const QString &name);
+    [[nodiscard]] bool appendUserPlayList(const QString &name) const;
 
-    bool appendPlayListMusic(int id, const QList<int>& musicList);
-    bool appendPlayListMusic(const QPair<QString, QString> &pair);
-    bool appendPlayListMusic(const QList<QPair<QString, QString> > &pairList);
+    [[nodiscard]] bool appendPlayListMusic(int id, const QList<int> &musicList) const;
+    [[nodiscard]] bool appendPlayListMusic(const QPair<QString, QString> &pair) const;
+    [[nodiscard]] bool appendPlayListMusic(const QList<QPair<QString, QString> > &pairList) const;
 
-    bool appendPlayingListMusic(int musicId, int position);
-    bool appendPlayingListMusic(const QList<int> &musicList, int start);
+    [[nodiscard]] bool appendPlayingListMusic(int musicId, int position) const;
+    [[nodiscard]] bool appendPlayingListMusic(const QList<int> &musicList, int start) const;
 };
 #endif // APPNED_H

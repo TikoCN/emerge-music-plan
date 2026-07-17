@@ -5,20 +5,17 @@
 #include <QFile>
 #include <QTextStream>
 
-class TLog : public QObject
-{
+class TLog : public QObject {
     Q_OBJECT
-public:
-    enum TYPE {DEBUG, USER_DO, LOAD, RELEASE, ERROR, INFO, IGNORE};
-    void log(TYPE type, QString str, const QString& threadName, qint64 threadId);
-    static TLog* getInstance(){
-        return instance;
-    }
 
-    static void buildInstance(){
-        if (instance == nullptr){
-            instance = new TLog;
-        }
+public:
+    enum TYPE { DEBUG, USER_DO, LOAD, RELEASE, ERROR, INFO, IGNORE };
+
+    void log(TYPE type, QString str, const QString &threadName, qint64 threadId);
+
+    static TLog &getInstance() {
+        static TLog instance;
+        return instance;
     }
 
     void logDebug(const QString &str);
@@ -33,11 +30,10 @@ private:
     TLog();
     ~TLog() override;
 
-    static TLog* instance;
-    QThread *m_thread;
-    QFile m_file;
-    qint64 m_startTime;
-    QStringList m_logItemList;
+    QThread *         m_thread;
+    QFile             m_file;
+    qint64            m_startTime;
+    QStringList       m_logItemList;
     const QStringList m_type = {
         "DEBUG",
         "USER_DO",

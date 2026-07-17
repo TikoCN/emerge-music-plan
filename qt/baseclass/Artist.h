@@ -9,6 +9,7 @@ using ArtistPtr = QSharedPointer<class Artist>;
 
 class Artist {
     Q_GADGET
+
 public:
     QT_CONSTANT_PROPERTY(QString, name, Name)
     QT_CONSTANT_PROPERTY(QString, nameKey, NameKey)

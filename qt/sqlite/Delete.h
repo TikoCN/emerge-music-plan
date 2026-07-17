@@ -4,15 +4,17 @@
 
 #ifndef MUSICPLAY_DELETE_H
 #define MUSICPLAY_DELETE_H
-#include "Update.h"
 
-class Delete : public Update{
-    Q_OBJECT
+#include "Core.h"
+
+class Delete {
+private:
+    Core *core;
+
 public:
-
-    explicit Delete(TLog * log, BaseTool *tool) : Update(log, tool) {};
-
-    bool deletePlayingList(int position);
+    explicit Delete(Core *core) : core(core) {
+    };
+    [[nodiscard]] bool deletePlayingList(int position) const;
 };
 
 

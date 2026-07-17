@@ -23,14 +23,14 @@ TLog::~TLog() {
 }
 
 void TLog::log(const TLog::TYPE type, QString str, const QString &threadName, const qint64 threadId) {
-    const QDateTime t = QDateTime::currentDateTime();
-    QString time = t.toString("yyyy-MM-dd HH:mm:ss.zzz");
-    const qint64 over = QDateTime::currentMSecsSinceEpoch() - m_startTime;
+    const QDateTime t    = QDateTime::currentDateTime();
+    QString         time = t.toString("yyyy-MM-dd HH:mm:ss.zzz");
+    const qint64    over = QDateTime::currentMSecsSinceEpoch() - m_startTime;
 
-    QString fixedType = QString("TYPE:%1").arg(m_type[static_cast<int>(type)].leftJustified(8));
+    QString fixedType     = QString("TYPE:%1").arg(m_type[static_cast<int>(type)].leftJustified(8));
     QString threadNameOut = QString("THREAD_NAME:%1").arg(threadName.leftJustified(17));
-    QString threadIdOut = QString("THREAD_ID:%1").arg(QString::number(threadId).leftJustified(10));
-    QString overTime = QString("OVERTIME:%1").arg(QString::number(over).leftJustified(15));
+    QString threadIdOut   = QString("THREAD_ID:%1").arg(QString::number(threadId).leftJustified(10));
+    QString overTime      = QString("OVERTIME:%1").arg(QString::number(over).leftJustified(15));
 
     str = QString("%1| TIME: %2  | %3| %4| %5| %6 \n").arg(
         fixedType,

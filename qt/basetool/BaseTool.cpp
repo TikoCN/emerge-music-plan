@@ -6,7 +6,7 @@
 BaseTool::BaseTool() {
     typeConversion = new TypeConversion;
     fileManagement = new FileManagement;
-    qmlActive = new QmlActive;
+    qmlActive      = new QmlActive;
 }
 
 const QmlActive *BaseTool::getQmlActive() const {

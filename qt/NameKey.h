@@ -2,20 +2,20 @@
 #define NAMEKEY_H
 #include <QFileInfo>
 #include "Tlog.h"
-class NameKey
-{
-public:
-    NameKey(TLog *log);
 
-    [[nodiscard]] QString find(const QString& name);
+class NameKey {
+public:
+    NameKey();
+
+    [[nodiscard]] QString find(const QString &name);
 
     bool readFileNameKey();
+
 private:
     QHash<QString, QString> m_NameKeyHash;
-    QString m_findName;
-    QString m_resultKey;
-    QFileInfoList m_fileInfoList;
-    TLog *m_log;
+    QString                 m_findName;
+    QString                 m_resultKey;
+    QFileInfoList           m_fileInfoList;
 };
 
 #endif // NAMEKEY_H

@@ -9,17 +9,16 @@
 #include <QSettings>
 #include "macro/SettingAttribute.h"
 
-class Setting :public QObject
-{
+class Setting : public QObject {
     Q_OBJECT
+
 private:
-    static Setting* instance;
     Setting();
 
     const QString m_iniUrl;
 
     QT_SETTING_PROPERTY(int, maxThreadNumber, MaxThreadNumber)
-    
+
     QT_SETTING_PROPERTY(QStringList, sourceList, SourceList)
 
     // 颜色管理
@@ -48,29 +47,21 @@ private:
     QT_SETTING_PROPERTY(bool, isGetLrcFromQQMusic, IsGetLrcFromQQMusic)
 
 public:
-    static Setting* getInstance(){
+    static Setting &getInstance() {
+        static Setting instance;
         return instance;
     }
 
-    static void buildInstance(){
-        if(instance == nullptr){
-            instance = new Setting;
-        }
-    }
-
-    static void freeInstance(){
-        delete instance;
-    }
     //设置参数
-    template <typename T>
-    static void setParameter(const QString& key, const T& value) {
+    template<typename T>
+    static void setParameter(const QString &key, const T &value) {
         auto *ini = new QSettings(QDir::currentPath() + "/setting.ini", QSettings::IniFormat);
         ini->beginGroup("seit");
 
         ini->setValue(key, value);
 
         ini->endGroup();
-        ini->sync();//写入磁盘
+        ini->sync(); //写入磁盘
         delete ini;
     }
 

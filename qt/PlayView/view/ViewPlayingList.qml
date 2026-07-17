@@ -4,6 +4,7 @@ import MediaerAPI
 import Tiko
 import PlayView
 
+// 正在播放列表
 Drawer {
     id: playingPlayList
     edge: Qt.RightEdge

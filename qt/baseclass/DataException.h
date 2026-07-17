@@ -11,9 +11,8 @@
 
 class DataException : public QException {
 public:
-    explicit DataException(QString  errorMsg)
-    :m_errorMsg(std::move(errorMsg)){
-
+    explicit DataException(QString errorMsg)
+        : m_errorMsg(std::move(errorMsg)) {
     }
 
     void raise() const override {

@@ -9,25 +9,23 @@
 FileManagement::FileManagement() = default;
 
 void FileManagement::writeMusicToFile(const QStringList &key, const QStringList &value, const int musicId) {
-    DataActive *core = DataActive::getInstance();
-    const MusicPtr music = core->getMusicCore(musicId);
+    const MusicPtr music = DataActive::getInstance().getMusicCore(musicId);
     if (music == nullptr)
         return;
 
     QString url = music->url;
 
     const QString baseName = getFileName(url);
-    const QString newUrl = url.replace(baseName, "new" + baseName);
+    const QString newUrl   = url.replace(baseName, "new" + baseName);
     if (FFmpeg ff; ff.writeDict(key, value, url, newUrl)) {
         if (writeFileText(url, newUrl)) {
-            TLog::getInstance()->logError(tr("元数据写入文件音乐失败"));
+            TLog::getInstance().logError(tr("元数据写入文件音乐失败"));
         }
     }
 }
 
 QString FileManagement::getMusicLrcUrl(const int musicId) {
-    DataActive *core = DataActive::getInstance();
-    const MusicPtr music = core->getMusicCore(musicId);
+    const MusicPtr music = DataActive::getInstance().getMusicCore(musicId);
 
     if (music == nullptr) {
         return "";
@@ -35,7 +33,7 @@ QString FileManagement::getMusicLrcUrl(const int musicId) {
 
     const QString url = music->url;
 
-    QString lrc = url.split("." + url.split(".").last())[0];
+    QString lrc  = url.split("." + url.split(".").last())[0];
     QString hlrc = lrc + ".hlrc";
 
     if (QFile::exists(hlrc)) {
@@ -48,12 +46,12 @@ QString FileManagement::getMusicLrcUrl(const int musicId) {
 
 QString FileManagement::getMusicLrcData(const int musicId) {
     const QString lrc = getMusicLrcUrl(musicId);
-    QFile lrcFile(lrc);
+    QFile         lrcFile(lrc);
     if (!lrcFile.open(QIODevice::Text | QIODevice::ReadOnly)) {
         return {};
     }
     QTextStream out(&lrcFile);
-    QString lrcData = out.readAll();
+    QString     lrcData = out.readAll();
     lrcFile.close();
 
     return lrcData;
@@ -61,7 +59,7 @@ QString FileManagement::getMusicLrcData(const int musicId) {
 
 void FileManagement::writeLrcData(const int musicId, const QString &lrcData) {
     const QString lrc = getMusicLrcUrl(musicId);
-    QFile lrcFile(lrc);
+    QFile         lrcFile(lrc);
     if (!lrcFile.open(QIODevice::Text | QIODevice::WriteOnly)) {
         return;
     }
@@ -71,17 +69,17 @@ void FileManagement::writeLrcData(const int musicId, const QString &lrcData) {
 }
 
 QList<LrcDataPtr> FileManagement::getMusicLyricsData(const int musicId) {
-    TLog::getInstance()->logError(tr("开始读取歌曲歌词") +
-                                  tr("歌曲ID:%1").arg(musicId));
+    TLog::getInstance().logError(tr("开始读取歌曲歌词") +
+                                 tr("歌曲ID:%1").arg(musicId));
 
-    const QString lrc = getMusicLrcUrl(musicId);
+    const QString     lrc = getMusicLrcUrl(musicId);
     QList<LrcDataPtr> lrcList;
 
-    DataActive *core = DataActive::getInstance();
-    const MusicPtr music = core->getMusicCore(musicId);
+
+    const MusicPtr music = DataActive::getInstance().getMusicCore(musicId);
     if (music == nullptr) {
-        TLog::getInstance()->logError(tr("获取数据失败") +
-                                      tr("歌曲ID:%1").arg(musicId));
+        TLog::getInstance().logError(tr("获取数据失败") +
+                                     tr("歌曲ID:%1").arg(musicId));
         return lrcList;
     }
 
@@ -90,14 +88,14 @@ QList<LrcDataPtr> FileManagement::getMusicLyricsData(const int musicId) {
         return lrcList;
     }
 
-    QTextStream in(&lrcFile);
+    QTextStream              in(&lrcFile);
     const QRegularExpression hlrcLineRx(R"(\[(\d+),(\d+)\])");
     const QRegularExpression hlrcWordRx(R"(\((\d+),(\d+)\)\s*([^(]*))");
     const QRegularExpression lrcLineRx(R"(\[(\d+):(\d+).(\d+)\]([\s\S]*))");
     const QRegularExpression nullRx("[^\\s]");
-    QRegularExpressionMatch match;
-    QString line;
-    LrcDataPtr lrcD;
+    QRegularExpressionMatch  match;
+    QString                  line;
+    LrcDataPtr               lrcD;
 
     //读取高级歌词
     if (lrc.split(".").last() == "hlrc") {
@@ -110,9 +108,9 @@ QList<LrcDataPtr> FileManagement::getMusicLyricsData(const int musicId) {
             if (match.isValid()) {
                 lrcD = LrcDataPtr(new LrcData);
                 lrcList.append(lrcD);
-                lrcD->id = static_cast<int>(lrcList.size()) - 1;
+                lrcD->id        = static_cast<int>(lrcList.size()) - 1;
                 lrcD->startTime = match.captured(1).toLong();
-                lrcD->endTime = match.captured(2).toLong();
+                lrcD->endTime   = match.captured(2).toLong();
             } else {
                 //没有发现行头，下一行
                 continue;
@@ -128,10 +126,10 @@ QList<LrcDataPtr> FileManagement::getMusicLyricsData(const int musicId) {
             // 解析逐字时间戳格式：(开始,结束) 文本
             QRegularExpressionMatchIterator it = hlrcWordRx.globalMatch(lrcText.first());
             while (it.hasNext()) {
-                match = it.next();
+                match                 = it.next();
                 const long long start = match.captured(1).toLong();
-                const long long end = match.captured(2).toLong();
-                QString text = match.captured(3);
+                const long long end   = match.captured(2).toLong();
+                QString         text  = match.captured(3);
                 lrcD->append(start, end, text);
             }
         }
@@ -139,11 +137,11 @@ QList<LrcDataPtr> FileManagement::getMusicLyricsData(const int musicId) {
         QStringList lrcTextList;
         //读取基本数据以及文本行
         while (!in.atEnd()) {
-            line = in.readLine();
+            line  = in.readLine();
             match = lrcLineRx.match(line);
             if (match.hasMatch()) {
-                lrcD = LrcDataPtr(new LrcData);
-                lrcD->id = static_cast<int>(lrcList.size());
+                lrcD            = LrcDataPtr(new LrcData);
+                lrcD->id        = static_cast<int>(lrcList.size());
                 lrcD->startTime = match.captured(1).toLong() * 60 * 1000 +
                                   match.captured(2).toLong() * 1000 +
                                   match.captured(3).toLong();
@@ -166,15 +164,15 @@ QList<LrcDataPtr> FileManagement::getMusicLyricsData(const int musicId) {
         //设置逐字时间戳
         for (int i = 0; i < lrcList.size(); i++) {
             const long long start = lrcList[i]->startTime;
-            long long end;
+            long long       end;
             if (i == lrcList.size() - 1) {
                 end = music->duration;
             } else {
                 end = lrcList[i + 1]->startTime;
             }
 
-            lrcList[i]->endTime = end;
-            const long long length = lrcTextList[i].size() == 0 ? 1 : lrcTextList[i].size();
+            lrcList[i]->endTime      = end;
+            const long long length   = lrcTextList[i].size() == 0 ? 1 : lrcTextList[i].size();
             const long long wordTime = (end - start) / length;
 
             //逐字遍历
@@ -192,11 +190,10 @@ QList<LrcDataPtr> FileManagement::getMusicLyricsData(const int musicId) {
 }
 
 QJsonArray FileManagement::getMusicAllTaglib(int musicId) {
-    DataActive *core = DataActive::getInstance();
-    MusicPtr music = core->getMusicCore(musicId);
+    MusicPtr music = DataActive::getInstance().getMusicCore(musicId);
 
     QStringList key, value;
-    FFmpeg ff;
+    FFmpeg      ff;
     ff.getDict(&key, &value, music->url);
 
     QJsonArray array;
@@ -222,7 +219,7 @@ QString FileManagement::getAlbumCoverUrl(const QString &name) {
 }
 
 void FileManagement::replaceFile(const QString &inUrl, const QString &outUrl) {
-    bool r = false;
+    bool  r = false;
     QFile file(inUrl);
     if (file.exists()) {
         r = file.remove();
@@ -245,7 +242,7 @@ void FileManagement::replaceFile(const QString &inUrl, const QString &outUrl) {
 
 QString FileManagement::readFileText(const QString &url) {
     QString data;
-    QFile file(url);
+    QFile   file(url);
     if (!file.exists()) {
         //todo sendMessage(url + tr(" 文件不存在"),1);
         return data;
@@ -312,7 +309,7 @@ bool FileManagement::renameFile(const QString &oldUrl, const QString &newUrl) {
             throw DataException(oldUrl + tr("重命名失败,") + oldFile.errorString());
         }
     } catch (const DataException &e) {
-        TLog::getInstance()->logError(e.errorMessage());
+        TLog::getInstance().logError(e.errorMessage());
         return false;
     }
     return true;

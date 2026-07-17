@@ -3,8 +3,7 @@
 #include <QJsonObject>
 #include <QJsonDocument>
 
-NameKey::NameKey(TLog *log)
-    : m_log(log) {
+NameKey::NameKey() {
     const QDir dir(QDir::currentPath() + "/data/namekey");
     m_fileInfoList = dir.entryInfoList(QDir::Files | QDir::NoDotAndDotDot);
 } ;
@@ -24,14 +23,14 @@ QString NameKey::find(const QString &name) {
 bool NameKey::readFileNameKey() {
     while (!m_fileInfoList.isEmpty()) {
         const auto fileUrl = m_fileInfoList.takeFirst().absoluteFilePath();
-        m_log->logInfo(QObject::tr("开始在 %1 选找 NameKey").arg(fileUrl));
+        TLog::getInstance().logInfo(QObject::tr("开始在 %1 选找 NameKey").arg(fileUrl));
         QFile file(fileUrl);
 
         if (!file.open(QIODevice::ReadOnly))
             continue;
 
-        const QJsonDocument doc = QJsonDocument::fromJson(file.readAll());
-        const QJsonObject json = doc.object();
+        const QJsonDocument doc  = QJsonDocument::fromJson(file.readAll());
+        const QJsonObject   json = doc.object();
 
         const QStringList keys = json.keys();
         for (const QString &key: keys) {

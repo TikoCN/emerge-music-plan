@@ -4,9 +4,9 @@
 #include <QRunnable>
 #include <QFileInfoList>
 
-class SelectMusicUrl : public QObject, public QRunnable
-{
+class SelectMusicUrl : public QObject, public QRunnable {
     Q_OBJECT
+
 private:
     QFileInfoList m_list;
 

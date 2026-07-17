@@ -10,6 +10,7 @@
 
 class FrequencySpectrum : public QObject {
     Q_OBJECT
+
 public:
     FrequencySpectrum();
     ~FrequencySpectrum() override;
@@ -32,20 +33,18 @@ public:
 
     static QVector<double> getOriginalData(const QAudioBuffer &buffer);
 
-    signals:
+signals:
     void dataFinished(QVector<double>);
 
 private:
-    QThread *m_thread;
+    QThread *       m_thread;
     QVector<double> lastData;
     QVector<double> data;
     QVector<double> originalData;
-    int sampleCount{};
-    int sampleRate{};
-    int fftwSize;
-
+    int             sampleCount{};
+    int             sampleRate{};
+    int             fftwSize;
 };
-
 
 
 #endif //MUSICPLAY_FREQUENCYSPECTRUM_H

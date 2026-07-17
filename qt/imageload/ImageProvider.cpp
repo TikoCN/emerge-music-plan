@@ -21,8 +21,8 @@ namespace {
  * 计算圆角图片
  */
 void ImageResponse::buildRoundImage() {
-    const QRect rect = m_img.rect(); //得到大小
-    QImage destImage(rect.width(), rect.height(), QImage::Format_ARGB32); //目标结果
+    const QRect rect = m_img.rect();                                           //得到大小
+    QImage      destImage(rect.width(), rect.height(), QImage::Format_ARGB32); //目标结果
     destImage.fill(Qt::transparent);
 
     QPainter painter(&destImage);
@@ -39,9 +39,9 @@ void ImageResponse::buildRoundImage() {
 }
 
 void ImageResponse::loadMusicCover(const bool isOnline) {
-    FFmpeg ffmpeg;
-    const QString musicUrl = SQLite::getInstance()->getMusicUrl(m_loadMusicId);
-    QString errorId = tr("歌曲ID: ") +
+    FFmpeg        ffmpeg;
+    const QString musicUrl = SQLite::getInstance().getPort.getMusicUrl(m_loadMusicId);
+    QString       errorId  = tr("歌曲ID: ") +
                       QString::number(m_loadMusicId);
     const QString coverUrl = FileManagement::getBaseUrl(musicUrl) + ".jpg";
 
@@ -58,7 +58,7 @@ void ImageResponse::loadMusicCover(const bool isOnline) {
 }
 
 void ImageResponse::loadPlayListCover(const bool isOnline) {
-    const PlayListPtr playlist = data->getPlayListCore(m_loadId);
+    const PlayListPtr playlist = DataActive::getInstance().getPlayListCore(m_loadId);
     if (playlist != nullptr) {
         m_loadMusicId = playlist->firstMusic;
         loadMusicCover(isOnline);
@@ -70,14 +70,14 @@ void ImageResponse::loadPlayListCover(const bool isOnline) {
  * @param isOnline 是否下载网络封面
  */
 void ImageResponse::loadArtistCover(const bool isOnline) {
-    const ArtistPtr artist = data->getArtistCore(m_loadId);
+    const ArtistPtr artist = DataActive::getInstance().getArtistCore(m_loadId);
     if (artist.isNull()) { return; }
 
-    const QString name = artist->name;
-    const QString url = FileManagement::getArtistCoverUrl(name);
-    bool isNoLoad = !loadImageFile(url);
+    const QString name     = artist->name;
+    const QString url      = FileManagement::getArtistCoverUrl(name);
+    bool          isNoLoad = !loadImageFile(url);
     if (isNoLoad && isOnline) {
-        TLog::getInstance()->logInfo(tr("歌手封面加载失败，开始下载封面"));
+        TLog::getInstance().logInfo(tr("歌手封面加载失败，开始下载封面"));
 
         OnLine::downArtistCover(name, url);
         isNoLoad = !loadImageFile(url);
@@ -85,7 +85,7 @@ void ImageResponse::loadArtistCover(const bool isOnline) {
 
     // 加载”歌手“第一首”歌曲“作为封面
     if (isNoLoad) {
-        m_loadMusicId = SQLite::getInstance()->getArtistMusicFirst(m_loadId);
+        m_loadMusicId = SQLite::getInstance().getPort.getArtistMusicFirst(m_loadId);
         loadMusicCover(m_loadMusicId);
     }
 }
@@ -95,24 +95,24 @@ void ImageResponse::loadArtistCover(const bool isOnline) {
  * @param isOnline 是否下载网络封面
  */
 void ImageResponse::loadAlbumCover(const bool isOnline) {
-    const AlbumPtr album = data->getAlbumCore(m_loadId);
+    const AlbumPtr album = DataActive::getInstance().getAlbumCore(m_loadId);
     if (album.isNull()) {
         return;
     }
 
-    const QString name = album->name;
-    const QString url = FileManagement::getAlbumCoverUrl(name);
-    bool isNoLoad = !loadImageFile(url);
+    const QString name     = album->name;
+    const QString url      = FileManagement::getAlbumCoverUrl(name);
+    bool          isNoLoad = !loadImageFile(url);
     if (isNoLoad && isOnline) {
-        TLog::getInstance()->logIgnore(tr("专辑封面加载失败，开始下载封面"));
+        TLog::getInstance().logIgnore(tr("专辑封面加载失败，开始下载封面"));
 
         OnLine::downAlbumCover(name, url);
         isNoLoad = !loadImageFile(url);
     }
 
-    // 加载”专辑“第一首”歌曲“作为封面
+    // 加载"专辑"第一首"歌曲"作为封面
     if (isNoLoad) {
-        m_loadMusicId = SQLite::getInstance()->getAlbumMusicFirst(m_loadId);
+        m_loadMusicId = SQLite::getInstance().getPort.getAlbumMusicFirst(m_loadId);
         loadMusicCover(m_loadMusicId);
     }
 }
@@ -148,14 +148,12 @@ bool ImageResponse::loadImageFile(const QString &url) {
 
 ImageResponse::ImageResponse(QString url, const QSize &requestedSize)
     : m_requestedSize(requestedSize) {
-    m_loadId = -1;
+    m_loadId      = -1;
     m_loadMusicId = 1;
-    m_radius = 0;
-    m_url = std::move(url);
-    m_url = "image://cover/" + m_url;
+    m_radius      = 0;
+    m_url         = std::move(url);
+    m_url         = "image://cover/" + m_url;
     setAutoDelete(false);
-    ctr = ImageControl::getInstance();
-    data = DataActive::getInstance();
 }
 
 ImageResponse::~ImageResponse() = default;
@@ -165,7 +163,7 @@ QQuickTextureFactory *ImageResponse::textureFactory() const {
 }
 
 void ImageResponse::run() {
-    m_img = ctr->getImgCache(m_url);
+    m_img = ImageControl::getInstance().getImgCache(m_url);
     if (!m_img.isNull()) {
         emit finished();
         return;
@@ -215,14 +213,14 @@ void ImageResponse::run() {
             break;
     }
 
-    ctr->writeUrlNullFlag(m_url, m_img.isNull());
+    ImageControl::getInstance().writeUrlNullFlag(m_url, m_img.isNull());
 
     if (m_img.isNull()) {
-        TLog::getInstance()->logIgnore("封面加载失败，加载链接为" + m_url);
+        TLog::getInstance().logIgnore("封面加载失败，加载链接为" + m_url);
     } else {
         m_img = m_img.scaled(m_requestedSize, Qt::IgnoreAspectRatio);
         buildRoundImage();
-        ctr->writeImgCache(std::move(m_url), m_img);
+        ImageControl::getInstance().writeImgCache(std::move(m_url), m_img);
     }
 
     emit finished();
@@ -232,4 +230,8 @@ QQuickImageResponse *ImageProvider::requestImageResponse(const QString &id, cons
     auto *res = new class ImageResponse(id, requestedSize);
     pool.start(res);
     return res;
+}
+
+ImageProvider::~ImageProvider() {
+    pool.waitForDone();
 }

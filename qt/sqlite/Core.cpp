@@ -5,7 +5,7 @@
 void Core::throwError(const QString &error) const {
     if (m_db != nullptr) {
         const auto sqliteErr = QString(sqlite3_errmsg(m_db));
-        QString fullError = "SQLITE3 ERROR CODE " + QString::number(m_r) + ": " + error;
+        QString    fullError = "SQLITE3 ERROR CODE " + QString::number(m_r) + ": " + error;
         if (!sqliteErr.isEmpty() && sqliteErr != error) {
             fullError += " (" + sqliteErr + ")";
         }
@@ -56,7 +56,7 @@ bool Core::stmtStep(sqlite3_stmt *stmt) {
         return false;
     }
 
-    char *sql = sqlite3_expanded_sql(stmt);
+    char *        sql   = sqlite3_expanded_sql(stmt);
     const QString error = QString("执行 %1 失败").arg(sql);
     sqlite3_free(sql);
     throwError(error);
@@ -66,7 +66,7 @@ bool Core::stmtStep(sqlite3_stmt *stmt) {
 void Core::stmtReset(sqlite3_stmt *stmt) {
     m_r = sqlite3_reset(stmt); // 删除绑定
     if (m_r != SQLITE_OK) {
-        char *sql = sqlite3_expanded_sql(stmt);
+        char *        sql   = sqlite3_expanded_sql(stmt);
         const QString error = QString("重置 %1 失败，当前为 %2").arg(sqlite3_sql(stmt), sql);
         sqlite3_free(sql);
         throwError(error);
@@ -89,20 +89,17 @@ void Core::sqlExecuteCallBack(const char *sql, const sqlite3_callback back, void
 
 void Core::sqlExecute(const char *sql, const QString &error) {
     m_r = sqlite3_exec(m_db, sql, nullptr, nullptr, &m_error);
-    if (m_r != SQLITE_OK) throwError(error);
-}
-
-Core::Core(TLog *log, BaseTool *tool)
-    : m_loger(log),
-      m_tool(tool) {
+    if (m_r != SQLITE_OK)
+        throwError(error);
 }
 
 bool Core::begin() {
     try {
         m_r = sqlite3_exec(m_db, "BEGIN TRANSACTION;", nullptr, nullptr, &m_error);
-        if (m_r != SQLITE_OK) throwError("开始事务失败");
+        if (m_r != SQLITE_OK)
+            throwError("开始事务失败");
     } catch (const DataException &e) {
-        m_loger->logError(e.errorMessage());
+        TLog::getInstance().logError(e.errorMessage());
         return false;
     }
     return true;
@@ -111,9 +108,10 @@ bool Core::begin() {
 bool Core::rollback() {
     try {
         m_r = sqlite3_exec(m_db, "ROLLBACK;", nullptr, nullptr, &m_error);
-        if (m_r != SQLITE_OK) throwError("回滚事务失败");
+        if (m_r != SQLITE_OK)
+            throwError("回滚事务失败");
     } catch (const DataException &e) {
-        m_loger->logError(e.errorMessage());
+        TLog::getInstance().logError(e.errorMessage());
         return false;
     }
     return true;
@@ -122,9 +120,10 @@ bool Core::rollback() {
 bool Core::commit() {
     try {
         m_r = sqlite3_exec(m_db, "COMMIT;", nullptr, nullptr, &m_error);
-        if (m_r != SQLITE_OK) throwError("结束事务失败");
+        if (m_r != SQLITE_OK)
+            throwError("结束事务失败");
     } catch (const DataException &e) {
-        m_loger->logError(e.errorMessage());
+        TLog::getInstance().logError(e.errorMessage());
         return false;
     }
     return true;

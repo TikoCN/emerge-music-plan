@@ -11,6 +11,7 @@ using MusicPtr = QSharedPointer<class Music>;
 
 class Music {
     Q_GADGET
+
 public:
     QT_CONSTANT_PROPERTY(QString, title, Title)
     QT_CONSTANT_PROPERTY(QString, artist, Artist)

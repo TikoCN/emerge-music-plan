@@ -3,9 +3,9 @@
 
 #include <QObject>
 
-class QmlActive : public QObject
-{
+class QmlActive : public QObject {
     Q_OBJECT
+
 public:
     explicit QmlActive(QObject *parent = nullptr);
 

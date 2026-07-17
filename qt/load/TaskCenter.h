@@ -10,10 +10,8 @@ class TaskCenter : public QObject
 {
     Q_OBJECT
 private:
-    static TaskCenter* instance;
     explicit TaskCenter();
 
-    QThread *m_thread;
     QFileInfoList m_fileInfoList;
     QList<MediaData> m_dataList;
     QSet<QString> m_artistSet;
@@ -37,18 +35,9 @@ private:
     void loadMedia();
 
 public:
-    static TaskCenter* getInstance(){
+    static TaskCenter& getInstance(){
+        static TaskCenter instance;
         return instance;
-    }
-
-    static void buildInstance(){
-        if(instance == nullptr){
-            instance = new TaskCenter;
-        }
-    }
-
-    static void freeInstance(){
-            delete instance;
     }
 
     ~TaskCenter() override;

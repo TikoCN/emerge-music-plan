@@ -9,13 +9,13 @@ QString TypeConversion::durationToTimeStringNoMax(const long long duration) {
     const qint64 totalSeconds = duration / 1000;
 
     const qint64 totalHours = totalSeconds / 3600;
-    const qint64 minutes = (totalSeconds % 3600) / 60;
-    const qint64 seconds = totalSeconds % 60;
+    const qint64 minutes    = (totalSeconds % 3600) / 60;
+    const qint64 seconds    = totalSeconds % 60;
 
     return QString("%1:%2:%3")
-            .arg(totalHours, 2, 10, QChar(' '))
-            .arg(minutes, 2, 10, QChar('0'))
-            .arg(seconds, 2, 10, QChar('0'));
+          .arg(totalHours, 2, 10, QChar(' '))
+          .arg(minutes, 2, 10, QChar('0'))
+          .arg(seconds, 2, 10, QChar('0'));
 }
 
 QString TypeConversion::timeToString(const long long time) {

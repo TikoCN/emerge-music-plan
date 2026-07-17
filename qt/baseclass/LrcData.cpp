@@ -3,9 +3,9 @@
 #include <QJsonObject>
 
 LrcData::LrcData()
-    : id(0)
-      , startTime(0)
-      , endTime(0) {
+    : startTime(0),
+      endTime(0),
+      id(0) {
 }
 
 QJsonObject LrcData::getJsonObject() const {
@@ -29,10 +29,10 @@ void LrcData::copy(const LrcDataPtr &aim) {
     this->id = aim->id;
     if (!aim->textList.empty() || !aim->helpTextList.empty()) {
         this->helpTextList = aim->helpTextList;
-        this->textList = aim->textList;
-        this->endList = aim->endList;
-        this->startList = aim->startList;
-        this->endTime = aim->endTime;
-        this->startTime = aim->startTime;
+        this->textList     = aim->textList;
+        this->endList      = aim->endList;
+        this->startList    = aim->startList;
+        this->endTime      = aim->endTime;
+        this->startTime    = aim->startTime;
     }
 }

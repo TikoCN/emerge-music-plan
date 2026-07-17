@@ -261,7 +261,7 @@ TikoFrameless{
 
     //清理数据
     function clearData(){
-        playingPlayList.clearData()
+        //playingPlayList.clearData()
         mainView.turnToSeit()
     }
 

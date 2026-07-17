@@ -5,11 +5,11 @@
 #include <QFileInfo>
 #include "baseclass/MediaData.h"
 
-class BuildMusicCore : public QObject, public QRunnable
-{
+class BuildMusicCore : public QObject, public QRunnable {
     Q_OBJECT
+
 private:
-    QFileInfoList m_infoList;
+    QFileInfoList    m_infoList;
     QList<MediaData> m_musicList;
 
 public:

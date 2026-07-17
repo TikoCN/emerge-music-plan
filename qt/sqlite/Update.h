@@ -5,38 +5,40 @@
 #include "baseclass/Album.h"
 #include "baseclass/Artist.h"
 #include "baseclass/Playlist.h"
-#include "Append.h"
+#include "Core.h"
 
-class Update : public Append
-{
-    Q_OBJECT
+class Update {
+private:
+    Core *core;
+
 public:
-
-    explicit Update(TLog * log, BaseTool *tool) : Append(log, tool) {};
+    explicit Update(Core *core)
+        : core(core) {
+    };
 
     // 更新条目
-    bool updateMusic(const MusicPtr &music);
-    bool updateMusic(const QList<MusicPtr>& musicList);
+    bool updateMusic(const MusicPtr &music) const;
+    bool updateMusic(const QList<MusicPtr> &musicList) const;
 
-    bool updatePlayList(const PlayListPtr& playlist);
+    bool updatePlayList(const PlayListPtr &playlist) const;
 
-    bool updatePlayListMusic(int musicId, int playlistNewId, int playlistOldId);
-    Q_INVOKABLE bool updatePlayListMusic(const QList<int>& musicIdList, int playlistNewId, int playlistOldId);
-    bool updatePlayingListMusic(int musicId, int position);
-    bool updatePlayingListMusic(const QList<int>& musicIdList, int start);
+    bool updatePlayListMusic(int musicId, int playlistNewId, int playlistOldId) const;
+    bool updatePlayListMusic(const QList<int> &musicIdList, int playlistNewId, int playlistOldId) const;
+    bool updatePlayingListMusic(int musicId, int position) const;
+    bool updatePlayingListMusic(const QList<int> &musicIdList, int start) const;
 
-    bool updateArtist(const ArtistPtr& artist);
+    bool updateArtist(const ArtistPtr &artist) const;
 
-    bool updateArtistMusic(int musicId, int artistNewId, int artistOldId);
-    Q_INVOKABLE bool updateArtistMusic(const QList<int>& musicIdList, int artistNewId, int artistOldId);
+    bool updateArtistMusic(int musicId, int artistNewId, int artistOldId) const;
+    bool updateArtistMusic(const QList<int> &musicIdList, int artistNewId, int artistOldId) const;
 
-    bool updateAlbum(const AlbumPtr& album);
+    bool updateAlbum(const AlbumPtr &album) const;
 
-    bool updateAlbumMusic(int musicId, int albumNewId, int albumOldId);
-    Q_INVOKABLE bool updateAlbumMusic(const QList<int>& musicIdList, int albumNewId, int albumOldId);
+    bool updateAlbumMusic(int musicId, int albumNewId, int albumOldId) const;
+    bool updateAlbumMusic(const QList<int> &musicIdList, int albumNewId, int albumOldId) const;
 
-    bool updateAlbumNameKey(const QStringList& albumName, const QStringList& albumNameKey);
-    bool updateArtistNameKey(const QStringList& artistName, const QStringList& artistNameKey);
+    bool updateAlbumNameKey(const QStringList &albumName, const QStringList &albumNameKey) const;
+    bool updateArtistNameKey(const QStringList &artistName, const QStringList &artistNameKey) const;
 };
 
 #endif // UPDATE_H

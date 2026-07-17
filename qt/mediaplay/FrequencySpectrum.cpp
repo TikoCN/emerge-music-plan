@@ -19,14 +19,15 @@ FrequencySpectrum::FrequencySpectrum()
 
 FrequencySpectrum::~FrequencySpectrum() {
     m_thread->quit();
-    m_thread->deleteLater();
+    m_thread->wait();
+    delete m_thread;
 }
 
 inline void FrequencySpectrum::mixChannels(const int frameCount, const int channelCount, QVector<double> &data) {
     // 将多声道音频样本（例如立体声左,右声道）混合为单声道
 
     for (int i = 0; i < frameCount; ++i) {
-        double sum = 0.0;
+        double    sum  = 0.0;
         const int base = i * channelCount;
         for (int j = 0; j < channelCount; ++j) {
             sum += data[base + j];
@@ -41,13 +42,13 @@ inline void FrequencySpectrum::applyHannWindow() {
     const int N = static_cast<int>(data.size());
     for (int i = 0; i < N; ++i) {
         const double window = 0.5 * (1 - std::cos(2 * M_PI * i / (N - 1)));
-        data[i] *= window; // 将原始数据乘以窗系数
+        data[i]             *= window; // 将原始数据乘以窗系数
     }
 }
 
 inline void FrequencySpectrum::performFFT() {
     //计算傅里叶变换
-    auto *in_ptr = static_cast<fftw_complex *>(fftw_malloc(sizeof(fftw_complex) * fftwSize));
+    auto *in_ptr  = static_cast<fftw_complex *>(fftw_malloc(sizeof(fftw_complex) * fftwSize));
     auto *out_ptr = static_cast<fftw_complex *>(fftw_malloc(sizeof(fftw_complex) * fftwSize));
 
     // 将vector数据复制到fftw_complex数组中
@@ -102,10 +103,10 @@ inline void FrequencySpectrum::smoothData() {
     for (int i = 0; i < data.size(); i++) {
         if (data[i] < lastData[i]) {
             constexpr double smoothConstantDown = 0.2;
-            data[i] = smoothConstantDown * data[i] + (1.0 - smoothConstantDown) * lastData[i];
+            data[i]                             = smoothConstantDown * data[i] + (1.0 - smoothConstantDown) * lastData[i];
         } else {
             constexpr double smoothConstantUp = 0.8;
-            data[i] = smoothConstantUp * data[i] + (1.0 - smoothConstantUp) * lastData[i];
+            data[i]                           = smoothConstantUp * data[i] + (1.0 - smoothConstantUp) * lastData[i];
         }
     }
 
@@ -114,7 +115,7 @@ inline void FrequencySpectrum::smoothData() {
     smooth[0] = data[0];
     for (int i = 1; i < data.size(); ++i) {
         smooth[i] = smooth[i - 1] + (data[i] - smooth[i - 1]) * 0.8;
-        data[i] = smooth[i];
+        data[i]   = smooth[i];
     }
     lastData = data;
 }
@@ -122,27 +123,27 @@ inline void FrequencySpectrum::smoothData() {
 inline void FrequencySpectrum::downsampleData() {
     // 降采样
     unsigned int lastId = 0;
-    double hz = 0;
-    const double max = static_cast<double>(sampleRate) / fftwSize;
-    const double aim = std::min(60, static_cast<int>(data.length()));
-    const double cell = max / aim;
+    double       hz     = 0;
+    const double max    = static_cast<double>(sampleRate) / fftwSize;
+    const double aim    = std::min(60, static_cast<int>(data.length()));
+    const double cell   = max / aim;
 
     for (int i = 0; i < aim; ++i) {
         const double aimN = i * cell;
-        hz = std::exp(aimN);
-        const auto n = static_cast<unsigned int>(hz * static_cast<double>(fftwSize) / static_cast<double>(sampleRate));
+        hz                = std::exp(aimN);
+        const auto n      = static_cast<unsigned int>(hz * static_cast<double>(fftwSize) / static_cast<double>(sampleRate));
         if (lastId != n && n < data.size()) {
             data[i] = data[n];
-            lastId = n;
+            lastId  = n;
         }
     }
     data.resize(static_cast<int>(aim));
 }
 
 void FrequencySpectrum::runSpectrum(const QAudioBuffer &buffer) {
-    const int frameCount = static_cast<int>(buffer.frameCount());
+    const int frameCount   = static_cast<int>(buffer.frameCount());
     const int channelCount = buffer.format().channelCount();
-    sampleRate = buffer.format().sampleRate();
+    sampleRate             = buffer.format().sampleRate();
 
     originalData = getOriginalData(buffer);
     mixChannels(frameCount, channelCount, originalData);
@@ -173,8 +174,8 @@ void FrequencySpectrum::runSpectrum(const QAudioBuffer &buffer) {
 }
 
 QVector<double> FrequencySpectrum::getOriginalData(const QAudioBuffer &buffer) {
-    const auto format = buffer.format();
-    const int totalSamples = static_cast<int>(buffer.sampleCount());
+    const auto      format       = buffer.format();
+    const int       totalSamples = static_cast<int>(buffer.sampleCount());
     QVector<double> samples(totalSamples);
 
     switch (format.sampleFormat()) {

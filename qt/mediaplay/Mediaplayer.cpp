@@ -5,18 +5,18 @@
 
 void MediaPlayer::playMusicByListId(const int musicListId) {
     if (musicListId >= m_musicList.size() || musicListId < 0) {
-        m_loger->logError(QString("播放越界歌曲 %1").arg(musicListId));
+        TLog::getInstance().logError(QString("播放越界歌曲 %1").arg(musicListId));
         return;
     }
 
-    m_playingMusic = m_dataActive->getMusicCore(m_musicList[musicListId]);
+    m_playingMusic = DataActive::getInstance().getMusicCore(m_musicList[musicListId]);
     m_playingMusic->playNumber++;
     m_playingMusicId = m_playingMusic->id;
     m_player->setSource(m_playingMusic->url);
     m_PlayingMusicListId = musicListId;
 
     loadLrcList(m_playingMusicId);
-    m_loger->logInfo(QString("播放音乐，正在播放 音乐 listid%1").arg(musicListId));
+    TLog::getInstance().logInfo(QString("播放音乐，正在播放 音乐 listid%1").arg(musicListId));
 }
 
 
@@ -26,7 +26,7 @@ void MediaPlayer::playMusicByListId(const int musicListId) {
  */
 void MediaPlayer::playNext(const int forward) {
     const int max = static_cast<int>(m_musicList.size());
-    int aim;
+    int       aim;
 
     if (max == 0) {
         return;
@@ -58,11 +58,9 @@ QString MediaPlayer::getTimeString() const {
     return time.toString("mm:ss.zzz");
 }
 
-MediaPlayer::MediaPlayer(BaseTool *baseTool, DataActive *dataActive, TLog *log, SQLite *sql, QObject *parent)
-    : LrcDataControl(baseTool, dataActive, log, parent)
-      , m_sqlite(sql) {
-    m_loopType = 0;
-    m_playingMusicId = -1;
+MediaPlayer::MediaPlayer() {
+    m_loopType           = 0;
+    m_playingMusicId     = -1;
     m_PlayingMusicListId = -1;
 
     connect(m_player, &QMediaPlayer::mediaStatusChanged, this, [this](const QMediaPlayer::MediaStatus staus) {
@@ -103,73 +101,73 @@ void MediaPlayer::buildPlayingList(QList<int> list, const int playMusicInListId)
     emit musicListBuild();
 
     // 同步的数据库
-    m_sqlite->deletePlayingList(0);
-    m_sqlite->appendPlayingListMusic(m_musicList, 0);
+    SQLite::getInstance().deletePort.deletePlayingList(0);
+    SQLite::getInstance().appendPort.appendPlayingListMusic(m_musicList, 0);
 }
 
 void MediaPlayer::buildPlayingArtist(const int artistId, const int listId) {
-    const auto artist = m_dataActive->getArtistCore(artistId);
-    const auto musicList = m_sqlite->getArtistMusicAll(artistId, artist->sort);
+    const auto artist    = DataActive::getInstance().getArtistCore(artistId);
+    const auto musicList = SQLite::getInstance().getPort.getArtistMusicAll(artistId, artist->sort);
     buildPlayingList(musicList, listId);
 
-    m_loger->logUser(QString("播放歌手音乐%1").arg(artistId));
+    TLog::getInstance().logUser(QString("播放歌手音乐%1").arg(artistId));
 }
 
 void MediaPlayer::buildPlayingAlbum(const int albumId, const int listId) {
-    const auto album = m_dataActive->getAlbumCore(albumId);
-    const auto musicList = m_sqlite->getAlbumMusicAll(albumId, album->sort);
+    const auto album     = DataActive::getInstance().getAlbumCore(albumId);
+    const auto musicList = SQLite::getInstance().getPort.getAlbumMusicAll(albumId, album->sort);
     buildPlayingList(musicList, listId);
 
-    m_loger->logUser(QString("播放专辑音乐%1").arg(albumId));
+    TLog::getInstance().logUser(QString("播放专辑音乐%1").arg(albumId));
 }
 
 void MediaPlayer::buildPlayingPlayList(const int playListId, const int listId) {
-    const auto playList = m_dataActive->getPlayListCore(playListId);
-    const auto musicList = m_sqlite->getPlayListMusicAll(playListId, playList->sort);
+    const auto playList  = DataActive::getInstance().getPlayListCore(playListId);
+    const auto musicList = SQLite::getInstance().getPort.getPlayListMusicAll(playListId, playList->sort);
     buildPlayingList(musicList, listId);
 
-    m_loger->logUser(QString("播放列表音乐%1").arg(playListId));
+    TLog::getInstance().logUser(QString("播放列表音乐%1").arg(playListId));
 }
 
 void MediaPlayer::insertPlayingArtist(const int artistId) {
-    const auto artist = m_dataActive->getArtistCore(artistId);
-    const auto musicList = m_sqlite->getArtistMusicAll(artistId, artist->sort);
+    const auto artist    = DataActive::getInstance().getArtistCore(artistId);
+    const auto musicList = SQLite::getInstance().getPort.getArtistMusicAll(artistId, artist->sort);
     insertPlayingList(musicList);
 }
 
 void MediaPlayer::insertPlayingAlbum(const int albumId) {
-    const auto album = m_dataActive->getAlbumCore(albumId);
-    const auto musicList = m_sqlite->getAlbumMusicAll(albumId, album->sort);
+    const auto album     = DataActive::getInstance().getAlbumCore(albumId);
+    const auto musicList = SQLite::getInstance().getPort.getAlbumMusicAll(albumId, album->sort);
     insertPlayingList(musicList);
 }
 
 void MediaPlayer::insertPlayingPlayList(const int playListId) {
-    const auto playList = m_dataActive->getPlayListCore(playListId);
-    const auto musicList = m_sqlite->getPlayListMusicAll(playListId, playList->sort);
+    const auto playList  = DataActive::getInstance().getPlayListCore(playListId);
+    const auto musicList = SQLite::getInstance().getPort.getPlayListMusicAll(playListId, playList->sort);
     insertPlayingList(musicList);
 }
 
 void MediaPlayer::appendPlayingArtist(const int artistId) {
-    const auto artist = m_dataActive->getArtistCore(artistId);
-    const auto musicList = m_sqlite->getArtistMusicAll(artistId, artist->sort);
+    const auto artist    = DataActive::getInstance().getArtistCore(artistId);
+    const auto musicList = SQLite::getInstance().getPort.getArtistMusicAll(artistId, artist->sort);
     appendPlayingList(musicList);
 }
 
 void MediaPlayer::appendPlayingAlbum(const int albumId) {
-    const auto album = m_dataActive->getAlbumCore(albumId);
-    const auto musicList = m_sqlite->getPlayListMusicAll(albumId, album->sort);
-    m_sqlite->updatePlayingListMusic(musicList, static_cast<int>(m_musicList.size()));
+    const auto album     = DataActive::getInstance().getAlbumCore(albumId);
+    const auto musicList = SQLite::getInstance().getPort.getAlbumMusicAll(albumId, album->sort);
+    SQLite::getInstance().updatePort.updatePlayingListMusic(musicList, static_cast<int>(m_musicList.size()));
     appendPlayingList(musicList);
 }
 
 void MediaPlayer::appendPlayingPlayList(const int playListId) {
-    const auto playList = m_dataActive->getPlayListCore(playListId);
-    const auto musicList = m_sqlite->getPlayListMusicAll(playListId, playList->sort);
+    const auto playList  = DataActive::getInstance().getPlayListCore(playListId);
+    const auto musicList = SQLite::getInstance().getPort.getPlayListMusicAll(playListId, playList->sort);
     appendPlayingList(musicList);
 }
 
 void MediaPlayer::insertPlayingList(const QList<int> &list) {
-    const QList<int> leftList = m_musicList.sliced(0, m_PlayingMusicListId);
+    const QList<int> leftList  = m_musicList.sliced(0, m_PlayingMusicListId);
     const QList<int> rightList = std::move(list) + m_musicList.sliced(m_PlayingMusicListId);
 
     m_musicList.clear();
@@ -178,8 +176,8 @@ void MediaPlayer::insertPlayingList(const QList<int> &list) {
     emit musicListBuild();
 
     // 同步数据库
-    m_sqlite->deletePlayingList(m_PlayingMusicListId);
-    m_sqlite->appendPlayingListMusic(rightList, m_PlayingMusicListId);
+    SQLite::getInstance().deletePort.deletePlayingList(m_PlayingMusicListId);
+    SQLite::getInstance().appendPort.appendPlayingListMusic(rightList, m_PlayingMusicListId);
 }
 
 void MediaPlayer::appendPlayingList(const QList<int> &list) {
@@ -188,7 +186,7 @@ void MediaPlayer::appendPlayingList(const QList<int> &list) {
     emit musicListBuild();
 
     // 同步到数据库
-    m_sqlite->appendPlayingListMusic(list, length);
+    SQLite::getInstance().appendPort.appendPlayingListMusic(list, length);
 }
 
 QList<int> MediaPlayer::getMusicList(const int size, const int start) const {
@@ -196,7 +194,7 @@ QList<int> MediaPlayer::getMusicList(const int size, const int start) const {
 }
 
 void MediaPlayer::initData() {
-    m_musicList = m_sqlite->getPlayingListMusic();
+    m_musicList = SQLite::getInstance().getPort.getPlayingListMusic();
     playMusicByListId(m_PlayingMusicListId);
 }
 

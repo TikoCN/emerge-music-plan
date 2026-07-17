@@ -7,11 +7,10 @@
 #include "imageload/ImageControl.h"
 #include "datacore/DataActive.h"
 
-class ImageResponse : public QQuickImageResponse, public QRunnable{
+class ImageResponse : public QQuickImageResponse, public QRunnable {
     Q_OBJECT
 
 public:
-
     // 默认参数
     enum ImageType {
         MusicFile,
@@ -34,38 +33,35 @@ public:
 
     //计算圆角图片
     void buildRoundImage();
-    bool loadImageFile(const QString& url);
+    bool loadImageFile(const QString &url);
 
     void loadMusicCover(bool isOnline);
     void loadPlayListCover(bool isOnline);
     void loadArtistCover(bool isOnline);
     void loadAlbumCover(bool isOnline);
 
-    static ImageType typeFromStringToEnum(const QString& type);
+    static ImageType typeFromStringToEnum(const QString &type);
 
     [[nodiscard]] QString errorString() const override;
 
 private:
-    QImage m_img;
+    QImage  m_img;
     QString m_url;
     QString m_loadType;
     QString m_errorString;
-    QSize m_requestedSize;
-
-    ImageControl *ctr;
-    DataActive *data;
+    QSize   m_requestedSize;
 
     int m_loadId;
     int m_loadMusicId;
     int m_radius;
-
 };
 
-class ImageProvider : public QQuickAsyncImageProvider{
+class ImageProvider : public QQuickAsyncImageProvider {
     Q_OBJECT
 
 public:
     QQuickImageResponse *requestImageResponse(const QString &id, const QSize &requestedSize) override;
+    ~ImageProvider() override;
 
 private:
     // 加载图片的线程池

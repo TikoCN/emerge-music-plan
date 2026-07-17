@@ -5,8 +5,6 @@
 #include <QDir>
 
 DataManager::DataManager() {
-    m_sql = SQLite::getInstance();
-    m_loger = TLog::getInstance();
 }
 
 AlbumPtr DataManager::getAlbumCore(const int id) {
@@ -16,11 +14,12 @@ AlbumPtr DataManager::getAlbumCore(const int id) {
     if (m_albumHash.contains(id)) {
         album = m_albumHash.value(id);
     } else {
-        album = m_sql->getAlbum(id);
+        album = SQLite::getInstance().getPort.getAlbum(id);
+
         if (album != nullptr) {
             m_albumHash.insert(id, album);
         } else {
-            m_loger->logError(QString("获取 %1 AlbumCorePtr失败").arg(id));
+            TLog::getInstance().logError(QString("获取 %1 AlbumCorePtr失败").arg(id));
         }
     }
 
@@ -31,7 +30,7 @@ AlbumPtr DataManager::getAlbumCore(const int id) {
 
 QJsonObject DataManager::getAlbumJson(const int id) {
     const AlbumPtr album = getAlbumCore(id);
-    QJsonObject json = album->getJsonObject();
+    QJsonObject    json  = album->getJsonObject();
 
     return json;
 }
@@ -70,11 +69,11 @@ ArtistPtr DataManager::getArtistCore(const int id) {
     if (m_artistHash.contains(id)) {
         artist = m_artistHash.value(id);
     } else {
-        artist = m_sql->getArtist(id);
+        artist = SQLite::getInstance().getPort.getArtist(id);
         if (artist != nullptr) {
             m_artistHash.insert(id, artist);
         } else {
-            m_loger->logError(QString("获取 %1 ArtistCorePtr失败").arg(id));
+            TLog::getInstance().logError(QString("获取 %1 ArtistCorePtr失败").arg(id));
         }
     }
 
@@ -85,7 +84,7 @@ ArtistPtr DataManager::getArtistCore(const int id) {
 
 QJsonObject DataManager::getArtistJson(const int id) {
     const ArtistPtr artist = getArtistCore(id);
-    QJsonObject json = artist->getJsonObject();
+    QJsonObject     json   = artist->getJsonObject();
 
     return json;
 }
@@ -106,11 +105,11 @@ MusicPtr DataManager::getMusicCore(const int id) {
     if (m_musicHash.contains(id)) {
         music = m_musicHash.value(id);
     } else {
-        music = m_sql->getMusic(id);
+        music = SQLite::getInstance().getPort.getMusic(id);
         if (music != nullptr) {
             m_musicHash.insert(id, music);
         } else {
-            m_loger->logError(QString("获取 %1 MusicCorePtr失败").arg(id));
+            TLog::getInstance().logError(QString("获取 %1 MusicCorePtr失败").arg(id));
         }
     }
 
@@ -120,17 +119,17 @@ MusicPtr DataManager::getMusicCore(const int id) {
 }
 
 QList<MusicPtr> DataManager::getMusicCoreList(const QList<int> &idList) {
-    m_loger->logInfo(QString("获得 Music %1").arg(idList.size()));
+    TLog::getInstance().logInfo(QString("获得 Music %1").arg(idList.size()));
 
     QList<MusicPtr> musicList;
-    QList<int> newIdList;
+    QList<int>      newIdList;
     for (int i: idList) {
         if (!m_musicHash.contains(i))
             newIdList.append(i);
         else
             musicList.append(m_musicHash.value(i));
     }
-    const QHash<int, MusicPtr> hash = SQLite::getInstance()->getMusic(newIdList);
+    const QHash<int, MusicPtr> hash = SQLite::getInstance().getPort.getMusic(newIdList);
     m_musicHash.insert(hash);
 
     musicList.append(hash.values());
@@ -140,7 +139,7 @@ QList<MusicPtr> DataManager::getMusicCoreList(const QList<int> &idList) {
 QJsonObject DataManager::getMusicJson(const int id) {
     const MusicPtr music = getMusicCore(id);
     if (music == nullptr) {
-        m_loger->logError("获取MusicCore失败");
+        TLog::getInstance().logError("获取MusicCore失败");
         return {};
     };
 
@@ -155,11 +154,11 @@ PlayListPtr DataManager::getPlayListCore(const int id) {
     if (m_playlistHash.contains(id)) {
         playlist = m_playlistHash.value(id);
     } else {
-        playlist = m_sql->getList(id);
+        playlist = SQLite::getInstance().getPort.getList(id);
         if (playlist != nullptr) {
             m_playlistHash.insert(id, playlist);
         } else {
-            m_loger->logError(QString("获取 %1 PlayCorePtr失败").arg(id));
+            TLog::getInstance().logError(QString("获取 %1 PlayCorePtr失败").arg(id));
         }
     }
 
@@ -170,35 +169,35 @@ PlayListPtr DataManager::getPlayListCore(const int id) {
 
 QJsonObject DataManager::getPlayListJson(const int id) {
     const PlayListPtr playlist = getPlayListCore(id);
-    QJsonObject json = playlist->getJsonObject();
+    QJsonObject       json     = playlist->getJsonObject();
     return json;
 }
 
 void DataManager::releaseAlbum(const int id) {
     m_albumMutex.lock();
-    m_loger->logError(tr("执行释放") +
-                      tr("专辑ID:%1").arg(id));
+    TLog::getInstance().logError(tr("执行释放") +
+                                 tr("专辑ID:%1").arg(id));
     m_albumHash.remove(id);
     m_albumMutex.unlock();
 }
 
 void DataManager::releaseArtist(const int id) {
     m_artistMutex.lock();
-    m_loger->logInfo(tr("执行释放") + tr("歌手ID:%1").arg(id));
+    TLog::getInstance().logInfo(tr("执行释放") + tr("歌手ID:%1").arg(id));
     m_artistHash.remove(id);
     m_artistMutex.unlock();
 }
 
 void DataManager::releaseMusic(const int id) {
     m_musicMutex.lock();
-    m_loger->logInfo(tr("执行释放") + tr("歌曲ID:%1").arg(id));
+    TLog::getInstance().logInfo(tr("执行释放") + tr("歌曲ID:%1").arg(id));
     m_musicHash.remove(id);
     m_musicMutex.unlock();
 }
 
 void DataManager::releasePlayList(const int id) {
     m_playlistMutex.lock();
-    m_loger->logInfo(tr("执行释放") + tr("播放列表ID:%1").arg(id));
+    TLog::getInstance().logInfo(tr("执行释放") + tr("播放列表ID:%1").arg(id));
     m_playlistHash.remove(id);
     m_playlistMutex.unlock();
 }

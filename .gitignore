@@ -6,6 +6,6 @@ build/
 *.autosave
 /qt/.vs
 qt/CMakePresets.json
-qt/CMakeUserPresets.json
 /qt/.idea
 /.vs
+.idea/QtSettings.xml

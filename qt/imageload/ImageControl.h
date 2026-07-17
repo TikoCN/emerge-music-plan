@@ -7,35 +7,39 @@
 #include <QMutex>
 #include "baseclass/LruCache.h"
 
-class ImageControl : public QObject
-{
+class ImageControl : public QObject {
     Q_OBJECT
+
 private:
     struct CacheCell {
-        bool isNUll;
+        bool   isNUll;
         QImage img;
-        QSize size;
-        explicit CacheCell(const QImage &img) : isNUll(false), img(img) {}
+        QSize  size;
+
+        explicit CacheCell(const QImage &img)
+            : isNUll(false),
+              img(img) {
+        }
     };
 
     // 缓存
-    const int MAX_CACHE_SIZE = 50;
+    const int                    MAX_CACHE_SIZE = 50;
     LruCache<QString, CacheCell> m_cache{MAX_CACHE_SIZE};
-    QMutex m_mutex;
+    QMutex                       m_mutex;
 
     explicit ImageControl();
     ~ImageControl() override;
-public:
 
-    static ImageControl* getInstance(){
+public:
+    static ImageControl &getInstance() {
         static ImageControl instance;
-        return &instance;
+        return instance;
     }
 
-    void writeImgCache(const QString &url, const QImage &img);
-    QImage getImgCache(const QString& url);
+    void   writeImgCache(const QString &url, const QImage &img);
+    QImage getImgCache(const QString &url);
 
-    void writeUrlNullFlag(const QString &url, bool flag);
+    void             writeUrlNullFlag(const QString &url, bool flag);
     Q_INVOKABLE bool getUrlNullFlag(const QString &url);
 };
 
