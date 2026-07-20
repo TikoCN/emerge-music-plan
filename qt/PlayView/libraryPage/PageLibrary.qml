@@ -26,11 +26,11 @@ Item {
                 {name:"音乐", icon:"qrc:/image/cover.png", click: stackMusic}
             ]
 
-            delegate: TikoButtonNormal {
+            delegate: TikoButtonDefault {
                 icon.source: modelData.icon
                 textLine.text: modelData.name
-                icon.dynamicState.isHighlight: (toolRow.selectText === textLine.text)
-                textLine.dynamicState.isHighlight: (toolRow.selectText === textLine.text)
+                //icon.dynamicState.isHighlight: (toolRow.selectText === textLine.text)
+                //textLine.dynamicState.isHighlight: (toolRow.selectText === textLine.text)
                 onClicked: {
                     if (toolRow.selectText === textLine.text) return
 

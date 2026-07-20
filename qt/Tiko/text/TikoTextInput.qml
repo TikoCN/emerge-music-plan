@@ -2,97 +2,45 @@ import QtQuick
 import QtQuick.Controls.Basic
 import Tiko
 
-Item {
-    id: inputText
-    height: childrenRect.height
-    width: childrenRect.width
+Rectangle {
+    id: inputTextItem
+    width: 200
+    height: 50
+    color: TikoSeit.theme.colorBgDefault
 
-    property Text show: show
+    property Text helpTextItem: helpTextItem
     property TextField inputItem: inputItem
-    property color borderColor: TikoSeit.theme.baseTheme.borderTransition
-    property color backColor: TikoSeit.theme.baseTheme.backgroundTransition
-    property color focusColor: TikoSeit.theme.baseTheme.themeTransition
     signal finish
     signal input
 
-    Rectangle{
-        id: background
-        color: "#00000000"
-        border.color: inputText.borderColor
-        border.width: 1
-        radius: 3
-
-        height: TikoSeit.normalLineHeight
-        width: childrenRect.width + TikoSeit.normalMargins
-
-        TikoTextLine{
-            id: show
-            anchors.left: background.left
-            anchors.leftMargin: TikoSeit.normalMargins
-            anchors.verticalCenter: background.verticalCenter
-            text: qsTr("tiko的输入控件")
-        }
-
-        TextField{
-            id: inputItem
-            color: TikoSeit.theme.textTheme.normalColor
-            placeholderText: qsTr("在这里输入")
-            anchors.left: show.right
-            anchors.leftMargin: TikoSeit.subitemSpace
-            implicitWidth: 200
-            height: background.height
-            onFocusChanged: {
-                if(inputItem.focus){
-                    mouseInAnimation.start()
-                }
-                else{
-                    mouseOutAnimation.start()
-                }
-            }
-            onEditingFinished: finish()
-            onTextEdited: input()
-
-            background: Rectangle{
-                color: TikoSeit.theme.baseTheme.transparentNormal
-                border.width: 0
-                bottomRightRadius: 3
-                topRightRadius: 3
-            }
-        }
+    TikoTextLine{
+        id: helpTextItem
+        anchors.left: parent.left
+        anchors.leftMargin: TikoSeit.normalMargins
+        anchors.verticalCenter: parent.verticalCenter
+        text: qsTr("TikoTextInput")
+        height: parent.height
     }
 
+    TextField{
+        id: inputItem
+        color: TikoSeit.theme.colorFgDefault
+        placeholderText: qsTr("insert here")
+        placeholderTextColor: TikoSeit.theme.colorFgHint
+        anchors.right: parent.right
+        height: parent.height
 
-    ParallelAnimation{
-        id: mouseInAnimation
+        onEditingFinished: finish()
+        onTextEdited: input()
 
-        ColorAnimation {
-            target: background
-            property: "border.color"
-            to: inputText.focusColor
-            duration: 200
-        }
-
-        NumberAnimation{
-            target: background
-            property: "border.width"
-            to: 3
-        }
-    }
-
-    ParallelAnimation{
-        id: mouseOutAnimation
-
-        ColorAnimation {
-            target: background
-            property: "border.color"
-            to: inputText.borderColor
-            duration: 200
-        }
-
-        NumberAnimation{
-            target: background
-            property: "border.width"
-            to: 1
+        background: Rectangle{
+            color: TikoSeit.theme.colorMaxTop
+            radius: 5
+            opacity: {
+                       if (inputItem.activeFocusOnPress) return 0.12   // 按下：12% 白
+                       if (inputItem.activeFocus) return 0.08   // 悬停：8% 白
+                       return 0
+                   }
         }
     }
 }

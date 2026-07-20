@@ -74,9 +74,9 @@ qt_add_qml_module(PlayViewLib
         lrcLine/LrcLineDesk.qml
         lrcLine/LrcLineBase.qml
         # 输入弹窗相关
-        inputPopup/InputArtistName.qml
-        inputPopup/InputAlbumName.qml
-        inputPopup/InputPlayListName.qml
+
+
+
         # 核心组件相关
         lineCell/CoreMusicLine.qml
         lineList/ListViewMusic.qml

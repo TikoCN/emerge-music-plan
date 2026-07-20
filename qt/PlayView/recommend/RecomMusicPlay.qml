@@ -11,6 +11,7 @@ Item {
         opacity: 0.7
         width: parent.width
         text: qsTr("最爱的歌曲")
+        level: 2
     }
 
     GridView {

@@ -24,8 +24,8 @@ Item{
 
             delegate: TikoTextInput{
                 width: musicData.width
-                show.text: key
-                show.width: musicData.showW
+                helpTextItem.text: key
+                helpTextItem.width: musicData.showW
                 inputItem.text: value
             }
         }

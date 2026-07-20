@@ -55,9 +55,8 @@ TikoMenu{
 
     Component {
         id: inputComponent
-        InputPlayListName {
-            playlistId: playlistMenu.playlistId
-            orgText: name
+        TikoPopupInput {
+
         }
     }
 

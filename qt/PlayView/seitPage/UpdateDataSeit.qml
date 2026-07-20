@@ -17,7 +17,7 @@ TikoRightVessel {
 
         Repeater {
             model: updateDataMode
-            delegate: TikoButtonBorder {
+            delegate: TikoButtonDefault {
                 Layout.preferredWidth: 300
                 textLine.text: modelData.text
                 onClicked: modelData.doFunction()

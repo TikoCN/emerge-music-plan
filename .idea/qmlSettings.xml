@@ -6,14 +6,17 @@
         <entry key="windows-msvc-debug">
           <value>
             <PerProfileState>
-              <option name="myLSPEnabled" value="true" />
               <option name="myLSPCompletionEnabled" value="true" />
+              <option name="myLSPEnabled" value="true" />
             </PerProfileState>
           </value>
         </entry>
         <entry key="windows-msvc-release">
           <value>
-            <PerProfileState />
+            <PerProfileState>
+              <option name="myLSPCompletionEnabled" value="true" />
+              <option name="myLSPEnabled" value="true" />
+            </PerProfileState>
           </value>
         </entry>
       </map>

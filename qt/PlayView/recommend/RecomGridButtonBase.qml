@@ -9,10 +9,11 @@ Item {
     property Component delegateItem
     property string text: ""
 
-    TikoTextTitle {
+    TikoTextLine {
         id: gridText
         width: coreButtonGird.width
         text: coreButtonGird.text
+        level: 2
     }
 
     Loader {

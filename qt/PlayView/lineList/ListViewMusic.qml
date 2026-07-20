@@ -46,7 +46,7 @@ ListView{
 
     Rectangle{
         anchors.fill: parent
-        color: TikoSeit.theme.baseTheme.transparentNormal
+        color: TikoSeit.theme.colorBgDefault
         radius: 10
     }
 

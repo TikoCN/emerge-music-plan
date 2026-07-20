@@ -8,8 +8,8 @@ Canvas {
     id: drawLoadLine
     height: 0
 
-    property color playingColor: TikoSeit.theme.baseTheme.foregroundNormal
-    property color normalColor: TikoSeit.theme.baseTheme.foregroundTransition
+    property color playingColor: TikoSeit.theme.colorTextHighlight
+    property color normalColor: TikoSeit.theme.colorTextHint
     property int lrcId: -1
     property int playingPos: MediaPlayer.player.position
     property int startTime: -1

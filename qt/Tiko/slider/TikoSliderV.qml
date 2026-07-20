@@ -7,17 +7,14 @@ Slider {
     id: vSlider
     padding: 0
     orientation: Qt.Vertical
-    onHoveredChanged: {
-        if(vSlider.hovered){
-            hoverAnimation.start()
-        }
-    }
+    width: 30
+    height: 100
 
     property double radius: 0
-    property color lineColor: TikoSeit.theme.baseTheme.borderTransition
-    property color showColor: TikoSeit.theme.baseTheme.themeTransition
-    property color handleColor: TikoSeit.theme.baseTheme.backgroundTransition
-    property double size: 0.3
+    property color lineColor: TikoSeit.theme.colorFgDefault
+    property color bgColor: TikoSeit.theme.colorBgDefault
+    property color handleColor: TikoSeit.theme.colorHighlight
+    property double size: 0.2
 
     //滑行航道
     background: Item{
@@ -26,7 +23,7 @@ Slider {
 
         //背景条
         Rectangle{
-            color: vSlider.lineColor
+            color: bgColor
             opacity: 0.1
             radius: vSlider.radius
             y: 0
@@ -42,7 +39,7 @@ Slider {
             height: (1 - vSlider.visualPosition) * showSpace.height
             y: showSpace.height - height
             anchors.horizontalCenter: showSpace.horizontalCenter
-            color: vSlider.showColor
+            color: lineColor
             opacity: 1
         }
     }
@@ -51,8 +48,7 @@ Slider {
     //滑块
     handle: Rectangle{
         id: handleRect
-        color: vSlider.handleColor
-        border.color: vSlider.showColor
+        color: handleColor
         border.width: 3
         width: vSlider.width * handleRect.zoomIn
         height: vSlider.width * handleRect.zoomIn
@@ -60,42 +56,38 @@ Slider {
         anchors.horizontalCenter: vSlider.horizontalCenter
         y: vSlider.visualPosition * vSlider.height - handleRect.height / 2
 
-        property double zoomIn: 1.0
+        property double zoomIn: 0
     }
 
-    //游览动画
-    ParallelAnimation{
-        id: hoverAnimation
-        onStopped: {
-            if(vSlider.hovered){
-                hoverAnimation.start()
+    states: [
+        State {
+            name: "active"
+            when: vSlider.hovered
+            PropertyChanges {
+                target: handle
+                zoomIn: 0.9
+                opacity: 1.0
             }
-            else{
-                closeAnimation.start()
+        },
+        State {
+            name: "inactive"
+            when: !vSlider.hovered
+            PropertyChanges {
+                target: handle
+                zoomIn: 0
+                opacity: 0.6
             }
         }
+    ]
 
-        NumberAnimation{
-            target: handleRect
-            easing.type: Easing.OutElastic
-            property: "zoomIn"
-            from: 1.0
-            to: 1.3
-            duration: 1000
-        }
-    }
-
-    //关闭动画
-    ParallelAnimation{
-        id: closeAnimation
-
-        NumberAnimation{
-            target: handleRect
-            easing.type: Easing.InElastic
-            property: "zoomIn"
-            from: 1.3
-            to: 1.0
-            duration: 1000
+    transitions: Transition {
+        // 同时动画 zoomIn 和 opacity
+        ParallelAnimation {
+            NumberAnimation {
+                properties: "zoomIn,opacity"
+                duration: 250
+                easing.type: Easing.OutQuad
+            }
         }
     }
 }

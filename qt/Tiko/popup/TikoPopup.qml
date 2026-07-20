@@ -7,13 +7,11 @@ Popup {
     onClosed: hide()
 
     property double radius: 0
-    property color borderColor: TikoSeit.theme.baseTheme.borderNormal
-    property color backColor: TikoSeit.theme.baseTheme.backgroundNormal
     property double backOpacity: 1
     signal hide()
 
     background: Rectangle{
-        color: popup.backColor
+        color: TikoSeit.theme.colorMaxBottom
         radius: popup.radius
         opacity: popup.backOpacity
 
@@ -21,7 +19,7 @@ Popup {
             anchors.fill: parent
             radius: popup.radius
             color: "#00000000"
-            border.color: popup.borderColor
+            border.color: TikoSeit.theme.colorBgDefault
             border.width: 0.5
         }
     }

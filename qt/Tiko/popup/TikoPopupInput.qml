@@ -15,7 +15,7 @@ TikoPopup {
     signal finishInput()
     signal input()
 
-    TikoButtonBorder{
+    TikoButtonDefault{
         id: yes
         textLine.text: qsTr("确定")
         anchors.verticalCenter: parent.verticalCenter
@@ -28,7 +28,7 @@ TikoPopup {
         }
     }
 
-    TikoButtonBorder{
+    TikoButtonDefault{
         id: no
         textLine.text: qsTr("取消")
         anchors.verticalCenter: parent.verticalCenter
@@ -43,8 +43,8 @@ TikoPopup {
 
     TikoTextInput{
         id: inputLine
-        show.text: text
-        show.width: popupInput.textWidth
+        helpTextItem.text: text
+        helpTextItem.width: popupInput.textWidth
         inputItem.text: orgText
         anchors.verticalCenter: parent.verticalCenter
         anchors.verticalCenterOffset: - height / 2 - parent.width / 20

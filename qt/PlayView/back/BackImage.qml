@@ -7,7 +7,7 @@ import PlayView
 
 //纯色底片
 Rectangle{
-    color: TikoSeit.theme.baseTheme.backgroundNormal
+    color: TikoSeit.theme.colorMaxBottom
     property string iconUrl: ""
     clip: true
 
@@ -30,10 +30,5 @@ Rectangle{
         blurEnabled: true
         blurMax: 50
         blur: 1.0
-    }
-
-    Rectangle{
-        anchors.fill: parent
-        color: TikoSeit.theme.baseTheme.transparentAntiEmphasize
     }
 }

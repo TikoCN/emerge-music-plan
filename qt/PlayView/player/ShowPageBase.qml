@@ -36,13 +36,14 @@ Item {
         }
 
         //列表名字
-        TikoTextTitle{
+        TikoTextLine{
             id: playlistName
             anchors.left: playlistCover.right
             anchors.leftMargin: 10
             anchors.top: playlistCover.top
             text: name
             width: parent.width - playlistCover.width
+            level: 2
         }
 
         // 列表信息
@@ -56,7 +57,7 @@ Item {
         }
 
         //播放列表
-        TikoButtonBorder{
+        TikoButtonDefault{
             id: playButton
             anchors.left: playlistHelp.left
             anchors.bottom: playlistCover.bottom
@@ -66,7 +67,7 @@ Item {
         }
 
         //批量操作
-        TikoButtonBorder{
+        TikoButtonDefault{
             anchors.left: playButton.right
             anchors.leftMargin: 10
             anchors.bottom: playlistCover.bottom
@@ -83,7 +84,7 @@ Item {
             spacing: 10
 
             //显示所有歌曲列表
-            TikoButtonNormal{
+            TikoButtonDefault{
                 Layout.minimumWidth: 70
                 textLine.text: qsTr("歌曲") + musicCount.toString()
                 icon.source: "qrc:/image/music.png"
@@ -93,7 +94,7 @@ Item {
             }
 
             //显示喜爱歌曲列表
-            TikoButtonNormal{
+            TikoButtonDefault{
                 Layout.minimumWidth: 70
                 textLine.text: qsTr("喜爱")
                 icon.source: "qrc:/image/love.png"
@@ -104,7 +105,7 @@ Item {
             }
 
             //排序
-            TikoButtonNormal{
+            TikoButtonDefault{
                 Layout.minimumWidth: 70
                 onLeftClicked: sort()
                 textLine.text: qsTr("排序")
@@ -163,7 +164,7 @@ Item {
             TikoTextInput{
                 id: inputText
                 Layout.maximumWidth: 0
-                show.text: qsTr("搜索")
+                helpTextItem.text: qsTr("搜索")
                 onFinish: {
                     search = input.text
                     musicListView.reset()

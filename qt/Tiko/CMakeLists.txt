@@ -31,8 +31,7 @@ qt_add_qml_module(TikoLib
         TikoSeit.qml
         TikoFrameless.qml
         bar/TikoBarV.qml
-        button/TikoButtonBorder.qml
-        button/TikoButtonNormal.qml
+
         button/TikoButtonBase.qml
         button/TikoButtonCombox.qml
         button/TikoButtonSwitch.qml
@@ -42,12 +41,12 @@ qt_add_qml_module(TikoLib
         menu/TikoMenu.qml
         menu/TikoMenuItem.qml
         menu/TikoMenuSpeacer.qml
-        message/TikoMessageLittle.qml
-        progress/TikoProgressBar.qml
-        progress/TikoProgressRing.qml
+
+
+
         popup/TikoPopup.qml
         popup/TikoPopupInput.qml
-        popup/TikoPopupMessage.qml
+
         slider/TikoSliderH.qml
         slider/TikoSliderV.qml
         vessel/TikoRightVessel.qml
@@ -55,21 +54,13 @@ qt_add_qml_module(TikoLib
         select/TikoSelectFont.qml
         image/TikoImageAuto.qml
         image/TikoImage.qml
-        button/TikoButtonComplete.qml
-        dynamic/TikoDynamicTextLine.qml
-        dynamic/TikoDynamicIcon.qml
-        dynamic/TikoDynamicBackGround.qml
-        dynamic/TikoDynamicColor.qml
-        dynamic/TikoDynamicState.qml
-        text/TikoTextLineType.qml
-        text/TikoTextTitle.qml
-        text/TikoTextSubtitle.qml
-        text/TikoTextInformation.qml
-        text/TikoTextAssistance.qml
+
+
+
         theme/TikoTheme.qml
-        theme/TikoThemeBackground.qml
-        button/icon/TikoButtonIconLittle.qml
-        button/icon/TikoButtonIconNormal.qml
+
+
+        QML_FILES button/TikoButtonDefault.qml
 )
 
 # 链接 Qt 依赖

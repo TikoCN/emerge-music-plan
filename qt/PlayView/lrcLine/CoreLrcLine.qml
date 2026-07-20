@@ -33,8 +33,8 @@ Loader {
             textList: coreLrcLine.textList
             helpTextList: coreLrcLine.helpTextList
 
-            playingColor: TikoSeit.theme.baseTheme.foregroundNormal
-            normalColor: TikoSeit.theme.baseTheme.foregroundEmphasize
+            playingColor: TikoSeit.theme.colorTextHighlight
+            normalColor: TikoSeit.theme.colorTextHint
         }
     }
 
@@ -47,8 +47,8 @@ Loader {
             startTime: coreLrcLine.startTime
             duration: coreLrcLine.duration
 
-            playingColor: TikoSeit.theme.baseTheme.foregroundNormal
-            normalColor: TikoSeit.theme.baseTheme.foregroundEmphasize
+            playingColor: TikoSeit.theme.colorTextHighlight
+            normalColor: TikoSeit.theme.colorTextHint
         }
     }
 

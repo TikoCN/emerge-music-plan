@@ -15,23 +15,24 @@ Item {
     // 主体内容背景
     Rectangle {
         anchors.fill: parent
-        color: TikoSeit.theme.baseTheme.transparentNormal
+        color: TikoSeit.theme.colorMaxBottom
         topLeftRadius: 10
         topRightRadius: 10
         z: -1
     }
 
-    TikoButtonIconLittle {
+    TikoButtonIcon {
         id: closeButton
         anchors.right: parent.right
         anchors.top: parent.top
         anchors.margins: TikoSeit.normalMargins
         icon.source: "qrc:/image/close.png"
         onClicked: CoreData.windowClose()
+        level: 0
         //qsTr("关闭")
     }
 
-    TikoButtonIconLittle {
+    TikoButtonIcon{
         id: maxButton
         anchors.right: closeButton.left
         anchors.top: closeButton.top
@@ -39,15 +40,17 @@ Item {
         icon.source: CoreData.windows.visibility === 4 ? "qrc:/image/normal.png" : "qrc:/image/max.png"
         //qsTr("最大化")
         onClicked: CoreData.windowShowMax()
+        level: 0
     }
 
-    TikoButtonIconLittle {
+    TikoButtonIcon{
         id: minButton
         anchors.top: closeButton.top
         anchors.right: maxButton.left
         anchors.rightMargin: TikoSeit.normalMargins
         icon.source: "qrc:/image/min.png"
         onClicked: CoreData.windowShowMin()
+        level: 0
         //qsTr("最小化")
     }
 

@@ -14,7 +14,7 @@ Image {
     smooth: true
 
     property bool enableUnifiedColor: true
-    property color unifiedColor: TikoSeit.theme.baseTheme.foregroundNormal
+    property color unifiedColor: TikoSeit.theme.colorFgDefault
 
     layer.enabled: true
     layer.effect: MultiEffect {

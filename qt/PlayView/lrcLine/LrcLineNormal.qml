@@ -3,8 +3,8 @@ import MediaerAPI
 import Tiko
 
 LrcLineBase {
-    playingColor: TikoSeit.theme.baseTheme.foregroundNormal
-    normalColor: TikoSeit.theme.baseTheme.foregroundTransition
+    playingColor: TikoSeit.theme.colorTextHighlight
+    normalColor: TikoSeit.theme.colorTextHint
     lrcFont: Setting.lrcFont
     isPlay: MediaPlayer.playingLrcId === lrcId
     onIsPlayChanged: lrcCanvas.requestPaint()

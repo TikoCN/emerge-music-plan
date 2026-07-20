@@ -1,10 +1,12 @@
 import QtQuick
 import Tiko
 
-TikoButtonBorder {
+TikoButtonDefault {
     id: tikoComboxButton
     textLine.text: tikoComboxButton.helpText + tikoComboxButton.currentText
     onClicked: tikoPopup.open()
+    width: 100
+    height: 50
 
     // 属性定义
     property var data: ["文本1", "文本2"]  // 下拉选项数据
@@ -17,9 +19,10 @@ TikoButtonBorder {
         id: tikoPopup
         width: tikoComboxButton.width
         height: Math.min(200, listModel.count * 40)  // 动态高度
+        radius: 10
         padding: 0
         clip: true
-        y: tikoComboxButton.height + 10
+        y: tikoComboxButton.height
 
         // 选项列表
         ListView {
@@ -32,19 +35,10 @@ TikoButtonBorder {
                 id: listModel
             }
 
-            delegate: TikoButtonNormal {
+            delegate: TikoButtonDefault {
                 textLine.text: tikoComboxButton.data[index]
                 width: tikoComboxButton.width
                 height: 40
-
-                // 添加选中状态指示
-                Rectangle {
-                    visible: index === tikoComboxButton.show
-                    anchors.fill: parent
-                    color: TikoSeit.theme.baseTheme.backgroundEmphasize
-                    opacity: 0.3
-                    z: -1
-                }
 
                 onClicked: {
                     tikoComboxButton.currentIndex = index

@@ -33,16 +33,15 @@ Item {
                 delegate: Rectangle {
                     height: width * 0.6
                     width: (toolItem.width - TikoSeit.normalMargins) / 2
-                    color: TikoSeit.theme.baseTheme.transparentNormal
+                    color: TikoSeit.theme.colorBgDefault
                     radius: 10
 
-                    TikoButtonIconNormal {
+                    TikoButtonIcon {
                         id: iconButton
                         anchors.fill: parent
                         icon.source: modelData.icon
                         icon.width: 32
                         icon.height: icon.width
-                        icon.dynamicState.isHighlight: (root.showText === modelData.icon)
                         onClicked: {
                             root.showText = modelData.icon
                             modelData.click()
@@ -66,11 +65,12 @@ Item {
             anchors.margins: TikoSeit.emphasizeMargins
 
             //新建列表
-            TikoButtonNormal{
+            TikoButtonDefault{
                 id: addPlayListButton
                 textLine.text: qsTr("新建列表")
                 icon.source: "qrc:/image/new.png"
                 onLeftClicked: inputName.open()
+                height: 30
 
                 TikoPopupInput {
                     anchors.centerIn: Overlay.overlay
@@ -97,28 +97,22 @@ Item {
             Repeater {
                 id: userPlayListListView
 
-                delegate: Rectangle {
-                    width: parent.width
-                    height: norMalButton.implicitHeight + TikoSeit.normalMargins
-                    radius: 10
-                    color: root.showText === norMalButton.textLine.text ? TikoSeit.theme.baseTheme.transparentEmphasize : "#00000000"
-
-                    TikoButtonNormal{
-                        id: norMalButton
-                        anchors.fill: parent
-                        icon.anchors.leftMargin: TikoSeit.emphasizeMargins
-                        icon.enableUnifiedColor: false
-                        textLine.text: name
-                        icon.source: "image://cover/playlistFile?id=" +
-                                     playlistId.toString() +
-                                     "&radius=3"
-                        onLeftClicked: {
-                            root.showText = textLine.text
-                            CoreData.mainTurnMusicList(playlistId)
-                        }
-                        onRightClicked: openPlayListMenu(playlistId, isDir, name)
+                delegate: TikoButtonDefault {
+                    id: norMalButton
+                    icon.anchors.leftMargin: TikoSeit.emphasizeMargins
+                    icon.enableUnifiedColor: false
+                    textLine.text: name
+                    icon.source: "image://cover/playlistFile?id=" +
+                        playlistId.toString() +
+                        "&radius=3"
+                    onLeftClicked: {
+                        root.showText = textLine.text
+                        CoreData.mainTurnMusicList(playlistId)
                     }
+                    onRightClicked: openPlayListMenu(playlistId, isDir, name)
+                    height: 30
                 }
+
 
                 model: ListModel{
                     id: userPlayListModel

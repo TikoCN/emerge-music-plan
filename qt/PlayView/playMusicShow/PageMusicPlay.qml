@@ -65,7 +65,7 @@ MouseArea {
         Rectangle {
             id: background
             anchors.fill: parent
-            color: TikoSeit.theme.baseTheme.backgroundNormal
+            color: TikoSeit.theme.colorBgDefault
         }
 
         GridView {
@@ -100,53 +100,58 @@ MouseArea {
         y: TikoSeit.emphasizeMargins
 
         //关闭
-        TikoButtonIconLittle {
+        TikoButtonIcon {
             id: close
             anchors.right: parent.right
             anchors.margins: TikoSeit.emphasizeMargins
             //text: qsTr("关闭")
             icon.source: "qrc:/image/close.png"
             onClicked: CoreData.windowClose()
+            level: 0
         }
 
         //最大化
-        TikoButtonIconLittle {
+        TikoButtonIcon {
             id: max
             anchors.right: close.left
             anchors.margins: TikoSeit.emphasizeMargins
             //text: qsTr("最大化")
             icon.source: "qrc:/image/max.png"
             onClicked: CoreData.windowShowMax()
+            level: 0
         }
 
         //最小化
-        TikoButtonIconLittle {
+        TikoButtonIcon {
             id: min
             anchors.right: max.left
             anchors.margins: TikoSeit.emphasizeMargins
             //text: qsTr("最小化")
             icon.source: "qrc:/image/min.png"
             onClicked: CoreData.windowShowMin()
+            level: 0
         }
 
         //返回主页
-        TikoButtonIconLittle {
+        TikoButtonIcon {
             id: back
             anchors.left: parent.left
             anchors.margins: TikoSeit.emphasizeMargins
             //text: qsTr("返回")
             icon.source: "qrc:/image/back.png"
             onClicked: window.stackCenter()
+            level: 0
         }
 
         //样式
-        TikoButtonIconLittle {
+        TikoButtonIcon {
             id: style
             anchors.left: back.right
             anchors.margins: TikoSeit.emphasizeMargins
             //text: qsTr("样式")
             icon.source: "qrc:/image/style.png"
             onClicked: typeSelect.open()
+            level: 0
         }
 
         ParallelAnimation {

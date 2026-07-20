@@ -31,7 +31,7 @@ TikoRightVessel{
             model: paraDataModel
             delegate: TikoTextInput{
                 implicitWidth: 150
-                show.text: modelData.text
+                helpTextItem.text: modelData.text
                 inputItem.text: Setting[modelData.prop].toString()
                 onFinish: Setting[modelData.prop] = inputNumber(inputItem, Setting[modelData.prop])
             }

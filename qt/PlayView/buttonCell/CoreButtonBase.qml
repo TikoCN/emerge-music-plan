@@ -22,17 +22,18 @@ TikoButtonBase {
     signal play() // 播放
     property Rectangle hoverItem: null
 
-    dynamicState.onIsHoverChanged: {
-        upAnim.stop()
-        downAnim.stop()
+    // todo 游览
+    // dynamicState.onIsHoverChanged: {
+    //     upAnim.stop()
+    //     downAnim.stop()
 
-        if (dynamicState.isHover) {
-            upAnim.start()
-        }
-        else {
-            downAnim.start()
-        }
-    }
+    //     if (dynamicState.isHover) {
+    //         upAnim.start()
+    //     }
+    //     else {
+    //         downAnim.start()
+    //     }
+    // }
 
     //封面显示区
     AutoCoverImage {
@@ -61,17 +62,17 @@ TikoButtonBase {
 
         Loader {
             anchors.fill: coverItem
-            sourceComponent: mouseArea.dynamicState.isHover ? hoverItemCom : null
+            //sourceComponent: mouseArea.dynamicState.isHover ? hoverItemCom : null
 
             Component {
                 id: hoverItemCom
 
                 Rectangle {
-                    color: TikoSeit.theme.baseTheme.transparentAntiEmphasize
+                    color: TikoSeit.theme.colorBgHighlight
                     radius: 10
 
                     // 播放按钮
-                    TikoButtonIconNormal {
+                    TikoButtonIcon {
                         icon.source: "qrc:/image/play.png"
                         icon.width: width / 2
                         icon.height: height / 2
@@ -82,7 +83,7 @@ TikoButtonBase {
                     }
 
                     // 菜单按钮
-                    TikoButtonIconNormal {
+                    TikoButtonIcon {
                         icon.source: "qrc:/image/more.png"
                         icon.width: width / 2
                         icon.height: height / 2
@@ -97,20 +98,22 @@ TikoButtonBase {
     }
 
     // 名
-    TikoTextTitle {
+    TikoTextLine {
         id: textLine
         anchors.bottom: timeLine.top
         anchors.left: coverItem.left
         width: parent.width
         text: name
+        level: 2
     }
 
     // 时长
-    TikoTextSubtitle {
+    TikoTextLine {
         id: timeLine
         anchors.bottom: mouseArea.bottom
         anchors.left: coverItem.left
         width: parent.width
         text: subtitle
+        level: 0
     }
 }

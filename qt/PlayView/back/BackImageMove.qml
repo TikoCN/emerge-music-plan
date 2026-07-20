@@ -7,7 +7,7 @@ import PlayView
 
 //纯色底片
 Rectangle{
-    color: TikoSeit.theme.baseTheme.backgroundNormal
+    color: TikoSeit.theme.colorMaxBottom
     property string iconUrl: ""
     property Timer moveTimer: moveTimerItem
     clip: true
@@ -106,7 +106,7 @@ Rectangle{
     // 突出文本
     Rectangle{
         anchors.fill: parent
-        color: TikoSeit.theme.baseTheme.backgroundTransition
+        color: TikoSeit.theme.colorBgDefault
         opacity: 0.5
     }
 }

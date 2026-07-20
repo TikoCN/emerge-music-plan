@@ -56,14 +56,14 @@ TikoFrameless{
             anchors.fill: parent
             topLeftRadius: editPage.space
             topRightRadius: editPage.space
-            color: TikoSeit.theme.baseTheme.backgroundNormal
+            color: TikoSeit.theme.colorBgDefault
             y: showType === 0 ? 0 : -height
             z: -1
 
             Rectangle{
                 anchors.fill: parent
                 color: Qt.rgba(0,0,0,0)
-                border.color: TikoSeit.theme.baseTheme.backgroundTransition
+                border.color: TikoSeit.theme.colorBgDefault
                 topLeftRadius: editPage.space
                 topRightRadius: editPage.space
                 border.width: 0.5
@@ -273,13 +273,11 @@ TikoFrameless{
     }
 
     Component.onCompleted: {
-        TikoSeit.buildTheme()
         load()
         MediaPlayer.initData()
 
         CoreData.windows = window
         CoreData.clearData.connect(clearData)
-        CoreData.sendErrorMsg.connect(sendErroMsg)
 
         CoreData.windowShowMin.connect(showMinimized)
         CoreData.windowShowMax.connect(function () {
@@ -295,20 +293,5 @@ TikoFrameless{
     function load() {
         CoreData.playlist = JSON.parse(SQLData.getAllList())
         mainView.buildData()
-    }
-
-    Component {
-        id: errorMsgCom
-        TikoMessageLittle {
-            type: 1
-            anchors.centerIn: Overlay.overlay
-        }
-    }
-
-    function sendErroMsg(msg) {
-        if (errorMsgCom.status === Component.Ready) {
-            const view = errorMsgCom.createObject(window, {message:msg});
-            view.open()
-        }
     }
 }

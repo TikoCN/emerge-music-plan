@@ -5,7 +5,7 @@ MenuSeparator {
     padding: 12
     contentItem: Rectangle {
         implicitHeight: 1
-        color: TikoSeit.theme.baseTheme.borderNormal
+        color: TikoSeit.theme.colorBrandSecondary
         opacity: 0.3
     }
 }

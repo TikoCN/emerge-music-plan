@@ -5,11 +5,11 @@ Item {
     id: rightVessel
     height: rightVessel.itemShow && titleButtonItem.height < (bgLoader.height || 0) ?
                 (bgLoader.height || 0) + 50 : titleButtonItem.implicitHeight + 50
-    property TikoButtonNormal titleButton: titleButtonItem
+    property TikoButtonDefault titleButton: titleButtonItem
     property Component vessel
     property bool itemShow: true
 
-    TikoButtonNormal {
+    TikoButtonDefault {
         id: titleButtonItem
         x: 10
         y: 25
@@ -39,7 +39,7 @@ Item {
     Rectangle{
         width: parent.width
         height: 3
-        color: rightVessel.itemShow ? TikoSeit.theme.baseTheme.borderTransition : TikoSeit.theme.baseTheme.themeTransition
+        color: rightVessel.itemShow ? TikoSeit.theme.colorBgDefault : TikoSeit.theme.colorHighlight
         radius: 1.5
     }
 }

@@ -3,42 +3,25 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import Tiko
 
-Item {
+TikoButtonDefault {
     id: tikoColorSelcet
     implicitHeight: 40
 
     property color selectedColor: "red"
-    property color borderColor: TikoSeit.theme.baseTheme.borderTransition
     property string text: qsTr("颜色选择")
+    textLine.text: tikoColorSelcet.text
 
-    MouseArea{
-        onClicked: {
-            if (colorSelectCom.status === Component.Ready) {
-                var popup = colorSelectCom.createObject(tikoColorSelcet)
-                popup.open()
-            }
+    onAnyClicked: {
+        if (colorSelectCom.status === Component.Ready) {
+            var popup = colorSelectCom.createObject(tikoColorSelcet)
+            popup.open()
         }
-
-        anchors.fill: parent
-    }
-
-    TikoTextLine{
-        text: tikoColorSelcet.text
-        anchors.left: colorShow.right
-        anchors.leftMargin: 10
-        anchors.verticalCenter: tikoColorSelcet.verticalCenter
-        height: tikoColorSelcet.height
-        width: tikoColorSelcet.width - tikoColorSelcet.height * 0.6
     }
 
     Rectangle{
         id: colorShow
-        height: tikoColorSelcet.height * 0.6
-        width: height
-        anchors.left: tikoColorSelcet.left
-        anchors.verticalCenter: tikoColorSelcet.verticalCenter
         color: tikoColorSelcet.selectedColor
-        border.color: tikoColorSelcet.borderColor
+        anchors.fill: icon
     }
 
     Component {

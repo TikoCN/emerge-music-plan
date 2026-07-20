@@ -77,15 +77,17 @@ Item {
                 width: isLittle ? (parent.width - cover.width - 30) / 2 :
                                   (parent.width - toolItem.width - cover.width - durationTextView.width - 30) / 2
 
-                TikoTextTitle{
+                TikoTextLine{
                     text: musicTitle
                     height: 30
                     width: parent.width
+                    level: 2
                 }
-                TikoTextSubtitle{
+                TikoTextLine{
                     text: artist
                     height: 20
                     width: parent.width
+                    level: 0
                 }
             }
 
@@ -173,7 +175,7 @@ Item {
         id: background
         anchors.fill: parent
         radius: 5
-        color: TikoSeit.theme.baseTheme.transparentNormal
+        color: TikoSeit.theme.colorBgDefault
         z: -1
     }
 
@@ -181,7 +183,7 @@ Item {
         State {
             name: "hovered"
             when: mouseArea.containsMouse
-            PropertyChanges { target: background; color: TikoSeit.theme.baseTheme.themeTransition}
+            PropertyChanges { target: background; color: TikoSeit.theme.colorHighlight}
         },
         State {
             name: "normal"

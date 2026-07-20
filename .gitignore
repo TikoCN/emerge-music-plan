@@ -9,3 +9,4 @@ qt/CMakePresets.json
 /qt/.idea
 /.vs
 .idea/QtSettings.xml
+/qt/.qtcreator

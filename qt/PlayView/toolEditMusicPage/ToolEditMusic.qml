@@ -13,7 +13,7 @@ TikoFrameless {
 
     Rectangle{
         anchors.fill: parent
-        color: TikoSeit.theme.baseTheme.backgroundNormal
+        color: TikoSeit.theme.colorBgDefault
         topLeftRadius: 10
         topRightRadius: 10
         z: -1
@@ -27,7 +27,7 @@ TikoFrameless {
         anchors.top: parent.top
         anchors.left: parent.left
 
-        TikoButtonNormal{
+        TikoButtonDefault{
             id: editLrcButton
             anchors.left: tool.left
             textLine.text: qsTr("编辑歌词")
@@ -35,7 +35,7 @@ TikoFrameless {
             icon.source: "qrc:/image/editLrc.png"
         }
 
-        TikoButtonNormal{
+        TikoButtonDefault{
             anchors.left: editLrcButton.right
             anchors.leftMargin: 10
             textLine.text: qsTr("编辑音乐")
@@ -46,7 +46,6 @@ TikoFrameless {
         TikoButtonIcon{
             anchors.right: parent.right
             icon.source: "qrc:/image/close.png"
-            textLine.text: qsTr("关闭")
             onClicked: toolEditMusic.destroy()
         }
     }
@@ -68,16 +67,6 @@ TikoFrameless {
     EditPageLrc {
         id: lrcEditPage
         visible: false
-    }
-
-    Rectangle{
-        anchors.centerIn: stackView
-        width: parent.width - 20
-        height: parent.height - tool.height - 20
-        color: TikoSeit.theme.baseTheme.transparentNormal
-        opacity: 0.05
-        topLeftRadius: 10
-        topRightRadius: 10
     }
 
 

@@ -79,10 +79,8 @@ TikoMenu {
 
     Component {
         id: inputComponent
-        InputArtistName {
-            artistId: artistMenu.artistId
-            orgText: artistMenu.name
-            musicList: artistMenu.musicList
+        TikoPopupInput {
+
         }
     }
 

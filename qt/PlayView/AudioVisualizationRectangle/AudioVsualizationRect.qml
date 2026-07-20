@@ -6,7 +6,7 @@ import Tiko
 Canvas{
     id: canvas
     clip: true
-    property color showColor: TikoSeit.theme.baseTheme.foregroundNormal
+    property color showColor: TikoSeit.theme.colorFgDefault
 
     onPaint: {
         const ctx = getContext("2d");

@@ -36,7 +36,7 @@ Item{
             onCurrentIndexChanged: editLrcPage.mode = show
         }
 
-        TikoButtonNormal {
+        TikoButtonDefault {
             width: 150
             textLine.text: qsTr("HLRC模式")
             onClicked: hlrcMode.visible = !hlrcMode.visible
@@ -48,35 +48,35 @@ Item{
             spacing: 6
             leftPadding: 10
 
-            TikoButtonNormal{
+            TikoButtonDefault{
                 width: 150
                 icon.source: "qrc:/image/lineStart.png"
                 textLine.text: qsTr("行开始") + " : " + editLrcPage.lineStart.toString()
                 onClicked: editLrcPage.lineStart = MediaPlayer.player.position
             }
 
-            TikoButtonNormal{
+            TikoButtonDefault{
                 width: 150
                 icon.source: "qrc:/image/lineEnd.png"
                 textLine.text: qsTr("行结束")
                 onClicked: editLrcPage.hlrcInsertLineTime()
             }
 
-            TikoButtonNormal{
+            TikoButtonDefault{
                 width: 150
                 icon.source: "qrc:/image/wordStart.png"
                 textLine.text: qsTr("词开始") + " : " + editLrcPage.wordStart.toString()
                 onClicked: editLrcPage.wordStart = MediaPlayer.player.position
             }
 
-            TikoButtonNormal{
+            TikoButtonDefault{
                 width: 150
                 icon.source: "qrc:/image/wordEnd.png"
                 textLine.text: qsTr("词结束")
                 onClicked: editLrcPage.hlrcInsertWordTime()
             }
 
-            TikoButtonNormal{
+            TikoButtonDefault{
                 width: 150
                 icon.source: "qrc:/image/wordEnd.png"
                 textLine.text: qsTr("连续词结束")
@@ -86,7 +86,7 @@ Item{
                 }
             }
 
-            TikoButtonNormal{
+            TikoButtonDefault{
                 width: 150
                 icon.source: "qrc:/image/yes.png"
                 textLine.text: qsTr("保存.hlrc")
@@ -94,7 +94,7 @@ Item{
             }
         }
 
-        TikoButtonNormal {
+        TikoButtonDefault {
             width: 150
             textLine.text: qsTr("LRC模式")
             onClicked: lrcMode.visible = !lrcMode.visible
@@ -106,7 +106,7 @@ Item{
             spacing: 6
             leftPadding: 10
 
-            TikoButtonNormal{
+            TikoButtonDefault{
                 width: 150
                 icon.source:"qrc:/image/lineReplaceTime.png"
                 textLine.text:qsTr("修正时间戳")
@@ -116,21 +116,21 @@ Item{
                 }
             }
 
-            TikoButtonNormal{
+            TikoButtonDefault{
                 width: 150
                 icon.source: "qrc:/image/lineAddTime.png"
                 textLine.text: qsTr("添加时间戳")
                 onClicked: editLrcPage.timeWork(1)
             }
 
-            TikoButtonNormal{
+            TikoButtonDefault{
                 width: 150
                 icon.source: "qrc:/image/lineDeleteTime.png"
                 textLine.text: qsTr("删除时间戳")
                 onClicked: editLrcPage.timeWork(2)
             }
 
-            TikoButtonNormal{
+            TikoButtonDefault{
                 width: 150
                 icon.source: "qrc:/image/yes.png"
                 textLine.text: qsTr("保存.lrc")

@@ -80,15 +80,8 @@ TikoMenu {
 
     Component {
         id: inputComponent
-        InputAlbumName {
-            albumId: albumMenu.albumId
-            musicList: albumMenu.musicList
-            orgText: albumMenu.name
+        TikoPopupInput {
 
-            onClosed: {
-                destroy()
-                albumMenu.destroy()
-            }
         }
     }
 

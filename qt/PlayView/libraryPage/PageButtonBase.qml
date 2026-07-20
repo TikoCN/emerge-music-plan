@@ -28,7 +28,7 @@ Item {
             id: keyModel
         }
 
-        delegate: TikoButtonNormal {
+        delegate: TikoButtonDefault {
             textLine.text: model.key
             height: 40
             opacity: ListView.isCurrentItem ? 1 : 0.3

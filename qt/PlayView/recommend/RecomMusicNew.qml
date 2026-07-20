@@ -11,6 +11,7 @@ Item {
         opacity: 0.7
         width: parent.width
         text: qsTr("新加入歌曲")
+        level: 2
     }
 
     GridView {

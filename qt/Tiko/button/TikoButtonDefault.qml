@@ -5,23 +5,22 @@ import Tiko
 
 TikoButtonBase {
     id: normalButton
-    implicitHeight: textLineItem.height + TikoSeit.normalMargins * 2
-    implicitWidth: childrenRect.width
-    icon: iconItem
-    textLine: textLineItem
+    width: 250
+    height: 50
+    property TikoImage icon: iconItem
+    property TikoTextLine textLine: textLineItem
 
-    TikoDynamicIcon {
+
+    TikoImage {
         id: iconItem
-        dynamicState: normalButton.dynamicState
         anchors.left: parent.left
+        anchors.leftMargin: TikoSeit.subitemSpace
         anchors.verticalCenter: parent.verticalCenter
-        height: textLine.height + TikoSeit.subitemSpace
-        width: height
     }
 
-    TikoDynamicTextLine {
+    TikoTextLine {
         id: textLineItem
-        dynamicState: normalButton.dynamicState
+        text: "TikoButtonDefault"
         anchors.left: iconItem.right
         anchors.leftMargin: TikoSeit.subitemSpace
         anchors.verticalCenter: parent.verticalCenter

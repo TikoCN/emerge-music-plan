@@ -42,22 +42,24 @@ Item{
             property double min: Math.min(leftShow.height * 0.5, leftShow.width * 0.8)
         }
 
-        TikoTextTitle {
+        TikoTextLine {
             id: titleItem
             anchors.top: cover.bottom
             anchors.topMargin: TikoSeit.emphasizeMargins
             anchors.horizontalCenter: leftShow.horizontalCenter
             width: cover.width
             text: style.title
+            level: 2
         }
 
-        TikoTextSubtitle {
+        TikoTextLine {
             id: artistItem
             width: cover.width
             anchors.top: titleItem.bottom
             anchors.topMargin: TikoSeit.normalMargins
             anchors.horizontalCenter: leftShow.horizontalCenter
             text: style.artist
+            level: 0
         }
 
         Row {
@@ -66,28 +68,31 @@ Item{
             anchors.right: cover.right
             spacing: TikoSeit.emphasizeMargins
 
-            TikoButtonIconLittle {
+            TikoButtonIcon {
                 id: playUp
                 anchors.verticalCenter: parent.verticalCenter
                 icon.source: "qrc:/image/up.png"
                 onClicked: MediaPlayer.playNext(-1)
                 //text: qsTr("播放上一首歌曲")
+                level: 0
             }
 
-            TikoButtonIconLittle {
+            TikoButtonIcon {
                 id: playControlButton
                 anchors.verticalCenter: parent.verticalCenter
                 icon.source: MediaPlayer.player.playing ? "qrc:/image/stop.png" : "qrc:/image/play.png"
                 onClicked: MediaPlayer.player.playing ? MediaPlayer.player.pause() : MediaPlayer.player.play()
                 //text: MediaPlayer.player.playing ? qsTr("暂停") : qsTr("播放")
+                level: 0
             }
 
-            TikoButtonIconLittle {
+            TikoButtonIcon {
                 id: playDown
                 anchors.verticalCenter: parent.verticalCenter
                 icon.source: "qrc:/image/down.png"
                 onClicked: MediaPlayer.playNext(1)
                 //text: qsTr("播放下一首歌曲")
+                level: 0
             }
         }
 
@@ -102,17 +107,17 @@ Item{
             to: MediaPlayer.player.duration
             value: MediaPlayer.player.position
             size: 1
-            showColor: TikoSeit.theme.baseTheme.foregroundNormal
             onMoved: {MediaPlayer.player.setPosition(value)}
         }
 
-        TikoTextSubtitle {
+        TikoTextLine {
             id: nowTime
             anchors.top: playControl.bottom
             anchors.topMargin: 10
             anchors.left: playControl.left
             text: formatTime(time)
             property int time: MediaPlayer.player.position / 1000
+            level: 0
 
             // 定义转换函数
             function formatTime(seconds) {
@@ -123,13 +128,14 @@ Item{
             }
         }
 
-        TikoTextSubtitle {
+        TikoTextLine {
             id: lastTime
             anchors.top: playControl.bottom
             anchors.topMargin: 10
             anchors.right: playControl.right
             text: formatTime(time)
             property int time: (MediaPlayer.player.duration - MediaPlayer.player.position) / 1000
+            level: 0
 
             // 定义转换函数
             function formatTime(seconds) {

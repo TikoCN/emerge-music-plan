@@ -4,12 +4,9 @@ import Tiko
 TikoButtonBase {
     id: switchButton
 
-    implicitHeight: 36
-    textLine: textLineItem
-    property color useingColor: TikoSeit.theme.baseTheme.borderEmphasize
-    property color unuseColor: TikoSeit.theme.baseTheme.backgroundEmphasize
-    property color useingShowColor: TikoSeit.theme.baseTheme.themeNormal
-    property color unuseShowColor: TikoSeit.theme.baseTheme.foregroundEmphasize
+    width: 200
+    height: 50
+    property TikoTextLine textLine: textLineItem
     property int useingX: box.width - show.width - box.spacer
     property int unuseX: box.spacer
     property double fontOpacity: 0.3
@@ -27,8 +24,7 @@ TikoButtonBase {
 
     Rectangle{
         id: box
-        color: check ? useingColor : unuseColor
-        border.color: !check ? useingColor : unuseColor
+        color: TikoSeit.theme.colorBgDefault
         height: switchButton.height * 0.6
         width: height * 1.7
         anchors.verticalCenter: switchButton.verticalCenter
@@ -36,13 +32,14 @@ TikoButtonBase {
         anchors.left: switchButton.left
         property double spacer: box.height * 0.1
 
+        // 滑块
         Rectangle{
             id: show
-            x: check ? useingX: unuseX
+            x: unuseX
             y: box.spacer
             width: height
             height: box.height - box.spacer * 2
-            color: check ? useingShowColor : unuseShowColor
+            color: TikoSeit.theme.colorFgDefault
             radius: height * 0.5
         }
 
@@ -53,21 +50,7 @@ TikoButtonBase {
                 property: "x"
                 from: unuseX
                 to: useingX
-                duration: 500
-            }
-            PropertyAnimation{
-                target: show
-                property: "color"
-                from: unuseShowColor
-                to: useingShowColor
-                duration: 500
-            }
-            ColorAnimation {
-                target: box
-                property: "color"
-                from: unuseColor
-                to: useingColor
-                duration: 500
+                duration: 250
             }
         }
 
@@ -78,31 +61,29 @@ TikoButtonBase {
                 property: "x"
                 from: useingX
                 to: unuseX
-                duration: 500
-            }
-            PropertyAnimation{
-                target: show
-                property: "color"
-                from: useingShowColor
-                to: unuseShowColor
-                duration: 500
-            }
-            ColorAnimation {
-                target: box
-                property: "color"
-                from: useingColor
-                to: unuseColor
-                duration: 500
-            }
+                duration: 250
+            }        
         }
     }
 
-    TikoDynamicTextLine{
+    Rectangle {
+        anchors.fill: box
+        color: Qt.rgba(1,1,1,1)
+        radius: height * 0.5
+        opacity: {
+                   if (switchButton.isPress) return 0.16   // 按下：12% 白
+                   if (switchButton.isHover) return 0.12   // 悬停：8% 白
+                   return 0.08
+               }
+    }
+
+    TikoTextLine{
         id: textLineItem
         anchors.left: box.right
         anchors.leftMargin: 10
         height: switchButton.height
         width: switchButton.width - box.width - TikoSeit.emphasizeMargins
         opacity: check ? 1 : fontOpacity
+        text: "TikoButtonSwitch"
     }
 }

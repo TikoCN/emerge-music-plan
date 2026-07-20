@@ -5,7 +5,7 @@ import Tiko
 
 Canvas{
     id: canvas
-    property color showColor: TikoSeit.theme.baseTheme.foregroundNormal
+    property color showColor: TikoSeit.theme.colorFgDefault
     property int startAngle: 0
     property int r: Math.min(canvas.width, canvas.height) * 0.3
     onPaint: {

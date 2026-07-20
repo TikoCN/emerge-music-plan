@@ -5,20 +5,32 @@ import Tiko
 
 TikoButtonBase {
     id: iconButton
-    implicitWidth: 20
-    implicitHeight: 20
-    icon: iconItem
-
-    dynamicState.onIsHoverChanged: {
-        if(iconButton.dynamicState.isHover){
-           hoverAnim.start()
+    property TikoImage icon: iconItem
+    property int level: 1
+    property double cell: 32
+    property double imgCell: 32
+    bgOpacity: 0
+    onLevelChanged: {
+        switch (level) {
+        case 1:
+            cell = 32
+            imgCell = 32
+            break;
+        case 0:
+            cell = 20
+            imgCell = 20
+            break;
         }
     }
 
-    TikoDynamicIcon {
+    width: cell
+    height: cell
+
+    TikoImage {
         id: iconItem
         anchors.centerIn: parent
-        dynamicState: iconButton.dynamicState
+        width: imgCell
+        height: imgCell
     }
 
     SequentialAnimation {

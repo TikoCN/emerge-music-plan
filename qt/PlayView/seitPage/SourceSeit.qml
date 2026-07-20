@@ -13,13 +13,13 @@ TikoRightVessel {
     vessel: Item{
         height: childrenRect.height
 
-        TikoButtonBorder{
+        TikoButtonDefault{
             id: selectDirButton
             textLine.text: qsTr("选择音乐文件地址")
             onClicked: selectMusicDir.open()
         }
 
-        TikoButtonBorder{
+        TikoButtonDefault{
             id: reloadButton
             anchors.left: selectDirButton.right
             anchors.leftMargin: 10
@@ -30,7 +30,7 @@ TikoRightVessel {
             }
         }
 
-        TikoButtonBorder{
+        TikoButtonDefault{
             id: deleteOverData
             anchors.left: reloadButton.right
             anchors.leftMargin: 10
@@ -42,7 +42,8 @@ TikoRightVessel {
         }
 
         Rectangle{
-            color: TikoSeit.theme.baseTheme.transparentNormal
+            color: TikoSeit.theme.colorBgDefault
+            border.color: TikoSeit.theme.colorBgDefault
             anchors.fill: sourceListColumn
         }
 
