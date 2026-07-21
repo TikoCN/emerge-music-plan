@@ -44,12 +44,6 @@ ListView{
         }
     }
 
-    Rectangle{
-        anchors.fill: parent
-        color: TikoSeit.theme.colorBgDefault
-        radius: 10
-    }
-
     function appendList(list) {
         for(var i=0; i<list.length; i++){
             musicModel.append({

@@ -4,7 +4,7 @@ import MediaerAPI
 import PlayView
 import DataType
 
-ShowPageBase{
+PageBase{
     id: albumPlayer
     property int albumId: -1
     property albumData album

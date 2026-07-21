@@ -6,7 +6,7 @@ TikoPopup {
     implicitWidth: 600
     implicitHeight: 400
 
-    property string text: qsTr("请输入")
+    property string title: qsTr("请输入")
     property string inputText: inputLine.inputItem.text
     property string orgText: ""
     property int textWidth: 200
@@ -41,17 +41,27 @@ TikoPopup {
         }
     }
 
+    TikoTextLine {
+        id: helpItem
+        text: title
+        width: inputLine.width
+        horizontalAlignment: Text.AlignHCenter
+        level: 2
+        anchors.bottom: inputLine.top
+        anchors.margins: TikoSeit.emphasizeMargins
+        anchors.horizontalCenter: parent.horizontalCenter
+    }
+
     TikoTextInput{
         id: inputLine
-        helpTextItem.text: text
-        helpTextItem.width: popupInput.textWidth
-        inputItem.text: orgText
+        placeholderText: orgText
         anchors.verticalCenter: parent.verticalCenter
         anchors.verticalCenterOffset: - height / 2 - parent.width / 20
         anchors.horizontalCenter: parent.horizontalCenter
         width: parent.width - 20
-        onFinish: popupInput.finishInput()
-        onInput: popupInput.input()
+        onEditingFinished: popupInput.finishInput()
+        onTextEdited: popupInput.input()
+        horizontalAlignment: Text.AlignHCenter
     }
 
 

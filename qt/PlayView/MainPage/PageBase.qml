@@ -31,8 +31,8 @@ Item {
             anchors.leftMargin: 10
             normalUrl: normalIcon
             baseUrl: loadIcon
-            width: 200
-            height: 200
+            width: 100
+            height: 100
         }
 
         //列表名字
@@ -54,25 +54,7 @@ Item {
             anchors.topMargin: 10
             width: parent.width - playlistCover.width
             text: qsTr("包含 %1 首歌曲，时长为：%2").arg(musicCount).arg(BaseTool.typeConversion.durationToTimeStringNoMax(duration))
-        }
-
-        //播放列表
-        TikoButtonDefault{
-            id: playButton
-            anchors.left: playlistHelp.left
-            anchors.bottom: playlistCover.bottom
-            textLine.text: qsTr("播放")
-            width: 100
-            onClicked: MediaPlayer.playMusic(playlistId, 0)
-        }
-
-        //批量操作
-        TikoButtonDefault{
-            anchors.left: playButton.right
-            anchors.leftMargin: 10
-            anchors.bottom: playlistCover.bottom
-            textLine.text: qsTr("批量")
-            width: 100
+            level: 0
         }
 
         RowLayout{
@@ -131,58 +113,29 @@ Item {
                 }
             }
 
-            //搜索
-            TikoButtonIcon{
-                id: searchButton
-                icon.source: "qrc:/image/search.png"
-                onClicked: rotAnimation.start()
 
-                //旋转动画
-                RotationAnimation{
-                    id: rotAnimation
-                    target: searchButton
-                    from: 0
-                    to: 360
-                    duration: 300
-                    onFinished: {
-                        searchButton.visible = false
-                        inputText.visible = true
-                        widthAnimation.start()
-                    }
-                }
-
-                PropertyAnimation{
-                    id: widthAnimation
-                    target: inputText
-                    property: "Layout.maximumWidth"
-                    from: 0
-                    to: 200
-                    duration: 500
-                }
+            //批量操作
+            TikoButtonDefault{
+                textLine.text: qsTr("批量")
+                Layout.minimumWidth: 70
+                onClicked: {}
             }
 
+            //搜索
             TikoTextInput{
                 id: inputText
-                Layout.maximumWidth: 0
-                helpTextItem.text: qsTr("搜索")
-                onFinish: {
-                    search = input.text
+                Layout.minimumWidth: 150
+                placeholderText: qsTr("搜索")
+                onEditingFinished:{
+                    search = text
                     musicListView.reset()
-                    closeWidthAnimation.start()
                 }
-                visible: false
 
-                PropertyAnimation{
-                    id: closeWidthAnimation
-                    target: inputText
-                    property: "Layout.maximumWidth"
-                    from: 200
-                    to: 0
-                    duration: 500
-                    onFinished: {
-                        searchButton.visible = true
-                        inputText.visible = false
-                    }
+                background: Rectangle {
+                    color: TikoSeit.theme.colorBgView
+                    border.color: TikoSeit.theme.colorBgHint
+                    border.width: 0.3
+                    radius: 10
                 }
             }
         }

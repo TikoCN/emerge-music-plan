@@ -42,8 +42,6 @@ qt_add_qml_module(TikoLib
         menu/TikoMenuItem.qml
         menu/TikoMenuSpeacer.qml
 
-
-
         popup/TikoPopup.qml
         popup/TikoPopupInput.qml
 
@@ -56,11 +54,9 @@ qt_add_qml_module(TikoLib
         image/TikoImage.qml
 
 
-
         theme/TikoTheme.qml
 
-
-        QML_FILES button/TikoButtonDefault.qml
+        button/TikoButtonDefault.qml
 )
 
 # 链接 Qt 依赖

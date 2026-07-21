@@ -11,6 +11,7 @@ TikoRightVessel {
     titleButton.textLine.text: qsTr("更新数据")
 
     vessel: ColumnLayout {
+        width: bgLoader.width
         property var updateDataMode: [
             {text:qsTr("更新专辑关键词"), doFunction: DataActive.updateALLNameKey}
         ]

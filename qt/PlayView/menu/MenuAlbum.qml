@@ -81,7 +81,8 @@ TikoMenu {
     Component {
         id: inputComponent
         TikoPopupInput {
-
+            orgText: name
+            onAccept: updateName(text)
         }
     }
 
@@ -90,5 +91,9 @@ TikoMenu {
             inputPopup = inputComponent.createObject(parent)
             inputPopup.open()
         }
+    }
+
+    function updateName(newName) {
+
     }
 }

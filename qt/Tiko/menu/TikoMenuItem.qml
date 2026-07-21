@@ -12,15 +12,16 @@ MenuItem {
     property bool useUnifiedColor: true
 
     //背景
-    background: Rectangle{
+    background: Rectangle {
+        id: tspItem
+        radius: 5
         anchors.fill: parent
-        color: root.hovered ? TikoSeit.theme.colorBrandSecondary : TikoSeit.theme.colorBgDefault
+        color: TikoSeit.theme.colorMaxTop
+        opacity: hovered ? 0.08 : 0
     }
 
     //内容
-    contentItem: Rectangle {
-        color: "#00000000"
-        opacity: root.enabled ? 1 : 0.4
+    contentItem: Item {
 
         TikoImage {
             id: icon
@@ -31,8 +32,9 @@ MenuItem {
         }
         TikoTextLine{
             text: root.text
-            width: parent.width - icon.width
-            x: 35
+            anchors.left: icon.right
+            anchors.right: parent.right
+            anchors.margins: TikoSeit.subitemSpace
             anchors.verticalCenter: parent.verticalCenter
         }
     }

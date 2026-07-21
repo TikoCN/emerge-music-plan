@@ -11,7 +11,9 @@ TikoRightVessel {
     titleButton.textLine.text: qsTr("颜色管理")
 
     vessel: GridLayout {
+        width: bgLoader.width
         columns: width / 200
+
         property var colorDataMode: [
             // 基础颜色
             {text: qsTr("主题色"), prop: "themeColor"},

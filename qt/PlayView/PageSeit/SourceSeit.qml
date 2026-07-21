@@ -2,20 +2,22 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Dialogs
 import QtQuick.Layouts
+import QtQuick.Effects
 import MediaerAPI
 import Tiko
 import PlayView
 
 TikoRightVessel {
     Layout.preferredHeight: height
-    titleButton.textLine.text: qsTr("更新数据")
+    titleButton.textLine.text: qsTr("资源设置")
 
     vessel: Item{
+        width: bgLoader.width
         height: childrenRect.height
 
         TikoButtonDefault{
             id: selectDirButton
-            textLine.text: qsTr("选择音乐文件地址")
+            textLine.text: qsTr("添加文件夹")
             onClicked: selectMusicDir.open()
         }
 
@@ -34,7 +36,7 @@ TikoRightVessel {
             id: deleteOverData
             anchors.left: reloadButton.right
             anchors.leftMargin: 10
-            textLine.text: qsTr("清除过时数据")
+            textLine.text: qsTr("清除失效数据")
             onClicked: {
                 CoreData.clearData()
                 DataActive.clearNullItem()
@@ -42,34 +44,43 @@ TikoRightVessel {
         }
 
         Rectangle{
-            color: TikoSeit.theme.colorBgDefault
-            border.color: TikoSeit.theme.colorBgDefault
             anchors.fill: sourceListColumn
+            radius: 10
+            color: TikoSeit.theme.colorBgView
         }
 
-        ColumnLayout{
+        ListView{
             id: sourceListColumn
             anchors.top: selectDirButton.bottom
             anchors.topMargin: 10
             width: parent.width
+            height: 300
 
-            Repeater{
-                model: ListModel{
-                    id: musicSourceModel
+            model: ListModel{
+                id: musicSourceModel
+            }
+
+            delegate: Item {
+                width: sourceListColumn.width
+                height: 50
+
+                TikoTextLine {
+                    id: sourceTextItem
+                    text: url
+                    anchors.left: parent.left
+                    anchors.leftMargin: TikoSeit.subitemSpace
+                    anchors.verticalCenter: parent.verticalCenter
                 }
 
-                delegate: TikoTextLine {
-                    text: url
-                    width: sourceListColumn.width
-
-                    TikoButtonIcon{
-                        anchors.right: parent.right
-                        anchors.verticalCenter: parent.verticalCenter
-                        icon.source: "qrc:/image/close.png"
-                        onClicked: {
-                            Setting.removeUrl(url)
-                            sourceListColumn.bulidSoure()
-                        }
+                TikoButtonIcon{
+                    anchors.right: parent.right
+                    anchors.rightMargin: TikoSeit.subitemSpace
+                    anchors.verticalCenter: parent.verticalCenter
+                    icon.source: "qrc:/image/close.png"
+                    level: 0
+                    onClicked: {
+                        Setting.removeUrl(url)
+                        sourceListColumn.bulidSoure()
                     }
                 }
             }

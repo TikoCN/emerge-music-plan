@@ -12,7 +12,7 @@ Drawer {
 
     Rectangle{
         id: background
-        color: TikoSeit.theme.colorBgDefault
+        color: TikoSeit.theme.colorBgView
         anchors.fill: parent
     }
 

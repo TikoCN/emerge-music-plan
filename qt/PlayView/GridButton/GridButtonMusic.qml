@@ -3,9 +3,11 @@ import PlayView
 import MediaerAPI
 
 GridButtonBase {
-    delegate: CoreButtonAlbum {
-        albumId: model.id
+    delegate: ButtonMusic {
+        musicId: model.id
         width: realCellWidth
+        onPlayMusic: MediaPlayer.buildPlayingList([musicId])
+
         onHeightChanged: setGridHeight(this)
     }
 
@@ -17,7 +19,7 @@ GridButtonBase {
 
         list.forEach(id => {gridModel.append({id: id})})
 
-        if (list.length !== CoreData.pageSize)
+        if (list.length < CoreData.pageSize)
             dataLoader.loadIsFinish = true
         dataLoader.loadPos += list.length
     }

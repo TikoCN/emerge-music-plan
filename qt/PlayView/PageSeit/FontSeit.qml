@@ -12,17 +12,22 @@ TikoRightVessel{
     id: fontSeit
 
     vessel: ColumnLayout {
+        width: bgLoader.width
 
         property var fontDataMode: [
             {text: qsTr("歌词字体"), prop: "lrcFont"},
             {text: qsTr("桌面歌词字体"), prop: "deskLrcFont"},
-            {text: qsTr("常规文本字体"), prop: "benchmarkFont"},
         ]
         Repeater {
             model: fontDataMode
             delegate: TikoSelectFont {
-                text: modelData.text
                 selectedFont: Setting[modelData.prop]
+                width: bgLoader.width
+
+                fontSizeItem.text: "字体大小"
+                fontShowItem.text: "字体预览"
+                fontFaimleyItem.text: "字体家族"
+                fontPreviewItem.text: modelData.text
 
                 onSelectedFontChanged:{
                     Setting[modelData.prop] = selectedFont

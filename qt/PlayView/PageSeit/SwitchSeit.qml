@@ -11,6 +11,7 @@ TikoRightVessel{
     titleButton.textLine.text: qsTr("选项管理")
 
     vessel: GridLayout {
+        width: bgLoader.width
         anchors.margins: TikoSeit.subitemSpace
         columns: width/300
         clip: true

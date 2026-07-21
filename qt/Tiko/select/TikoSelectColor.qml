@@ -28,7 +28,8 @@ TikoButtonDefault {
         id: colorSelectCom
 
         TikoPopup{
-            width: 300
+            width: 300 + TikoSeit.emphasizeMargins * 2
+            radius: 10
             height: showItem.height + 20
             y: tikoColorSelcet.height
             x: (tikoColorSelcet.width - width) / 2

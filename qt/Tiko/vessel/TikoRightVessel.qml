@@ -4,16 +4,19 @@ import Tiko
 Item {
     id: rightVessel
     height: rightVessel.itemShow && titleButtonItem.height < (bgLoader.height || 0) ?
-                (bgLoader.height || 0) + 50 : titleButtonItem.implicitHeight + 50
+                (bgLoader.height || 0) + 50 : titleButtonItem.height + 50
     property TikoButtonDefault titleButton: titleButtonItem
     property Component vessel
     property bool itemShow: true
+    property Loader bgLoader: bgLoader
 
     TikoButtonDefault {
         id: titleButtonItem
         x: 10
         y: 25
         onLeftClicked: rightVessel.itemShow = !rightVessel.itemShow
+        bgOpacity: 0
+        textLine.level: 2
     }
 
     // 动态加载背景组件

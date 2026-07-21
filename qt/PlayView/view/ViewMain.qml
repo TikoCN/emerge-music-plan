@@ -8,6 +8,7 @@ import PlayView
 
 Item {
     id: mainView
+    clip: true
 
     property var playList: []
     property var playListId: []
@@ -66,9 +67,9 @@ Item {
     PageSeit {id: seitPage; visible: false}
     PageLibrary {id: libraryPage; visible: false}
     PageRecommend {id: recommendPage; visible: false}
-    ShowPageAlbum {id: albumPlayer; visible: false}
-    ShowPageArtist {id: artistPlayer; visible: false}
-    ShowPagePlayList {id: playlistPlayer; visible: false }
+    PageAlbum {id: albumPlayer; visible: false}
+    PageArtist {id: artistPlayer; visible: false}
+    PagePlayList {id: playlistPlayer; visible: false }
 
     //切换到列表
     function turnToMusicList(page){

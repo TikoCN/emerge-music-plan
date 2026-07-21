@@ -5,11 +5,10 @@ import Tiko
 
 TikoButtonBase {
     id: normalButton
-    width: 250
+    width: iconItem.width + textLineItem.width + TikoSeit.subitemSpace * 3
     height: 50
     property TikoImage icon: iconItem
     property TikoTextLine textLine: textLineItem
-
 
     TikoImage {
         id: iconItem

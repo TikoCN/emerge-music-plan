@@ -6,10 +6,26 @@ import QtQml
 import MediaerAPI   
 import Tiko
 import PlayView
+import QtQuick.Effects
 
 Item {
     id: root
     property string showText: "qrc:/image/seit.png"
+
+
+    Rectangle {
+        anchors.fill: parent
+        color: TikoSeit.theme.colorBgView
+        layer.enabled: true
+        layer.effect: MultiEffect {
+            shadowEnabled: true
+            shadowBlur: 0.5
+            shadowColor: TikoSeit.theme.colorBgHint
+            shadowHorizontalOffset: 0
+            shadowVerticalOffset: 0
+        }
+        radius: 10
+    }
 
     //左侧导航
     ScrollView{
@@ -30,23 +46,19 @@ Item {
             spacing: TikoSeit.normalMargins
 
             Repeater {
-                delegate: Rectangle {
+                delegate: TikoButtonIcon {
                     height: width * 0.6
                     width: (toolItem.width - TikoSeit.normalMargins) / 2
-                    color: TikoSeit.theme.colorBgDefault
-                    radius: 10
-
-                    TikoButtonIcon {
-                        id: iconButton
-                        anchors.fill: parent
-                        icon.source: modelData.icon
-                        icon.width: 32
-                        icon.height: icon.width
-                        onClicked: {
-                            root.showText = modelData.icon
-                            modelData.click()
-                        }
+                    id: iconButton
+                    icon.source: modelData.icon
+                    icon.width: 32
+                    icon.height: icon.width
+                    bgOpacity: 0
+                    onClicked: {
+                        root.showText = modelData.icon
+                        modelData.click()
                     }
+
                 }
 
                 model: [
@@ -71,11 +83,12 @@ Item {
                 icon.source: "qrc:/image/new.png"
                 onLeftClicked: inputName.open()
                 height: 30
+                bgOpacity: 0
 
                 TikoPopupInput {
                     anchors.centerIn: Overlay.overlay
                     id: inputName
-                    text: qsTr("新建列表，请输入列表名")
+                    title: qsTr("新建列表，请输入列表名")
                     onAccept: {
                         if (inputText === "") {
                             CoreData.sendErrorMsg("列表名不能为空")
@@ -111,6 +124,7 @@ Item {
                     }
                     onRightClicked: openPlayListMenu(playlistId, isDir, name)
                     height: 30
+                    bgOpacity: 0
                 }
 
 

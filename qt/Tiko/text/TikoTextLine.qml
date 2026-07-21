@@ -7,8 +7,8 @@ Text {
     elide: Text.ElideRight
     verticalAlignment: Text.AlignVCenter
     clip: true
-    height: font.pixelSize * 1.5
-    width: text.length * font.pixelSize + outWidth
+    height: textLine.font.pixelSize * 1.5
+    width: text.length * textLine.font.pixelSize + outWidth
     text: "TikoTextLine"
     property int outWidth: 0
     property int level: 1

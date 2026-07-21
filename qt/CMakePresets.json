@@ -40,7 +40,7 @@
         "Qt6_DIR": "C:/Qt/6.8.3/msvc2022_64/lib/cmake/Qt6"
       },
       "environment": {
-        "PATH": "C:/vpkg/installed/x64-windows/bin;C:/Qt/6.8.3/msvc2022_64/bin;$penv{PATH}"
+        "PATH": "C:/vcpkg/installed/x64-windows/bin;C:/Qt/6.8.3/msvc2022_64/bin;$penv{PATH}"
       }
     },
     {

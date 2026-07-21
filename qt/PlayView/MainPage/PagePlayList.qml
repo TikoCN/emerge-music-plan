@@ -6,7 +6,7 @@ import Tiko
 import PlayView
 import DataType
 
-ShowPageBase {
+PageBase {
     id: playerPlayList
     property int playlistId: -1
     property playListData playlist

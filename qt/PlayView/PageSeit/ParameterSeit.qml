@@ -11,6 +11,8 @@ TikoRightVessel{
     titleButton.textLine.text: qsTr("参数管理")
 
     vessel: ColumnLayout {
+        width: bgLoader.width
+
         property var paraDataModel: [
             {text:qsTr("最大加载线程"), prop:"maxThreadNumber"}
         ]
@@ -30,10 +32,8 @@ TikoRightVessel{
         Repeater {
             model: paraDataModel
             delegate: TikoTextInput{
-                implicitWidth: 150
-                helpTextItem.text: modelData.text
-                inputItem.text: Setting[modelData.prop].toString()
-                onFinish: Setting[modelData.prop] = inputNumber(inputItem, Setting[modelData.prop])
+                implicitWidth: 300
+
             }
         }
     }

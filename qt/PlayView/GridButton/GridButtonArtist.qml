@@ -3,7 +3,7 @@ import PlayView
 import MediaerAPI
 
 GridButtonBase {
-    delegate: CoreButtonArtist {
+    delegate: ButtonArtist {
         artistId: model.id
         width: realCellWidth
         onHeightChanged: setGridHeight(this)

@@ -6,9 +6,24 @@ import QtQml
 import MediaerAPI
 import Tiko
 import PlayView
+import QtQuick.Effects
 
 Item {
     //背景
+    Rectangle {
+        anchors.fill: parent
+        color: TikoSeit.theme.colorBgView
+        radius: height * 0.3
+
+        layer.enabled: true
+        layer.effect: MultiEffect {
+            shadowEnabled: true
+            shadowBlur: 0.5
+            shadowColor: TikoSeit.theme.colorBgHint
+            shadowHorizontalOffset: 0
+            shadowVerticalOffset: 0
+        }
+    }
 
     Image {
         id: cover
@@ -70,7 +85,7 @@ Item {
             TikoPopup {
                 id: loopSelect
                 parent: loopButton
-                y: -loopButton.height - height
+                y: - height
                 x: (-width + loopButton.width) / 2
                 width: 140
                 height: loopColumnLayout.height + TikoSeit.normalMargins * 2
@@ -114,14 +129,6 @@ Item {
         level: 0
     }
 
-    //播放 暂停按钮背景
-    Rectangle {
-        width: playerControl.width + 10
-        height: playerControl.height + 10
-        anchors.centerIn: playerControl
-        color: TikoSeit.theme.colorBgDefault
-        radius: 15
-    }
     //播放 暂停按钮
     TikoButtonIcon {
         x: parent.width / 2 - width / 2

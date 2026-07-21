@@ -43,62 +43,54 @@ TikoFrameless{
         layer.effect: MultiEffect {
             shadowEnabled: true
             shadowBlur: 0.5
-            shadowColor: "#80000000"
+            shadowColor: TikoSeit.theme.colorMaxTop
             shadowHorizontalOffset: 0
             shadowVerticalOffset: 0
         }
 
         property int space: isMaxSize ? 0 : 10
 
-        //圆角背景
+        PageMusicPlay {
+            id: musicPlayPage
+            anchors.fill: parent
+            opacity: 0
+        }
+
+        //最底层圆角背景
         Rectangle{
             id: editPageBack
             anchors.fill: parent
             topLeftRadius: editPage.space
             topRightRadius: editPage.space
-            color: TikoSeit.theme.colorBgDefault
+            color: TikoSeit.theme.colorMaxBottom
             y: showType === 0 ? 0 : -height
             z: -1
-
-            Rectangle{
-                anchors.fill: parent
-                color: Qt.rgba(0,0,0,0)
-                border.color: TikoSeit.theme.colorBgDefault
-                topLeftRadius: editPage.space
-                topRightRadius: editPage.space
-                border.width: 0.5
-                opacity: 0.7
-            }
         }
 
         //中间内容导航
         ViewMain{
             id: mainView
-            width: parent.width - barView.width
-            height: barView.height
+            anchors.top: parent.top
             anchors.left: barView.right
+            anchors.right: parent.right
+            anchors.bottom: parent.bottom
+            anchors.margins: TikoSeit.subitemSpace
         }
 
         ViewLeftBar{
             id: barView
-            height: parent.height - bottomView.height
-            width: 300
+            height: parent.height
+            width: 250
         }
 
         //底部导航
         ViewBottomBar{
             id: bottomView
             height: 90
-            width: parent.width
-            y: barView.height
-        }
-
-        PageMusicPlay {
-            id: musicPlayPage
-            width: parent.width
-            height: parent.height
-            y: showType === 1 ? 0 : parent.height
-            opacity: 0
+            anchors.bottom: parent.bottom
+            anchors.margins: 30
+            anchors.left: barView.right
+            anchors.right: parent.right
         }
 
         property int duration: 500
@@ -234,8 +226,8 @@ TikoFrameless{
 
         ViewPlayingList {
             id: playingPlayList
-            width: parent.width * 2 / 3
-            height: parent.height - bottomView.height
+            width: parent.width * 0.3
+            height: parent.height
             y:10
         }
     }

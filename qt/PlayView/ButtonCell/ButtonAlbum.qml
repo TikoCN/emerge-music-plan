@@ -4,7 +4,7 @@ import DataType
 import MediaerAPI
 import PlayView
 
-CoreButtonBase {
+ButtonBase {
     id: albumButton
 
     property int albumId: -1

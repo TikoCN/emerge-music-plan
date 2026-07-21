@@ -10,11 +10,12 @@ Slider {
     width: 30
     height: 100
 
-    property double radius: 0
+    property double radius: showSpace.width * vSlider.size
     property color lineColor: TikoSeit.theme.colorFgDefault
     property color bgColor: TikoSeit.theme.colorBgDefault
     property color handleColor: TikoSeit.theme.colorHighlight
     property double size: 0.2
+    property double maxZoomIn: 1.3
 
     //滑行航道
     background: Item{
@@ -65,8 +66,7 @@ Slider {
             when: vSlider.hovered
             PropertyChanges {
                 target: handle
-                zoomIn: 0.9
-                opacity: 1.0
+                zoomIn: maxZoomIn
             }
         },
         State {
@@ -75,7 +75,6 @@ Slider {
             PropertyChanges {
                 target: handle
                 zoomIn: 0
-                opacity: 0.6
             }
         }
     ]
@@ -84,7 +83,7 @@ Slider {
         // 同时动画 zoomIn 和 opacity
         ParallelAnimation {
             NumberAnimation {
-                properties: "zoomIn,opacity"
+                properties: "zoomIn"
                 duration: 250
                 easing.type: Easing.OutQuad
             }

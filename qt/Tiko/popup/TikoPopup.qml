@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import Tiko
+import QtQuick.Effects
 
 Popup {
     id: popup
@@ -17,10 +18,16 @@ Popup {
 
         Rectangle{
             anchors.fill: parent
-            radius: popup.radius
-            color: "#00000000"
-            border.color: TikoSeit.theme.colorBgDefault
-            border.width: 0.5
+            color: TikoSeit.theme.colorBgView
+            layer.enabled: true
+            layer.effect: MultiEffect {
+                shadowEnabled: true
+                shadowBlur: 0.5
+                shadowColor: TikoSeit.theme.colorFgDefault
+                shadowHorizontalOffset: 0
+                shadowVerticalOffset: 0
+            }
+            radius: 10
         }
     }
 }

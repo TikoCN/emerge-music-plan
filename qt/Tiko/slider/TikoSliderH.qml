@@ -10,12 +10,12 @@ Slider {
     width: 100
     height: 30
 
-    property double radius: 0
+    property double radius: showSpace.height * hSlider.size
     property color lineColor: TikoSeit.theme.colorFgDefault
     property color bgColor: TikoSeit.theme.colorBgDefault
     property color handleColor: TikoSeit.theme.colorHighlight
     property double size: 0.2
-    property double maxZoomIn: 0
+    property double maxZoomIn: 1.3
 
     //滑行航道
     background: Item{
