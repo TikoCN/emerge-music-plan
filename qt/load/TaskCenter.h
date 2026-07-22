@@ -1,6 +1,7 @@
 #ifndef TASKCENTER_H
 #define TASKCENTER_H
 
+#include <atomic>
 #include <QObject>
 #include <QFileInfoList>
 #include <QThreadPool>
@@ -10,6 +11,11 @@ class TaskCenter : public QObject
 {
     Q_OBJECT
 private:
+    // 每批次处理的文件数量
+    static constexpr int BATCH_SIZE_SELECT = 20;
+    static constexpr int BATCH_SIZE_LOAD   = 20;
+    static constexpr int BATCH_SIZE_CHECK  = 50;
+
     explicit TaskCenter();
 
     QFileInfoList m_fileInfoList;
@@ -22,14 +28,12 @@ private:
     QList<QPair<QString, QString>> m_playlistMusicList;
 
     QThreadPool *m_pool;
-    int m_work;                      //工作单元数量
+    std::atomic<int> m_work; // 工作单元数量，原子操作保证线程安全
 
-    // 写入数据库
     void writeDataSQL();
 
-    //遍历文件夹得到所有子文件
+    // 使用迭代式遍历，避免深层递归导致栈溢出
     void filterFileInfo(const QStringList& dirPath);
-    void filterFileInfo(const QFileInfoList& dir);
 
     void selectFile();
     void loadMedia();
@@ -42,14 +46,18 @@ public:
 
     ~TaskCenter() override;
 
-
-    //删除数据
     void clearData();
 
     void start();
 
     void appendInfo(const QFileInfoList& fileInfoList);
     void appendMedia(const QList<MediaData>& dataList);
+
+public slots:
+    void checkFileExist(const QList<QPair<int, QString>> &musicDataList);
+
+signals:
+    void fileCheckFinished(const QList<int> &invalidMusicIds);
 };
 
 

@@ -11,25 +11,25 @@ public:
         return instance;
     }
 
-    Q_INVOKABLE QList<int> musicListSort(const QList<int> &, SORT_TYPE sort);
+    QList<int> musicListSort(const QList<int> &, SORT_TYPE sort);
 
-    Q_INVOKABLE void clearNullItem();
+    void clearNullItem();
 
-    Q_INVOKABLE static void appendPlayList(const QString &name);
+    static void appendPlayList(const QString &name);
 
-    Q_INVOKABLE void updateMusicLove(int musicId, bool isLove);
-    Q_INVOKABLE void updateMusicLevel(int musicId, bool level);
+    void updateMusicLove(int musicId, bool isLove);
+    void updateMusicLevel(int musicId, bool level);
 
-    Q_INVOKABLE void updatePlayListName(int playListId, const QString &name);
-    Q_INVOKABLE void updatePlayListSort(int playListId, int sort);
+    void updatePlayListName(int playListId, const QString &name);
+    void updatePlayListSort(int playListId, int sort);
 
-    Q_INVOKABLE void updateArtistName(int artistId, const QString &name);
-    Q_INVOKABLE void updateArtistSort(int artistId, int sort);
+    void updateArtistName(int artistId, const QString &name);
+    void updateArtistSort(int artistId, int sort);
 
-    Q_INVOKABLE void updateAlbumName(int albumId, const QString &name);
-    Q_INVOKABLE void updateAlbumSort(int albumId, int sort);
+    void updateAlbumName(int albumId, const QString &name);
+    void updateAlbumSort(int albumId, int sort);
 
-    Q_INVOKABLE void updateALLNameKey() const;
+    void updateALLNameKey() const;
 
 signals:
     void buildAlbumPlayer();

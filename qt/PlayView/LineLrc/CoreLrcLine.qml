@@ -1,4 +1,4 @@
-import QtQuick
+﻿import QtQuick
 import QtQuick.Controls.Basic
 import QtQuick.Effects
 import MediaerAPI
@@ -7,8 +7,8 @@ import Tiko
 Loader {
     id: coreLrcLine
 
-    property color playingColor: "#ffffffff"
-    property color normalColor: "#80ffffff"
+    property color playingColor: TikoSeit.theme.colorFgDefault
+    property color normalColor: TikoSeit.theme.colorFgHint
     property int lrcId: -1
     property var wordList: []
     property int startTime: lrc.startTime
@@ -33,8 +33,8 @@ Loader {
             textList: coreLrcLine.textList
             helpTextList: coreLrcLine.helpTextList
 
-            playingColor: TikoSeit.theme.colorTextHighlight
-            normalColor: TikoSeit.theme.colorTextHint
+            playingColor: coreLrcLine.playingColor
+            normalColor: coreLrcLine.normalColor
         }
     }
 
@@ -47,8 +47,8 @@ Loader {
             startTime: coreLrcLine.startTime
             duration: coreLrcLine.duration
 
-            playingColor: TikoSeit.theme.colorTextHighlight
-            normalColor: TikoSeit.theme.colorTextHint
+            playingColor: coreLrcLine.playingColor
+            normalColor: coreLrcLine.normalColor
         }
     }
 

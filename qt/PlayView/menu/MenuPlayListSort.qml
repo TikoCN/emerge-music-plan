@@ -1,4 +1,4 @@
-import Tiko
+﻿import Tiko
 import MediaerAPI
 import QtQuick
 import DataType

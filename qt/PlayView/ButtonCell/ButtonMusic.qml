@@ -1,21 +1,18 @@
 import QtQuick
 import Tiko
 import MediaerAPI
-import DataType
 import PlayView
 
 ButtonBase {
     id: musicButton
 
-    property int musicId: -1
     property int type: 0
-    property musicData music
     signal playMusic()
 
-    name: music.title
-    subtitle: music.artist
+    name: model.title
+    subtitle: model.artist
     loadIcon: "image://cover/musicFile?id=" +
-              musicId.toString() +
+              model.id.toString() +
               "&radius=10"
     normalIcon: "qrc:/image/music.png"
 
@@ -23,12 +20,10 @@ ButtonBase {
     onPage: playMusic()
     onPlay: playMusic()
 
-    onMusicIdChanged: music = DataActive.getMusicData(musicId)
-
     Component {
         id: menuComponent
         MenuMusic {
-            musicId: musicButton.musicId
+            musicId: model.id
         }
     }
 

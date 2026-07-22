@@ -24,10 +24,8 @@ public:
     void commit() { core.commit(); }
     void rollback() { core.rollback(); }
 
-    // 获得新的条目
     bool selectNewMusic(const QFileInfoList &infoList, QFileInfoList *newInfoList);
 
-    // 清除不存在的条目
     QList<QString> clearNullMusicItem();
     QList<QString> clearNullPlayListItem();
 
@@ -43,39 +41,53 @@ public:
     void createTableAlbum();
     void createTableAlbumMusic();
 
-    Q_INVOKABLE [[nodiscard]] QStringList getArtistKeys() const;
-    Q_INVOKABLE [[nodiscard]] QList<int>  getArtistByKey(const QString &key, int size, int start) const;
-    Q_INVOKABLE [[nodiscard]] QList<int>  getArtistMusic(int id, int size, int start, int sort) const;
-    Q_INVOKABLE [[nodiscard]] QList<int>  getArtistRandList() const;
-    Q_INVOKABLE [[nodiscard]] int         checkArtistName(const QString &name) const;
+    [[nodiscard]] QStringList getArtistKeys() const;
+    [[nodiscard]] QList<int>  getArtistByKey(const QString &key, int size, int start) const;
+    [[nodiscard]] QList<int>  getArtistMusic(int id, int size, int start, int sort) const;
+    [[nodiscard]] QList<int>  getArtistRandList() const;
+    [[nodiscard]] int         checkArtistName(const QString &name) const;
 
-    Q_INVOKABLE [[nodiscard]] QStringList getAlbumKeys() const;
-    Q_INVOKABLE [[nodiscard]] QList<int>  getAlbumByKey(const QString &key, int size, int start) const;
-    Q_INVOKABLE [[nodiscard]] QList<int>  getAlbumMusic(int id, int size, int start, int sort) const;
-    Q_INVOKABLE [[nodiscard]] QList<int>  getAlbumRandList() const;
-    Q_INVOKABLE [[nodiscard]] int         checkAlbumName(const QString &name) const;
+    [[nodiscard]] QStringList getAlbumKeys() const;
+    [[nodiscard]] QList<int>  getAlbumByKey(const QString &key, int size, int start) const;
+    [[nodiscard]] QList<int>  getAlbumMusic(int id, int size, int start, int sort) const;
+    [[nodiscard]] QList<int>  getAlbumRandList() const;
+    [[nodiscard]] int         checkAlbumName(const QString &name) const;
 
-    Q_INVOKABLE [[nodiscard]] QStringList getMusicKeys() const;
-    Q_INVOKABLE [[nodiscard]] QList<int>  getMusicByKey(const QString &key, int size, int start) const;
-    Q_INVOKABLE [[nodiscard]] QList<int>  getMusicRandList(int length = -1) const;
-    Q_INVOKABLE [[nodiscard]] QList<int>  getNewMusicList() const;
+    [[nodiscard]] QStringList getMusicKeys() const;
+    [[nodiscard]] QList<int>  getMusicByKey(const QString &key, int size, int start) const;
+    [[nodiscard]] QList<int>  getMusicRandList(int length = -1) const;
+    [[nodiscard]] QList<int>  getNewMusicList() const;
 
-    Q_INVOKABLE [[nodiscard]] QString    getAllList() const;
-    Q_INVOKABLE [[nodiscard]] QList<int> getReadMoreList() const;
+    [[nodiscard]] QString    getAllList() const;
+    [[nodiscard]] QList<int> getReadMoreList() const;
 
-    Q_INVOKABLE [[nodiscard]] QList<int> getPlayListMusic(int id, int size, int start, int sort) const;
-    Q_INVOKABLE [[nodiscard]] QList<int> getPlayingListMusic() const;
-    Q_INVOKABLE [[nodiscard]] int        checkPlayListName(const QString &name) const;
+    [[nodiscard]] QList<int> getPlayListMusic(int id, int size, int start, int sort) const;
+    [[nodiscard]] QList<int> getPlayingListMusic() const;
+    [[nodiscard]] int        checkPlayListName(const QString &name) const;
 
-    Q_INVOKABLE bool updatePlayListMusic(const QList<int> &musicIdList, int playlistNewId, int playlistOldId) const;
-    Q_INVOKABLE bool updateArtistMusic(const QList<int> &musicIdList, int artistNewId, int artistOldId) const;
-    Q_INVOKABLE bool updateAlbumMusic(const QList<int> &musicIdList, int albumNewId, int albumOldId) const;
+    bool updatePlayListMusic(const QList<int> &musicIdList, int playlistNewId, int playlistOldId) const;
+    bool updateArtistMusic(const QList<int> &musicIdList, int artistNewId, int artistOldId) const;
+    bool updateAlbumMusic(const QList<int> &musicIdList, int albumNewId, int albumOldId) const;
+
+    bool moveAlbumMusic(const QString &albumName, const QString &albumNameNew) const;
+    bool moveArtistMusic(const QString &artistName, const QString &artistNameNew) const;
+    bool movePlayListMusic(const QString &playListName, const QString &playListNameNew) const;
+
+    bool addArtistMusicToPlayList(const QString &artistName, const QString &playListName) const;
+    bool addAlbumMusicToPlayList(const QString &albumName, const QString &playListName) const;
+    bool addPlayListMusicToPlayList(const QString &sourcePlayListName, const QString &targetPlayListName) const;
+
+    void startClearInvalidData();
+    void onCheckFileFinished(const QList<int> &invalidMusicIds);
 
 private:
     explicit SQLite();
     ~SQLite() override;
 
     Core core;
+
+signals:
+    void startCheckFileExist(const QList<QPair<int, QString> > &musicDataList);
 };
 
 #endif // SQLITE_H

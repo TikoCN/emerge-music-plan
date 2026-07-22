@@ -7,7 +7,7 @@ TikoPopup {
     implicitHeight: 400
 
     property string title: qsTr("请输入")
-    property string inputText: inputLine.inputItem.text
+    property string inputText: inputLine.text
     property string orgText: ""
     property int textWidth: 200
     signal accept()

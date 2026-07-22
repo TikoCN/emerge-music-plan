@@ -8,8 +8,7 @@ RecomGridButtonBase {
 
     delegateItem: GridButtonAlbum {
         dataLoader.onLoadInitData: {
-            let list = SQLData.getAlbumRandList()
-            appendList(list)
+            AlbumLibrary.model().loadRandList()
         }
     }
 }

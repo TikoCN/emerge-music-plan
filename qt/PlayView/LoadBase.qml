@@ -1,4 +1,4 @@
-import QtQuick
+﻿import QtQuick
 import PlayView
 QtObject {
     property int loadPos: 0                 // 当前已加载位置

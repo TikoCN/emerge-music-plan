@@ -38,8 +38,8 @@ TikoRightVessel {
             anchors.leftMargin: 10
             textLine.text: qsTr("清除失效数据")
             onClicked: {
-                CoreData.clearData()
-                DataActive.clearNullItem()
+                PlayListLibrary.clearNullItem()
+                MusicLibrary.startClearInvalidData()
             }
         }
 

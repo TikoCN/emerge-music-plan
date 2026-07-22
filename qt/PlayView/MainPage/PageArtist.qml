@@ -2,40 +2,41 @@ import QtQuick
 import Tiko
 import MediaerAPI
 import PlayView
-import DataType
 
 PageBase{
     id: artistPlayer
     property int artistId: -1
-    property artistData artist
-    sort: artist.sort
-    duration: artist.duration
-    name: artist.name
-    musicCount: artist.musicCount
+
+    sort: 0
+    duration: 0
+    name: ""
+    musicCount: 0
 
     normalIcon: "qrc:/image/artist.png"
     loadIcon: "image://cover/artistFile?id=" +
               artistId.toString() +
               "&radius=10"
 
-    function setArtistId(artistId){
-        if(artistPlayer.artistId === artistId)
+    function setArtistId(id){
+        if(artistPlayer.artistId === id)
             return
-        artistPlayer.artistId = artistId
+        artistPlayer.artistId = id
 
-        artist = DataActive.getArtistData(artistId);
+        let artist = ArtistLibrary.getArtistData(id)
+        name = artist.name
+        sort = artist.sort
+        duration = artist.duration
+        musicCount = artist.musicCount
 
         musicList.reset()
     }
 
     musicList.dataLoader.onLoadInitData: {
-        let list = SQLData.getArtistMusic(artistId, CoreData.pageSize, 0, sort)
-        musicList.appendList(list)
+        MusicLibrary.model().loadArtistMusic(artistId, CoreData.pageSize, 0, sort)
     }
 
     musicList.dataLoader.onLoadData: (index)=>{
-                                         let list = SQLData.getArtistMusic(artistId, CoreData.pageSize, musicList.dataLoader.loadPos, sort)
-                                         musicList.appendList(list)
+                                         MusicLibrary.model().loadMoreArtistMusic(artistId, CoreData.pageSize, musicList.dataLoader.loadPos, sort)
                                      }
 
     musicList.onPlay: (musicId, listId) => {

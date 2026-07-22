@@ -2,6 +2,7 @@
 #include <QDir>
 #include <QDebug>
 #include "baseclass/DataException.h"
+#include "../load/TaskCenter.h"
 
 SQLite::SQLite()
     : getPort(&core),
@@ -379,4 +380,37 @@ bool SQLite::updateArtistMusic(const QList<int> &musicIdList, int artistNewId, i
 
 bool SQLite::updateAlbumMusic(const QList<int> &musicIdList, int albumNewId, int albumOldId) const {
     return updatePort.updateAlbumMusic(musicIdList, albumNewId, albumOldId);
+}
+
+bool SQLite::moveAlbumMusic(const QString &albumName, const QString &albumNameNew) const {
+    return updatePort.moveAlbumMusic(albumName, albumNameNew);
+}
+
+bool SQLite::moveArtistMusic(const QString &artistName, const QString &artistNameNew) const {
+    return updatePort.moveArtistMusic(artistName, artistNameNew);
+}
+
+bool SQLite::movePlayListMusic(const QString &playListName, const QString &playListNameNew) const {
+    return updatePort.movePlayListMusic(playListName, playListNameNew);
+}
+
+bool SQLite::addArtistMusicToPlayList(const QString &artistName, const QString &playListName) const {
+    return appendPort.addArtistMusicToPlayList(artistName, playListName);
+}
+
+bool SQLite::addAlbumMusicToPlayList(const QString &albumName, const QString &playListName) const {
+    return appendPort.addAlbumMusicToPlayList(albumName, playListName);
+}
+
+bool SQLite::addPlayListMusicToPlayList(const QString &sourcePlayListName, const QString &targetPlayListName) const {
+    return appendPort.addPlayListMusicToPlayList(sourcePlayListName, targetPlayListName);
+}
+
+void SQLite::startClearInvalidData() {
+    QList<QPair<int, QString> > musicDataList = deletePort.getAllMusicData();
+    emit startCheckFileExist(musicDataList);
+}
+
+void SQLite::onCheckFileFinished(const QList<int> &invalidMusicIds) {
+    deletePort.clearInvalidData(invalidMusicIds);
 }

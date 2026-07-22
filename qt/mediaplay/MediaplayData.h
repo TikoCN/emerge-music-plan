@@ -3,6 +3,7 @@
 
 #include <QAudioDevice>
 #include <QAudioBufferOutput>
+#include <QMediaDevices>
 #include <QMediaPlayer>
 #include <QAudioOutput>
 
@@ -30,8 +31,8 @@ public:
 
     //删除以及加载的数据
     Q_INVOKABLE void clearData();
-    //更新播放设备
-    void updateAudioOutPut() const;
+    // 将当前音频输出设备同步为系统默认设备（由 QMediaDevices 信号驱动）
+    void updateAudioOutPut();
 
     [[nodiscard]] QMediaPlayer *  getPlayer() const;
     [[nodiscard]] QVector<double> getAllSamples() const;

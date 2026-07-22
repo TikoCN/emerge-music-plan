@@ -75,12 +75,13 @@ void OnLine::downMusicCoverNetEase(const QString &title, const QString &url) {
     QNetworkAccessManager manager;
     QEventLoop            loop;
     //正则表达式结果
-    QRegularExpression regularExpression; //正则表达式
+    QRegularExpression    regularExpression; //正则表达式
 
     //得到音乐id
-    request.setUrl(QUrl("https://music.163.com/api/search/get/web?csrf_token=hlpretag=&hlposttag=&s="
+    QString onLineUrl = "https://music.163.com/api/search/get/web?csrf_token=hlpretag=&hlposttag=&s="
                         + title
-                        + "&type=1&offset=0&total=true&limit=1"));
+                        + "&type=1&offset=0&total=true&limit=1";
+    request.setUrl(QUrl(onLineUrl));
     QNetworkReply *reply = manager.get(request);
     QEventLoop::connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
     loop.exec();
@@ -93,11 +94,12 @@ void OnLine::downMusicCoverNetEase(const QString &title, const QString &url) {
         return;
 
     //得到图片地址
-    request.setUrl(QUrl("http://music.163.com/api/song/detail/?id="
-                        + matchList[1]
-                        + "&ids=%5B"
-                        + matchList[1]
-                        + "%5D"));
+    onLineUrl = "http://music.163.com/api/song/detail/?id="
+                + matchList[1]
+                + "&ids=%5B"
+                + matchList[1]
+                + "%5D";
+    request.setUrl(QUrl(onLineUrl));
     reply = manager.get(request);
     QEventLoop::connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
     loop.exec();
@@ -115,8 +117,8 @@ void OnLine::downMusicCoverQQMusic(const QString &key, const QString &url) {
     QNetworkRequest       request;
     QNetworkAccessManager manager;
     //正则表达式结果
-    QEventLoop         loop;
-    QRegularExpression regularExpression; //正则表达式
+    QEventLoop            loop;
+    QRegularExpression    regularExpression; //正则表达式
 
     request.setUrl(QUrl("https://c.y.qq.com/soso/fcgi-bin/client_search_cp?p=1&n=2&w="
                         + key
@@ -131,17 +133,11 @@ void OnLine::downMusicCoverQQMusic(const QString &key, const QString &url) {
     if (matchList.size() < 2) //判断解析是否成功
         return;
 
-    request.setUrl(QUrl("http://y.gtimg.cn/music/photo_new/T002R180x180M000"
-                        + matchList[1]
-                        + ".jpg"));
-    reply = manager.get(request);
-    QEventLoop::connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
-    loop.exec();
-    htmlData  = reply->readAll();
-    matchList = regularExpression.match(htmlData).capturedTexts();
+    const QString coverUrl = "http://y.gtimg.cn/music/photo_new/T002R180x180M000"
+                             + matchList[1]
+                             + ".jpg";
 
-    if (matchList.size() >= 2)
-        writeCoverToFile(matchList[1], url);
+    writeCoverToFile(coverUrl, url);
 }
 
 void OnLine::downCoverBing(const QString &key, const QString &url) {
@@ -149,7 +145,7 @@ void OnLine::downCoverBing(const QString &key, const QString &url) {
     QNetworkAccessManager manager;
     QEventLoop            loop;
     //正则表达式结果
-    QRegularExpression regularExpression; //正则表达式
+    QRegularExpression    regularExpression; //正则表达式
 
     request.setUrl(QUrl("https://www.bing.com/images/async?q="
                         + key
@@ -170,20 +166,20 @@ void OnLine::downCoverBaidu(const QString &key, const QString &url) {
     QNetworkAccessManager manager;
     QEventLoop            loop;
     //正则表达式结果
-    QRegularExpression regularExpression; //正则表达式
+    QRegularExpression    regularExpression; //正则表达式
 
-    request.setUrl(QUrl(
-        "https://image.baidu.com/search/acjson?tn=resultjson_com&logid=8212365409067552127&ipn=rj&ct=201326592&is=&fp=result&fr=&word="
-        + key +
-        "&queryWord="
-        + key +
-        "&cl=2&lm=-1&ie=utf-8&oe=utf-8&adpicid=&st=&z=&ic=&hd=&latest=©right=&s=&se=&tab=&width=&height=&face=&istype=&qc=&nc=1&expermode=&nojc=&isAsync=&pn=1&rn=10&gsm=5a&1668600962847="));
+    QString coverUrl = "https://image.baidu.com/search/acjson?tn=resultjson_com&logid=8212365409067552127&ipn=rj&ct=201326592&is=&fp=result&fr=&word="
+                       + key +
+                       "&queryWord="
+                       + key +
+                       "&cl=2&lm=-1&ie=utf-8&oe=utf-8&adpicid=&st=&z=&ic=&hd=&latest=©right=&s=&se=&tab=&width=&height=&face=&istype=&qc=&nc=1&expermode=&nojc=&isAsync=&pn=1&rn=10&gsm=5a&1668600962847=";
+    request.setUrl(QUrl(coverUrl));
     QNetworkReply *reply = manager.get(request);
     QEventLoop::connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
     loop.exec();
     //解析
     const QString htmlData = reply->readAll();
-    regularExpression.setPattern(R"("thumbURL":"([^"]*),)");
+    regularExpression.setPattern(R"("thumbURL":"([^"]*)\",)");
 
     if (QStringList matchList = regularExpression.match(htmlData).capturedTexts(); matchList.size() >= 2)
         writeCoverToFile(matchList[1], url);
@@ -231,7 +227,7 @@ void OnLine::downLrcFromNetEase(const QString &key, const QString &url) {
     QNetworkAccessManager manager;
     QEventLoop            loop;
     //正则表达式结果
-    QRegularExpression regularExpression; //正则表达式
+    QRegularExpression    regularExpression; //正则表达式
 
     //得到音乐id
     request.setUrl(QUrl("https://music.163.com/api/search/get/web?csrf_token=hlpretag=&hlposttag=&s="
@@ -276,7 +272,7 @@ void OnLine::downLrcFromQQMusic(const QString &key, const QString &url) {
     QNetworkAccessManager manager;
     QEventLoop            loop;
     //正则表达式结果
-    QRegularExpression regularExpression; //正则表达式
+    QRegularExpression    regularExpression; //正则表达式
 
     request.setUrl(QUrl("https://c.y.qq.com/soso/fcgi-bin/client_search_cp?p=1&n=2&w="
                         + key

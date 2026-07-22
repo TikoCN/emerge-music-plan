@@ -1,8 +1,9 @@
-import QtQuick
+﻿import QtQuick
 import QtQuick.Layouts
 import MediaerAPI
 import Tiko
 import PlayView
+import QtQuick.Effects
 
 Window{
     id: deskLrcTool
@@ -12,7 +13,7 @@ Window{
     flags: Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint | Qt.Tool
     title: qsTr("桌面歌词")
     width: (Setting.deskLrcFont.pixelSize * 20 > 600 ? Setting.deskLrcFont.pixelSize * 20: 600) + 40
-    height: deskLrcToolArea.height
+    height: deskLrcToolArea.height + TikoSeit.emphasizeMargins * 2
 
     Component.onDestruction: {
         var mousePos = deskLrcToolArea.mapToGlobal(0, 0)
@@ -20,11 +21,21 @@ Window{
         Setting.lrcTopPoint.y = mousePos.y
     }
 
-    Rectangle{
-        anchors.fill: parent
-        color: TikoSeit.theme.colorBgDefault
-        border.color: TikoSeit.theme.colorBorderSubtle
-        opacity: deskLrcToolArea.containsMouse ? 1 : 0
+    Rectangle {
+        anchors.centerIn: parent
+        width: parent.width - radius * 2
+        height: parent.height - radius * 2
+        color: TikoSeit.theme.colorBgView
+        layer.enabled: true
+        layer.effect: MultiEffect {
+            shadowEnabled: true
+            shadowBlur: 0.5
+            shadowColor: TikoSeit.theme.colorBgHint
+            shadowHorizontalOffset: 0
+            shadowVerticalOffset: 0
+        }
+        opacity: deskLrcToolArea.containsMouse ? 0.7 : 0
+        radius: 10
     }
 
     MouseArea{

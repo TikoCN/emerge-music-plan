@@ -6,6 +6,8 @@
 #define MUSICPLAY_DELETE_H
 
 #include "Core.h"
+#include <QList>
+#include <QPair>
 
 class Delete {
 private:
@@ -15,6 +17,9 @@ public:
     explicit Delete(Core *core) : core(core) {
     };
     [[nodiscard]] bool deletePlayingList(int position) const;
+    [[nodiscard]] bool clearInvalidData() const;
+    [[nodiscard]] bool clearInvalidData(const QList<int> &invalidMusicIds) const;
+    [[nodiscard]] QList<QPair<int, QString>> getAllMusicData() const;
 };
 
 

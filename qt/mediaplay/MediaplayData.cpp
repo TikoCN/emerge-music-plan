@@ -1,7 +1,5 @@
 #include "MediaplayData.h"
 
-#include <iostream>
-
 #include <QAudioOutput>
 #include <QThread>
 
@@ -21,9 +19,7 @@ MediaPlayData::MediaPlayData() {
         emit bufferSampleChanged();
     });
 
-    connect(m_player, &QMediaPlayer::positionChanged, this, [this](qint64 time) {
-        updateAudioOutPut();
-    });
+    connect(m_player, &QMediaPlayer::positionChanged, this, &MediaPlayData::updateAudioOutPut);
 }
 
 MediaPlayData::~MediaPlayData() {
@@ -49,14 +45,13 @@ void MediaPlayData::clearData() {
     emit finishClearData();
 }
 
-void MediaPlayData::updateAudioOutPut() const {
-    const auto *nowOut = new QAudioOutput;
-    if (m_audioOutput->device().id() != nowOut->device().id()) {
-        m_audioOutput->setDevice(nowOut->device());
-
+void MediaPlayData::updateAudioOutPut() {
+    // 直接查询系统默认设备，无需创建临时 QAudioOutput 对象
+    const QAudioDevice defaultDevice = QMediaDevices::defaultAudioOutput();
+    if (m_audioOutput->device().id() != defaultDevice.id()) {
+        m_audioOutput->setDevice(defaultDevice);
         m_player->setAudioOutput(m_audioOutput);
     }
-    delete nowOut;
 }
 
 QAudioOutput *MediaPlayData::getAudioOutput() const {

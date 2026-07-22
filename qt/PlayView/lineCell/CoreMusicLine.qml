@@ -5,7 +5,6 @@ import Tiko
 import DataType
 import PlayView
 
-//展示音乐行
 Item {
     id: musicLine
     implicitHeight: 70
@@ -13,29 +12,8 @@ Item {
     clip: true
 
     property int listId: 0
-    property int musicId: -1
-    property int musicLevel: -1
-    property int duration: -1
-    property int playNumber: -1
-    property bool isLove: false
     property bool isLittle: false
-    property string musicTitle: ""
-    property string artist : ""
-    property string album: ""
-    property string lastEdit: ""
     signal playMusic(int musicId, int listId)
-
-    onMusicIdChanged:{
-        const json = DataActive.getMusicJson(musicId);
-        musicTitle = json.title
-        artist = json.artist
-        album = json.album
-        musicLevel = json.level
-        duration = json.duration
-        playNumber = json.playNumber
-        isLove = json.isLove
-        lastEdit = json.lastEdit
-    }
 
     MouseArea{
         id: mouseArea
@@ -45,7 +23,7 @@ Item {
         onClicked: (mouse) => {
                        switch(mouse.button){
                            case Qt.LeftButton:
-                           playMusic(musicId, listId)
+                           playMusic(model.id, listId)
                            break
                            case Qt.RightButton:
                            createMenu(musicLine)
@@ -53,7 +31,6 @@ Item {
                        }
                    }
 
-        //主体
         Row{
             x:10
             y:10
@@ -61,14 +38,13 @@ Item {
             height: parent.height - 20
             spacing: 6
 
-            //封面
             AutoCoverImage {
                 id: cover
                 width: 50
                 height: 50
                 normalUrl: "qrc:/image/music.png"
                 baseUrl: "image://cover/musicFile?id=" +
-                         musicId.toString() +
+                         model.id.toString() +
                          "&radius=10"
             }
 
@@ -78,13 +54,13 @@ Item {
                                   (parent.width - toolItem.width - cover.width - durationTextView.width - 30) / 2
 
                 TikoTextLine{
-                    text: musicTitle
+                    text: model.title
                     height: 30
                     width: parent.width
                     level: 2
                 }
                 TikoTextLine{
-                    text: artist
+                    text: model.artist
                     height: 20
                     width: parent.width
                     level: 0
@@ -92,18 +68,16 @@ Item {
             }
 
             TikoTextLine{
-                text: album
+                text: model.album
                 width: coreName.width
                 height: 50
             }
 
-            // 使用 Loader 延迟加载
             Loader {
                 id: toolItem
                 width: 250
                 height: 50
 
-                // 只在鼠标悬停时加载组件
                 active: mouseArea.containsMouse && !musicLine.isLittle
 
                 sourceComponent: Component {
@@ -114,15 +88,11 @@ Item {
                         TikoButtonIcon{
                             width: 30
                             height: parent.height
-                            onClicked: {
-                                musicLine.isLove = !musicLine.isLove
-                                DataActive.updateMusicLove(musicLine.musicId, musicLine.isLove)
-                            }
-                            icon.source: musicLine.isLove ?
+                            onClicked: MusicLibrary.model().updateMusicLove(model.id, !model.isLove)
+                            icon.source: model.isLove ?
                                              "qrc:/image/love.png" : "qrc:/image/unlove.png"
                         }
 
-                        // 评级
                         Row{
                             width: 100
                             height: 30
@@ -132,12 +102,8 @@ Item {
                                 delegate: TikoButtonIcon{
                                     width: 20
                                     height: 50
-                                    onClicked: {
-                                        // 设置评级逻辑
-                                        musicLine.musicLevel = level
-                                        DataActive.updateMusicLevel(musicLine.musicId, musicLine.musicLevel)
-                                    }
-                                    icon.source: musicLine.musicLevel >= level ?
+                                    onClicked: MusicLibrary.model().updateMusicLevel(model.id, level)
+                                    icon.source: model.level >= level ?
                                                      "qrc:/image/int.png" : "qrc:/image/unInt.png"
                                 }
                                 model: ListModel{
@@ -159,18 +125,15 @@ Item {
                 }
             }
 
-
-            //时间参数
             TikoTextLine{
                 id: durationTextView
-                text: BaseTool.typeConversion.timeToString(duration)
+                text: BaseTool.typeConversion.timeToString(model.duration)
                 width: CoreData.fontW * 3
                 height: 50
             }
         }
     }
 
-    //底层背景
     Rectangle{
         id: background
         anchors.fill: parent
@@ -195,15 +158,7 @@ Item {
     Component {
         id: menuMusicComponent
         MenuMusicPlayList {
-            musicId: musicLine.musicId
-            playlistId: playlistId
-        }
-    }
-
-    Component {
-        id: menuMusicPlayListComponent
-        MenuMusicPlayList {
-            musicId: musicLine.musicId
+            musicId: model.id
             playlistId: playlistId
         }
     }
@@ -216,6 +171,4 @@ Item {
         else
             console.log(menuComponent.errorString())
     }
-
 }
-

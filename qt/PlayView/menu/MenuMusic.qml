@@ -2,7 +2,6 @@ import QtQuick
 import PlayView
 import Tiko
 import MediaerAPI
-import DataType
 
 TikoMenu{
     id: menuMusic
@@ -13,13 +12,18 @@ TikoMenu{
 
     property int musicId: -1
     property int type: 0
-    property musicData music
-    property string musicTitle: music.title
-    property string artist: music.artist
-    property string album: music.album
-    property string fileUrl: music.url
+    property string musicTitle: ""
+    property string artist: ""
+    property string album: ""
+    property string fileUrl: ""
 
-    Component.onCompleted: music = DataActive.getMusicData(musicId)
+    Component.onCompleted: {
+        let music = MusicLibrary.getMusicData(musicId)
+        musicTitle = music.title
+        artist = music.artist
+        album = music.album
+        fileUrl = music.url
+    }
 
     TikoMenuItem {
         text: qsTr("播放")
@@ -121,25 +125,6 @@ TikoMenu{
         }
     }
 
-    TikoMenu{
-        title: qsTr("格式转换为...")
-        Repeater{
-            delegate: TikoMenuItem{
-                text: suffix
-                onTriggered: music.setSuffix(suffix);
-            }
-            model: ListModel{
-                ListElement{suffix: "MP3"}
-                ListElement{suffix: "FLAC"}
-                ListElement{suffix: "ALAC"}
-                ListElement{suffix: "AAC"}
-                ListElement{suffix: "WMA"}
-                ListElement{suffix: "PCM16"}
-                ListElement{suffix: "PCM32"}
-            }
-        }
-    }
-
     TikoMenuSpeacer{}
 
     TikoMenu{
@@ -156,7 +141,7 @@ TikoMenu{
             id: addMenu
             TikoMenuItem {
                 text: CoreData.playlist[aim]["name"]
-                enabled: !CoreData.playlist[aim].isDir
+                enabled: !CoreData.playlist[aim]["isDir"]
             }
         }
 

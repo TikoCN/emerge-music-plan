@@ -22,22 +22,22 @@ public:
 
     DataManager();
 
-    AlbumPtr                getAlbumCore(int id);
-    Q_INVOKABLE QJsonObject getAlbumJson(int id);
-    Q_INVOKABLE Album       getAlbumData(int id);
+    AlbumPtr    getAlbumCore(int id);
+    QJsonObject getAlbumJson(int id);
+    Album       getAlbumData(int id);
 
-    ArtistPtr               getArtistCore(int id);
-    Q_INVOKABLE QJsonObject getArtistJson(int id);
-    Q_INVOKABLE Artist      getArtistData(int id);
+    ArtistPtr   getArtistCore(int id);
+    QJsonObject getArtistJson(int id);
+    Artist      getArtistData(int id);
 
-    MusicPtr                getMusicCore(int id);
-    QList<MusicPtr>         getMusicCoreList(const QList<int> &idList);
-    Q_INVOKABLE QJsonObject getMusicJson(int id);
-    Q_INVOKABLE Music       getMusicData(int id);
+    MusicPtr        getMusicCore(int id);
+    QList<MusicPtr> getMusicCoreList(const QList<int> &idList);
+    QJsonObject     getMusicJson(int id);
+    Music           getMusicData(int id);
 
-    PlayListPtr             getPlayListCore(int id);
-    Q_INVOKABLE QJsonObject getPlayListJson(int id);
-    Q_INVOKABLE PlayList    getPlayListData(int id);
+    PlayListPtr getPlayListCore(int id);
+    QJsonObject getPlayListJson(int id);
+    PlayList    getPlayListData(int id);
 
     void releaseAlbum(int id);
     void releaseArtist(int id);

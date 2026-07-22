@@ -1,4 +1,4 @@
-import QtQuick
+﻿import QtQuick
 import Tiko
 import DataType
 import MediaerAPI
@@ -47,9 +47,9 @@ TikoMenu {
         Component {
             id: addMenu
             TikoMenuItem {
-                text: name
-                // todo onTriggered: DataActive.playlistAppendMusic(playlistId, albumId)
-                enabled: !isDir
+                text: CoreData.playlist[aim]["name"]
+                onTriggered: MusicLibrary.addAlbumMusicToPlayList(albumMenu.name, CoreData.playlist[aim]["name"])
+                enabled: !CoreData.playlist[aim]["isDir"]
             }
         }
 
@@ -57,11 +57,7 @@ TikoMenu {
             addMenuData.clear()
             for(let i=0; i<CoreData.playlist.length; i++){
                 const data = CoreData.playlist[i];
-                addMenuData.append({
-                                       name: data["name"],
-                                       isDir: data["isDir"],
-                                       playlist: data["playlistId"]
-                                   })
+                addMenuData.append({aim: i})
             }
         }
     }
@@ -82,7 +78,7 @@ TikoMenu {
         id: inputComponent
         TikoPopupInput {
             orgText: name
-            onAccept: updateName(text)
+            onAccept: MusicLibrary.moveAlbumMusic(name, newName)
         }
     }
 
@@ -91,9 +87,5 @@ TikoMenu {
             inputPopup = inputComponent.createObject(parent)
             inputPopup.open()
         }
-    }
-
-    function updateName(newName) {
-
     }
 }

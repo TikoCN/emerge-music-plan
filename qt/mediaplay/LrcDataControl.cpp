@@ -50,18 +50,27 @@ void LrcDataControl::selectPlayLrc(const qint64 time) {
         return;
     }
 
-    if ((m_playingLrcId < 0 ||
-         m_playingLrcId > m_lrcList.size()) ||
-        (m_lrcList[m_playingLrcId]->startTime > time ||
-         m_lrcList[m_playingLrcId]->endTime < time)
-    ) {
-        // 重新筛选
-        for (int i = 0; i < m_lrcList.size(); i++) {
-            if (m_lrcList[i]->startTime <= time && m_lrcList[i]->endTime >= time) {
-                m_playingLrcId = i;
-                emit playingLrcIdChanged(i);
-                break;
-            }
+    // 当前歌词仍在有效范围内，无需重新搜索
+    if (m_playingLrcId >= 0 && m_playingLrcId < m_lrcList.size()
+        && m_lrcList[m_playingLrcId]->startTime <= time
+        && m_lrcList[m_playingLrcId]->endTime   >= time) {
+        return;
+    }
+
+    // 二分查找：歌词按 startTime 升序排列，O(log n) 定位目标行
+    int lo = 0;
+    int hi = static_cast<int>(m_lrcList.size()) - 1;
+    while (lo <= hi) {
+        const int mid = lo + (hi - lo) / 2;
+        if (m_lrcList[mid]->endTime < time) {
+            lo = mid + 1;
+        } else if (m_lrcList[mid]->startTime > time) {
+            hi = mid - 1;
+        } else {
+            // startTime <= time <= endTime，找到匹配行
+            m_playingLrcId = mid;
+            emit playingLrcIdChanged(mid);
+            return;
         }
     }
 }

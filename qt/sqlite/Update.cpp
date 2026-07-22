@@ -1,5 +1,6 @@
 #include "Update.h"
 #include "baseclass/DataException.h"
+#include "../NameKey.h"
 
 bool Update::updateMusic(const MusicPtr &music) const {
     if (music == nullptr)
@@ -329,6 +330,233 @@ bool Update::updateAlbumMusic(const QList<int> &musicIdList, const int albumNewI
         TLog::getInstance().logError(e.errorMessage());
         result = false;
     }
+    Core::stmtFree(stmt);
+    return result;
+}
+
+bool Update::moveAlbumMusic(const QString &albumName, const QString &albumNameNew) const {
+    bool          result = true;
+    sqlite3_stmt *stmt   = nullptr;
+    int           oldId  = -1;
+    int           newId  = -1;
+
+    try {
+        core->begin();
+
+        const auto getAlbumIdSql = QString("SELECT %1 FROM %2 WHERE %3 = ? LIMIT 1")
+                                  .arg(LiteralConstant::Column::ALBUM_ID)
+                                  .arg(LiteralConstant::Table::ALBUM)
+                                  .arg(LiteralConstant::Column::ALBUM_NAME);
+
+        core->stmtPrepare(&stmt, getAlbumIdSql.toUtf8());
+        core->stmtBindText(stmt, 1, albumName);
+        if (core->stmtStep(stmt)) {
+            oldId = sqlite3_column_int(stmt, 0);
+        }
+        core->stmtReset(stmt);
+
+        core->stmtBindText(stmt, 1, albumNameNew);
+        if (core->stmtStep(stmt)) {
+            newId = sqlite3_column_int(stmt, 0);
+        }
+        Core::stmtFree(stmt);
+        stmt = nullptr;
+
+        if (oldId == -1) {
+            throw DataException("旧专辑不存在");
+        }
+
+        if (newId != -1) {
+            const auto updateSql = QString("UPDATE %1 SET %2 = ? WHERE %2 = ?")
+                                  .arg(LiteralConstant::Table::ALBUM_MUSIC)
+                                  .arg(LiteralConstant::Column::ALBUM_ID);
+            core->stmtPrepare(&stmt, updateSql.toUtf8());
+            core->stmtBindInt(stmt, 1, newId);
+            core->stmtBindInt(stmt, 2, oldId);
+            core->stmtStep(stmt);
+            Core::stmtFree(stmt);
+            stmt = nullptr;
+
+            const auto deleteSql = QString("DELETE FROM %1 WHERE %2 = ?")
+                                  .arg(LiteralConstant::Table::ALBUM)
+                                  .arg(LiteralConstant::Column::ALBUM_ID);
+            core->stmtPrepare(&stmt, deleteSql.toUtf8());
+            core->stmtBindInt(stmt, 1, oldId);
+            core->stmtStep(stmt);
+        } else {
+            NameKey    key;
+            const auto updateNameSql = QString("UPDATE %1 SET %2 = ?, %3 = ? WHERE %4 = ?")
+                                      .arg(LiteralConstant::Table::ALBUM)
+                                      .arg(LiteralConstant::Column::ALBUM_NAME)
+                                      .arg(LiteralConstant::Column::NAME_KEY)
+                                      .arg(LiteralConstant::Column::ALBUM_ID);
+            core->stmtPrepare(&stmt, updateNameSql.toUtf8());
+            core->stmtBindText(stmt, 1, albumNameNew);
+            core->stmtBindText(stmt, 2, key.find(albumNameNew));
+            core->stmtBindInt(stmt, 3, oldId);
+            core->stmtStep(stmt);
+        }
+
+        core->commit();
+    } catch (const DataException &e) {
+        core->rollback();
+        TLog::getInstance().logError(e.errorMessage());
+        result = false;
+    }
+
+    Core::stmtFree(stmt);
+    return result;
+}
+
+bool Update::moveArtistMusic(const QString &artistName, const QString &artistNameNew) const {
+    bool          result = true;
+    sqlite3_stmt *stmt   = nullptr;
+    int           oldId  = -1;
+    int           newId  = -1;
+
+    try {
+        core->begin();
+
+        const auto getArtistIdSql = QString("SELECT %1 FROM %2 WHERE %3 = ? LIMIT 1")
+                                   .arg(LiteralConstant::Column::ARTIST_ID)
+                                   .arg(LiteralConstant::Table::ARTIST)
+                                   .arg(LiteralConstant::Column::ARTIST_NAME);
+
+        core->stmtPrepare(&stmt, getArtistIdSql.toUtf8());
+        core->stmtBindText(stmt, 1, artistName);
+        if (core->stmtStep(stmt)) {
+            oldId = sqlite3_column_int(stmt, 0);
+        }
+        core->stmtReset(stmt);
+
+        core->stmtBindText(stmt, 1, artistNameNew);
+        if (core->stmtStep(stmt)) {
+            newId = sqlite3_column_int(stmt, 0);
+        }
+        Core::stmtFree(stmt);
+        stmt = nullptr;
+
+        if (oldId == -1) {
+            throw DataException("旧歌手不存在");
+        }
+
+        if (newId != -1) {
+            const auto updateSql = QString(
+                                       "UPDATE %1 SET %2 = ? "
+                                       "WHERE %2 = ?")
+                                  .arg(LiteralConstant::Table::ARTIST_MUSIC)
+                                  .arg(LiteralConstant::Column::ARTIST_ID);
+            core->stmtPrepare(&stmt, updateSql.toUtf8());
+            core->stmtBindInt(stmt, 1, newId);
+            core->stmtBindInt(stmt, 2, oldId);
+            core->stmtStep(stmt);
+            Core::stmtFree(stmt);
+            stmt = nullptr;
+
+            const auto deleteSql = QString("DELETE FROM %1 WHERE %2 = ?")
+                                  .arg(LiteralConstant::Table::ARTIST)
+                                  .arg(LiteralConstant::Column::ARTIST_ID);
+            core->stmtPrepare(&stmt, deleteSql.toUtf8());
+            core->stmtBindInt(stmt, 1, oldId);
+            core->stmtStep(stmt);
+        } else {
+            NameKey    key;
+            const auto updateNameSql = QString(
+                                           "UPDATE %1 SET %2 = ?, %3 = ? "
+                                           "WHERE %4 = ?")
+                                      .arg(LiteralConstant::Table::ARTIST)
+                                      .arg(LiteralConstant::Column::ARTIST_NAME)
+                                      .arg(LiteralConstant::Column::NAME_KEY)
+                                      .arg(LiteralConstant::Column::ARTIST_ID);
+            core->stmtPrepare(&stmt, updateNameSql.toUtf8());
+            core->stmtBindText(stmt, 1, artistNameNew);
+            core->stmtBindText(stmt, 2, key.find(artistNameNew));
+            core->stmtBindInt(stmt, 3, oldId);
+            core->stmtStep(stmt);
+        }
+
+        core->commit();
+    } catch (const DataException &e) {
+        core->rollback();
+        TLog::getInstance().logError(e.errorMessage());
+        result = false;
+    }
+
+    Core::stmtFree(stmt);
+    return result;
+}
+
+bool Update::movePlayListMusic(const QString &playListName, const QString &playListNameNew) const {
+    bool          result = true;
+    sqlite3_stmt *stmt   = nullptr;
+    int           oldId  = -1;
+    int           newId  = -1;
+
+    try {
+        core->begin();
+
+        const auto getPlayListIdSql = QString("SELECT %1 FROM %2 WHERE %3 = ? LIMIT 1")
+                                     .arg(LiteralConstant::Column::PLAYLIST_ID)
+                                     .arg(LiteralConstant::Table::PLAYLIST)
+                                     .arg(LiteralConstant::Column::PLAYLIST_NAME);
+
+        core->stmtPrepare(&stmt, getPlayListIdSql.toUtf8());
+        core->stmtBindText(stmt, 1, playListName);
+        if (core->stmtStep(stmt)) {
+            oldId = sqlite3_column_int(stmt, 0);
+        }
+        core->stmtReset(stmt);
+
+        core->stmtBindText(stmt, 1, playListNameNew);
+        if (core->stmtStep(stmt)) {
+            newId = sqlite3_column_int(stmt, 0);
+        }
+        Core::stmtFree(stmt);
+        stmt = nullptr;
+
+        if (oldId == -1) {
+            throw DataException("旧播放列表不存在");
+        }
+
+        if (newId != -1) {
+            const auto updateSql = QString(
+                                      "UPDATE %1 SET %2 = ? "
+                                      "WHERE %2 = ?")
+                                  .arg(LiteralConstant::Table::PLAYLIST_MUSIC)
+                                  .arg(LiteralConstant::Column::PLAYLIST_ID);
+            core->stmtPrepare(&stmt, updateSql.toUtf8());
+            core->stmtBindInt(stmt, 1, newId);
+            core->stmtBindInt(stmt, 2, oldId);
+            core->stmtStep(stmt);
+            Core::stmtFree(stmt);
+            stmt = nullptr;
+
+            const auto deleteSql = QString("DELETE FROM %1 WHERE %2 = ?")
+                                  .arg(LiteralConstant::Table::PLAYLIST)
+                                  .arg(LiteralConstant::Column::PLAYLIST_ID);
+            core->stmtPrepare(&stmt, deleteSql.toUtf8());
+            core->stmtBindInt(stmt, 1, oldId);
+            core->stmtStep(stmt);
+        } else {
+            const auto updateNameSql = QString(
+                                           "UPDATE %1 SET %2 = ? "
+                                           "WHERE %3 = ?")
+                                       .arg(LiteralConstant::Table::PLAYLIST)
+                                       .arg(LiteralConstant::Column::PLAYLIST_NAME)
+                                       .arg(LiteralConstant::Column::PLAYLIST_ID);
+            core->stmtPrepare(&stmt, updateNameSql.toUtf8());
+            core->stmtBindText(stmt, 1, playListNameNew);
+            core->stmtBindInt(stmt, 2, oldId);
+            core->stmtStep(stmt);
+        }
+
+        core->commit();
+    } catch (const DataException &e) {
+        core->rollback();
+        TLog::getInstance().logError(e.errorMessage());
+        result = false;
+    }
+
     Core::stmtFree(stmt);
     return result;
 }

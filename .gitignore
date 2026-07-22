@@ -1,7 +1,5 @@
 CMakeLists.txt.user
-*.c8a2154
 *.user
-*.f0f0bda
 build/
 *.autosave
 /qt/.vs
@@ -9,5 +7,5 @@ qt/CMakePresets.json
 /qt/.idea
 /.vs
 .idea/QtSettings.xml
+/qt/.qoder
 /qt/.qtcreator
-

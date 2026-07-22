@@ -29,26 +29,20 @@ Item {
         preferredHighlightBegin: 0
         preferredHighlightEnd: 0
 
-        model: ListModel{
-            id: newMusicModel
-        }
+        model: MusicLibrary.model()
 
         delegate: CoreMusicLine {
             width: newMusicGrid.width / 3 - 10
-            musicId: inMusicId
             isLittle: true
-            onPlayMusic: MediaPlayer.buildPlayingList([musicId])
+            onPlayMusic: MediaPlayer.buildPlayingList([model.id])
         }
     }
 
     function build(){
-        const newMusicList = SQLData.getNewMusicList();
-        for (const i in newMusicList) {
-            newMusicModel.append({inMusicId: newMusicList[i]})
-        }
+        MusicLibrary.model().loadNewList()
     }
 
     function clear(){
-        newMusicModel.clear()
+        MusicLibrary.model().clear()
     }
 }

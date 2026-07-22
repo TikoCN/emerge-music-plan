@@ -12,6 +12,28 @@ Item {
     id: root
     property string showText: "qrc:/image/seit.png"
 
+    component PlayListRepeater: Repeater {
+        property ListModel listModel
+
+        delegate: TikoButtonDefault {
+            id: norMalButton
+            icon.anchors.leftMargin: TikoSeit.emphasizeMargins
+            icon.enableUnifiedColor: false
+            textLine.text: model.name
+            icon.source: "image://cover/playlistFile?id=" +
+                         model.id.toString() +
+                         "&radius=3"
+            onLeftClicked: {
+                root.showText = textLine.text
+                CoreData.mainTurnMusicList(model.id)
+            }
+            onRightClicked: openPlayListMenu(model.id, model.isDir, model.name)
+            height: 30
+            bgOpacity: 0
+        }
+
+        model: listModel
+    }
 
     Rectangle {
         anchors.fill: parent
@@ -27,7 +49,6 @@ Item {
         radius: 10
     }
 
-    //左侧导航
     ScrollView{
         ScrollBar.vertical.visible: false
         ScrollBar.horizontal.visible: false
@@ -76,7 +97,12 @@ Item {
             anchors.right: parent.right
             anchors.margins: TikoSeit.emphasizeMargins
 
-            //新建列表
+            PlayListRepeater {
+                listModel: ListModel{
+                    id: dirPlayListModel
+                }
+            }
+
             TikoButtonDefault{
                 id: addPlayListButton
                 textLine.text: qsTr("新建列表")
@@ -95,9 +121,10 @@ Item {
                             return
                         }
 
-                        if (SQLData.checkPlayListName(inputText)) {
-                            DataActive.appendPlayList(inputText)
+                        if (MusicLibrary.checkPlayListName(inputText) === 0) {
+                            MusicLibrary.appendPlayList(inputText)
                             inputName.setNormalText()
+                            updatePlayLists()
                         }
                         else {
                             CoreData.sendErrorMsg("列表名不可用")
@@ -106,36 +133,14 @@ Item {
                 }
             }
 
-            // 插入的列表按钮
-            Repeater {
-                id: userPlayListListView
-
-                delegate: TikoButtonDefault {
-                    id: norMalButton
-                    icon.anchors.leftMargin: TikoSeit.emphasizeMargins
-                    icon.enableUnifiedColor: false
-                    textLine.text: name
-                    icon.source: "image://cover/playlistFile?id=" +
-                        playlistId.toString() +
-                        "&radius=3"
-                    onLeftClicked: {
-                        root.showText = textLine.text
-                        CoreData.mainTurnMusicList(playlistId)
-                    }
-                    onRightClicked: openPlayListMenu(playlistId, isDir, name)
-                    height: 30
-                    bgOpacity: 0
-                }
-
-
-                model: ListModel{
+            PlayListRepeater {
+                listModel: ListModel{
                     id: userPlayListModel
                 }
             }
         }
     }
 
-    // 菜单
     Component{
         id: editMusicListMenu
         MenuPlayList {
@@ -156,20 +161,38 @@ Item {
         }
     }
 
+    function updatePlayLists() {
+        userPlayListModel.clear()
+        dirPlayListModel.clear()
+
+        var jsonStr = PlayListLibrary.getAllList()
+        var doc = JSON.parse(jsonStr)
+        for (var i = 0; i < doc.length; i++) {
+            var item = doc[i]
+            if (item["isDir"] === 1) {
+                dirPlayListModel.append({
+                    id: item["playlistId"],
+                    name: item["name"],
+                    isDir: item["isDir"]
+                })
+            } else {
+                userPlayListModel.append({
+                    id: item["playlistId"],
+                    name: item["name"],
+                    isDir: item["isDir"]
+                })
+            }
+        }
+    }
+
     Connections{
         target: CoreData
         function onPlaylistChanged(){
-            userPlayListModel.clear()
-            var length = CoreData.playlist.length
-
-            for (var i=0; i<length; i++){
-                userPlayListModel.append({
-                                          playlistId: CoreData.playlist[i]["playlistId"],
-                                          name: CoreData.playlist[i]["name"],
-                                          isDir: CoreData.playlist[i]["isDir"]
-                                      })
-
-            }
+            updatePlayLists()
         }
+    }
+
+    Component.onCompleted: {
+        updatePlayLists()
     }
 }

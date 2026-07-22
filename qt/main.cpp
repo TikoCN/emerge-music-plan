@@ -11,6 +11,10 @@
 #include "mediaplay/Mediaplayer.h"
 #include "OnLine.h"
 #include "datacore/DataActive.h"
+#include "datacore/MusicLibrary.h"
+#include "datacore/ArtistLibrary.h"
+#include "datacore/AlbumLibrary.h"
+#include "datacore/PlayListLibrary.h"
 #include "sqlite/Sqlite.h"
 #include "basetool/BaseTool.h"
 #include "imageload/ImageControl.h"
@@ -21,16 +25,16 @@ int main(int argc, char *argv[]) {
 
     FileManagement::makeAllDir();
 
-    SQLite *         sql         = &SQLite::getInstance();
-    TLog *           tlog        = &TLog::getInstance();
-    BaseTool *       baseTool    = &BaseTool::getInstance();
-    DataActive *     dataActive  = &DataActive::getInstance();
-    Setting *        seit        = &Setting::getInstance();
-    MediaPlayer *    mediaPlayer = &MediaPlayer::getInstance();
-    TaskCenter *     center      = &TaskCenter::getInstance();
-    OnLine *         onLine      = &OnLine::getInstance();
-    ImageControl *   imgCtr      = &ImageControl::getInstance();
-    ImageProvider *  imgPrd      = new ImageProvider();
+    SQLite *       sql         = &SQLite::getInstance();
+    TLog *         tlog        = &TLog::getInstance();
+    BaseTool *     baseTool    = &BaseTool::getInstance();
+    DataActive *   dataActive  = &DataActive::getInstance();
+    Setting *      seit        = &Setting::getInstance();
+    MediaPlayer *  mediaPlayer = &MediaPlayer::getInstance();
+    TaskCenter *   center      = &TaskCenter::getInstance();
+    OnLine *       onLine      = &OnLine::getInstance();
+    ImageControl * imgCtr      = &ImageControl::getInstance();
+    ImageProvider *imgPrd      = new ImageProvider();
 
     qmlRegisterUncreatableType<Album>("MediaerAPI", 1, 0, "albumData", "无法直接创建Album实例");
     qmlRegisterUncreatableType<Music>("MediaerAPI", 1, 0, "musicData", "无法直接创建Music实例");
@@ -45,6 +49,19 @@ int main(int argc, char *argv[]) {
     qmlRegisterSingletonInstance<DataActive>("MediaerAPI", 1, 0, "DataActive", dataActive);
     qmlRegisterSingletonInstance<SQLite>("MediaerAPI", 1, 0, "SQLData", sql);
     qmlRegisterSingletonInstance<ImageControl>("MediaerAPI", 1, 0, "ImageControl", imgCtr);
+    MusicLibrary *musicLibrary = &MusicLibrary::getInstance();
+    ArtistLibrary *artistLibrary = &ArtistLibrary::getInstance();
+    AlbumLibrary *albumLibrary = &AlbumLibrary::getInstance();
+    PlayListLibrary *playListLibrary = &PlayListLibrary::getInstance();
+    qmlRegisterSingletonInstance<MusicLibrary>("MediaerAPI", 1, 0, "MusicLibrary", musicLibrary);
+    qmlRegisterSingletonInstance<ArtistLibrary>("MediaerAPI", 1, 0, "ArtistLibrary", artistLibrary);
+    qmlRegisterSingletonInstance<AlbumLibrary>("MediaerAPI", 1, 0, "AlbumLibrary", albumLibrary);
+    qmlRegisterSingletonInstance<PlayListLibrary>("MediaerAPI", 1, 0, "PlayListLibrary", playListLibrary);
+
+    qRegisterMetaType<MusicLibraryModel*>();
+    qRegisterMetaType<AlbumLibraryModel*>();
+    qRegisterMetaType<ArtistLibraryModel*>();
+    qRegisterMetaType<PlayListLibraryModel*>();
 
     qmlRegisterType<FileManagement>("DataType", 1, 0, "FileMan");
     qmlRegisterType<TypeConversion>("DataType", 1, 0, "TypeConversion");
@@ -59,6 +76,11 @@ int main(int argc, char *argv[]) {
 
     QObject::connect(onLine, &OnLine::lrcDowned, mediaPlayer, &MediaPlayer::loadLrcList);
 
+
+    QObject::connect(sql, &SQLite::startCheckFileExist, &TaskCenter::getInstance(), &TaskCenter::checkFileExist);
+    QObject::connect(&TaskCenter::getInstance(), &TaskCenter::fileCheckFinished, sql, &SQLite::onCheckFileFinished);
+
+    sql->startClearInvalidData();
     seit->loadMusicCores();
 
     QQmlApplicationEngine engine;

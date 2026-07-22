@@ -247,13 +247,13 @@ TikoFrameless{
     //切换到编辑页
     function stackCenter(){
         // 移动到动画结束
-        // musicPlayPage.actionEnd()
+        musicPlayPage.actionEnd()
         trunToMainAnimation.start()
     }
 
     //清理数据
     function clearData(){
-        //playingPlayList.clearData()
+        playingPlayList.clearData()
         mainView.turnToSeit()
     }
 
@@ -264,6 +264,7 @@ TikoFrameless{
         }
     }
 
+    // 程序开始
     Component.onCompleted: {
         load()
         MediaPlayer.initData()
@@ -283,7 +284,7 @@ TikoFrameless{
     }
 
     function load() {
-        CoreData.playlist = JSON.parse(SQLData.getAllList())
+        CoreData.playlist = JSON.parse(PlayListLibrary.getAllList())
         mainView.buildData()
     }
 }

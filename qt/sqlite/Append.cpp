@@ -377,7 +377,7 @@ bool Append::appendUserPlayList(const QString &name) const {
         core->stmtBindText(stmt, 1, name);
         core->stmtBindInt(stmt, 2, 0);
         core->stmtBindText(stmt, 3, "none");
-        core->stmtBindInt(stmt, 4, 1);
+        core->stmtBindInt(stmt, 4, 0);
         core->stmtStep(stmt);
     } catch (const DataException &e) {
         TLog::getInstance().logError(e.errorMessage());
@@ -494,6 +494,196 @@ bool Append::appendPlayingListMusic(const QList<int> &musicList, int start) cons
             core->stmtBindInt(stmt, 2, start + i);
             core->stmtStep(stmt);
         }
+
+        core->commit();
+    } catch (const DataException &e) {
+        core->rollback();
+        TLog::getInstance().logError(e.errorMessage());
+        result = false;
+    }
+
+    Core::stmtFree(stmt);
+    return result;
+}
+
+bool Append::addArtistMusicToPlayList(const QString &artistName, const QString &playListName) const {
+    bool          result     = true;
+    sqlite3_stmt *stmt       = nullptr;
+    int           artistId   = -1;
+    int           playListId = -1;
+
+    try {
+        core->begin();
+
+        const auto getArtistIdSql = QString("SELECT %1 FROM %2 WHERE %3 = ? LIMIT 1")
+                                   .arg(LiteralConstant::Column::ARTIST_ID)
+                                   .arg(LiteralConstant::Table::ARTIST)
+                                   .arg(LiteralConstant::Column::ARTIST_NAME);
+
+        const auto getPlayListIdSql = QString("SELECT %1 FROM %2 WHERE %3 = ? LIMIT 1")
+                                     .arg(LiteralConstant::Column::PLAYLIST_ID)
+                                     .arg(LiteralConstant::Table::PLAYLIST)
+                                     .arg(LiteralConstant::Column::PLAYLIST_NAME);
+
+        core->stmtPrepare(&stmt, getArtistIdSql.toUtf8());
+        core->stmtBindText(stmt, 1, artistName);
+        if (core->stmtStep(stmt)) {
+            artistId = sqlite3_column_int(stmt, 0);
+        }
+        Core::stmtFree(stmt);
+        stmt = nullptr;
+
+        core->stmtPrepare(&stmt, getPlayListIdSql.toUtf8());
+        core->stmtBindText(stmt, 1, playListName);
+        if (core->stmtStep(stmt)) {
+            playListId = sqlite3_column_int(stmt, 0);
+        }
+        Core::stmtFree(stmt);
+        stmt = nullptr;
+
+        if (artistId == -1) {
+            throw DataException("歌手不存在");
+        }
+        if (playListId == -1) {
+            throw DataException("播放列表不存在");
+        }
+
+        const auto appendSql = QString(
+                                   "INSERT OR IGNORE INTO %1(%2, %3) "
+                                   "SELECT ?, %3 FROM %4 WHERE %5 = ?")
+                              .arg(LiteralConstant::Table::PLAYLIST_MUSIC)
+                              .arg(LiteralConstant::Column::PLAYLIST_ID)
+                              .arg(LiteralConstant::Column::MUSIC_ID)
+                              .arg(LiteralConstant::Table::ARTIST_MUSIC)
+                              .arg(LiteralConstant::Column::ARTIST_ID);
+        core->stmtPrepare(&stmt, appendSql.toUtf8());
+        core->stmtBindInt(stmt, 1, playListId);
+        core->stmtBindInt(stmt, 2, artistId);
+        core->stmtStep(stmt);
+
+        core->commit();
+    } catch (const DataException &e) {
+        core->rollback();
+        TLog::getInstance().logError(e.errorMessage());
+        result = false;
+    }
+
+    Core::stmtFree(stmt);
+    return result;
+}
+
+bool Append::addAlbumMusicToPlayList(const QString &albumName, const QString &playListName) const {
+    bool          result     = true;
+    sqlite3_stmt *stmt       = nullptr;
+    int           albumId    = -1;
+    int           playListId = -1;
+
+    try {
+        core->begin();
+
+        const auto getAlbumIdSql = QString("SELECT %1 FROM %2 WHERE %3 = ? LIMIT 1")
+                                  .arg(LiteralConstant::Column::ALBUM_ID)
+                                  .arg(LiteralConstant::Table::ALBUM)
+                                  .arg(LiteralConstant::Column::ALBUM_NAME);
+
+        const auto getPlayListIdSql = QString("SELECT %1 FROM %2 WHERE %3 = ? LIMIT 1")
+                                     .arg(LiteralConstant::Column::PLAYLIST_ID)
+                                     .arg(LiteralConstant::Table::PLAYLIST)
+                                     .arg(LiteralConstant::Column::PLAYLIST_NAME);
+
+        core->stmtPrepare(&stmt, getAlbumIdSql.toUtf8());
+        core->stmtBindText(stmt, 1, albumName);
+        if (core->stmtStep(stmt)) {
+            albumId = sqlite3_column_int(stmt, 0);
+        }
+        Core::stmtFree(stmt);
+        stmt = nullptr;
+
+        core->stmtPrepare(&stmt, getPlayListIdSql.toUtf8());
+        core->stmtBindText(stmt, 1, playListName);
+        if (core->stmtStep(stmt)) {
+            playListId = sqlite3_column_int(stmt, 0);
+        }
+        Core::stmtFree(stmt);
+        stmt = nullptr;
+
+        if (albumId == -1) {
+            throw DataException("专辑不存在");
+        }
+        if (playListId == -1) {
+            throw DataException("播放列表不存在");
+        }
+
+        const auto appendSql = QString(
+                                   "INSERT OR IGNORE INTO %1(%2, %3) "
+                                   "SELECT ?, %3 FROM %4 WHERE %5 = ?")
+                              .arg(LiteralConstant::Table::PLAYLIST_MUSIC)
+                              .arg(LiteralConstant::Column::PLAYLIST_ID)
+                              .arg(LiteralConstant::Column::MUSIC_ID)
+                              .arg(LiteralConstant::Table::ALBUM_MUSIC)
+                              .arg(LiteralConstant::Column::ALBUM_ID);
+        core->stmtPrepare(&stmt, appendSql.toUtf8());
+        core->stmtBindInt(stmt, 1, playListId);
+        core->stmtBindInt(stmt, 2, albumId);
+        core->stmtStep(stmt);
+
+        core->commit();
+    } catch (const DataException &e) {
+        core->rollback();
+        TLog::getInstance().logError(e.errorMessage());
+        result = false;
+    }
+
+    Core::stmtFree(stmt);
+    return result;
+}
+
+bool Append::addPlayListMusicToPlayList(const QString &sourcePlayListName, const QString &targetPlayListName) const {
+    bool          result           = true;
+    sqlite3_stmt *stmt             = nullptr;
+    int           sourcePlayListId = -1;
+    int           targetPlayListId = -1;
+
+    try {
+        core->begin();
+
+        const auto getPlayListIdSql = QString("SELECT %1 FROM %2 WHERE %3 = ? LIMIT 1")
+                                     .arg(LiteralConstant::Column::PLAYLIST_ID)
+                                     .arg(LiteralConstant::Table::PLAYLIST)
+                                     .arg(LiteralConstant::Column::PLAYLIST_NAME);
+
+        core->stmtPrepare(&stmt, getPlayListIdSql.toUtf8());
+        core->stmtBindText(stmt, 1, sourcePlayListName);
+        if (core->stmtStep(stmt)) {
+            sourcePlayListId = sqlite3_column_int(stmt, 0);
+        }
+        core->stmtReset(stmt);
+
+        core->stmtBindText(stmt, 1, targetPlayListName);
+        if (core->stmtStep(stmt)) {
+            targetPlayListId = sqlite3_column_int(stmt, 0);
+        }
+        Core::stmtFree(stmt);
+        stmt = nullptr;
+
+        if (sourcePlayListId == -1) {
+            throw DataException("源播放列表不存在");
+        }
+        if (targetPlayListId == -1) {
+            throw DataException("目标播放列表不存在");
+        }
+
+        const auto appendSql = QString(
+                                   "INSERT OR IGNORE INTO %1(%2, %3) "
+                                   "SELECT ?, %3 FROM %4 WHERE %2 = ?")
+                              .arg(LiteralConstant::Table::PLAYLIST_MUSIC)
+                              .arg(LiteralConstant::Column::PLAYLIST_ID)
+                              .arg(LiteralConstant::Column::MUSIC_ID)
+                              .arg(LiteralConstant::Table::PLAYLIST_MUSIC);
+        core->stmtPrepare(&stmt, appendSql.toUtf8());
+        core->stmtBindInt(stmt, 1, targetPlayListId);
+        core->stmtBindInt(stmt, 2, sourcePlayListId);
+        core->stmtStep(stmt);
 
         core->commit();
     } catch (const DataException &e) {

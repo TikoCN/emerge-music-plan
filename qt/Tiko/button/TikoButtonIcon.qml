@@ -8,7 +8,7 @@ TikoButtonBase {
     property TikoImage icon: iconItem
     property int level: 1
     property double cell: 32
-    property double imgCell: 32
+    property double imgCell: 20
     bgOpacity: 0
     onLevelChanged: {
         switch (level) {
@@ -17,7 +17,7 @@ TikoButtonBase {
             imgCell = 32
             break;
         case 0:
-            cell = 20
+            cell = 32
             imgCell = 20
             break;
         }

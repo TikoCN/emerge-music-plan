@@ -122,20 +122,23 @@ inline void FrequencySpectrum::smoothData() {
 
 inline void FrequencySpectrum::downsampleData() {
     // 降采样
-    unsigned int lastId = 0;
-    double       hz     = 0;
-    const double max    = static_cast<double>(sampleRate) / fftwSize;
-    const double aim    = std::min(60, static_cast<int>(data.length()));
-    const double cell   = max / aim;
+    unsigned int lastId    = 0;
+    double       lastValue = 0.0;
+    double       hz        = 0;
+    const double max       = static_cast<double>(sampleRate) / fftwSize;
+    const double aim       = std::min(60, static_cast<int>(data.length()));
+    const double cell      = max / aim;
 
     for (int i = 0; i < aim; ++i) {
         const double aimN = i * cell;
         hz                = std::exp(aimN);
         const auto n      = static_cast<unsigned int>(hz * static_cast<double>(fftwSize) / static_cast<double>(sampleRate));
-        if (lastId != n && n < data.size()) {
-            data[i] = data[n];
-            lastId  = n;
+        if (lastId != n && n < static_cast<unsigned int>(data.size())) {
+            lastValue = data[n];
+            lastId    = n;
         }
+        // 无论索引是否重复，都写入有效值，避免旧数据残留
+        data[i] = lastValue;
     }
     data.resize(static_cast<int>(aim));
 }

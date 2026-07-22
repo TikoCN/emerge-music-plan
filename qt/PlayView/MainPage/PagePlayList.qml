@@ -4,17 +4,15 @@ import QtQuick.Layouts
 import MediaerAPI   
 import Tiko
 import PlayView
-import DataType
 
 PageBase {
     id: playerPlayList
     property int playlistId: -1
-    property playListData playlist
 
-    sort: playlist.sort
-    duration: playlist.duration
-    name: playlist.name
-    musicCount: playlist.musicCount
+    sort: 0
+    duration: 0
+    name: ""
+    musicCount: 0
 
     normalIcon: "qrc:/image/list.png"
     loadIcon: "image://cover/playlistFile?id=" +
@@ -26,18 +24,21 @@ PageBase {
             return
         playlistId = id
 
-        playlist = DataActive.getPlayListData(id);
+        let playlist = PlayListLibrary.getPlayListData(id);
+        name = playlist.name
+        sort = playlist.sort
+        duration = playlist.duration
+        musicCount = playlist.musicCount
 
         musicList.reset()
     }
+
     musicList.dataLoader.onLoadInitData: {
-        let list = SQLData.getPlayListMusic(playlistId, CoreData.pageSize, 0, sort)
-        musicList.appendList(list)
+        MusicLibrary.model().loadPlayListMusic(playlistId, CoreData.pageSize, 0, sort)
     }
 
     musicList.dataLoader.onLoadData: (index)=>{
-                                         let list = SQLData.getPlayListMusic(playlistId, CoreData.pageSize, musicList.dataLoader.loadPos, sort)
-                                         musicList.appendList(list)
+                                         MusicLibrary.model().loadMorePlayListMusic(playlistId, CoreData.pageSize, musicList.dataLoader.loadPos, sort)
                                      }
 
     musicList.onPlay: (musicId, listId) => {

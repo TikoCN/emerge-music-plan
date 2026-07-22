@@ -43,7 +43,7 @@ Drawer {
         onPlay: (musicId, listId) => {MediaPlayer.playMusicByListId(listId)}
         dataLoader.onLoadData: (index) => {
                                    let list = MediaPlayer.getMusicList(CoreData.pageSize, index)
-                                   appendList(list)
+                                   musicList.model.appendMusicList(list)
                                }
     }
 

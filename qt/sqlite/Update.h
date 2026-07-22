@@ -39,6 +39,10 @@ public:
 
     bool updateAlbumNameKey(const QStringList &albumName, const QStringList &albumNameKey) const;
     bool updateArtistNameKey(const QStringList &artistName, const QStringList &artistNameKey) const;
+
+    bool moveAlbumMusic(const QString &albumName, const QString &albumNameNew) const;
+    bool moveArtistMusic(const QString &artistName, const QString &artistNameNew) const;
+    bool movePlayListMusic(const QString &playListName, const QString &playListNameNew) const;
 };
 
 #endif // UPDATE_H

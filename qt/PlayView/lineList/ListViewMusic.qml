@@ -1,10 +1,9 @@
- import QtQuick
+import QtQuick
 import QtQuick.Controls.Basic
 import QtQuick.Layouts
 import MediaerAPI
 import Tiko
 import PlayView
-import DataType
 
 ListView{
     id: musicListView
@@ -20,45 +19,38 @@ ListView{
     signal play(int musicId, int listId)
     signal createMenu()
 
-    onAtYEndChanged: {
-        if (atYEnd && orientation === ListView.Vertical) dataLoader.loadMore()
-    }
-
-    model: ListModel{
-        id: musicModel
-    }
+    model: MusicLibrary.model()
 
     delegate: CoreMusicLine{
         width: musicListView.width
-        listId: model.listId
-        musicId: model.id
-        onPlayMusic: (musicId, listId) => {musicListView.play(musicId, listId)}
+        listId: index
         isLittle: musicListView.isLittle
-        visible: {
-            if (onlyLove && !isLove) {
-                return false
-            }
-            else {
-                return true
-            }
-        }
+        visible: !onlyLove || model.isLove
+        onPlayMusic: (musicId, listId) => {musicListView.play(musicId, listId)}
     }
 
-    function appendList(list) {
-        for(var i=0; i<list.length; i++){
-            musicModel.append({
-                                  listId: i,
-                                  id: list[i]
-                              })
-        }
+    function loadByKey(key, size, start) {
+        model.loadByKey(key, size, start)
+    }
 
-        if (list.length !== CoreData.pageSize)
-            dataLoader.loadIsFinish = true
-        dataLoader.loadPos += list.length
+    function loadAlbumMusic(albumId, size, start, sort) {
+        model.loadAlbumMusic(albumId, size, start, sort)
+    }
+
+    function loadArtistMusic(artistId, size, start, sort) {
+        model.loadArtistMusic(artistId, size, start, sort)
+    }
+
+    function loadPlayListMusic(playlistId, size, start, sort) {
+        model.loadPlayListMusic(playlistId, size, start, sort)
+    }
+
+    function loadMore(list) {
+        model.appendMusicList(list)
     }
 
     function reset() {
-        musicModel.clear()
+        model.clear()
         dataLoader.reset()
     }
 }

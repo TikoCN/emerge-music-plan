@@ -1,4 +1,4 @@
-import QtQuick
+﻿import QtQuick
 import QtQuick.Controls.Basic
 import QtQuick.Effects
 import MediaerAPI
@@ -8,8 +8,8 @@ Canvas {
     id: drawLoadLine
     height: 0
 
-    property color playingColor: TikoSeit.theme.colorTextHighlight
-    property color normalColor: TikoSeit.theme.colorTextHint
+    property color playingColor: TikoSeit.theme.colorFgDefault
+    property color normalColor: TikoSeit.theme.colorFgHint
     property int lrcId: -1
     property int playingPos: MediaPlayer.player.position
     property int startTime: -1

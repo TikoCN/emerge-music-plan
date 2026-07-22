@@ -107,7 +107,6 @@ qt_add_qml_module(PlayViewLib
         LineLrc/LrcLineDesk.qml
 
         GridButton/GridButtonMusic.qml
-        GridButton/GridButtonBase.qml
         GridButton/GridButtonArtist.qml
         GridButton/GridButtonAlbum.qml
 )

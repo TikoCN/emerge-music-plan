@@ -1,4 +1,4 @@
-import QtQuick
+﻿import QtQuick
 import Tiko
 import PlayView
 import DataType
@@ -42,6 +42,7 @@ TikoMenu{
             TikoMenuItem {
                 text: CoreData.playlist[aim]["name"]
                 enabled: !CoreData.playlist[aim]["isDir"]
+                onTriggered: MusicLibrary.addPlayListMusicToPlayList(playlistMenu.name, CoreData.playlist[aim]["name"])
             }
         }
 
@@ -56,7 +57,8 @@ TikoMenu{
     Component {
         id: inputComponent
         TikoPopupInput {
-
+            orgText: name
+            onAccept: MusicLibrary.moveAlbumMusic(name, newName)
         }
     }
 

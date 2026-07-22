@@ -39,5 +39,9 @@ public:
 
     [[nodiscard]] bool appendPlayingListMusic(int musicId, int position) const;
     [[nodiscard]] bool appendPlayingListMusic(const QList<int> &musicList, int start) const;
+
+    [[nodiscard]] bool addArtistMusicToPlayList(const QString &artistName, const QString &playListName) const;
+    [[nodiscard]] bool addAlbumMusicToPlayList(const QString &albumName, const QString &playListName) const;
+    [[nodiscard]] bool addPlayListMusicToPlayList(const QString &sourcePlayListName, const QString &targetPlayListName) const;
 };
 #endif // APPNED_H

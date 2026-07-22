@@ -1,24 +1,69 @@
 import QtQuick
+import Tiko
 import PlayView
 import MediaerAPI
 
-GridButtonBase {
+GridView {
+    id: gridItem
+
+    property int row: 1
+    property int column: 6
+    property int realCellWidth: gridItem.cellWidth - TikoSeit.emphasizeMargins
+    property bool autoHeightEnable: true
+    property LoadBase dataLoader: LoadBase{}
+    property string currentKey: ""
+
+    height: 50
+    flow: GridView.TopToBottom
+    clip: true
+    currentIndex: 0
+    reuseItems: true
+    highlightRangeMode: ListView.StrictlyEnforceRange
+    preferredHighlightBegin: 0
+    preferredHighlightEnd: 0
+    cellWidth: width / column
+    cellHeight: 100
+
+    model: AlbumLibrary.model()
+
     delegate: ButtonAlbum {
-        albumId: model.id
         width: realCellWidth
         onHeightChanged: setGridHeight(this)
     }
 
-    function appendList(list) {
-        if (!list || list.length === 0) {
-            dataLoader.loadIsFinish = true;
-            return;
+    onAtXEndChanged: {
+        if (flow === 1) {
+            if (atXEnd) {
+                dataLoader.loadMore()
+            }
         }
+    }
 
-        list.forEach(id => {gridModel.append({id: id})})
+    onAtYEndChanged: {
+        if (flow === 0) {
+            if (atYEnd) {
+                dataLoader.loadMore()
+            }
+        }
+    }
 
-        if (list.length !== CoreData.pageSize)
-            dataLoader.loadIsFinish = true
-        dataLoader.loadPos += list.length
+    function setGridHeight(cell) {
+        if (gridItem.cellHeight !== cell.height) {
+            gridItem.cellHeight = cell.height
+            if (autoHeightEnable)
+                gridItem.height = (gridItem.cellHeight + TikoSeit.emphasizeMargins) * Math.max(row, 1)
+        }
+    }
+
+    function reset() {
+        dataLoader.reset()
+    }
+
+    function loadByKey(key, size, offset) {
+        AlbumLibrary.model().loadByKey(key, size, offset)
+    }
+
+    function loadMoreByKey(key, size, offset) {
+        AlbumLibrary.model().loadMoreByKey(key, size, offset)
     }
 }

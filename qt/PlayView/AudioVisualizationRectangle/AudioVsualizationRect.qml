@@ -1,4 +1,4 @@
-import QtQuick
+﻿import QtQuick
 import PlayView
 import MediaerAPI
 import Tiko

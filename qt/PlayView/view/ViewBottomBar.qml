@@ -1,4 +1,4 @@
-import QtQuick
+﻿import QtQuick
 import QtQuick.Window
 import QtQuick.Controls.Basic
 import QtQuick.Layouts
@@ -256,7 +256,7 @@ Item {
 
         function onSourceChanged() {
             if (MediaPlayer.playingMusic !== null) {
-                var Json = DataActive.getMusicJson(MediaPlayer.playingMusicId)
+                var Json = MusicLibrary.getMusicJson(MediaPlayer.playingMusicId)
                 artist.text = Json.artist
                 title.text = Json.title
                 cover.source = "image://cover/musicOnLine?id=" +

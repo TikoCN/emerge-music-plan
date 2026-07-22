@@ -8,13 +8,21 @@
 class MediaPlayer : public LrcDataControl {
     Q_OBJECT
 
+public:
+    // 播放循环模式枚举，替代魔法数字 0/1/default
+    enum class LoopType {
+        Sequential = 0, // 顺序播放
+        Random     = 1, // 随机播放
+        RepeatOne  = 2  // 单曲循环
+    };
+
 private:
     MediaPlayer();
 
-    QList<int> m_musicList;          //正在播放列表
-    int        m_loopType;           //播放种类
-    int        m_PlayingMusicListId; //正在播放歌曲的列表id
-    int        m_playingMusicId;     // 正在播放音乐id
+    QList<int> m_musicList;             //正在播放列表
+    LoopType   m_loopType;              //播放种类
+    int        m_playingMusicListId;    //正在播放歌曲的列表id（修正命名大写错误）
+    int        m_playingMusicId;        // 正在播放音乐id
     MusicPtr   m_playingMusic;
 
     Q_PROPERTY(int playingMusicId READ playingMusicId CONSTANT)

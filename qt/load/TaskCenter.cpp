@@ -1,13 +1,18 @@
 #include "TaskCenter.h"
+
+#include <QStack>
+
 #include "BuildMusicCore.h"
 #include "SelectMusicUrl.h"
 #include "Setting.h"
 #include "sqlite/Sqlite.h"
 #include "datacore/DataActive.h"
 #include "Tlog.h"
+#include "FileExistCheckTask.h"
 
 TaskCenter::TaskCenter() {
     m_pool = new QThreadPool;
+    m_work = 0;
 }
 
 TaskCenter::~TaskCenter() {
@@ -15,83 +20,74 @@ TaskCenter::~TaskCenter() {
     delete m_pool;
 }
 
-
 /*
- *遍历文件夹得到所有子文件
+ * 迭代式遍历目录，避免深层递归导致栈溢出
  */
 void TaskCenter::filterFileInfo(const QStringList &dirPath) {
-    for (const auto &i: dirPath) {
-        QDir dir(QUrl(i).toLocalFile());
-
-        //得到子文件
-        dir.setFilter(QDir::Files | QDir::NoDotAndDotDot);
-        QFileInfoList fileList = dir.entryInfoList();
-        m_fileInfoList.append(fileList);
-
-        //得到子文件夹
-        dir.setFilter(QDir::Dirs | QDir::NoDotAndDotDot);
-        filterFileInfo(dir.entryInfoList());
+    QStack<QDir> stack;
+    for (const auto &path: dirPath) {
+        stack.push(QDir(QUrl(path).toLocalFile()));
     }
 
+    while (!stack.isEmpty()) {
+        QDir dir = stack.pop();
+
+        // 收集当前目录下的文件
+        dir.setFilter(QDir::Files | QDir::NoDotAndDotDot);
+        m_fileInfoList.append(dir.entryInfoList());
+
+        // 将子目录压栈
+        dir.setFilter(QDir::Dirs | QDir::NoDotAndDotDot);
+        for (const QFileInfo &subDir: dir.entryInfoList()) {
+            stack.push(QDir(subDir.filePath()));
+        }
+    }
+
+    // 日志仅在顶层调用完成后打印一次
     TLog::getInstance().logLoad(QString("文件数量列表加载完成，共 %1").arg(m_fileInfoList.size()));
 }
 
-// 变量文件夹，捕获所有的音乐文件
-void TaskCenter::filterFileInfo(const QFileInfoList &fileInfoList) {
-    for (const QFileInfo &i: fileInfoList) {
-        QDir dir(i.filePath());
-
-        //得到子文件
-        dir.setFilter(QDir::Files | QDir::NoDotAndDotDot);
-        QFileInfoList fileList = dir.entryInfoList();
-        m_fileInfoList.append(fileList);
-
-        //得到子文件夹
-        dir.setFilter(QDir::Dirs | QDir::NoDotAndDotDot);
-        filterFileInfo(dir.entryInfoList());
-    }
-}
-
 void TaskCenter::selectFile() {
-    long long cell = 0;
     m_pool->setMaxThreadCount(Setting::getInstance().getMaxThreadNumber());
     m_work = 0;
 
-    for (long long i = 0; i < m_fileInfoList.size(); i += cell) {
+    const int total = static_cast<int>(m_fileInfoList.size());
+    for (int i = 0; i < total; i += BATCH_SIZE_SELECT) {
         m_work++;
-        cell = 20;
-        if (i + cell >= m_fileInfoList.size()) cell = m_fileInfoList.size() - i;
-        auto *task = new SelectMusicUrl(m_fileInfoList.mid(i, cell));
-        connect(task, &SelectMusicUrl::fileSelected, this, &TaskCenter::appendInfo);
-
+        const int count = qMin(BATCH_SIZE_SELECT, total - i);
+        auto *    task  = new SelectMusicUrl(m_fileInfoList.mid(i, count));
+        // QueuedConnection 确保槽在主线程中执行，保证共享数据访问安全
+        connect(task, &SelectMusicUrl::fileSelected, this, &TaskCenter::appendInfo,
+                Qt::QueuedConnection);
         m_pool->start(task);
     }
     m_fileInfoList.clear();
 }
 
 void TaskCenter::loadMedia() {
-    long long cell = 0;
     m_pool->setMaxThreadCount(Setting::getInstance().getMaxThreadNumber());
     m_work = 0;
 
     if (m_fileInfoList.empty()) {
         emit DataActive::getInstance().finish();
         TLog::getInstance().logLoad("加载完成");
+        return;
     }
 
-    for (long long i = 0; i < m_fileInfoList.size(); i += cell) {
+    const int total = static_cast<int>(m_fileInfoList.size());
+    for (int i = 0; i < total; i += BATCH_SIZE_LOAD) {
         m_work++;
-        cell = 20;
-        if (i + cell >= m_fileInfoList.size()) cell = m_fileInfoList.size() - i;
-        auto *task = new BuildMusicCore(m_fileInfoList.mid(i, cell));
-        connect(task, &BuildMusicCore::dataLoaded, this, &TaskCenter::appendMedia);
-
+        const int count = qMin(BATCH_SIZE_LOAD, total - i);
+        auto *    task  = new BuildMusicCore(m_fileInfoList.mid(i, count));
+        // QueuedConnection 确保槽在主线程中执行，保证共享数据访问安全
+        connect(task, &BuildMusicCore::dataLoaded, this, &TaskCenter::appendMedia,
+                Qt::QueuedConnection);
         m_pool->start(task);
     }
 }
 
 /*
- *删除数据
+ * 删除数据
  */
 void TaskCenter::clearData() {
     m_dataList.clear();
@@ -99,6 +95,7 @@ void TaskCenter::clearData() {
     m_artistSet.clear();
     m_playlistSet.clear();
     m_artistMusicList.clear();
+    m_albumMusicList.clear(); // 补上之前遗漏的清理
     m_playlistMusicList.clear();
 }
 
@@ -109,8 +106,7 @@ void TaskCenter::start() {
 
 void TaskCenter::appendInfo(const QFileInfoList &fileInfoList) {
     m_fileInfoList.append(fileInfoList);
-    m_work--;
-    if (m_work == 0) {
+    if (--m_work == 0) {
         QFileInfoList newInfoList;
         TLog::getInstance().logLoad(QString("sql筛选拥有歌曲文件，共 %1").arg(m_fileInfoList.size()));
 
@@ -123,44 +119,72 @@ void TaskCenter::appendInfo(const QFileInfoList &fileInfoList) {
 }
 
 void TaskCenter::appendMedia(const QList<MediaData> &dataList) {
-    m_dataList.append(dataList);
+    // 修复：只插入一次，去除之前循环内的重复 append
     for (const MediaData &data: dataList) {
         static QRegularExpression rx("[,;]+");
+
+        m_dataList.append(data);
 
         const auto artistList = data.artist.split(rx);
         for (const QString &artist: artistList) {
             m_artistSet.insert(artist);
-            QPair<QString, QString> pair;
-            pair.first = data.url;
-            pair.second = artist;
-            m_artistMusicList.append(pair);
+            m_artistMusicList.append({data.url, artist});
         }
 
         const auto albumList = data.album.split(rx);
         for (const QString &album: albumList) {
             m_albumSet.insert(album);
-            QPair<QString, QString> pair;
-            pair.first = data.url;
-            pair.second = album;
-            m_albumMusicList.append(pair);
+            m_albumMusicList.append({data.url, album});
         }
 
         m_playlistSet.insert(data.dir);
-        m_dataList.append(data);
-        QPair<QString, QString> pair;
-        pair.first = data.url;
-        pair.second = data.dir;
-        m_playlistMusicList.append(pair);
+        m_playlistMusicList.append({data.url, data.dir});
     }
-    m_work--;
 
-    if (m_work == 0) {
+    if (--m_work == 0) {
         writeDataSQL();
         clearData();
-        emit DataActive::getInstance()
-        .
-        finish();
+        emit DataActive::getInstance().finish();
         TLog::getInstance().logLoad("加载完成");
+    }
+}
+
+/*
+ * 纯异步检查文件存在性，去除 QEventLoop 阻塞主线程的问题。
+ * 使用原子计数器，所有任务完成后自动 emit fileCheckFinished。
+ */
+void TaskCenter::checkFileExist(const QList<QPair<int, QString> > &musicDataList) {
+    m_pool->setMaxThreadCount(Setting::getInstance().getMaxThreadNumber());
+
+    const int totalTasks = (musicDataList.size() + BATCH_SIZE_CHECK - 1) / BATCH_SIZE_CHECK;
+
+    if (totalTasks == 0) {
+        emit fileCheckFinished({});
+        return;
+    }
+
+    // 使用共享状态在异步回调中汇总结果
+    auto *counter    = new std::atomic<int>(0);
+    auto *allInvalid = new QList<int>();
+    auto *mutex      = new QMutex();
+
+    for (int i = 0; i < musicDataList.size(); i += BATCH_SIZE_CHECK) {
+        auto *task = new FileExistCheckTask(musicDataList.mid(i, BATCH_SIZE_CHECK));
+        QObject::connect(task, &FileExistCheckTask::checkFinished,
+                         this, [this, counter, allInvalid, mutex, totalTasks](const QList<int> &ids) {
+                             {
+                                 QMutexLocker locker(mutex);
+                                 allInvalid->append(ids);
+                             }
+                             if (++(*counter) >= totalTasks) {
+                                 emit fileCheckFinished(*allInvalid);
+                                 delete counter;
+                                 delete allInvalid;
+                                 delete mutex;
+                             }
+                         },
+                         Qt::QueuedConnection);
+        m_pool->start(task);
     }
 }
 

@@ -7,7 +7,7 @@ import PlayView
 PageButtonBase {
 
     onInitKeyList: {
-        const list = SQLData.getArtistKeys()
+        const list = ArtistLibrary.getArtistKeys()
         listToKeyModel(list)
     }
 
@@ -16,15 +16,11 @@ PageButtonBase {
         flow: GridView.LeftToRight
 
         dataLoader.onLoadInitData: {
-            let list = SQLData.getArtistByKey(currentKey, CoreData.pageSize, 0)
-            appendList(list)
+            ArtistLibrary.model().loadByKey(currentKey, CoreData.pageSize, 0)
         }
 
         dataLoader.onLoadData:(index) => {
-                       let list = SQLData.getArtistByKey(currentKey, CoreData.pageSize, index)
-                       appendList(list)
+                       ArtistLibrary.model().loadMoreByKey(currentKey, CoreData.pageSize, index)
                    }
     }
 }
-
-

@@ -1,10 +1,10 @@
-import QtQuick
+﻿import QtQuick
 import MediaerAPI
 import Tiko
 
 LrcLineBase {
-    playingColor: TikoSeit.theme.colorTextHighlight
-    normalColor: TikoSeit.theme.colorTextHint
+    playingColor: TikoSeit.theme.colorFgDefault
+    normalColor: TikoSeit.theme.colorFgHint
     lrcFont: Setting.lrcFont
     isPlay: MediaPlayer.playingLrcId === lrcId
     onIsPlayChanged: lrcCanvas.requestPaint()

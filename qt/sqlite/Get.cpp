@@ -537,27 +537,32 @@ QHash<int, MusicPtr> Get::getMusic(const QList<int> &idList) const {
 QString Get::getAllList() const {
     QJsonArray array;
     try {
-        // SELECT list_id, name, is_dir, url FROM playlist
         const auto sql = QString("SELECT %1, %2, %3, %4 FROM %5")
-                        .arg(LiteralConstant::Column::PLAYLIST_ID)   // 请确认列名
-                        .arg(LiteralConstant::Column::PLAYLIST_NAME) // 请确认列名
+                        .arg(LiteralConstant::Column::PLAYLIST_ID)
+                        .arg(LiteralConstant::Column::PLAYLIST_NAME)
                         .arg(LiteralConstant::Column::IS_DIR)
                         .arg(LiteralConstant::Column::URL)
                         .arg(LiteralConstant::Table::PLAYLIST);
 
-        const sqlite3_callback callback = [](void *data, int argc, char **argv, char **azColName)-> int {
-            if (data == nullptr) {
-                return SQLITE_ERROR;
+        const sqlite3_callback callback = [](void *data, int argc, char **argv, char **azColName) -> int {
+            if (data == nullptr || argc < 4) {
+                return SQLITE_OK; // 安全跳过
             }
 
-            if (!QFile::exists(QString(argv[3])))
-                return SQLITE_OK;
+            auto *jsons = static_cast<QJsonArray *>(data);
 
-            auto *      jsons = static_cast<QJsonArray *>(data);
+            const int     isDir = argv[2] ? QString(argv[2]).toInt() : 0;
+            const QString url   = argv[3] ? QString(argv[3]) : QString();
+
+            // 只对文件夹类型检查路径存在性
+            if (isDir == 1 && !url.isEmpty() && !QFile::exists(url)) {
+                return SQLITE_OK; // 文件夹不存在，跳过
+            }
+
             QJsonObject obj;
-            obj.insert("playlistId", QString(argv[0]).toInt());
-            obj.insert("name", QString(argv[1]));
-            obj.insert("isDir", QString(argv[2]).toInt());
+            obj.insert("playlistId", argv[0] ? QString(argv[0]).toInt() : 0);
+            obj.insert("name", argv[1] ? QString(argv[1]) : QString());
+            obj.insert("isDir", isDir);
             jsons->append(obj);
             return SQLITE_OK;
         };
@@ -565,7 +570,7 @@ QString Get::getAllList() const {
         core->sqlExecuteCallBack(sql.toUtf8(), callback, &array);
     } catch (const DataException &e) {
         TLog::getInstance().logError(e.errorMessage());
-        return "";
+        return "[]"; // 返回空数组而非空字符串
     }
 
     const QJsonDocument doc(array);
@@ -788,7 +793,7 @@ int Get::checkPlayListName(const QString &name) const {
         // SELECT COALESCE((SELECT list_id FROM playlist WHERE name = ? LIMIT 1), -1) AS list_id
         const auto sql = QString("SELECT COALESCE("
                              "(SELECT %1 FROM %2 WHERE %3 = ? LIMIT 1), "
-                             "-1) AS %1")
+                             "0) AS %1")
                         .arg(LiteralConstant::Column::PLAYLIST_ID) // 请确认列名
                         .arg(LiteralConstant::Table::PLAYLIST)
                         .arg(LiteralConstant::Column::PLAYLIST_NAME);

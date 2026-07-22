@@ -1,33 +1,27 @@
 import QtQuick
 import Tiko
-import DataType
 import MediaerAPI
 import PlayView
 
 ButtonBase {
     id: artistButton
 
-    property int artistId: -1
-    property artistData artist
-    name: artist.name
-    subtitle: BaseTool.typeConversion.timeToString(Number(artist.duration))
-
+    name: model.name
+    subtitle: BaseTool.typeConversion.timeToString(Number(model.duration))
 
     normalIcon: "qrc:/image/artist.png"
     loadIcon: "image://cover/artistFile?id=" +
-              artistId.toString() +
+              model.id.toString() +
               "&radius=10"
-    onPage: CoreData.mainTurnArtistPlayer(artistId)
+    onPage: CoreData.mainTurnArtistPlayer(model.id)
     onMenu: createMenu(this)
-    onPlay: MediaPlayer.buildPlayingArtist(artistId)
-
-    onArtistIdChanged: artist = DataActive.getArtistData(artistId)
+    onPlay: MediaPlayer.buildPlayingArtist(model.id)
 
     Component {
         id: menuComponent
         MenuArtist {
-            artistId: artistButton.artistId
-            name: artistButton.name
+            artistId: model.id
+            name: model.name
         }
     }
 

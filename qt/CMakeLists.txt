@@ -57,6 +57,7 @@ qt_add_qml_module(appmusicPlay
         load/TaskCenter.h load/TaskCenter.cpp
         load/SelectMusicUrl.h load/SelectMusicUrl.cpp
         load/BuildMusicCore.h load/BuildMusicCore.cpp
+        load/FileExistCheckTask.h load/FileExistCheckTask.cpp
         Tlog.h Tlog.cpp
         NameKey.h NameKey.cpp
         basetool/FileManagement.h basetool/FileManagement.cpp
@@ -64,6 +65,14 @@ qt_add_qml_module(appmusicPlay
         imageload/ImageProvider.h imageload/ImageProvider.cpp
         datacore/DataManager.h datacore/DataManager.cpp
         datacore/DataActive.h datacore/DataActive.cpp
+        datacore/MusicLibrary.h datacore/MusicLibrary.cpp
+        datacore/ArtistLibrary.h datacore/ArtistLibrary.cpp
+        datacore/AlbumLibrary.h datacore/AlbumLibrary.cpp
+        datacore/PlayListLibrary.h datacore/PlayListLibrary.cpp
+        datacore/MusicLibraryModel.h datacore/MusicLibraryModel.cpp
+        datacore/AlbumLibraryModel.h datacore/AlbumLibraryModel.cpp
+        datacore/ArtistLibraryModel.h datacore/ArtistLibraryModel.cpp
+        datacore/PlayListLibraryModel.h datacore/PlayListLibraryModel.cpp
         basetool/TypeConversion.h basetool/TypeConversion.cpp
         basetool/BaseTool.h basetool/BaseTool.cpp
         basetool/QmlActive.h basetool/QmlActive.cpp
