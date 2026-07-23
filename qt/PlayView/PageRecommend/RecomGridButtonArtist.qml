@@ -7,7 +7,7 @@ RecomGridButtonBase {
     text: qsTr("随机推荐歌手")
 
     delegateItem: GridButtonArtist {
-        dataLoader.onLoadInitData: {
+        onResetRequested: {
             ArtistLibrary.model().loadRandList()
         }
     }

@@ -38,11 +38,11 @@ qt_add_qml_module(appmusicPlay
         FFmpeg.h FFmpeg.cpp
 
         sqlite/Sqlite.h sqlite/Sqlite.cpp
-        sqlite/Append.h sqlite/Append.cpp
-        sqlite/Update.h sqlite/Update.cpp
-        sqlite/Get.h sqlite/Get.cpp
         sqlite/Core.h sqlite/Core.cpp
-        sqlite/Delete.h sqlite/Delete.cpp
+        sqlite/MusicRepository.h sqlite/MusicRepository.cpp
+        sqlite/AlbumRepository.h sqlite/AlbumRepository.cpp
+        sqlite/ArtistRepository.h sqlite/ArtistRepository.cpp
+        sqlite/PlayListRepository.h sqlite/PlayListRepository.cpp
 
         baseclass/DataException.h
         baseclass/Album.h baseclass/Album.cpp
@@ -55,8 +55,8 @@ qt_add_qml_module(appmusicPlay
         baseclass/LruCache.h
 
         load/TaskCenter.h load/TaskCenter.cpp
-        load/SelectMusicUrl.h load/SelectMusicUrl.cpp
-        load/BuildMusicCore.h load/BuildMusicCore.cpp
+        load/FileScanner.h load/FileScanner.cpp
+        load/MediaParser.h load/MediaParser.cpp
         load/FileExistCheckTask.h load/FileExistCheckTask.cpp
         Tlog.h Tlog.cpp
         NameKey.h NameKey.cpp
@@ -65,6 +65,7 @@ qt_add_qml_module(appmusicPlay
         imageload/ImageProvider.h imageload/ImageProvider.cpp
         datacore/DataManager.h datacore/DataManager.cpp
         datacore/DataActive.h datacore/DataActive.cpp
+        datacore/DataLoader.h datacore/DataLoader.cpp
         datacore/MusicLibrary.h datacore/MusicLibrary.cpp
         datacore/ArtistLibrary.h datacore/ArtistLibrary.cpp
         datacore/AlbumLibrary.h datacore/AlbumLibrary.cpp

@@ -3,15 +3,18 @@
 #include "sqlite/Sqlite.h"
 #include "ArtistLibraryModel.h"
 
-ArtistLibrary::ArtistLibrary() : m_model(new ArtistLibraryModel(this)) {
+ArtistLibrary::ArtistLibrary() : m_model(new ArtistLibraryModel(this)), m_loader(new DataLoader(this)) {
     connect(&DataActive::getInstance(), &DataActive::buildArtistPlayer,
             this, &ArtistLibrary::buildArtistPlayer);
     connect(&DataActive::getInstance(), &DataActive::finish,
             this, &ArtistLibrary::finish);
+    connect(m_loader, &DataLoader::loadInitData, this, &ArtistLibrary::loadByKey);
+    connect(m_loader, &DataLoader::loadData, this, &ArtistLibrary::loadMoreByKey);
 }
 
 ArtistLibrary::~ArtistLibrary() {
     delete m_model;
+    delete m_loader;
 }
 
 void ArtistLibrary::updateArtistName(const int artistId, const QString &name) {
@@ -48,4 +51,16 @@ bool ArtistLibrary::addArtistMusicToPlayList(const QString &artistName, const QS
 
 ArtistLibraryModel *ArtistLibrary::model() {
     return m_model;
+}
+
+DataLoader *ArtistLibrary::loader() {
+    return m_loader;
+}
+
+void ArtistLibrary::loadByKey(const QString &key) {
+    m_model->loadByKey(key, m_loader->getLoadSize(), 0);
+}
+
+void ArtistLibrary::loadMoreByKey(int index, const QString &key) {
+    m_model->loadMoreByKey(key, m_loader->getLoadSize(), index);
 }

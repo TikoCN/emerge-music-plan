@@ -40,11 +40,10 @@ Drawer {
         anchors.margins: TikoSeit.emphasizeMargins
         clip: true
         isLittle: true
+        customLoadCallback: function(index) {
+            return MediaPlayer.getMusicList(CoreData.pageSize, index)
+        }
         onPlay: (musicId, listId) => {MediaPlayer.playMusicByListId(listId)}
-        dataLoader.onLoadData: (index) => {
-                                   let list = MediaPlayer.getMusicList(CoreData.pageSize, index)
-                                   musicList.model.appendMusicList(list)
-                               }
     }
 
     //关联
@@ -59,6 +58,5 @@ Drawer {
     //建立播放列表
     function buildMusicLine(){
         musicList.reset()
-        musicList.dataLoader.loadMore()
     }
 }

@@ -171,13 +171,13 @@ Item {
             var item = doc[i]
             if (item["isDir"] === 1) {
                 dirPlayListModel.append({
-                    id: item["playlistId"],
+                    id: item["id"],
                     name: item["name"],
                     isDir: item["isDir"]
                 })
             } else {
                 userPlayListModel.append({
-                    id: item["playlistId"],
+                    id: item["id"],
                     name: item["name"],
                     isDir: item["isDir"]
                 })

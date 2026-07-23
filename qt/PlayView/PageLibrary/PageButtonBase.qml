@@ -1,4 +1,4 @@
-﻿import QtQuick
+import QtQuick
 import QtQuick.Layouts
 import Tiko
 import PlayView
@@ -66,6 +66,6 @@ Item {
     Component.onCompleted: init()
 
     onCurrentKeyChanged: {
-        loader.item.reset()
+        loader.item.loadByKey(currentKey)
     }
 }

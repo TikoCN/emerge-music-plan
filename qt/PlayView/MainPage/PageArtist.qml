@@ -31,13 +31,13 @@ PageBase{
         musicList.reset()
     }
 
-    musicList.dataLoader.onLoadInitData: {
-        MusicLibrary.model().loadArtistMusic(artistId, CoreData.pageSize, 0, sort)
+    musicList.customLoadCallback: function(index) {
+        if (index === 0) {
+            MusicLibrary.model().loadArtistMusic(artistId, CoreData.pageSize, 0, sort)
+        } else {
+            MusicLibrary.model().loadMoreArtistMusic(artistId, CoreData.pageSize, index, sort)
+        }
     }
-
-    musicList.dataLoader.onLoadData: (index)=>{
-                                         MusicLibrary.model().loadMoreArtistMusic(artistId, CoreData.pageSize, musicList.dataLoader.loadPos, sort)
-                                     }
 
     musicList.onPlay: (musicId, listId) => {
                           MediaPlayer.buildPlayingArtist(artistId, listId)

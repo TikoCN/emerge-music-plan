@@ -27,7 +27,7 @@ TikoRightVessel {
             anchors.leftMargin: 10
             textLine.text: qsTr("加载音乐")
             onClicked: {
-                CoreData.clearData()
+                //CoreData.clearData()
                 Setting.loadMusicCores()
             }
         }
@@ -89,7 +89,13 @@ TikoRightVessel {
                 id: selectMusicDir
                 onAccepted: {
                     var url = selectMusicDir.selectedFolder
-                    Setting.sourceList.push(url)
+                    var jsUrl = new URL(url)
+                    var localPath = jsUrl.pathname
+
+                    if (Qt.platform.os === "windows") {
+                        localPath = localPath.substr(1)
+                    }
+                    Setting.sourceList.push(localPath)
                     sourceListColumn.bulidSoure()
                 }
             }

@@ -49,25 +49,25 @@ int main(int argc, char *argv[]) {
     qmlRegisterSingletonInstance<DataActive>("MediaerAPI", 1, 0, "DataActive", dataActive);
     qmlRegisterSingletonInstance<SQLite>("MediaerAPI", 1, 0, "SQLData", sql);
     qmlRegisterSingletonInstance<ImageControl>("MediaerAPI", 1, 0, "ImageControl", imgCtr);
-    MusicLibrary *musicLibrary = &MusicLibrary::getInstance();
-    ArtistLibrary *artistLibrary = &ArtistLibrary::getInstance();
-    AlbumLibrary *albumLibrary = &AlbumLibrary::getInstance();
+    MusicLibrary *   musicLibrary    = &MusicLibrary::getInstance();
+    ArtistLibrary *  artistLibrary   = &ArtistLibrary::getInstance();
+    AlbumLibrary *   albumLibrary    = &AlbumLibrary::getInstance();
     PlayListLibrary *playListLibrary = &PlayListLibrary::getInstance();
     qmlRegisterSingletonInstance<MusicLibrary>("MediaerAPI", 1, 0, "MusicLibrary", musicLibrary);
     qmlRegisterSingletonInstance<ArtistLibrary>("MediaerAPI", 1, 0, "ArtistLibrary", artistLibrary);
     qmlRegisterSingletonInstance<AlbumLibrary>("MediaerAPI", 1, 0, "AlbumLibrary", albumLibrary);
     qmlRegisterSingletonInstance<PlayListLibrary>("MediaerAPI", 1, 0, "PlayListLibrary", playListLibrary);
 
-    qRegisterMetaType<MusicLibraryModel*>();
-    qRegisterMetaType<AlbumLibraryModel*>();
-    qRegisterMetaType<ArtistLibraryModel*>();
-    qRegisterMetaType<PlayListLibraryModel*>();
+    qRegisterMetaType<MusicLibraryModel *>();
+    qRegisterMetaType<AlbumLibraryModel *>();
+    qRegisterMetaType<ArtistLibraryModel *>();
+    qRegisterMetaType<PlayListLibraryModel *>();
 
     qmlRegisterType<FileManagement>("DataType", 1, 0, "FileMan");
     qmlRegisterType<TypeConversion>("DataType", 1, 0, "TypeConversion");
     qmlRegisterType<QmlActive>("DataType", 1, 0, "QmlActive");
 
-    QObject::connect(seit, &Setting::loadMusics, center, &TaskCenter::start);
+    QObject::connect(seit, &Setting::loadMusics, center, &TaskCenter::startLoadFile);
 
     QObject::connect(mediaPlayer, &MediaPlayer::downLrc, onLine, &OnLine::downLrc);
     QObject::connect(mediaPlayer->getAudioOutput(), &QAudioOutput::volumeChanged, seit, [](const float volume) {
@@ -79,9 +79,10 @@ int main(int argc, char *argv[]) {
 
     QObject::connect(sql, &SQLite::startCheckFileExist, &TaskCenter::getInstance(), &TaskCenter::checkFileExist);
     QObject::connect(&TaskCenter::getInstance(), &TaskCenter::fileCheckFinished, sql, &SQLite::onCheckFileFinished);
+    QObject::connect(sql, &SQLite::invalidDataCleared, &TaskCenter::getInstance(), &TaskCenter::onInvalidDataCleared);
 
-    sql->startClearInvalidData();
-    seit->loadMusicCores();
+    // 启动同步序列：先清理无效数据，再加载音乐
+    center->startBootSequence();
 
     QQmlApplicationEngine engine;
     QObject::connect(

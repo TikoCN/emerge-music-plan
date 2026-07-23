@@ -1,6 +1,7 @@
 #include "MusicLibraryModel.h"
 #include "sqlite/Sqlite.h"
 #include "datacore/DataActive.h"
+#include "MusicLibrary.h"
 
 MusicLibraryModel::MusicLibraryModel(QObject *parent) : QAbstractListModel(parent) {
 }
@@ -88,6 +89,10 @@ void MusicLibraryModel::loadByKey(const QString &key, int size, int start) {
 
 void MusicLibraryModel::loadMoreByKey(const QString &key, int size, int start) {
     QList<int> ids = SQLite::getInstance().getMusicByKey(key, size, start);
+    if (ids.isEmpty()) {
+        MusicLibrary::getInstance().loader()->setLoadFinish(true);
+        MusicLibrary::getInstance().loader()->setLoadEnable(false);
+    }
     appendMusicList(ids);
 }
 

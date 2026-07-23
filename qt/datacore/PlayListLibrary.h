@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include "baseclass/Playlist.h"
+#include "DataLoader.h"
 
 class PlayListLibraryModel;
 
@@ -34,6 +35,11 @@ public:
 
     Q_INVOKABLE PlayListLibraryModel *model();
 
+    Q_INVOKABLE DataLoader *loader();
+
+    Q_INVOKABLE void loadByKey(const QString &key);
+    Q_INVOKABLE void loadMoreByKey(int index, const QString &key);
+
 signals:
     void buildPlayListPlayer();
     void finish();
@@ -43,6 +49,7 @@ private:
     ~PlayListLibrary() override;
 
     PlayListLibraryModel *m_model;
+    DataLoader *m_loader;
 };
 
 #endif // PLAYLISTLIBRARY_H

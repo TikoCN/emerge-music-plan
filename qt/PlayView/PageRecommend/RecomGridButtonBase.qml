@@ -1,4 +1,4 @@
-﻿import QtQuick
+import QtQuick
 import Tiko
 import PlayView
 import MediaerAPI
@@ -24,7 +24,7 @@ Item {
         sourceComponent: delegateItem
 
         onLoaded: {
-            item.dataLoader.init()
+            item.reset()
         }
     }
 }

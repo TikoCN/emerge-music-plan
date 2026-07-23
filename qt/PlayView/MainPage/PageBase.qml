@@ -1,4 +1,4 @@
-﻿import QtQuick
+import QtQuick
 import QtQuick.Controls.Basic
 import QtQuick.Layouts
 import MediaerAPI
@@ -148,6 +148,5 @@ Item {
         anchors.left: playerPlayList.left
         anchors.right: playerPlayList.right
         anchors.margins: TikoSeit.emphasizeMargins
-        dataLoader.loadEnable: true
     }
 }

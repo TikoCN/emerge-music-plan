@@ -730,9 +730,9 @@ bool FFmpeg::getDict(MediaData *data, const QString &url) {
     QStringList valueList;
     bool        r = getDict(&keyList, &valueList, url);
 
-    data->url          = url;
-    const QString name = url.split("/").last();
-    data->dir          = url.split("/" + name)[0];
+    data->url = url;
+    QFileInfo fileInfo(url);
+    data->dir = fileInfo.path();
 
     for (int i = 0; i < keyList.size(); ++i) {
         if (keyList[i].compare("title", Qt::CaseInsensitive) == 0) {

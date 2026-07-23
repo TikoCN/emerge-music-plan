@@ -14,7 +14,7 @@ AlbumPtr DataManager::getAlbumCore(const int id) {
     if (m_albumHash.contains(id)) {
         album = m_albumHash.value(id);
     } else {
-        album = SQLite::getInstance().getPort.getAlbum(id);
+        album = SQLite::getInstance().albumRepository.getAlbum(id);
 
         if (album != nullptr) {
             m_albumHash.insert(id, album);
@@ -69,7 +69,7 @@ ArtistPtr DataManager::getArtistCore(const int id) {
     if (m_artistHash.contains(id)) {
         artist = m_artistHash.value(id);
     } else {
-        artist = SQLite::getInstance().getPort.getArtist(id);
+        artist = SQLite::getInstance().artistRepository.getArtist(id);
         if (artist != nullptr) {
             m_artistHash.insert(id, artist);
         } else {
@@ -105,7 +105,7 @@ MusicPtr DataManager::getMusicCore(const int id) {
     if (m_musicHash.contains(id)) {
         music = m_musicHash.value(id);
     } else {
-        music = SQLite::getInstance().getPort.getMusic(id);
+        music = SQLite::getInstance().musicRepository.getMusic(id);
         if (music != nullptr) {
             m_musicHash.insert(id, music);
         } else {
@@ -129,7 +129,7 @@ QList<MusicPtr> DataManager::getMusicCoreList(const QList<int> &idList) {
         else
             musicList.append(m_musicHash.value(i));
     }
-    const QHash<int, MusicPtr> hash = SQLite::getInstance().getPort.getMusic(newIdList);
+    const QHash<int, MusicPtr> hash = SQLite::getInstance().musicRepository.getMusic(newIdList);
     m_musicHash.insert(hash);
 
     musicList.append(hash.values());
@@ -154,7 +154,7 @@ PlayListPtr DataManager::getPlayListCore(const int id) {
     if (m_playlistHash.contains(id)) {
         playlist = m_playlistHash.value(id);
     } else {
-        playlist = SQLite::getInstance().getPort.getList(id);
+        playlist = SQLite::getInstance().playListRepository.getList(id);
         if (playlist != nullptr) {
             m_playlistHash.insert(id, playlist);
         } else {
@@ -213,28 +213,33 @@ void DataManager::deleteOutCache(CORE_TYPE type, int id) {
         m_deleteList.append(pair);
     }
 
-    //删除
+    //删除 - 记录需要删除的项，在解锁后处理
+    QPair<CORE_TYPE, int> toDelete;
+    bool needDelete = false;
     if (m_deleteList.size() > 50) {
-        const auto [fst, snd] = m_deleteList.takeFirst();
-        m_deleteListMutex.unlock();
+        toDelete = m_deleteList.takeFirst();
+        needDelete = true;
+    }
 
-        switch (fst) {
+    m_deleteListMutex.unlock();
+
+    // 在解锁后执行删除操作，避免死锁
+    if (needDelete) {
+        switch (toDelete.first) {
             case ALBUM:
-                releaseAlbum(snd);
+                releaseAlbum(toDelete.second);
                 break;
             case ARTIST:
-                releaseArtist(snd);
+                releaseArtist(toDelete.second);
                 break;
             case MUSIC:
-                releaseMusic(snd);
+                releaseMusic(toDelete.second);
                 break;
             case PLAYLIST:
-                releasePlayList(snd);
+                releasePlayList(toDelete.second);
                 break;
             default:
                 break;
         }
-    } else {
-        m_deleteListMutex.unlock();
     }
 }

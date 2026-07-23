@@ -1,4 +1,4 @@
-import QtQuick
+﻿import QtQuick
 import Tiko
 import PlayView
 import MediaerAPI
@@ -10,8 +10,8 @@ GridView {
     property int column: 6
     property int realCellWidth: gridItem.cellWidth - TikoSeit.emphasizeMargins
     property bool autoHeightEnable: true
-    property LoadBase dataLoader: LoadBase{}
     property string currentKey: ""
+    signal resetRequested()
 
     height: 50
     flow: GridView.TopToBottom
@@ -35,7 +35,7 @@ GridView {
     onAtXEndChanged: {
         if (flow === 1) {
             if (atXEnd) {
-                dataLoader.loadMore()
+                MusicLibrary.loader().loadMore()
             }
         }
     }
@@ -43,7 +43,7 @@ GridView {
     onAtYEndChanged: {
         if (flow === 0) {
             if (atYEnd) {
-                dataLoader.loadMore()
+                MusicLibrary.loader().loadMore()
             }
         }
     }
@@ -57,14 +57,12 @@ GridView {
     }
 
     function reset() {
-        dataLoader.reset()
+        MusicLibrary.loader().reset()
+        resetRequested()
     }
 
-    function loadByKey(key, size, offset) {
-        MusicLibrary.model().loadByKey(key, size, offset)
-    }
-
-    function loadMoreByKey(key, size, offset) {
-        MusicLibrary.model().loadMoreByKey(key, size, offset)
+    function loadByKey(key) {
+        MusicLibrary.loader().setCurrentKey(key)
+        MusicLibrary.loader().reset()
     }
 }
