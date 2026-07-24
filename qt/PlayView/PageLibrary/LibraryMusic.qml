@@ -3,10 +3,10 @@ import Tiko
 import MediaerAPI
 import PlayView
 
-PageButtonBase {
+LibraryPage {
 
     onInitKeyList: {
-        const list = MusicLibrary.getMusicKeys()
+        const list = MusicLibrary.getKeys()
         listToKeyModel(list)
     }
 

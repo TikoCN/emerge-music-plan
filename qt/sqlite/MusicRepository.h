@@ -10,26 +10,26 @@ private:
     Core *core;
 
 public:
-    explicit MusicRepository(Core *core) : core(core) {}
+    explicit MusicRepository(Core *core)
+        : core(core) {
+    }
 
-    [[nodiscard]] QStringList getMusicKeys() const;
-    [[nodiscard]] QList<int> getMusicByKey(const QString &key, int size, int start) const;
-    [[nodiscard]] MusicPtr getMusic(int id) const;
-    [[nodiscard]] QHash<int, MusicPtr> getMusic(const QList<int> &idList) const;
-    [[nodiscard]] QString getMusicUrl(int id) const;
-    [[nodiscard]] QList<int> getMusicRandList(int length = -1) const;
-    [[nodiscard]] QList<int> getNewMusicList() const;
-    [[nodiscard]] QList<int> getReadMoreList() const;
+    [[nodiscard]] QStringList          getKeys() const;
+    [[nodiscard]] QList<int>           getByKey(const QString &key, int size, int start) const;
+    [[nodiscard]] MusicPtr             get(int id) const;
+    [[nodiscard]] QHash<int, MusicPtr> get(const QList<int> &idList) const;
+    [[nodiscard]] QString              getUrl(int id) const;
+    [[nodiscard]] QList<int>           getRandList(int length = -1) const;
+    [[nodiscard]] QList<int>           getMostNew() const;
+    [[nodiscard]] QList<int>           getReadMore() const;
+    [[nodiscard]] QList<int>           getMostPlayed() const;
 
-    [[nodiscard]] bool appendMusic(const MediaData &data) const;
-    [[nodiscard]] bool appendMusic(const QList<MediaData> &data) const;
+    [[nodiscard]] bool append(const QList<MediaData> &data) const;
 
-    bool updateMusic(const MusicPtr &music) const;
-    bool updateMusic(const QList<MusicPtr> &musicList) const;
+    bool update(const MusicPtr &music) const;
 
-    [[nodiscard]] QString getAllList() const;
-    [[nodiscard]] QList<QPair<int, QString>> getAllMusicData() const;
-    [[nodiscard]] bool clearInvalidData(const QList<int> &invalidMusicIds) const;
+    [[nodiscard]] QList<QPair<int, QString> > getAllData() const;
+    [[nodiscard]] bool                        clearInvalidData(const QList<int> &invalidMusicIds) const;
 };
 
 #endif // MUSICREPOSITORY_H

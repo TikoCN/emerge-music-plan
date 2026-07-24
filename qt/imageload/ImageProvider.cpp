@@ -40,7 +40,7 @@ void ImageResponse::buildRoundImage() {
 
 void ImageResponse::loadMusicCover(const bool isOnline) {
     FFmpeg        ffmpeg;
-    const QString musicUrl = SQLite::getInstance().musicRepository.getMusicUrl(m_loadMusicId);
+    const QString musicUrl = SQLite::getInstance().musicRepository.getUrl(m_loadMusicId);
     QString       errorId  = tr("歌曲ID: ") +
                       QString::number(m_loadMusicId);
     const QString coverUrl = FileManagement::getBaseUrl(musicUrl) + ".jpg";
@@ -85,7 +85,7 @@ void ImageResponse::loadArtistCover(const bool isOnline) {
 
     // 加载”歌手“第一首”歌曲“作为封面
     if (isNoLoad) {
-        m_loadMusicId = SQLite::getInstance().artistRepository.getArtistMusicFirst(m_loadId);
+        m_loadMusicId = SQLite::getInstance().artistRepository.getMusicFirst(m_loadId);
         loadMusicCover(m_loadMusicId);
     }
 }
@@ -112,7 +112,7 @@ void ImageResponse::loadAlbumCover(const bool isOnline) {
 
     // 加载"专辑"第一首"歌曲"作为封面
     if (isNoLoad) {
-        m_loadMusicId = SQLite::getInstance().albumRepository.getAlbumMusicFirst(m_loadId);
+        m_loadMusicId = SQLite::getInstance().albumRepository.getMusicFirst(m_loadId);
         loadMusicCover(m_loadMusicId);
     }
 }

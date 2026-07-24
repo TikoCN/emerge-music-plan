@@ -66,6 +66,6 @@ TikoPopup {
 
 
     function setNormalText(){
-        inputLine.input.text = orgText
+        inputLine.text = orgText
     }
 }

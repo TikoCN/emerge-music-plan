@@ -1,4 +1,4 @@
-﻿import QtQuick
+import QtQuick
 import Tiko
 import DataType
 import MediaerAPI
@@ -47,7 +47,7 @@ TikoMenu {
             id: addMenu
             TikoMenuItem {
                 text: CoreData.playlist[aim]["name"]
-                onTriggered: MusicLibrary.addArtistMusicToPlayList(artistMenu.name, CoreData.playlist[aim]["name"])
+                onTriggered: ArtistLibrary.addMusicToPlayList(artistMenu.name, CoreData.playlist[aim]["name"])
                 enabled: !CoreData.playlist[aim]["isDir"]
             }
         }
@@ -77,7 +77,7 @@ TikoMenu {
         id: inputComponent
         TikoPopupInput {
             orgText: name
-            onAccept: MusicLibrary.moveArtistMusic(name, newName)
+            onAccept: ArtistLibrary.moveMusic(name, newName)
         }
     }
 

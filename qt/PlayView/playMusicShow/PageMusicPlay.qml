@@ -1,4 +1,4 @@
-﻿import QtQuick.Controls.Basic
+import QtQuick.Controls.Basic
 import QtQuick
 import QtQuick.Effects
 import MediaerAPI
@@ -46,7 +46,7 @@ MouseArea {
         Connections{
             target: MediaPlayer.player
             function onSourceChanged(){
-                const json = MusicLibrary.getMusicJson(MediaPlayer.playingMusicId);
+                const json = MusicLibrary.getJson(MediaPlayer.playingMusicId);
                 artist = json.artist
                 title = json.title
                 icon = "image://cover/musicOnLine?id=" +

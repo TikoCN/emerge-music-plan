@@ -1,10 +1,8 @@
 #include "MusicRepository.h"
-#include <QJsonDocument>
-#include <QJsonObject>
 #include "baseclass/DataException.h"
 #include "NameKey.h"
 
-QStringList MusicRepository::getMusicKeys() const {
+QStringList MusicRepository::getKeys() const {
     QStringList keyList;
     try {
         const auto sql = QString("SELECT DISTINCT %1 FROM %2 ORDER BY %1 ASC")
@@ -25,7 +23,7 @@ QStringList MusicRepository::getMusicKeys() const {
     return keyList;
 }
 
-QList<int> MusicRepository::getMusicByKey(const QString &key, const int size, const int start) const {
+QList<int> MusicRepository::getByKey(const QString &key, const int size, const int start) const {
     QList<int>    list;
     sqlite3_stmt *stmt = nullptr;
 
@@ -50,7 +48,7 @@ QList<int> MusicRepository::getMusicByKey(const QString &key, const int size, co
     return list;
 }
 
-QString MusicRepository::getMusicUrl(const int id) const {
+QString MusicRepository::getUrl(const int id) const {
     sqlite3_stmt *stmt = nullptr;
     QString       url;
     try {
@@ -69,17 +67,17 @@ QString MusicRepository::getMusicUrl(const int id) const {
     return url;
 }
 
-MusicPtr MusicRepository::getMusic(const int id) const {
+MusicPtr MusicRepository::get(const int id) const {
     QList<int> idList;
     idList.append(id);
 
-    if (const QHash<int, MusicPtr> hash = getMusic(idList); hash.contains(id)) {
+    if (const QHash<int, MusicPtr> hash = get(idList); hash.contains(id)) {
         return hash.value(id);
     }
     return nullptr;
 }
 
-QHash<int, MusicPtr> MusicRepository::getMusic(const QList<int> &idList) const {
+QHash<int, MusicPtr> MusicRepository::get(const QList<int> &idList) const {
     QHash<int, MusicPtr> hash;
     sqlite3_stmt *       stmt = nullptr;
     try {
@@ -135,7 +133,7 @@ QHash<int, MusicPtr> MusicRepository::getMusic(const QList<int> &idList) const {
     return hash;
 }
 
-QList<int> MusicRepository::getMusicRandList(int length) const {
+QList<int> MusicRepository::getRandList(int length) const {
     length = (length == -1) ? 15 : length;
 
     const QString sql = QString("SELECT %1 FROM %2 ORDER BY RANDOM() LIMIT %3")
@@ -152,7 +150,7 @@ QList<int> MusicRepository::getMusicRandList(int length) const {
     return idList;
 }
 
-QList<int> MusicRepository::getNewMusicList() const {
+QList<int> MusicRepository::getMostNew() const {
     const auto sql = QString("SELECT %1 FROM %2 ORDER BY %3 DESC LIMIT 15")
                     .arg(LiteralConstant::Column::MUSIC_ID)
                     .arg(LiteralConstant::Table::MUSIC)
@@ -167,7 +165,7 @@ QList<int> MusicRepository::getNewMusicList() const {
     return idList;
 }
 
-QList<int> MusicRepository::getReadMoreList() const {
+QList<int> MusicRepository::getReadMore() const {
     const auto sql = QString("SELECT %1 FROM %2 ORDER BY %3 DESC LIMIT 15")
                     .arg(LiteralConstant::Column::MUSIC_ID)
                     .arg(LiteralConstant::Table::MUSIC)
@@ -182,13 +180,22 @@ QList<int> MusicRepository::getReadMoreList() const {
     return idList;
 }
 
-bool MusicRepository::appendMusic(const MediaData &data) const {
-    QList<MediaData> dataList;
-    dataList.append(data);
-    return appendMusic(dataList);
+QList<int> MusicRepository::getMostPlayed() const {
+    const auto sql = QString("SELECT %1 FROM %2 ORDER BY %3 DESC LIMIT 15")
+                    .arg(LiteralConstant::Column::MUSIC_ID)
+                    .arg(LiteralConstant::Table::MUSIC)
+                    .arg(LiteralConstant::Column::PLAY_NUMBER);
+    QList<int> idList;
+    try {
+        core->sqlExecuteCallBack(sql.toUtf8(), Core::idListCallBack, &idList);
+    } catch (const DataException &e) {
+        TLog::getInstance().logError(e.errorMessage());
+        return {};
+    }
+    return idList;
 }
 
-bool MusicRepository::appendMusic(const QList<MediaData> &dataList) const {
+bool MusicRepository::append(const QList<MediaData> &dataList) const {
     bool          result          = true;
     sqlite3_stmt *appendMusicStmt = nullptr;
     sqlite3_stmt *getAlbumIDStmt  = nullptr;
@@ -247,18 +254,12 @@ bool MusicRepository::appendMusic(const QList<MediaData> &dataList) const {
     return result;
 }
 
-bool MusicRepository::updateMusic(const MusicPtr &music) const {
+bool MusicRepository::update(const MusicPtr &music) const {
     if (music == nullptr)
         return false;
-    const QList<MusicPtr> list = {music};
-    return updateMusic(list);
-}
-
-bool MusicRepository::updateMusic(const QList<MusicPtr> &musicList) const {
     bool          result = true;
     sqlite3_stmt *stmt   = nullptr;
     try {
-        core->begin();
         const auto sql = QString("UPDATE %1 SET %2 = ?, %3 = ?, %4 = ?, %5 = ?, %6 = ?, %7 = ? WHERE %8 = ?")
                         .arg(LiteralConstant::Table::MUSIC)
                         .arg(LiteralConstant::Column::TITLE)
@@ -269,22 +270,16 @@ bool MusicRepository::updateMusic(const QList<MusicPtr> &musicList) const {
                         .arg(LiteralConstant::Column::URL)
                         .arg(LiteralConstant::Column::MUSIC_ID);
         core->stmtPrepare(&stmt, sql.toUtf8());
-        for (const auto &music: musicList) {
-            if (music == nullptr)
-                continue;
-            core->stmtReset(stmt);
-            core->stmtBindText(stmt, 1, music->title);
-            core->stmtBindLong(stmt, 2, music->duration);
-            core->stmtBindInt(stmt, 3, music->level);
-            core->stmtBindInt(stmt, 4, music->isLove);
-            core->stmtBindInt(stmt, 5, music->playNumber);
-            core->stmtBindText(stmt, 6, music->url);
-            core->stmtBindInt(stmt, 7, music->id);
-            core->stmtStep(stmt);
-        }
-        core->commit();
+        core->stmtReset(stmt);
+        core->stmtBindText(stmt, 1, music->title);
+        core->stmtBindLong(stmt, 2, music->duration);
+        core->stmtBindInt(stmt, 3, music->level);
+        core->stmtBindInt(stmt, 4, music->isLove);
+        core->stmtBindInt(stmt, 5, music->playNumber);
+        core->stmtBindText(stmt, 6, music->url);
+        core->stmtBindInt(stmt, 7, music->id);
+        core->stmtStep(stmt);
     } catch (const DataException &e) {
-        core->rollback();
         TLog::getInstance().logError(e.errorMessage());
         result = false;
     }
@@ -293,26 +288,8 @@ bool MusicRepository::updateMusic(const QList<MusicPtr> &musicList) const {
     return result;
 }
 
-QString MusicRepository::getAllList() const {
-    QString musicListStr;
-    try {
-        const auto sql = QString("SELECT GROUP_CONCAT(%1) FROM %2")
-                        .arg(LiteralConstant::Column::MUSIC_ID)
-                        .arg(LiteralConstant::Table::MUSIC);
-        const sqlite3_callback callback = [](void *data, int argc, char **argv, char **azColName)-> int {
-            auto *str = static_cast<QString *>(data);
-            *str = QString(*argv);
-            return SQLITE_OK;
-        };
-        core->sqlExecuteCallBack(sql.toUtf8(), callback, &musicListStr);
-    } catch (const DataException &e) {
-        TLog::getInstance().logError(e.errorMessage());
-    }
-    return musicListStr;
-}
-
-QList<QPair<int, QString>> MusicRepository::getAllMusicData() const {
-    QList<QPair<int, QString>> musicDataList;
+QList<QPair<int, QString> > MusicRepository::getAllData() const {
+    QList<QPair<int, QString> > musicDataList;
 
     const auto getAllMusicSql = QString("SELECT %1, %2 FROM %3")
                                .arg(LiteralConstant::Column::MUSIC_ID)
@@ -324,9 +301,9 @@ QList<QPair<int, QString>> MusicRepository::getAllMusicData() const {
             return SQLITE_OK;
         }
 
-        auto *list = static_cast<QList<QPair<int, QString>> *>(data);
-        int musicId = argv[0] ? QString(argv[0]).toInt() : 0;
-        QString url = argv[1] ? QString(argv[1]) : QString();
+        auto *  list    = static_cast<QList<QPair<int, QString> > *>(data);
+        int     musicId = argv[0] ? QString(argv[0]).toInt() : 0;
+        QString url     = argv[1] ? QString(argv[1]) : QString();
 
         if (musicId > 0) {
             list->append(QPair<int, QString>(musicId, url));
@@ -356,7 +333,8 @@ bool MusicRepository::clearInvalidData(const QList<int> &invalidMusicIds) const 
 
         QString placeholders;
         for (int i = 0; i < invalidMusicIds.size(); ++i) {
-            if (i > 0) placeholders += ",";
+            if (i > 0)
+                placeholders += ",";
             placeholders += "?";
         }
 
@@ -364,9 +342,9 @@ bool MusicRepository::clearInvalidData(const QList<int> &invalidMusicIds) const 
 
         const auto deleteMusicSql = QString(
                                         "DELETE FROM %1 WHERE %2 IN (%3)")
-                                    .arg(LiteralConstant::Table::MUSIC)
-                                    .arg(LiteralConstant::Column::MUSIC_ID)
-                                    .arg(placeholders);
+                                   .arg(LiteralConstant::Table::MUSIC)
+                                   .arg(LiteralConstant::Column::MUSIC_ID)
+                                   .arg(placeholders);
         core->stmtPrepare(&stmt, deleteMusicSql.toUtf8());
         for (int i = 0; i < invalidMusicIds.size(); ++i) {
             core->stmtBindInt(stmt, i + 1, invalidMusicIds[i]);
@@ -378,29 +356,29 @@ bool MusicRepository::clearInvalidData(const QList<int> &invalidMusicIds) const 
         const auto deleteEmptyArtistSql = QString(
                                               "DELETE FROM %1 WHERE NOT EXISTS "
                                               "(SELECT 1 FROM %2 WHERE %3 = %1.%4)")
-                                          .arg(LiteralConstant::Table::ARTIST)
-                                          .arg(LiteralConstant::Table::ARTIST_MUSIC)
-                                          .arg(LiteralConstant::Column::ARTIST_ID)
-                                          .arg(LiteralConstant::Column::ARTIST_ID);
+                                         .arg(LiteralConstant::Table::ARTIST)
+                                         .arg(LiteralConstant::Table::ARTIST_MUSIC)
+                                         .arg(LiteralConstant::Column::ARTIST_ID)
+                                         .arg(LiteralConstant::Column::ARTIST_ID);
         core->sqlExecute(deleteEmptyArtistSql.toUtf8(), "删除空歌手失败");
 
         const auto deleteEmptyAlbumSql = QString(
-                                               "DELETE FROM %1 WHERE NOT EXISTS "
-                                               "(SELECT 1 FROM %2 WHERE %3 = %1.%4)")
-                                           .arg(LiteralConstant::Table::ALBUM)
-                                           .arg(LiteralConstant::Table::ALBUM_MUSIC)
-                                           .arg(LiteralConstant::Column::ALBUM_ID)
-                                           .arg(LiteralConstant::Column::ALBUM_ID);
+                                             "DELETE FROM %1 WHERE NOT EXISTS "
+                                             "(SELECT 1 FROM %2 WHERE %3 = %1.%4)")
+                                        .arg(LiteralConstant::Table::ALBUM)
+                                        .arg(LiteralConstant::Table::ALBUM_MUSIC)
+                                        .arg(LiteralConstant::Column::ALBUM_ID)
+                                        .arg(LiteralConstant::Column::ALBUM_ID);
         core->sqlExecute(deleteEmptyAlbumSql.toUtf8(), "删除空专辑失败");
 
         const auto deleteEmptyPlayListSql = QString(
-                                                    "DELETE FROM %1 WHERE %2 = 0 AND NOT EXISTS "
-                                                    "(SELECT 1 FROM %3 WHERE %4 = %1.%5)")
-                                                .arg(LiteralConstant::Table::PLAYLIST)
-                                                .arg(LiteralConstant::Column::IS_DIR)
-                                                .arg(LiteralConstant::Table::PLAYLIST_MUSIC)
-                                                .arg(LiteralConstant::Column::PLAYLIST_ID)
-                                                .arg(LiteralConstant::Column::PLAYLIST_ID);
+                                                "DELETE FROM %1 WHERE %2 = 0 AND NOT EXISTS "
+                                                "(SELECT 1 FROM %3 WHERE %4 = %1.%5)")
+                                           .arg(LiteralConstant::Table::PLAYLIST)
+                                           .arg(LiteralConstant::Column::IS_DIR)
+                                           .arg(LiteralConstant::Table::PLAYLIST_MUSIC)
+                                           .arg(LiteralConstant::Column::PLAYLIST_ID)
+                                           .arg(LiteralConstant::Column::PLAYLIST_ID);
         core->sqlExecute(deleteEmptyPlayListSql.toUtf8(), "删除空播放列表失败");
 
         core->commit();

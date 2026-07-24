@@ -22,7 +22,7 @@ PageBase{
             return
         albumPlayer.albumId = id
 
-        let album = AlbumLibrary.getAlbumData(id)
+        let album = AlbumLibrary.getData(id)
         name = album.name
         sort = album.sort
         duration = album.duration

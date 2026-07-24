@@ -1,9 +1,10 @@
 #include "MusicLibraryModel.h"
 #include "sqlite/Sqlite.h"
 #include "datacore/DataActive.h"
-#include "MusicLibrary.h"
+#include "library/MusicLibrary.h"
 
-MusicLibraryModel::MusicLibraryModel(QObject *parent) : QAbstractListModel(parent) {
+MusicLibraryModel::MusicLibraryModel(QObject *parent)
+    : QAbstractListModel(parent) {
 }
 
 int MusicLibraryModel::rowCount(const QModelIndex &parent) const {
@@ -50,19 +51,19 @@ QVariant MusicLibraryModel::data(const QModelIndex &index, int role) const {
 
 QHash<int, QByteArray> MusicLibraryModel::roleNames() const {
     QHash<int, QByteArray> roles;
-    roles[IdRole] = "id";
-    roles[TitleRole] = "title";
-    roles[ArtistRole] = "artist";
-    roles[AlbumRole] = "album";
-    roles[UrlRole] = "url";
-    roles[DurationRole] = "duration";
-    roles[LastEditRole] = "lastEdit";
-    roles[NameKeyRole] = "nameKey";
+    roles[IdRole]           = "id";
+    roles[TitleRole]        = "title";
+    roles[ArtistRole]       = "artist";
+    roles[AlbumRole]        = "album";
+    roles[UrlRole]          = "url";
+    roles[DurationRole]     = "duration";
+    roles[LastEditRole]     = "lastEdit";
+    roles[NameKeyRole]      = "nameKey";
     roles[LastEditTimeRole] = "lastEditTime";
-    roles[InsetTimeRole] = "insetTime";
-    roles[LevelRole] = "level";
-    roles[PlayNumberRole] = "playNumber";
-    roles[IsLoveRole] = "isLove";
+    roles[InsetTimeRole]    = "insetTime";
+    roles[LevelRole]        = "level";
+    roles[PlayNumberRole]   = "playNumber";
+    roles[IsLoveRole]       = "isLove";
     return roles;
 }
 
@@ -70,7 +71,7 @@ void MusicLibraryModel::updateData(const QList<int> &musicIds) {
     QList<MusicPtr> newList;
     newList.reserve(musicIds.size());
 
-    for (int id : musicIds) {
+    for (int id: musicIds) {
         MusicPtr music = DataActive::getInstance().getMusicCore(id);
         if (music) {
             newList.append(music);
@@ -83,12 +84,12 @@ void MusicLibraryModel::updateData(const QList<int> &musicIds) {
 }
 
 void MusicLibraryModel::loadByKey(const QString &key, int size, int start) {
-    QList<int> ids = SQLite::getInstance().getMusicByKey(key, size, start);
+    QList<int> ids = SQLite::getInstance().musicRepository.getByKey(key, size, start);
     updateData(ids);
 }
 
 void MusicLibraryModel::loadMoreByKey(const QString &key, int size, int start) {
-    QList<int> ids = SQLite::getInstance().getMusicByKey(key, size, start);
+    QList<int> ids = SQLite::getInstance().musicRepository.getByKey(key, size, start);
     if (ids.isEmpty()) {
         MusicLibrary::getInstance().loader()->setLoadFinish(true);
         MusicLibrary::getInstance().loader()->setLoadEnable(false);
@@ -97,47 +98,47 @@ void MusicLibraryModel::loadMoreByKey(const QString &key, int size, int start) {
 }
 
 void MusicLibraryModel::loadAlbumMusic(int albumId, int size, int start, int sort) {
-    QList<int> ids = SQLite::getInstance().getAlbumMusic(albumId, size, start, sort);
+    QList<int> ids = SQLite::getInstance().albumRepository.getMusic(albumId, size, start, sort);
     updateData(ids);
 }
 
 void MusicLibraryModel::loadMoreAlbumMusic(int albumId, int size, int start, int sort) {
-    QList<int> ids = SQLite::getInstance().getAlbumMusic(albumId, size, start, sort);
+    QList<int> ids = SQLite::getInstance().albumRepository.getMusic(albumId, size, start, sort);
     appendMusicList(ids);
 }
 
 void MusicLibraryModel::loadArtistMusic(int artistId, int size, int start, int sort) {
-    QList<int> ids = SQLite::getInstance().getArtistMusic(artistId, size, start, sort);
+    QList<int> ids = SQLite::getInstance().artistRepository.getMusic(artistId, size, start, sort);
     updateData(ids);
 }
 
 void MusicLibraryModel::loadMoreArtistMusic(int artistId, int size, int start, int sort) {
-    QList<int> ids = SQLite::getInstance().getArtistMusic(artistId, size, start, sort);
+    QList<int> ids = SQLite::getInstance().artistRepository.getMusic(artistId, size, start, sort);
     appendMusicList(ids);
 }
 
 void MusicLibraryModel::loadPlayListMusic(int playlistId, int size, int start, int sort) {
-    QList<int> ids = SQLite::getInstance().getPlayListMusic(playlistId, size, start, sort);
+    QList<int> ids = SQLite::getInstance().playListRepository.getMusic(playlistId, size, start, sort);
     updateData(ids);
 }
 
 void MusicLibraryModel::loadMorePlayListMusic(int playlistId, int size, int start, int sort) {
-    QList<int> ids = SQLite::getInstance().getPlayListMusic(playlistId, size, start, sort);
+    QList<int> ids = SQLite::getInstance().playListRepository.getMusic(playlistId, size, start, sort);
     appendMusicList(ids);
 }
 
 void MusicLibraryModel::loadRandList(int length) {
-    QList<int> ids = SQLite::getInstance().getMusicRandList(length);
+    QList<int> ids = SQLite::getInstance().musicRepository.getRandList(length);
     updateData(ids);
 }
 
-void MusicLibraryModel::loadNewList() {
-    QList<int> ids = SQLite::getInstance().getNewMusicList();
+void MusicLibraryModel::loadMostNewList() {
+    QList<int> ids = SQLite::getInstance().musicRepository.getMostNew();
     updateData(ids);
 }
 
-void MusicLibraryModel::loadReadMoreList() {
-    QList<int> ids = SQLite::getInstance().getReadMoreList();
+void MusicLibraryModel::loadMostPlayedList() {
+    QList<int> ids = SQLite::getInstance().musicRepository.getMostPlayed();
     updateData(ids);
 }
 
@@ -148,7 +149,7 @@ void MusicLibraryModel::appendMusicList(const QList<int> &musicIds) {
     QList<MusicPtr> newMusic;
     newMusic.reserve(musicIds.size());
 
-    for (int id : musicIds) {
+    for (int id: musicIds) {
         MusicPtr music = DataActive::getInstance().getMusicCore(id);
         if (music) {
             newMusic.append(music);

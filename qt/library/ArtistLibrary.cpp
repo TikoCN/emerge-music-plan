@@ -1,11 +1,13 @@
 #include "ArtistLibrary.h"
-#include "DataActive.h"
+#include "datacore/DataActive.h"
 #include "sqlite/Sqlite.h"
-#include "ArtistLibraryModel.h"
+#include "model/ArtistLibraryModel.h"
 
-ArtistLibrary::ArtistLibrary() : m_model(new ArtistLibraryModel(this)), m_loader(new DataLoader(this)) {
+ArtistLibrary::ArtistLibrary()
+    : m_model(new ArtistLibraryModel(this)),
+      m_loader(new DataLoader(this)) {
     connect(&DataActive::getInstance(), &DataActive::buildArtistPlayer,
-            this, &ArtistLibrary::buildArtistPlayer);
+            this, &ArtistLibrary::buildPlayer);
     connect(&DataActive::getInstance(), &DataActive::finish,
             this, &ArtistLibrary::finish);
     connect(m_loader, &DataLoader::loadInitData, this, &ArtistLibrary::loadByKey);
@@ -17,36 +19,32 @@ ArtistLibrary::~ArtistLibrary() {
     delete m_loader;
 }
 
-void ArtistLibrary::updateArtistName(const int artistId, const QString &name) {
+void ArtistLibrary::updateName(const int artistId, const QString &name) {
     DataActive::getInstance().updateArtistName(artistId, name);
 }
 
-void ArtistLibrary::updateArtistSort(const int artistId, const int sort) {
+void ArtistLibrary::updateSort(const int artistId, const int sort) {
     DataActive::getInstance().updateArtistSort(artistId, sort);
 }
 
-Artist ArtistLibrary::getArtistData(const int id) {
+Artist ArtistLibrary::getData(const int id) {
     return DataActive::getInstance().getArtistData(id);
 }
 
-QJsonObject ArtistLibrary::getArtistJson(const int id) {
+QJsonObject ArtistLibrary::getJson(const int id) {
     return DataActive::getInstance().getArtistJson(id);
 }
 
-QStringList ArtistLibrary::getArtistKeys() const {
-    return SQLite::getInstance().getArtistKeys();
+QStringList ArtistLibrary::getKeys() const {
+    return SQLite::getInstance().artistRepository.getKeys();
 }
 
-int ArtistLibrary::checkArtistName(const QString &name) const {
-    return SQLite::getInstance().checkArtistName(name);
+bool ArtistLibrary::moveMusic(const QString &artistName, const QString &artistNameNew) const {
+    return SQLite::getInstance().artistRepository.moveMusic(artistName, artistNameNew);
 }
 
-bool ArtistLibrary::moveArtistMusic(const QString &artistName, const QString &artistNameNew) const {
-    return SQLite::getInstance().moveArtistMusic(artistName, artistNameNew);
-}
-
-bool ArtistLibrary::addArtistMusicToPlayList(const QString &artistName, const QString &playListName) const {
-    return SQLite::getInstance().addArtistMusicToPlayList(artistName, playListName);
+bool ArtistLibrary::addMusicToPlayList(const QString &artistName, const QString &playListName) const {
+    return SQLite::getInstance().artistRepository.addMusicToPlayList(artistName, playListName);
 }
 
 ArtistLibraryModel *ArtistLibrary::model() {

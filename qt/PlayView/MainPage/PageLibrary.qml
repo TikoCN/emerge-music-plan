@@ -29,8 +29,6 @@ Item {
             delegate: TikoButtonDefault {
                 icon.source: modelData.icon
                 textLine.text: modelData.name
-                //icon.dynamicState.isHighlight: (toolRow.selectText === textLine.text)
-                //textLine.dynamicState.isHighlight: (toolRow.selectText === textLine.text)
                 onClicked: {
                     if (toolRow.selectText === textLine.text) return
 
@@ -50,9 +48,9 @@ Item {
         anchors.margins: TikoSeit.emphasizeMargins
         initialItem: musicPage
 
-        PageAlbum {id: albumPage; visible: false}
-        PageArtist {id: artistPage; visible: false}
-        PageMusic {id: musicPage; visible: false}
+        LibraryAlbum {id: albumPage; visible: false}
+        LibraryArtist {id: artistPage; visible: false}
+        LibraryMusic {id: musicPage; visible: false}
     }
 
     function stackAlbum() {

@@ -15,8 +15,6 @@ public:
 
     void clearNullItem();
 
-    static void appendPlayList(const QString &name);
-
     void updateMusicLove(int musicId, bool isLove);
     void updateMusicLevel(int musicId, bool level);
 

@@ -88,7 +88,7 @@ Item {
                         TikoButtonIcon{
                             width: 30
                             height: parent.height
-                            onClicked: MusicLibrary.model().updateMusicLove(model.id, !model.isLove)
+                            onClicked: MusicLibrary.updateLove(model.id, !model.isLove)
                             icon.source: model.isLove ?
                                              "qrc:/image/love.png" : "qrc:/image/unlove.png"
                         }
@@ -102,7 +102,7 @@ Item {
                                 delegate: TikoButtonIcon{
                                     width: 20
                                     height: 50
-                                    onClicked: MusicLibrary.model().updateMusicLevel(model.id, level)
+                                    onClicked: MusicLibrary.updateLevel(model.id, level)
                                     icon.source: model.level >= level ?
                                                      "qrc:/image/int.png" : "qrc:/image/unInt.png"
                                 }

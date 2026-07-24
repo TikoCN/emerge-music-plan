@@ -68,10 +68,10 @@ qt_add_qml_module(PlayViewLib
         GeneralControls/PlayDown.qml
         GeneralControls/PositionControl.qml
 
-        PageLibrary/PageButtonBase.qml
-        PageLibrary/PageMusic.qml
-        PageLibrary/PageArtist.qml
-        PageLibrary/PageAlbum.qml
+        PageLibrary/LibraryPage.qml
+        PageLibrary/LibraryMusic.qml
+        PageLibrary/LibraryArtist.qml
+        PageLibrary/LibraryAlbum.qml
 
         PageRecommend/RecomGridButtonBase.qml
         PageRecommend/RecomMusicNew.qml

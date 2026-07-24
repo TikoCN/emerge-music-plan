@@ -39,7 +39,7 @@ Item {
     }
 
     function build(){
-        MusicLibrary.model().loadNewList()
+        MusicLibrary.model().loadMostNewList()
     }
 
     function clear(){

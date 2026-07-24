@@ -294,120 +294,10 @@ QList<QString> SQLite::clearNullMusicItem() {
     return removeList;
 }
 
-QStringList SQLite::getArtistKeys() const {
-    return artistRepository.getArtistKeys();
-}
 
-QList<int> SQLite::getArtistByKey(const QString &key, int size, int start) const {
-    return artistRepository.getArtistByKey(key, size, start);
-}
-
-QList<int> SQLite::getArtistMusic(int id, int size, int start, int sort) const {
-    return artistRepository.getArtistMusic(id, size, start, sort);
-}
-
-QList<int> SQLite::getArtistRandList() const {
-    return artistRepository.getArtistRandList();
-}
-
-int SQLite::checkArtistName(const QString &name) const {
-    return artistRepository.checkArtistName(name);
-}
-
-QStringList SQLite::getAlbumKeys() const {
-    return albumRepository.getAlbumKeys();
-}
-
-QList<int> SQLite::getAlbumByKey(const QString &key, int size, int start) const {
-    return albumRepository.getAlbumByKey(key, size, start);
-}
-
-QList<int> SQLite::getAlbumMusic(int id, int size, int start, int sort) const {
-    return albumRepository.getAlbumMusic(id, size, start, sort);
-}
-
-QList<int> SQLite::getAlbumRandList() const {
-    return albumRepository.getAlbumRandList();
-}
-
-int SQLite::checkAlbumName(const QString &name) const {
-    return albumRepository.checkAlbumName(name);
-}
-
-QStringList SQLite::getMusicKeys() const {
-    return musicRepository.getMusicKeys();
-}
-
-QList<int> SQLite::getMusicByKey(const QString &key, int size, int start) const {
-    return musicRepository.getMusicByKey(key, size, start);
-}
-
-QList<int> SQLite::getMusicRandList(int length) const {
-    return musicRepository.getMusicRandList(length);
-}
-
-QList<int> SQLite::getNewMusicList() const {
-    return musicRepository.getNewMusicList();
-}
-
-QString SQLite::getAllList() const {
-    return playListRepository.getAllList();
-}
-
-QList<int> SQLite::getReadMoreList() const {
-    return musicRepository.getReadMoreList();
-}
-
-QList<int> SQLite::getPlayListMusic(int id, int size, int start, int sort) const {
-    return playListRepository.getPlayListMusic(id, size, start, sort);
-}
-
-QList<int> SQLite::getPlayingListMusic() const {
-    return playListRepository.getPlayingListMusic();
-}
-
-int SQLite::checkPlayListName(const QString &name) const {
-    return playListRepository.getPlayListId(name);
-}
-
-bool SQLite::updatePlayListMusic(const QList<int> &musicIdList, int playlistNewId, int playlistOldId) const {
-    return playListRepository.updatePlayListMusic(musicIdList, playlistNewId, playlistOldId);
-}
-
-bool SQLite::updateArtistMusic(const QList<int> &musicIdList, int artistNewId, int artistOldId) const {
-    return artistRepository.updateArtistMusic(musicIdList, artistNewId, artistOldId);
-}
-
-bool SQLite::updateAlbumMusic(const QList<int> &musicIdList, int albumNewId, int albumOldId) const {
-    return albumRepository.updateAlbumMusic(musicIdList, albumNewId, albumOldId);
-}
-
-bool SQLite::moveAlbumMusic(const QString &albumName, const QString &albumNameNew) const {
-    return albumRepository.moveAlbumMusic(albumName, albumNameNew);
-}
-
-bool SQLite::moveArtistMusic(const QString &artistName, const QString &artistNameNew) const {
-    return artistRepository.moveArtistMusic(artistName, artistNameNew);
-}
-
-bool SQLite::movePlayListMusic(const QString &playListName, const QString &playListNameNew) const {
-    return playListRepository.movePlayListMusic(playListName, playListNameNew);
-}
-
-bool SQLite::addArtistMusicToPlayList(const QString &artistName, const QString &playListName) const {
-    return artistRepository.addArtistMusicToPlayList(artistName, playListName);
-}
-
-bool SQLite::addAlbumMusicToPlayList(const QString &albumName, const QString &playListName) const {
-    return albumRepository.addAlbumMusicToPlayList(albumName, playListName);
-}
-
-bool SQLite::addPlayListMusicToPlayList(const QString &sourcePlayListName, const QString &targetPlayListName) const {
-    return playListRepository.addPlayListMusicToPlayList(sourcePlayListName, targetPlayListName);
-}
 
 void SQLite::startClearInvalidData() {
-    QList<QPair<int, QString> > musicDataList = musicRepository.getAllMusicData();
+    QList<QPair<int, QString> > musicDataList = musicRepository.getAllData();
     emit startCheckFileExist(musicDataList);
 }
 
@@ -426,22 +316,20 @@ bool SQLite::insertMediaData(const QList<MediaData> &list) {
             artistSet.insert(data.artist);
             albumSet.insert(data.album);
             playlistSet.insert(data.dir);
-            playlistMusicSet.insert(QPair(data.dir, data.url));
+            playlistMusicSet.insert(QPair(data.url, data.dir));
         }
 
-        if (artistRepository.appendArtist(artistSet.values())) {
+        if (artistRepository.append(artistSet.values())) {
         }
-        if (albumRepository.appendAlbum(albumSet.values())) {
+        if (albumRepository.append(albumSet.values())) {
         }
-        if (musicRepository.appendMusic(list)) {
+        if (musicRepository.append(list)) {
         }
-        if (artistRepository.appendArtistMusic(list)) {
+        if (artistRepository.appendMusic(list)) {
         }
-        if (albumRepository.appendAlbumMusic(list)) {
+        if (albumRepository.appendMusic(list)) {
         }
-        if (playListRepository.appendDirPlayList(playlistSet.values())) {
-        }
-        if (playListRepository.appendPlayListMusic(playlistMusicSet.values().toList())) {
+        if (playListRepository.appendDir(playlistSet.values())) {
         }
     } catch (const DataException &e) {
         TLog::getInstance().logError(e.errorMessage());

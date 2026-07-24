@@ -79,7 +79,6 @@ Item {
                         root.showText = modelData.icon
                         modelData.click()
                     }
-
                 }
 
                 model: [
@@ -121,8 +120,8 @@ Item {
                             return
                         }
 
-                        if (MusicLibrary.checkPlayListName(inputText) === 0) {
-                            MusicLibrary.appendPlayList(inputText)
+                        if (PlayListLibrary.allowName(inputText)) {
+                            PlayListLibrary.appendUser(inputText)
                             inputName.setNormalText()
                             updatePlayLists()
                         }

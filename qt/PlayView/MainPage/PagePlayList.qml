@@ -24,7 +24,7 @@ PageBase {
             return
         playlistId = id
 
-        let playlist = PlayListLibrary.getPlayListData(id);
+        let playlist = PlayListLibrary.getData(id);
         name = playlist.name
         sort = playlist.sort
         duration = playlist.duration

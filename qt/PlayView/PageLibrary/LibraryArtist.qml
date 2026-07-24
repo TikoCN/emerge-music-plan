@@ -3,14 +3,15 @@ import Tiko
 import MediaerAPI
 import PlayView
 
-PageButtonBase {
+
+LibraryPage {
 
     onInitKeyList: {
-        const list = AlbumLibrary.getAlbumKeys()
+        const list = ArtistLibrary.getKeys()
         listToKeyModel(list)
     }
 
-    delegateItem: GridButtonAlbum {
+    delegateItem: GridButtonArtist{
         autoHeightEnable: false
         flow: GridView.LeftToRight
     }

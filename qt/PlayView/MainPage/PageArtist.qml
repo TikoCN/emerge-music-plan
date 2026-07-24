@@ -22,7 +22,7 @@ PageBase{
             return
         artistPlayer.artistId = id
 
-        let artist = ArtistLibrary.getArtistData(id)
+        let artist = ArtistLibrary.getData(id)
         name = artist.name
         sort = artist.sort
         duration = artist.duration

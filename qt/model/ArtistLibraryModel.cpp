@@ -64,17 +64,17 @@ void ArtistLibraryModel::updateData(const QList<int> &artistIds) {
 }
 
 void ArtistLibraryModel::loadByKey(const QString &key, int size, int start) {
-    QList<int> ids = SQLite::getInstance().getArtistByKey(key, size, start);
+    QList<int> ids = SQLite::getInstance().artistRepository.getByKey(key, size, start);
     updateData(ids);
 }
 
 void ArtistLibraryModel::loadMoreByKey(const QString &key, int size, int start) {
-    QList<int> ids = SQLite::getInstance().getArtistByKey(key, size, start);
+    QList<int> ids = SQLite::getInstance().artistRepository.getByKey(key, size, start);
     appendArtistList(ids);
 }
 
 void ArtistLibraryModel::loadRandList() {
-    QList<int> ids = SQLite::getInstance().getArtistRandList();
+    QList<int> ids = SQLite::getInstance().artistRepository.getRandList();
     updateData(ids);
 }
 

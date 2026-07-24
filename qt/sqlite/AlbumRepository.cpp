@@ -5,7 +5,7 @@
 #include "baseclass/SortType.h"
 #include "NameKey.h"
 
-QStringList AlbumRepository::getAlbumKeys() const {
+QStringList AlbumRepository::getKeys() const {
     QStringList keyList;
     try {
         const auto sql = QString("SELECT DISTINCT %1 FROM %2 ORDER BY %1 ASC")
@@ -26,7 +26,7 @@ QStringList AlbumRepository::getAlbumKeys() const {
     return keyList;
 }
 
-QList<int> AlbumRepository::getAlbumByKey(const QString &key, int size, int start) const {
+QList<int> AlbumRepository::getByKey(const QString &key, int size, int start) const {
     QList<int>    albumList;
     sqlite3_stmt *stmt = nullptr;
 
@@ -51,19 +51,9 @@ QList<int> AlbumRepository::getAlbumByKey(const QString &key, int size, int star
     return albumList;
 }
 
-AlbumPtr AlbumRepository::getAlbum(const int id) const {
-    QList<int> idList;
-    idList.append(id);
-
-    if (const QHash<int, AlbumPtr> hash = getAlbum(idList); hash.contains(id)) {
-        return hash.value(id);
-    }
-    return nullptr;
-}
-
-QHash<int, AlbumPtr> AlbumRepository::getAlbum(const QList<int> &idList) const {
-    QHash<int, AlbumPtr> albumHash;
-    sqlite3_stmt *       stmt = nullptr;
+AlbumPtr AlbumRepository::get(const int id) const {
+    sqlite3_stmt *stmt  = nullptr;
+    AlbumPtr      album = nullptr;
 
     try {
         const auto sql = QString(
@@ -91,31 +81,27 @@ QHash<int, AlbumPtr> AlbumRepository::getAlbum(const QList<int> &idList) const {
                         .arg(LiteralConstant::Column::MUSIC_ID);
 
         core->stmtPrepare(&stmt, sql.toUtf8());
-        for (int i: idList) {
-            core->stmtReset(stmt);
-            core->stmtBindInt(stmt, 1, i);
-            core->stmtStep(stmt);
-            AlbumPtr album(new Album());
 
-            album->name       = QString::fromUtf8(sqlite3_column_text(stmt, 0));
-            album->id         = sqlite3_column_int(stmt, 1);
-            album->nameKey    = QString::fromUtf8(sqlite3_column_text(stmt, 2));
-            album->sort       = static_cast<SORT_TYPE>(sqlite3_column_int(stmt, 3));
-            album->musicCount = sqlite3_column_int(stmt, 4);
-            album->duration   = sqlite3_column_int64(stmt, 5);
-            album->firstMusic = sqlite3_column_int(stmt, 6);
-
-            albumHash.insert(i, album);
-        }
+        core->stmtReset(stmt);
+        core->stmtBindInt(stmt, 1, id);
+        core->stmtStep(stmt);
+        album             = AlbumPtr(new Album());
+        album->name       = QString::fromUtf8(sqlite3_column_text(stmt, 0));
+        album->id         = sqlite3_column_int(stmt, 1);
+        album->nameKey    = QString::fromUtf8(sqlite3_column_text(stmt, 2));
+        album->sort       = static_cast<SORT_TYPE>(sqlite3_column_int(stmt, 3));
+        album->musicCount = sqlite3_column_int(stmt, 4);
+        album->duration   = sqlite3_column_int64(stmt, 5);
+        album->firstMusic = sqlite3_column_int(stmt, 6);
     } catch (const DataException &e) {
         TLog::getInstance().logError(e.errorMessage());
-        albumHash.clear();
+        album = nullptr;
     }
     Core::stmtFree(stmt);
-    return albumHash;
+    return album;
 }
 
-QList<int> AlbumRepository::getAlbumMusic(const int id, const int size, const int start, const int sort) const {
+QList<int> AlbumRepository::getMusic(const int id, const int size, const int start, const int sort) const {
     QList<int>    list;
     sqlite3_stmt *stmt = nullptr;
     try {
@@ -183,15 +169,15 @@ QList<int> AlbumRepository::getAlbumMusic(const int id, const int size, const in
         } else {
             QString aimTable, aimColumn, aimLinkTable;
             if (sort == SORT_ALBUM_ASC || sort == SORT_ALBUM_DESC) {
-                aimTable = LiteralConstant::Table::ALBUM;
-                aimColumn = LiteralConstant::Column::ALBUM_ID;
+                aimTable     = LiteralConstant::Table::ALBUM;
+                aimColumn    = LiteralConstant::Column::ALBUM_ID;
                 aimLinkTable = LiteralConstant::Table::ALBUM_MUSIC;
-                orderColumn = LiteralConstant::Column::ALBUM_NAME;
+                orderColumn  = LiteralConstant::Column::ALBUM_NAME;
             } else {
-                aimTable = LiteralConstant::Table::ARTIST;
-                aimColumn = LiteralConstant::Column::ARTIST_ID;
+                aimTable     = LiteralConstant::Table::ARTIST;
+                aimColumn    = LiteralConstant::Column::ARTIST_ID;
                 aimLinkTable = LiteralConstant::Table::ARTIST_MUSIC;
-                orderColumn = LiteralConstant::Column::ARTIST_NAME;
+                orderColumn  = LiteralConstant::Column::ARTIST_NAME;
             }
             sql = QString("SELECT aim_link.%1 "
                       "FROM %2 aim_link "
@@ -225,7 +211,7 @@ QList<int> AlbumRepository::getAlbumMusic(const int id, const int size, const in
     return list;
 }
 
-QList<int> AlbumRepository::getAlbumMusicAll(const int id, const int sort) const {
+QList<int> AlbumRepository::getMusicAll(const int id, const int sort) const {
     QList<int>    list;
     sqlite3_stmt *stmt = nullptr;
     try {
@@ -256,7 +242,6 @@ QList<int> AlbumRepository::getAlbumMusicAll(const int id, const int sort) const
                 orderColumn = LiteralConstant::Column::LEVEL;
                 sortDic = LiteralConstant::DESC;
                 break;
-
             case SORT_PLAY_NUMBER_ASC:
                 orderColumn = LiteralConstant::Column::PLAY_NUMBER;
                 sortDic = LiteralConstant::ASC;
@@ -292,15 +277,15 @@ QList<int> AlbumRepository::getAlbumMusicAll(const int id, const int sort) const
         } else {
             QString aimTable, aimColumn, aimLinkTable;
             if (sort == SORT_ALBUM_ASC || sort == SORT_ALBUM_DESC) {
-                aimTable = LiteralConstant::Table::ALBUM;
-                aimColumn = LiteralConstant::Column::ALBUM_ID;
+                aimTable     = LiteralConstant::Table::ALBUM;
+                aimColumn    = LiteralConstant::Column::ALBUM_ID;
                 aimLinkTable = LiteralConstant::Table::ALBUM_MUSIC;
-                orderColumn = LiteralConstant::Column::ALBUM_NAME;
+                orderColumn  = LiteralConstant::Column::ALBUM_NAME;
             } else {
-                aimTable = LiteralConstant::Table::ARTIST;
-                aimColumn = LiteralConstant::Column::ARTIST_ID;
+                aimTable     = LiteralConstant::Table::ARTIST;
+                aimColumn    = LiteralConstant::Column::ARTIST_ID;
                 aimLinkTable = LiteralConstant::Table::ARTIST_MUSIC;
-                orderColumn = LiteralConstant::Column::ARTIST_NAME;
+                orderColumn  = LiteralConstant::Column::ARTIST_NAME;
             }
             sql = QString("SELECT GROUP_CONCAT(aim_link.%1) as musicList "
                       "FROM %2 aim_link "
@@ -331,7 +316,7 @@ QList<int> AlbumRepository::getAlbumMusicAll(const int id, const int sort) const
     return list;
 }
 
-int AlbumRepository::getAlbumMusicFirst(const int albumId) const {
+int AlbumRepository::getMusicFirst(const int albumId) const {
     int           musicId = -1;
     sqlite3_stmt *stmt    = nullptr;
     try {
@@ -350,7 +335,7 @@ int AlbumRepository::getAlbumMusicFirst(const int albumId) const {
     return musicId;
 }
 
-QList<int> AlbumRepository::getAlbumRandList() const {
+QList<int> AlbumRepository::getRandList() const {
     const auto sql = QString("SELECT %1 FROM %2 ORDER BY RANDOM() LIMIT 15")
                     .arg(LiteralConstant::Column::ALBUM_ID)
                     .arg(LiteralConstant::Table::ALBUM);
@@ -364,28 +349,7 @@ QList<int> AlbumRepository::getAlbumRandList() const {
     return idList;
 }
 
-int AlbumRepository::checkAlbumName(const QString &name) const {
-    sqlite3_stmt *stmt = nullptr;
-    int           r    = -1;
-    try {
-        const auto sql = QString("SELECT COALESCE("
-                             "(SELECT %1 FROM %2 WHERE %3 = ? LIMIT 1), "
-                             "-1) AS %1")
-                        .arg(LiteralConstant::Column::ALBUM_ID)
-                        .arg(LiteralConstant::Table::ALBUM)
-                        .arg(LiteralConstant::Column::ALBUM_NAME);
-        core->stmtPrepare(&stmt, sql.toUtf8());
-        core->stmtBindText(stmt, 1, name);
-        core->stmtStep(stmt);
-        r = sqlite3_column_int(stmt, 0);
-    } catch (const DataException &e) {
-        TLog::getInstance().logError(e.errorMessage());
-    }
-    Core::stmtFree(stmt);
-    return r;
-}
-
-QStringList AlbumRepository::getAlbumNameList(const int size, const int start) const {
+QStringList AlbumRepository::getNameList(const int size, const int start) const {
     QStringList   albumNameList;
     sqlite3_stmt *stmt = nullptr;
     try {
@@ -406,13 +370,7 @@ QStringList AlbumRepository::getAlbumNameList(const int size, const int start) c
     return albumNameList;
 }
 
-bool AlbumRepository::appendAlbum(const QString &album) const {
-    QList<QString> dataList;
-    dataList.append(album);
-    return appendAlbum(dataList);
-}
-
-bool AlbumRepository::appendAlbum(const QStringList &albumList) const {
+bool AlbumRepository::append(const QStringList &albumList) const {
     bool          result = true;
     sqlite3_stmt *stmt   = nullptr;
 
@@ -446,42 +404,7 @@ bool AlbumRepository::appendAlbum(const QStringList &albumList) const {
     return result;
 }
 
-bool AlbumRepository::appendAlbumMusic(int id, const QList<int> &musicList) const {
-    bool          result = true;
-    sqlite3_stmt *stmt   = nullptr;
-    try {
-        core->begin();
-
-        const auto sql = QString("INSERT OR IGNORE INTO %1(%2, %3) VALUES(?, ?)")
-                        .arg(LiteralConstant::Table::ALBUM_MUSIC)
-                        .arg(LiteralConstant::Column::ALBUM_ID)
-                        .arg(LiteralConstant::Column::MUSIC_ID);
-        core->stmtPrepare(&stmt, sql.toUtf8());
-        for (const int i: musicList) {
-            core->stmtReset(stmt);
-            core->stmtBindInt(stmt, 1, id);
-            core->stmtBindInt(stmt, 2, i);
-            core->stmtStep(stmt);
-        }
-
-        core->commit();
-    } catch (const DataException &e) {
-        core->rollback();
-        TLog::getInstance().logError(e.errorMessage());
-        result = false;
-    }
-
-    Core::stmtFree(stmt);
-    return result;
-}
-
-bool AlbumRepository::appendAlbumMusic(const QPair<QString, QString> &pair) const {
-    QList<QPair<QString, QString> > dataList;
-    dataList.append(pair);
-    return appendAlbumMusic(dataList);
-}
-
-bool AlbumRepository::appendAlbumMusic(const QList<QPair<QString, QString> > &pairList) const {
+bool AlbumRepository::appendMusic(const QList<MediaData> &dataList) const {
     bool          result     = true;
     sqlite3_stmt *appendStmt = nullptr;
     sqlite3_stmt *getIdStmt  = nullptr;
@@ -507,59 +430,7 @@ bool AlbumRepository::appendAlbumMusic(const QList<QPair<QString, QString> > &pa
         core->stmtPrepare(&appendStmt, appendSql.toUtf8());
         core->stmtPrepare(&getIdStmt, getIdSql.toUtf8());
 
-        for (const auto &[fst, snd]: pairList) {
-            core->stmtReset(getIdStmt);
-            core->stmtBindText(getIdStmt, 1, fst);
-            core->stmtBindText(getIdStmt, 2, snd);
-            core->stmtStep(getIdStmt);
-
-            const int music_id = sqlite3_column_int(getIdStmt, 0);
-            const int album_id = sqlite3_column_int(getIdStmt, 1);
-            core->stmtReset(appendStmt);
-            core->stmtBindInt(appendStmt, 1, album_id);
-            core->stmtBindInt(appendStmt, 2, music_id);
-            core->stmtStep(appendStmt);
-        }
-
-        core->commit();
-    } catch (const DataException &e) {
-        core->rollback();
-        TLog::getInstance().logError(e.errorMessage());
-        result = false;
-    }
-
-    Core::stmtFree(appendStmt);
-    Core::stmtFree(getIdStmt);
-    return result;
-}
-
-bool AlbumRepository::appendAlbumMusic(const QList<MediaData> &dataList) const {
-    bool          result     = true;
-    sqlite3_stmt *appendStmt = nullptr;
-    sqlite3_stmt *getIdStmt  = nullptr;
-
-    try {
-        core->begin();
-
-        const auto getIdSql = QString("SELECT"
-                                  "(SELECT %1 FROM %2 WHERE %3 = ? LIMIT 1) AS %1,"
-                                  "(SELECT %4 FROM %5 WHERE %6 = ? LIMIT 1) AS %4")
-                             .arg(LiteralConstant::Column::MUSIC_ID)
-                             .arg(LiteralConstant::Table::MUSIC)
-                             .arg(LiteralConstant::Column::URL)
-                             .arg(LiteralConstant::Column::ALBUM_ID)
-                             .arg(LiteralConstant::Table::ALBUM)
-                             .arg(LiteralConstant::Column::ALBUM_NAME);
-
-        const auto appendSql = QString("INSERT OR IGNORE INTO %1(%2, %3) VALUES(?, ?)")
-                              .arg(LiteralConstant::Table::ALBUM_MUSIC)
-                              .arg(LiteralConstant::Column::ALBUM_ID)
-                              .arg(LiteralConstant::Column::MUSIC_ID);
-
-        core->stmtPrepare(&appendStmt, appendSql.toUtf8());
-        core->stmtPrepare(&getIdStmt, getIdSql.toUtf8());
-
-        for (const auto &data : dataList) {
+        for (const auto &data: dataList) {
             core->stmtReset(getIdStmt);
             core->stmtBindText(getIdStmt, 1, data.url);
             core->stmtBindText(getIdStmt, 2, data.album);
@@ -585,7 +456,7 @@ bool AlbumRepository::appendAlbumMusic(const QList<MediaData> &dataList) const {
     return result;
 }
 
-bool AlbumRepository::updateAlbum(const AlbumPtr &album) const {
+bool AlbumRepository::update(const AlbumPtr &album) const {
     bool          result = true;
     sqlite3_stmt *stmt   = nullptr;
     try {
@@ -611,7 +482,7 @@ bool AlbumRepository::updateAlbum(const AlbumPtr &album) const {
     return result;
 }
 
-bool AlbumRepository::updateAlbumMusic(const QList<int> &musicIdList, const int albumNewId, const int albumOldId) const {
+bool AlbumRepository::updateMusic(const QList<int> &musicIdList, const int albumNewId, const int albumOldId) const {
     bool          result = true;
     sqlite3_stmt *stmt   = nullptr;
     try {
@@ -644,7 +515,7 @@ bool AlbumRepository::updateAlbumMusic(const QList<int> &musicIdList, const int 
     return result;
 }
 
-bool AlbumRepository::updateAlbumNameKey(const QStringList &albumName, const QStringList &albumNameKey) const {
+bool AlbumRepository::updateNameKey(const QStringList &albumName, const QStringList &albumNameKey) const {
     bool          result = true;
     sqlite3_stmt *stmt   = nullptr;
     try {
@@ -675,7 +546,7 @@ bool AlbumRepository::updateAlbumNameKey(const QStringList &albumName, const QSt
     return result;
 }
 
-bool AlbumRepository::moveAlbumMusic(const QString &albumName, const QString &albumNameNew) const {
+bool AlbumRepository::moveMusic(const QString &albumName, const QString &albumNameNew) const {
     bool          result = true;
     sqlite3_stmt *stmt   = nullptr;
     int           oldId  = -1;
@@ -749,7 +620,7 @@ bool AlbumRepository::moveAlbumMusic(const QString &albumName, const QString &al
     return result;
 }
 
-bool AlbumRepository::addAlbumMusicToPlayList(const QString &albumName, const QString &playListName) const {
+bool AlbumRepository::addMusicToPlayList(const QString &albumName, const QString &playListName) const {
     bool          result     = true;
     sqlite3_stmt *stmt       = nullptr;
     int           albumId    = -1;

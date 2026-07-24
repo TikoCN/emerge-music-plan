@@ -39,7 +39,7 @@ Item {
     }
 
     function build(){
-        MusicLibrary.model().loadReadMoreList()
+        MusicLibrary.model().loadMostPlayedList()
     }
 
     function clear(){

@@ -3,7 +3,7 @@
 
 #include <QObject>
 #include "baseclass/Music.h"
-#include "DataLoader.h"
+#include "datacore/DataLoader.h"
 
 class MusicLibraryModel;
 
@@ -16,15 +16,15 @@ public:
         return instance;
     }
 
-    Q_INVOKABLE QList<int> musicListSort(const QList<int> &musicIdList, SORT_TYPE sort);
+    Q_INVOKABLE QList<int> listSort(const QList<int> &musicIdList, SORT_TYPE sort);
 
-    Q_INVOKABLE void updateMusicLove(int musicId, bool isLove);
-    Q_INVOKABLE void updateMusicLevel(int musicId, bool level);
+    Q_INVOKABLE void updateLove(int musicId, bool isLove);
+    Q_INVOKABLE void updateLevel(int musicId, bool level);
 
     Q_INVOKABLE Music getMusicData(int id);
-    Q_INVOKABLE QJsonObject getMusicJson(int id);
+    Q_INVOKABLE QJsonObject getJson(int id);
 
-    Q_INVOKABLE QStringList getMusicKeys() const;
+    Q_INVOKABLE QStringList getKeys() const;
 
     Q_INVOKABLE void startClearInvalidData();
 

@@ -10,32 +10,28 @@ private:
     Core *core;
 
 public:
-    explicit ArtistRepository(Core *core) : core(core) {}
+    explicit ArtistRepository(Core *core)
+        : core(core) {
+    }
 
-    [[nodiscard]] QStringList getArtistKeys() const;
-    [[nodiscard]] QList<int> getArtistByKey(const QString &key, int size, int start) const;
-    [[nodiscard]] ArtistPtr getArtist(int id) const;
-    [[nodiscard]] QHash<int, ArtistPtr> getArtist(const QList<int> &idList) const;
-    [[nodiscard]] QList<int> getArtistMusic(int id, int size, int start, int sort) const;
-    [[nodiscard]] QList<int> getArtistMusicAll(int id, int sort) const;
-    [[nodiscard]] int getArtistMusicFirst(int artistId) const;
-    [[nodiscard]] QList<int> getArtistRandList() const;
-    [[nodiscard]] int checkArtistName(const QString &name) const;
-    [[nodiscard]] QStringList getArtistNameList(int size, int start) const;
+    [[nodiscard]] QStringList getKeys() const;
+    [[nodiscard]] QList<int>  getByKey(const QString &key, int size, int start) const;
+    [[nodiscard]] ArtistPtr   get(int id) const;
+    [[nodiscard]] QList<int>  getMusic(int id, int size, int start, int sort) const;
+    [[nodiscard]] QList<int>  getMusicAll(int id, int sort) const;
+    [[nodiscard]] int         getMusicFirst(int artistId) const;
+    [[nodiscard]] QList<int>  getRandList() const;
+    [[nodiscard]] QStringList getNameList(int size, int start) const;
 
-    [[nodiscard]] bool appendArtist(const QString &artist) const;
-    [[nodiscard]] bool appendArtist(const QStringList &artistList) const;
-    [[nodiscard]] bool appendArtistMusic(int id, const QList<int> &musicList) const;
-    [[nodiscard]] bool appendArtistMusic(const QPair<QString, QString> &pair) const;
-    [[nodiscard]] bool appendArtistMusic(const QList<QPair<QString, QString> > &pairList) const;
-    [[nodiscard]] bool appendArtistMusic(const QList<MediaData> &dataList) const;
+    [[nodiscard]] bool append(const QStringList &artistList) const;
+    [[nodiscard]] bool appendMusic(const QList<MediaData> &dataList) const;
 
-    bool updateArtist(const ArtistPtr &artist) const;
-    bool updateArtistMusic(const QList<int> &musicIdList, int artistNewId, int artistOldId) const;
-    bool updateArtistNameKey(const QStringList &artistName, const QStringList &artistNameKey) const;
+    bool update(const ArtistPtr &artist) const;
+    bool updateMusic(const QList<int> &musicIdList, int artistNewId, int artistOldId) const;
+    bool updateNameKey(const QStringList &artistName, const QStringList &artistNameKey) const;
 
-    bool moveArtistMusic(const QString &artistName, const QString &artistNameNew) const;
-    bool addArtistMusicToPlayList(const QString &artistName, const QString &playListName) const;
+    bool moveMusic(const QString &artistName, const QString &artistNameNew) const;
+    bool addMusicToPlayList(const QString &artistName, const QString &playListName) const;
 };
 
 #endif // ARTISTREPOSITORY_H

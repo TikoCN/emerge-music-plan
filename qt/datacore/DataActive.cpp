@@ -4,11 +4,6 @@
 #include <algorithm>
 #include "namekey.h"
 
-void DataActive::appendPlayList(const QString &name) {
-    if (!SQLite::getInstance().playListRepository.appendUserPlayList(name))
-        TLog::getInstance().logError("插入播放列表失败");
-}
-
 QList<int> DataActive::musicListSort(const QList<int> &musicIdList, const SORT_TYPE sort) {
     QList<MusicPtr> musicList = getMusicCoreList(musicIdList);
     QList<int>      newIdList;
@@ -108,7 +103,7 @@ void DataActive::updateMusicLove(const int musicId, const bool isLove) {
     }
 
     music->isLove = isLove;
-    SQLite::getInstance().musicRepository.updateMusic(music);
+    SQLite::getInstance().musicRepository.update(music);
 }
 
 void DataActive::updateMusicLevel(const int musicId, const bool level) {
@@ -119,7 +114,7 @@ void DataActive::updateMusicLevel(const int musicId, const bool level) {
     }
 
     music->level = level;
-    SQLite::getInstance().musicRepository.updateMusic(music);
+    SQLite::getInstance().musicRepository.update(music);
 }
 
 void DataActive::updatePlayListName(const int playListId, const QString &name) {
@@ -130,7 +125,7 @@ void DataActive::updatePlayListName(const int playListId, const QString &name) {
     }
 
     playList->name = name;
-    SQLite::getInstance().playListRepository.updatePlayList(playList);
+    SQLite::getInstance().playListRepository.update(playList);
 }
 
 void DataActive::updatePlayListSort(int playListId, int sort) {
@@ -141,7 +136,7 @@ void DataActive::updatePlayListSort(int playListId, int sort) {
     }
 
     playList->sort = static_cast<SORT_TYPE>(sort);
-    SQLite::getInstance().playListRepository.updatePlayList(playList);
+    SQLite::getInstance().playListRepository.update(playList);
 }
 
 void DataActive::updateArtistName(const int artistId, const QString &name) {
@@ -152,7 +147,7 @@ void DataActive::updateArtistName(const int artistId, const QString &name) {
     }
 
     artist->name = name;
-    SQLite::getInstance().artistRepository.updateArtist(artist);
+    SQLite::getInstance().artistRepository.update(artist);
 }
 
 void DataActive::updateArtistSort(const int artistId, const int sort) {
@@ -163,7 +158,7 @@ void DataActive::updateArtistSort(const int artistId, const int sort) {
     }
 
     artist->sort = sort;
-    SQLite::getInstance().artistRepository.updateArtist(artist);
+    SQLite::getInstance().artistRepository.update(artist);
 }
 
 void DataActive::updateAlbumName(const int albumId, const QString &name) {
@@ -174,7 +169,7 @@ void DataActive::updateAlbumName(const int albumId, const QString &name) {
     }
 
     album->name = name;
-    SQLite::getInstance().albumRepository.updateAlbum(album);
+    SQLite::getInstance().albumRepository.update(album);
 }
 
 void DataActive::updateAlbumSort(const int albumId, int sort) {
@@ -185,7 +180,7 @@ void DataActive::updateAlbumSort(const int albumId, int sort) {
     }
 
     album->sort = static_cast<SORT_TYPE>(sort);
-    SQLite::getInstance().albumRepository.updateAlbum(album);
+    SQLite::getInstance().albumRepository.update(album);
 }
 
 void DataActive::updateALLNameKey() const {
@@ -195,7 +190,7 @@ void DataActive::updateALLNameKey() const {
     constexpr int maxSize    = 50;
     int           resultSize = maxSize;
     while (resultSize == maxSize) {
-        const QStringList &nameList = SQLite::getInstance().albumRepository.getAlbumNameList(maxSize, startPos);
+        const QStringList &nameList = SQLite::getInstance().albumRepository.getNameList(maxSize, startPos);
         QStringList        nameKeyList;
         resultSize = static_cast<int>(nameList.size());
         startPos   += resultSize;
@@ -204,14 +199,13 @@ void DataActive::updateALLNameKey() const {
             const QString &key = nameKey.find(name);
             nameKeyList.append(key);
         }
-
-        SQLite::getInstance().albumRepository.updateAlbumNameKey(nameList, nameKeyList);
+        SQLite::getInstance().albumRepository.updateNameKey(nameList, nameKeyList);
     }
 
     startPos   = 0;
     resultSize = maxSize;
     while (resultSize == maxSize) {
-        const QStringList &nameList = SQLite::getInstance().artistRepository.getArtistNameList(maxSize, startPos);
+        const QStringList &nameList = SQLite::getInstance().artistRepository.getNameList(maxSize, startPos);
         QStringList        nameKeyList;
         resultSize = static_cast<int>(nameList.size());
         startPos   += resultSize;
@@ -221,7 +215,7 @@ void DataActive::updateALLNameKey() const {
             nameKeyList.append(key);
         }
 
-        SQLite::getInstance().artistRepository.updateArtistNameKey(nameList, nameKeyList);
+        SQLite::getInstance().artistRepository.updateNameKey(nameList, nameKeyList);
     }
 }
 

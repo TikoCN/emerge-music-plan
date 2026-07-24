@@ -55,7 +55,7 @@ QHash<int, QByteArray> PlayListLibraryModel::roleNames() const {
 }
 
 void PlayListLibraryModel::loadAll() {
-    QString       jsonStr = SQLite::getInstance().getAllList();
+    QString       jsonStr = SQLite::getInstance().playListRepository.getAllList();
     QJsonDocument doc     = QJsonDocument::fromJson(jsonStr.toUtf8());
     QJsonArray    array   = doc.array();
 

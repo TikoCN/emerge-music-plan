@@ -14,7 +14,7 @@ AlbumPtr DataManager::getAlbumCore(const int id) {
     if (m_albumHash.contains(id)) {
         album = m_albumHash.value(id);
     } else {
-        album = SQLite::getInstance().albumRepository.getAlbum(id);
+        album = SQLite::getInstance().albumRepository.get(id);
 
         if (album != nullptr) {
             m_albumHash.insert(id, album);
@@ -69,7 +69,7 @@ ArtistPtr DataManager::getArtistCore(const int id) {
     if (m_artistHash.contains(id)) {
         artist = m_artistHash.value(id);
     } else {
-        artist = SQLite::getInstance().artistRepository.getArtist(id);
+        artist = SQLite::getInstance().artistRepository.get(id);
         if (artist != nullptr) {
             m_artistHash.insert(id, artist);
         } else {
@@ -105,7 +105,7 @@ MusicPtr DataManager::getMusicCore(const int id) {
     if (m_musicHash.contains(id)) {
         music = m_musicHash.value(id);
     } else {
-        music = SQLite::getInstance().musicRepository.getMusic(id);
+        music = SQLite::getInstance().musicRepository.get(id);
         if (music != nullptr) {
             m_musicHash.insert(id, music);
         } else {
@@ -129,7 +129,7 @@ QList<MusicPtr> DataManager::getMusicCoreList(const QList<int> &idList) {
         else
             musicList.append(m_musicHash.value(i));
     }
-    const QHash<int, MusicPtr> hash = SQLite::getInstance().musicRepository.getMusic(newIdList);
+    const QHash<int, MusicPtr> hash = SQLite::getInstance().musicRepository.get(newIdList);
     m_musicHash.insert(hash);
 
     musicList.append(hash.values());
@@ -154,7 +154,7 @@ PlayListPtr DataManager::getPlayListCore(const int id) {
     if (m_playlistHash.contains(id)) {
         playlist = m_playlistHash.value(id);
     } else {
-        playlist = SQLite::getInstance().playListRepository.getList(id);
+        playlist = SQLite::getInstance().playListRepository.get(id);
         if (playlist != nullptr) {
             m_playlistHash.insert(id, playlist);
         } else {
