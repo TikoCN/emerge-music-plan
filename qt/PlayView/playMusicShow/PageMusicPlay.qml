@@ -6,22 +6,43 @@ import Tiko
 import PlayView
 MouseArea {
     id: pageMain
-    property bool show: false
+    property bool active: false
     property int type: 1
     property string icon: ""
     property string artist: ""
     property string title: ""
     hoverEnabled: true
     acceptedButtons: Qt.NoButton
-    onContainsMouseChanged: heardItem.setState(containsMouse)
 
     onTypeChanged: updateShowModel()
-    onShowChanged: updateShowModel()
+    onActiveChanged: updateShowModel()
 
+    //背景
+    Loader{
+        id: loaderBg
+        anchors: parent
+        sourceComponent: bgStyle1
+
+        Component {
+            id: bgStyle1
+            BackImageMove {
+                iconUrl: pageMain.icon
+            }
+        }
+
+        Component {
+            id: bgStyle2
+            BackWater {
+
+            }
+        }
+    }
+
+    //详情
     Loader{
         id: loaderStyle
-        width: pageMain.width
-        height: pageMain.height
+        anchors.fill: parent
+        sourceComponent: playStyleCom1
 
         Component {
             id: playStyleCom1
@@ -29,7 +50,9 @@ MouseArea {
                 artist: pageMain.artist
                 title: pageMain.title
                 icon: pageMain.icon
-                show: pageMain.show
+                show: pageMain.active
+                onSetBgType: {}
+                onSetDetailType: {typeSelect.open()}
             }
         }
 
@@ -39,7 +62,9 @@ MouseArea {
                 artist: pageMain.artist
                 title: pageMain.title
                 icon: pageMain.icon
-                show: pageMain.show
+                show: pageMain.active
+                onSetBgType: {}
+                onSetDetailType: {typeSelect.open()}
             }
         }
 
@@ -93,104 +118,11 @@ MouseArea {
         }
     }
 
-    Item {
-        id: heardItem
-        width: parent.width
-        height: childrenRect.height
-        y: TikoSeit.emphasizeMargins
-
-        //关闭
-        TikoButtonIcon {
-            id: close
-            anchors.right: parent.right
-            anchors.margins: TikoSeit.emphasizeMargins
-            //text: qsTr("关闭")
-            icon.source: "qrc:/image/close.png"
-            onClicked: CoreData.windowClose()
-            level: 0
-        }
-
-        //最大化
-        TikoButtonIcon {
-            id: max
-            anchors.right: close.left
-            anchors.margins: TikoSeit.emphasizeMargins
-            //text: qsTr("最大化")
-            icon.source: "qrc:/image/max.png"
-            onClicked: CoreData.windowShowMax()
-            level: 0
-        }
-
-        //最小化
-        TikoButtonIcon {
-            id: min
-            anchors.right: max.left
-            anchors.margins: TikoSeit.emphasizeMargins
-            //text: qsTr("最小化")
-            icon.source: "qrc:/image/min.png"
-            onClicked: CoreData.windowShowMin()
-            level: 0
-        }
-
-        //返回主页
-        TikoButtonIcon {
-            id: back
-            anchors.left: parent.left
-            anchors.margins: TikoSeit.emphasizeMargins
-            //text: qsTr("返回")
-            icon.source: "qrc:/image/back.png"
-            onClicked: window.stackCenter()
-            level: 0
-        }
-
-        //样式
-        TikoButtonIcon {
-            id: style
-            anchors.left: back.right
-            anchors.margins: TikoSeit.emphasizeMargins
-            //text: qsTr("样式")
-            icon.source: "qrc:/image/style.png"
-            onClicked: typeSelect.open()
-            level: 0
-        }
-
-        ParallelAnimation {
-            id: disappear
-            NumberAnimation { target: heardItem; property: "y"; to: -heardItem.height; duration: 800 }
-            NumberAnimation { target: heardItem; property: "opacity"; to: 0; duration: 800 }
-        }
-        ParallelAnimation {
-            id: restore
-            NumberAnimation { target: heardItem; property: "y"; to: TikoSeit.emphasizeMargins; duration: 800 }
-            NumberAnimation { target: heardItem; property: "opacity"; to: 1; duration: 800 }
-        }
-
-        function setState(flag) {
-            disappear.stop()
-            restore.stop()
-
-            if (flag) {
-                restore.start()
-            } else {
-                disappear.start()
-            }
-        }
-    }
-
-    function actionStart(){
-        pageMain.show = true
-    }
-
-    function actionEnd() {
-        pageMain.show = false
+    function actionStart(flag){
+        pageMain.active = flag
     }
 
     function updateShowModel() {
-        if(!pageMain.show){
-            loaderStyle.sourceComponent = null
-            return
-        }
-
         switch(pageMain.type){
         case 1:
             loaderStyle.sourceComponent = playStyleCom1

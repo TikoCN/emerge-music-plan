@@ -70,7 +70,7 @@ TikoMenu {
 
     TikoMenuItem {
         text: qsTr("显示作曲家")
-        onClicked: CoreData.mainTurnArtistPlayer(artist)
+        onClicked: CoreData.stackArtist(artist)
     }
 
     Component {

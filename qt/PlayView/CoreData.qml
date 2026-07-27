@@ -1,4 +1,4 @@
-﻿pragma Singleton
+pragma Singleton
 import QtQuick
 import PlayView
 import MediaerAPI
@@ -11,12 +11,13 @@ QtObject {
     property int pageSize: 30
     property TikoFrameless windows
 
-    signal mainTurnMusicList(int page)
-    signal mainTurnSeit()
-    signal mainTurnMain()
-    signal mainTurnLibraryPage()
-    signal mainTurnAlbumPlayer(int album)
-    signal mainTurnArtistPlayer(int artist)
+    signal stackPlaylist(int page)
+    signal stackSeit()
+    signal stackRcommend()
+    signal stackLibrary()
+    signal stackAlbum(int album)
+    signal stackArtist(int artist)
+    signal stackDetail()
     signal sendMsg(string msg, int type)
     signal clearData()
     signal sendErrorMsg(string msg)

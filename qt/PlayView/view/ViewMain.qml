@@ -13,6 +13,7 @@ Item {
     property var playList: []
     property var playListId: []
 
+
     // 主体内容背景
     Rectangle {
         anchors.fill: parent
@@ -60,68 +61,146 @@ Item {
         anchors.top: closeButton.bottom
         width: parent.width
         height: parent.height - closeButton.height
-        initialItem: seitPage
         clip: true
     }
 
-    PageSeit {id: seitPage; visible: false}
-    PageLibrary {id: libraryPage; visible: false}
-    PageRecommend {id: recommendPage; visible: false}
-    PageAlbum {id: albumPlayer; visible: false}
-    PageArtist {id: artistPlayer; visible: false}
-    PagePlayList {id: playlistPlayer; visible: false }
+    property PageSeit pageSeit: null
+    property PageLibrary pageLib: null
+    property PageRecommend pageRecom: null
+    property PageAlbum pageAlbum: null
+    property PageArtist pageArtist: null
+    property PagePlayList pagePlaylist: null
+    property PageMusicPlay pageDetail: null
+
+    Component{id: comSeit;  PageSeit {visible: false}}
+    Component{id: comLib; PageLibrary {visible: false}}
+    Component{id: comRecom; PageRecommend {visible: false}}
+    Component{id: comAlbum; PageAlbum {visible: false}}
+    Component{id: comArtist; PageArtist {visible: false}}
+    Component{id: comPlaylist; PagePlayList {visible: false}}
+    Component{id: comDetail; PageMusicPlay {visible: false}}
+
+    //底部导航
+    ViewBottomBar{
+        id: bottomView
+        height: 90
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: 30
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.margins: TikoSeit.emphasizeMargins
+    }
 
     //切换到列表
-    function turnToMusicList(page){
-        playlistPlayer.setPlayListId(page)
-        if(stackView.currentItem != playlistPlayer){
-            stackView.replace(playlistPlayer)
+    function stackPlaylist(page){
+        if (pagePlaylist === null) {
+            if (comPlaylist.status === Component.Ready) {
+                pagePlaylist = comPlaylist.createObject(mainView)
+            } else {
+                return
+            }
+        }
+
+        pagePlaylist.setPlayListId(page)
+        if(stackView.currentItem != pagePlaylist){
+            stackView.replace(pagePlaylist)
         }
     }
 
     //切换到设置
-    function turnToSeit(){
-        if(stackView.currentItem != seitPage){
-            stackView.replace(seitPage)
+    function stackSeit(){
+        if (pageSeit === null) {
+            if (comSeit.status === Component.Ready) {
+                pageSeit = comSeit.createObject(mainView)
+            } else {
+                return
+            }
+        }
+
+        if(stackView.currentItem != pageSeit){
+            stackView.replace(pageSeit)
         }
     }
 
-    function turnToArtistPlayer(artistId){
-        artistPlayer.setArtistId(artistId)
-        if(stackView.currentItem != artistPlayer){
-            stackView.replace(artistPlayer)
+    function stackArtist(artistId){
+        if (pageArtist === null) {
+            if (comArtist.status === Component.Ready) {
+                pageArtist = comArtist.createObject(mainView)
+            } else {
+                return
+            }
+        }
+
+        pageArtist.setArtistId(artistId)
+        if(stackView.currentItem != pageArtist){
+            stackView.replace(pageArtist)
         }
     }
 
-    function turnToLibraryPage(){
-        if(stackView.currentItem != libraryPage){
-            stackView.replace(libraryPage)
+    function stackLibrary(){
+        if (pageLib === null) {
+            if (comLib.status === Component.Ready) {
+                pageLib = comLib.createObject(mainView)
+            } else {
+                return
+            }
+        }
+
+        if(stackView.currentItem != pageLib){
+            stackView.replace(pageLib)
         }
     }
 
-    function turnToAlbumPlayer(albumId){
-        albumPlayer.setAlbumId(albumId)
-        if(stackView.currentItem != albumPlayer){
-            stackView.replace(albumPlayer)
+    function stackAlbum(albumId){
+        if (pageAlbum === null) {
+            if (comAlbum.status === Component.Ready) {
+                pageAlbum = comAlbum.createObject(mainView)
+            } else {
+                return
+            }
+        }
+
+        pageAlbum.setAlbumId(albumId)
+        if(stackView.currentItem != pageAlbum){
+            stackView.replace(pageAlbum)
         }
     }
 
-    function buildData(){
-        recommendPage.buildRand()
+    function stackRcommend(){
+        if (pageRecom === null) {
+            if (comRecom.status === Component.Ready) {
+                pageRecom = comRecom.createObject(mainView)
+            } else {
+                return
+            }
+        }
+
+        if(stackView.currentItem != pageRecom){
+            stackView.replace(pageRecom)
+        }
     }
 
-    function turnToMain(){
-        if(stackView.currentItem != recommendPage){
-            stackView.replace(recommendPage)
+    function stackDetail(){
+        if (pageDetail === null) {
+            if (comDetail.status === Component.Ready) {
+                pageDetail = comDetail.createObject(mainView)
+            } else {
+                return
+            }
+        }
+
+        if(stackView.currentItem != pageDetail){
+            stackView.replace(pageDetail)
         }
     }
 
     Component.onCompleted: {
-        CoreData.mainTurnSeit.connect(turnToSeit)
-        CoreData.mainTurnMain.connect(turnToMain)
-        CoreData.mainTurnLibraryPage.connect(turnToLibraryPage)
-        CoreData.mainTurnAlbumPlayer.connect(turnToAlbumPlayer)
-        CoreData.mainTurnArtistPlayer.connect(turnToArtistPlayer)
-        CoreData.mainTurnMusicList.connect(turnToMusicList)
+        CoreData.stackSeit.connect(stackSeit)
+        CoreData.stackRcommend.connect(stackRcommend)
+        CoreData.stackLibrary.connect(stackLibrary)
+        CoreData.stackAlbum.connect(stackAlbum)
+        CoreData.stackArtist.connect(stackArtist)
+        CoreData.stackPlaylist.connect(stackPlaylist)
+        CoreData.stackDetail.connect(stackDetail)
     }
 }

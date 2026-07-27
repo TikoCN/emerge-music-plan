@@ -9,12 +9,12 @@ import QtQuick.Effects
 
 TikoFrameless{
     id: window
-    width:Setting.windowRect.width
     minimumWidth: 1000
-    height:Setting.windowRect.height
     minimumHeight: 600
     x:Setting.windowRect.x
     y:Setting.windowRect.y
+    width:Setting.windowRect.width
+    height:Setting.windowRect.height
     visible: true
     title: qsTr("尘星音乐")
     property int showType: 0
@@ -31,6 +31,7 @@ TikoFrameless{
         Setting.writeData()
     }
 
+    // 背景与阴影实现
     Item{
         id: editPage
         anchors.top: parent.top
@@ -67,163 +68,25 @@ TikoFrameless{
             z: -1
         }
 
-        //中间内容导航
-        ViewMain{
-            id: mainView
-            anchors.top: parent.top
-            anchors.left: barView.right
-            anchors.right: parent.right
-            anchors.bottom: parent.bottom
-            anchors.margins: TikoSeit.subitemSpace
-        }
-
         ViewLeftBar{
             id: barView
             height: parent.height
             width: 250
         }
 
-        //底部导航
-        ViewBottomBar{
-            id: bottomView
-            height: 90
-            anchors.bottom: parent.bottom
-            anchors.margins: 30
-            anchors.left: barView.right
-            anchors.right: parent.right
+        //中间内容导航
+        ViewMain{
+            id: mainView
+            height: parent.height
+            width: parent.width - barView.width - 10
+            x: barView.width + 10
         }
 
         property int duration: 500
         property int inType: Easing.InOutQuad
         property int outType: Easing.InOutQuad
-        // 切换到音乐播放界面动画
-        ParallelAnimation {
-            id: trunToMusicPlayAnimation
-            onFinished: showType = 1
 
-            // 出
-            NumberAnimation {
-                targets: [mainView, barView]
-                property: "y"
-                from: 0
-                to: -mainView.height
-                duration: editPage.duration
-                easing.type: editPage.outType
-            }
-
-            NumberAnimation {
-                target: bottomView
-                property: "y"
-                from: barView.height
-                to: editPage.height
-                duration: editPage.duration
-                easing.type: editPage.outType
-            }
-
-            NumberAnimation {
-                targets: [mainView, barView, bottomView]
-                property: "opacity"
-                from: 1
-                to: 0
-                duration: editPage.duration
-                easing.type: editPage.outType
-            }
-
-            // 进
-            NumberAnimation {
-                target: editPageBack
-                property: "y"
-                from: 0
-                to: -editPage.height
-                duration: editPage.duration
-                easing.type: editPage.inType
-            }
-
-            NumberAnimation {
-                target: musicPlayPage
-                property: "y"
-                from: musicPlayPage.height
-                to: 0
-                duration: editPage.duration
-                easing.type: editPage.inType
-            }
-
-            NumberAnimation {
-                target: musicPlayPage
-                property: "opacity"
-                from: 0
-                to: 1
-                duration: editPage.duration
-                easing.type: editPage.inType
-            }
-
-        }
-
-        ParallelAnimation {
-            id: trunToMainAnimation
-            onFinished: {
-                musicPlayPage.actionEnd()
-                showType = 0
-            }
-
-
-            // 出
-            NumberAnimation {
-                target: editPageBack
-                property: "y"
-                from: -height
-                to: 0
-                duration: editPage.duration
-                easing.type: editPage.outType
-            }
-
-            NumberAnimation {
-                target: musicPlayPage
-                property: "y"
-                from: 0
-                to: musicPlayPage.height
-                duration: editPage.duration
-                easing.type: editPage.outType
-            }
-
-            NumberAnimation {
-                target: musicPlayPage
-                property: "opacity"
-                from: 1
-                to: 0
-                duration: editPage.duration
-                easing.type: editPage.outType
-            }
-
-            // 进
-            NumberAnimation {
-                targets: [mainView, barView]
-                property: "y"
-                from: -mainView.height
-                to: 0
-                duration: editPage.duration
-                easing.type: editPage.inType
-            }
-
-            NumberAnimation {
-                target: bottomView
-                property: "y"
-                from: editPage.height
-                to: barView.height
-                duration: editPage.duration
-                easing.type: editPage.inType
-            }
-
-            NumberAnimation {
-                targets: [mainView, barView, bottomView]
-                property: "opacity"
-                from: 0
-                to: 1
-                duration: editPage.duration
-                easing.type: editPage.inType
-            }
-        }
-
+        //正在播放列表
         ViewPlayingList {
             id: playingPlayList
             width: parent.width * 0.3
@@ -239,34 +102,28 @@ TikoFrameless{
             TikoSeit.sendMessage(this, qsTr("请先播放音乐"), 1)
             return
         }
-
-        musicPlayPage.actionStart()
-        trunToMusicPlayAnimation.start()
     }
 
     //切换到编辑页
     function stackCenter(){
-        // 移动到动画结束
-        musicPlayPage.actionEnd()
-        trunToMainAnimation.start()
     }
 
     //清理数据
     function clearData(){
         playingPlayList.clearData()
-        mainView.turnToSeit()
+        mainView.stackDetail()
     }
 
     Connections{
         target: DataActive
         function onFinish(){
-            load()
+            CoreData.playlist = JSON.parse(PlayListLibrary.getAllList())
         }
     }
 
     // 程序开始
     Component.onCompleted: {
-        load()
+        CoreData.playlist = JSON.parse(PlayListLibrary.getAllList())
         MediaPlayer.initData()
 
         CoreData.windows = window
@@ -281,10 +138,5 @@ TikoFrameless{
             }
         })
         CoreData.windowClose.connect(close)
-    }
-
-    function load() {
-        CoreData.playlist = JSON.parse(PlayListLibrary.getAllList())
-        mainView.buildData()
     }
 }

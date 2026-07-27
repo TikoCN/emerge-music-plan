@@ -9,11 +9,8 @@ Item{
     property string title: qsTr("标题")
     property string icon: ""
     property bool show: false
-
-    BackImage {
-        anchors.fill: style
-        iconUrl: style.icon
-    }
+    signal setDetailType()
+    signal setBgType()
 
     AudioVsualizationCircle {
         id: canvas

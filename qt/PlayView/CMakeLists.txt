@@ -109,6 +109,7 @@ qt_add_qml_module(PlayViewLib
         GridButton/GridButtonMusic.qml
         GridButton/GridButtonArtist.qml
         GridButton/GridButtonAlbum.qml
+        QML_FILES PlayMusicShow/PlayStyle3.qml
 )
 
 target_link_libraries(PlayViewLib PRIVATE Qt6::Quick)

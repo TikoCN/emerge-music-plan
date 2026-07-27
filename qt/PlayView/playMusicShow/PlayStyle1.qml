@@ -9,6 +9,8 @@ Item{
     property string title: qsTr("标题")
     property string icon: ""
     property bool show: false
+    signal setDetailType()
+    signal setBgType()
 
     onShowChanged: {
         if (show) {
@@ -18,12 +20,6 @@ Item{
             lrcShow.clearData()
             moveItem.moveTimer.stop()
         }
-    }
-
-    BackImageMove {
-        id: moveItem
-        anchors.fill: parent
-        iconUrl: style.icon
     }
 
     Item{
@@ -154,7 +150,6 @@ Item{
             anchors.horizontalCenter: leftShow.horizontalCenter
         }
     }
-
 
     Item{
         id: rightShow

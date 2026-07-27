@@ -38,6 +38,7 @@ Item {
         }
     }
 
+    Component.onCompleted: build()
     function build(){
         MusicLibrary.model().loadMostPlayedList()
     }

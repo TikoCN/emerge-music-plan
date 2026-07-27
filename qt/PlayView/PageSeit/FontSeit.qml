@@ -22,7 +22,7 @@ TikoRightVessel{
             model: fontDataMode
             delegate: TikoSelectFont {
                 selectedFont: Setting[modelData.prop]
-                width: bgLoader.width
+                width: parent.width
 
                 fontSizeItem.text: "字体大小"
                 fontShowItem.text: "字体预览"

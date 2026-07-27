@@ -13,7 +13,7 @@ ButtonBase {
     loadIcon: "image://cover/artistFile?id=" +
               model.id.toString() +
               "&radius=10"
-    onPage: CoreData.mainTurnArtistPlayer(model.id)
+    onPage: CoreData.stackArtist(model.id)
     onMenu: createMenu(this)
     onPlay: MediaPlayer.buildPlayingArtist(model.id)
 

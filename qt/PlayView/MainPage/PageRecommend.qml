@@ -49,9 +49,4 @@ ScrollView {
             height: childrenRect.height
         }
     }
-
-    function buildRand() {
-        recomMusicNew.build()
-        recomMusicPlay.build()
-    }
 }

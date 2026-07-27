@@ -16,6 +16,7 @@ Item {
         property ListModel listModel
 
         delegate: TikoButtonDefault {
+            width: scrollview.width
             id: norMalButton
             icon.anchors.leftMargin: TikoSeit.emphasizeMargins
             icon.enableUnifiedColor: false
@@ -25,7 +26,7 @@ Item {
                          "&radius=3"
             onLeftClicked: {
                 root.showText = textLine.text
-                CoreData.mainTurnMusicList(model.id)
+                CoreData.stackPlaylist(model.id)
             }
             onRightClicked: openPlayListMenu(model.id, model.isDir, model.name)
             height: 30
@@ -50,6 +51,7 @@ Item {
     }
 
     ScrollView{
+        id: scrollview
         ScrollBar.vertical.visible: false
         ScrollBar.horizontal.visible: false
         height: parent.height
@@ -82,9 +84,10 @@ Item {
                 }
 
                 model: [
-                    {icon: "qrc:/image/home.png", click: CoreData.mainTurnMain},
-                    {icon: "qrc:/image/album.png", click: CoreData.mainTurnLibraryPage},
-                    {icon: "qrc:/image/seit.png", click: CoreData.mainTurnSeit}
+                    {icon: "qrc:/image/home.png", click: CoreData.stackDetail},
+                    {icon: "qrc:/image/album.png", click: CoreData.stackLibrary},
+                    {icon: "qrc:/image/seit.png", click: CoreData.stackSeit},
+                    {icon: "qrc:/image/seit.png", click: CoreData.stackRcommend}
                 ]
             }
         }

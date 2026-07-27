@@ -71,7 +71,7 @@ TikoMenu {
 
     TikoMenuItem {
         text: qsTr("显示专辑")
-        onClicked: CoreData.mainTurnAlbumPlayer(albumId)
+        onClicked: CoreData.stackAlbum(albumId)
     }
 
     Component {
