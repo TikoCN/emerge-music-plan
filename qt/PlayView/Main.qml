@@ -114,16 +114,8 @@ TikoFrameless{
         mainView.stackDetail()
     }
 
-    Connections{
-        target: DataActive
-        function onFinish(){
-            CoreData.playlist = JSON.parse(PlayListLibrary.getAllList())
-        }
-    }
-
     // 程序开始
     Component.onCompleted: {
-        CoreData.playlist = JSON.parse(PlayListLibrary.getAllList())
         MediaPlayer.initData()
 
         CoreData.windows = window

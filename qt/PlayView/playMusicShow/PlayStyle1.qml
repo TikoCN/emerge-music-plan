@@ -15,10 +15,8 @@ Item{
     onShowChanged: {
         if (show) {
             lrcShow.buildLrcList()
-            moveItem.moveTimer.start()
         } else {
             lrcShow.clearData()
-            moveItem.moveTimer.stop()
         }
     }
 

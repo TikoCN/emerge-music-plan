@@ -5,7 +5,7 @@
 #include "baseclass/Album.h"
 #include "datacore/DataLoader.h"
 
-class AlbumLibraryModel;
+class AlbumModel;
 
 class AlbumLibrary : public QObject {
     Q_OBJECT
@@ -27,23 +27,9 @@ public:
     Q_INVOKABLE bool moveMusic(const QString &albumName, const QString &albumNameNew) const;
     Q_INVOKABLE bool addMusicToPlayList(const QString &albumName, const QString &playListName) const;
 
-    Q_INVOKABLE AlbumLibraryModel *model();
-
-    Q_INVOKABLE DataLoader *loader();
-
-    Q_INVOKABLE void loadByKey(const QString &key);
-    Q_INVOKABLE void loadMoreByKey(int index, const QString &key);
-
-signals:
-    void buildPlayer();
-    void finish();
-
 private:
-    explicit AlbumLibrary();
-    ~AlbumLibrary() override;
-
-    AlbumLibraryModel *m_model;
-    DataLoader *       m_loader;
+    explicit AlbumLibrary()  = default;
+    ~AlbumLibrary() override = default;
 };
 
 #endif // ALBUMLIBRARY_H

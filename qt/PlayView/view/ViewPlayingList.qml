@@ -40,9 +40,6 @@ Drawer {
         anchors.margins: TikoSeit.emphasizeMargins
         clip: true
         isLittle: true
-        customLoadCallback: function(index) {
-            return MediaPlayer.getMusicList(CoreData.pageSize, index)
-        }
         onPlay: (musicId, listId) => {MediaPlayer.playMusicByListId(listId)}
     }
 

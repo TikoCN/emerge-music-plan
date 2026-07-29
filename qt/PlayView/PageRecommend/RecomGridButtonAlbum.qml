@@ -7,8 +7,8 @@ RecomGridButtonBase {
     text: qsTr("随机推荐专辑")
 
     delegateItem: GridButtonAlbum {
-        onResetRequested: {
-            AlbumLibrary.model().loadRandList()
+        model: AlbumModel {
+            type: AlbumModel.Rand
         }
     }
 }

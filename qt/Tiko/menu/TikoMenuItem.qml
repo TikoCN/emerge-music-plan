@@ -8,8 +8,8 @@ MenuItem {
     font: TikoSeit.theme.fontDefault
     implicitHeight: 35
 
-    property color unifiedColor: TikoSeit.theme.colorBgDefault
-    property bool useUnifiedColor: true
+    property color disabledColor: TikoSeit.theme.colorFgHint
+    property bool disable: true
 
     //背景
     background: Rectangle {
@@ -36,6 +36,7 @@ MenuItem {
             anchors.right: parent.right
             anchors.margins: TikoSeit.subitemSpace
             anchors.verticalCenter: parent.verticalCenter
+            color: disable ? TikoSeit.theme.colorTextDefault : disabledColor
         }
     }
 }

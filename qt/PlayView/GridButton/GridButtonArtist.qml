@@ -10,8 +10,6 @@ GridView {
     property int column: 6
     property int realCellWidth: gridItem.cellWidth - TikoSeit.emphasizeMargins
     property bool autoHeightEnable: true
-    property string currentKey: ""
-    signal resetRequested()
 
     height: 50
     flow: GridView.TopToBottom

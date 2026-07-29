@@ -5,7 +5,7 @@
 #include "baseclass/Artist.h"
 #include "datacore/DataLoader.h"
 
-class ArtistLibraryModel;
+class ArtistModel;
 
 class ArtistLibrary : public QObject {
     Q_OBJECT
@@ -27,23 +27,9 @@ public:
     Q_INVOKABLE bool moveMusic(const QString &artistName, const QString &artistNameNew) const;
     Q_INVOKABLE bool addMusicToPlayList(const QString &artistName, const QString &playListName) const;
 
-    Q_INVOKABLE ArtistLibraryModel *model();
-
-    Q_INVOKABLE DataLoader *loader();
-
-    Q_INVOKABLE void loadByKey(const QString &key);
-    Q_INVOKABLE void loadMoreByKey(int index, const QString &key);
-
-signals:
-    void buildPlayer();
-    void finish();
-
 private:
-    explicit ArtistLibrary();
-    ~ArtistLibrary() override;
-
-    ArtistLibraryModel *m_model;
-    DataLoader *        m_loader;
+    explicit ArtistLibrary()  = default;
+    ~ArtistLibrary() override = default;
 };
 
 #endif // ARTISTLIBRARY_H

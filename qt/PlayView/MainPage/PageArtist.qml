@@ -27,19 +27,16 @@ PageBase{
         sort = artist.sort
         duration = artist.duration
         musicCount = artist.musicCount
-
-        musicList.reset()
-    }
-
-    musicList.customLoadCallback: function(index) {
-        if (index === 0) {
-            MusicLibrary.model().loadArtistMusic(artistId, CoreData.pageSize, 0, sort)
-        } else {
-            MusicLibrary.model().loadMoreArtistMusic(artistId, CoreData.pageSize, index, sort)
-        }
+        musicModel.artistId = artistPlayer.artistId
+        musicModel.clear()
     }
 
     musicList.onPlay: (musicId, listId) => {
                           MediaPlayer.buildPlayingArtist(artistId, listId)
                       }
+
+    musicList.model: MusicModel {
+        id: musicModel
+        type: MusicModel.Artist
+    }
 }

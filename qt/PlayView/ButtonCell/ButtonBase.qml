@@ -23,22 +23,21 @@ TikoButtonBase {
             name: "active"
             when: isHover
             PropertyChanges {
-                target: mouseArea
-                y: -10
+                target: columnView
+                y: 0
             }
         },
         State {
             name: "inactive"
             when: !isHover
             PropertyChanges {
-                target: mouseArea
-                y: 0
+                target: columnView
+                y: 10
             }
         }
     ]
 
     transitions: Transition {
-        // 同时动画 width 和 opacity
             NumberAnimation {
                 properties: "y"
                 duration: 250
@@ -47,6 +46,7 @@ TikoButtonBase {
     }
 
     Column {
+        id: columnView
         width: parent.width - TikoSeit.subitemSpace * 4
         anchors.horizontalCenter: parent.horizontalCenter
 

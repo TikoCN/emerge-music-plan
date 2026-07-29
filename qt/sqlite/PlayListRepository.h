@@ -13,8 +13,8 @@ public:
         : core(core) {
     }
 
-    [[nodiscard]] QString     getAllList() const;
     [[nodiscard]] PlayListPtr get(int id) const;
+    [[nodiscard]] QList<int>  getList(int start, int size, bool isDir) const;
     [[nodiscard]] QList<int>  getMusic(int id, int size, int start, int sort) const;
     [[nodiscard]] QList<int>  getMusicAll(int id, int sort) const;
     [[nodiscard]] int         allowName(const QString &name) const;

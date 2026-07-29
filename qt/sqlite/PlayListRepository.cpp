@@ -33,7 +33,6 @@ PlayListPtr PlayListRepository::get(const int id) const {
                         .arg(LiteralConstant::Column::MUSIC_ID);
 
         core->stmtPrepare(&stmt, sql.toUtf8());
-        core->stmtReset(stmt);
         core->stmtBindInt(stmt, 1, id);
         core->stmtStep(stmt);
         playList             = PlayListPtr(new PlayList());
@@ -49,6 +48,31 @@ PlayListPtr PlayListRepository::get(const int id) const {
     }
     Core::stmtFree(stmt);
     return playList;
+}
+
+QList<int> PlayListRepository::getList(const int start, const int size, const bool isDir) const {
+    QList<int>    list;
+    sqlite3_stmt *stmt = nullptr;
+    try {
+        const auto sql = QString("SELECT %1 FROM %2 WHERE %3 = ? LIMIT ? OFFSET ?")
+                        .arg(LiteralConstant::Column::PLAYLIST_ID)
+                        .arg(LiteralConstant::Table::PLAYLIST)
+                        .arg(LiteralConstant::Column::IS_DIR);
+
+        core->stmtPrepare(&stmt, sql.toUtf8());
+        core->stmtBindInt(stmt, 1, isDir ? 1 : 0);
+        core->stmtBindInt(stmt, 2, size);
+        core->stmtBindInt(stmt, 3, start);
+
+        while (core->stmtStep(stmt)) {
+            list.append(sqlite3_column_int(stmt, 0));
+        }
+    } catch (const DataException &e) {
+        TLog::getInstance().logError(e.errorMessage());
+        list.clear();
+    }
+    Core::stmtFree(stmt);
+    return list;
 }
 
 QList<int> PlayListRepository::getMusic(const int id, const int size, const int start, const int sort) const {
@@ -313,55 +337,6 @@ bool PlayListRepository::update(const PlayListPtr &playList) const {
     }
     Core::stmtFree(stmt);
     return result;
-}
-
-QString PlayListRepository::getAllList() const {
-    QString playListStr;
-    try {
-        const auto sql = QString(
-                             "SELECT %1.%2, %1.%3, %1.%4, %1.%5, %1.%6,"
-                             "COUNT(DISTINCT %7.%8) AS music_count, SUM(%9.%10), "
-                             "MIN(%9.%11) AS first_music_id "
-                             "FROM %1 "
-                             "LEFT JOIN %7 ON %1.%3 = %7.%12 "
-                             "LEFT JOIN %9 ON %7.%8 = %9.%13 "
-                             "GROUP BY %1.%3, %1.%2, %1.%4, %1.%5, %1.%6")
-                        .arg(LiteralConstant::Table::PLAYLIST)
-                        .arg(LiteralConstant::Column::PLAYLIST_NAME)
-                        .arg(LiteralConstant::Column::PLAYLIST_ID)
-                        .arg(LiteralConstant::Column::URL)
-                        .arg(LiteralConstant::Column::IS_DIR)
-                        .arg(LiteralConstant::Column::SORT)
-                        .arg(LiteralConstant::Table::PLAYLIST_MUSIC)
-                        .arg(LiteralConstant::Column::MUSIC_ID)
-                        .arg(LiteralConstant::Table::MUSIC)
-                        .arg(LiteralConstant::Column::DURATION)
-                        .arg(LiteralConstant::Column::MUSIC_ID)
-                        .arg(LiteralConstant::Column::PLAYLIST_ID)
-                        .arg(LiteralConstant::Column::MUSIC_ID);
-
-        const sqlite3_callback callback = [](void *data, int argc, char **argv, char **azColName)-> int {
-            auto *str = static_cast<QString *>(data);
-            if (*str != "") {
-                *str += ",";
-            }
-            *str += QString("{\"name\":\"%1\",\"id\":%2,\"url\":\"%3\",\"isDir\":%4,\"sort\":%5,\"isShow\":true,\"musicCount\":%6,\"duration\":%7,\"firstMusic\":%8}")
-                   .arg(argv[0] ? QString(argv[0]).replace("\"", "\\\"") : "")
-                   .arg(argv[1] ? QString(argv[1]) : "0")
-                   .arg(argv[2] ? QString(argv[2]).replace("\"", "\\\"") : "")
-                   .arg(argv[3] ? QString(argv[3]) : "0")
-                   .arg(argv[4] ? QString(argv[4]) : "0")
-                   .arg(argv[5] ? QString(argv[5]) : "0")
-                   .arg(argv[6] ? QString(argv[6]) : "0")
-                   .arg(argv[7] ? QString(argv[7]) : "0");
-            return SQLITE_OK;
-        };
-        core->sqlExecuteCallBack(sql.toUtf8(), callback, &playListStr);
-        playListStr = QString("[%1]").arg(playListStr);
-    } catch (const DataException &e) {
-        TLog::getInstance().logError(e.errorMessage());
-    }
-    return playListStr;
 }
 
 QList<int> PlayListRepository::getPlayingListMusic() const {

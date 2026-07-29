@@ -7,7 +7,9 @@ import PlayView
 MouseArea {
     id: pageMain
     property bool active: false
+    property bool tspBg: false
     property int type: 1
+    property int bgStyle: 1
     property string icon: ""
     property string artist: ""
     property string title: ""
@@ -16,11 +18,12 @@ MouseArea {
 
     onTypeChanged: updateShowModel()
     onActiveChanged: updateShowModel()
+    onTspBgChanged: setBgStyle()
 
     //背景
     Loader{
         id: loaderBg
-        anchors: parent
+        anchors.fill: parent
         sourceComponent: bgStyle1
 
         Component {
@@ -67,18 +70,17 @@ MouseArea {
                 onSetDetailType: {typeSelect.open()}
             }
         }
+    }
 
-        Connections{
-            target: MediaPlayer.player
-            function onSourceChanged(){
-                const json = MusicLibrary.getJson(MediaPlayer.playingMusicId);
-                artist = json.artist
-                title = json.title
-                icon = "image://cover/musicOnLine?id=" +
-                        MediaPlayer.playingMusicId.toString() + "&radius=10"
-            }
+
+    Connections{
+        target: MediaPlayer.player
+        function onSourceChanged(){
+            loadCurrentMusic()
         }
     }
+
+    Component.onCompleted: loadCurrentMusic()
 
     // 左侧栏目
     Drawer {
@@ -118,7 +120,7 @@ MouseArea {
         }
     }
 
-    function actionStart(flag){
+    function setActive(flag){
         pageMain.active = flag
     }
 
@@ -131,5 +133,29 @@ MouseArea {
             loaderStyle.sourceComponent = playStyleCom2
             break
         }
+    }
+
+    function setBgStyle() {
+        if (tspBg) {
+            loaderBg.sourceComponent = null
+            return
+        }
+
+        switch(pageMain.bgStyle){
+        case 1:
+            loaderBg.sourceComponent = playStyleCom1
+            break
+        case 2:
+            loaderBg.sourceComponent = playStyleCom2
+            break
+        }
+    }
+
+    function loadCurrentMusic() {
+        const core = MusicLibrary.getMusicData(MusicLibrary.playingMusicId)
+        artist = core.artist
+        title = core.title
+        icon = "image://cover/musicOnLine?id=" +
+                MediaPlayer.playingMusicId.toString() + "&radius=10"
     }
 }

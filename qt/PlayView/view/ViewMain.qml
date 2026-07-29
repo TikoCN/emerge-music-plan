@@ -78,7 +78,7 @@ Item {
     Component{id: comAlbum; PageAlbum {visible: false}}
     Component{id: comArtist; PageArtist {visible: false}}
     Component{id: comPlaylist; PagePlayList {visible: false}}
-    Component{id: comDetail; PageMusicPlay {visible: false}}
+    Component{id: comDetail; PageMusicPlay {visible: false; tspBg: true}}
 
     //底部导航
     ViewBottomBar{
@@ -91,6 +91,22 @@ Item {
         anchors.margins: TikoSeit.emphasizeMargins
     }
 
+    function stackMode(mode) {
+        switch (mode) {
+        case 0:
+            if (bottomView.visible !== true)
+                bottomView.visible = true
+
+            if (pageDetail !== null)
+            pageDetail.setActive(false)
+            return
+        case 1:
+            if (bottomView.visible !== false)
+                bottomView.visible = false
+            return
+        }
+    }
+
     //切换到列表
     function stackPlaylist(page){
         if (pagePlaylist === null) {
@@ -101,6 +117,7 @@ Item {
             }
         }
 
+        stackMode(0)
         pagePlaylist.setPlayListId(page)
         if(stackView.currentItem != pagePlaylist){
             stackView.replace(pagePlaylist)
@@ -117,6 +134,7 @@ Item {
             }
         }
 
+        stackMode(0)
         if(stackView.currentItem != pageSeit){
             stackView.replace(pageSeit)
         }
@@ -131,6 +149,7 @@ Item {
             }
         }
 
+        stackMode(0)
         pageArtist.setArtistId(artistId)
         if(stackView.currentItem != pageArtist){
             stackView.replace(pageArtist)
@@ -146,6 +165,7 @@ Item {
             }
         }
 
+        stackMode(0)
         if(stackView.currentItem != pageLib){
             stackView.replace(pageLib)
         }
@@ -160,6 +180,7 @@ Item {
             }
         }
 
+        stackMode(0)
         pageAlbum.setAlbumId(albumId)
         if(stackView.currentItem != pageAlbum){
             stackView.replace(pageAlbum)
@@ -175,6 +196,7 @@ Item {
             }
         }
 
+        stackMode(0)
         if(stackView.currentItem != pageRecom){
             stackView.replace(pageRecom)
         }
@@ -189,6 +211,8 @@ Item {
             }
         }
 
+        stackMode(1)
+        pageDetail.setActive(true)
         if(stackView.currentItem != pageDetail){
             stackView.replace(pageDetail)
         }

@@ -29,19 +29,16 @@ PageBase {
         sort = playlist.sort
         duration = playlist.duration
         musicCount = playlist.musicCount
-
-        musicList.reset()
-    }
-
-    musicList.customLoadCallback: function(index) {
-        if (index === 0) {
-            MusicLibrary.model().loadPlayListMusic(playlistId, CoreData.pageSize, 0, sort)
-        } else {
-            MusicLibrary.model().loadMorePlayListMusic(playlistId, CoreData.pageSize, index, sort)
-        }
+        musicModel.playlistId = playlistId
+        musicModel.clear()
     }
 
     musicList.onPlay: (musicId, listId) => {
                           MediaPlayer.buildPlayingPlayList(playlistId, listId)
                       }
+
+    musicList.model: MusicModel {
+        id: musicModel
+        type: MusicModel.Playlist
+    }
 }

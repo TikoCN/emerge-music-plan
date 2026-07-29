@@ -10,32 +10,6 @@ import QtQuick.Effects
 
 Item {
     id: root
-    property string showText: "qrc:/image/seit.png"
-
-    component PlayListRepeater: Repeater {
-        property ListModel listModel
-
-        delegate: TikoButtonDefault {
-            width: scrollview.width
-            id: norMalButton
-            icon.anchors.leftMargin: TikoSeit.emphasizeMargins
-            icon.enableUnifiedColor: false
-            textLine.text: model.name
-            icon.source: "image://cover/playlistFile?id=" +
-                         model.id.toString() +
-                         "&radius=3"
-            onLeftClicked: {
-                root.showText = textLine.text
-                CoreData.stackPlaylist(model.id)
-            }
-            onRightClicked: openPlayListMenu(model.id, model.isDir, model.name)
-            height: 30
-            bgOpacity: 0
-        }
-
-        model: listModel
-    }
-
     Rectangle {
         anchors.fill: parent
         color: TikoSeit.theme.colorBgView
@@ -78,7 +52,7 @@ Item {
                     icon.height: icon.width
                     bgOpacity: 0
                     onClicked: {
-                        root.showText = modelData.icon
+                        setRectBgParent(iconButton)
                         modelData.click()
                     }
                 }
@@ -98,12 +72,6 @@ Item {
             anchors.left: parent.left
             anchors.right: parent.right
             anchors.margins: TikoSeit.emphasizeMargins
-
-            PlayListRepeater {
-                listModel: ListModel{
-                    id: dirPlayListModel
-                }
-            }
 
             TikoButtonDefault{
                 id: addPlayListButton
@@ -135,11 +103,31 @@ Item {
                 }
             }
 
-            PlayListRepeater {
-                listModel: ListModel{
-                    id: userPlayListModel
+
+            Repeater {
+                    delegate: TikoButtonDefault {
+                        width: scrollview.width
+                        id: norMalButton
+                        icon.anchors.leftMargin: TikoSeit.emphasizeMargins
+                        icon.enableUnifiedColor: false
+                        textLine.text: model.name
+                        icon.source: "image://cover/playlistFile?id=" +
+                                     model.id.toString() +
+                                     "&radius=3"
+                        onLeftClicked: {
+                            CoreData.stackPlaylist(model.id)
+                            setRectBgParent(norMalButton)
+                        }
+                        onRightClicked: openPlayListMenu(model.id, model.isDir, model.name)
+                        height: 30
+                        bgOpacity: 0
+                    }
+
+                    model: PlaylistModel {
+                        id: playlistModel
+                        type: PlaylistModel.All
+                    }
                 }
-            }
         }
     }
 
@@ -147,6 +135,20 @@ Item {
         id: editMusicListMenu
         MenuPlayList {
         }
+    }
+
+    Rectangle {
+        id: moveBgItem
+        parent: addPlayListButton
+        width: parent.width
+        height: parent.height
+        color: TikoSeit.theme.colorMaxTop
+        opacity: 0.08
+        radius: 10
+    }
+
+    function setRectBgParent(parent) {
+        moveBgItem.parent = parent
     }
 
     function openPlayListMenu(playlistId, isDir, name){
@@ -163,38 +165,4 @@ Item {
         }
     }
 
-    function updatePlayLists() {
-        userPlayListModel.clear()
-        dirPlayListModel.clear()
-
-        var jsonStr = PlayListLibrary.getAllList()
-        var doc = JSON.parse(jsonStr)
-        for (var i = 0; i < doc.length; i++) {
-            var item = doc[i]
-            if (item["isDir"] === 1) {
-                dirPlayListModel.append({
-                    id: item["id"],
-                    name: item["name"],
-                    isDir: item["isDir"]
-                })
-            } else {
-                userPlayListModel.append({
-                    id: item["id"],
-                    name: item["name"],
-                    isDir: item["isDir"]
-                })
-            }
-        }
-    }
-
-    Connections{
-        target: CoreData
-        function onPlaylistChanged(){
-            updatePlayLists()
-        }
-    }
-
-    Component.onCompleted: {
-        updatePlayLists()
-    }
 }

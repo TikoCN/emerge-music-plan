@@ -1,23 +1,7 @@
 #include "ArtistLibrary.h"
 #include "datacore/DataActive.h"
 #include "sqlite/Sqlite.h"
-#include "model/ArtistLibraryModel.h"
-
-ArtistLibrary::ArtistLibrary()
-    : m_model(new ArtistLibraryModel(this)),
-      m_loader(new DataLoader(this)) {
-    connect(&DataActive::getInstance(), &DataActive::buildArtistPlayer,
-            this, &ArtistLibrary::buildPlayer);
-    connect(&DataActive::getInstance(), &DataActive::finish,
-            this, &ArtistLibrary::finish);
-    connect(m_loader, &DataLoader::loadInitData, this, &ArtistLibrary::loadByKey);
-    connect(m_loader, &DataLoader::loadData, this, &ArtistLibrary::loadMoreByKey);
-}
-
-ArtistLibrary::~ArtistLibrary() {
-    delete m_model;
-    delete m_loader;
-}
+#include "model/ArtistModel.h"
 
 void ArtistLibrary::updateName(const int artistId, const QString &name) {
     DataActive::getInstance().updateArtistName(artistId, name);
@@ -45,20 +29,4 @@ bool ArtistLibrary::moveMusic(const QString &artistName, const QString &artistNa
 
 bool ArtistLibrary::addMusicToPlayList(const QString &artistName, const QString &playListName) const {
     return SQLite::getInstance().artistRepository.addMusicToPlayList(artistName, playListName);
-}
-
-ArtistLibraryModel *ArtistLibrary::model() {
-    return m_model;
-}
-
-DataLoader *ArtistLibrary::loader() {
-    return m_loader;
-}
-
-void ArtistLibrary::loadByKey(const QString &key) {
-    m_model->loadByKey(key, m_loader->getLoadSize(), 0);
-}
-
-void ArtistLibrary::loadMoreByKey(int index, const QString &key) {
-    m_model->loadMoreByKey(key, m_loader->getLoadSize(), index);
 }

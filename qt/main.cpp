@@ -3,7 +3,6 @@
 #include <QQmlApplicationEngine>
 #include <QObject>
 #include <QProcess>
-#include <qsemaphore.h>
 #include <QThread>
 
 #include "Setting.h"
@@ -19,6 +18,10 @@
 #include "basetool/BaseTool.h"
 #include "imageload/ImageControl.h"
 #include "imageload/ImageProvider.h"
+#include "model/AlbumModel.h"
+#include "model/ArtistModel.h"
+#include "model/PlaylistModel.h"
+#include "model/MusicModel.h"
 
 int main(int argc, char *argv[]) {
     QGuiApplication app(argc, argv);
@@ -58,10 +61,10 @@ int main(int argc, char *argv[]) {
     qmlRegisterSingletonInstance<AlbumLibrary>("MediaerAPI", 1, 0, "AlbumLibrary", albumLibrary);
     qmlRegisterSingletonInstance<PlayListLibrary>("MediaerAPI", 1, 0, "PlayListLibrary", playListLibrary);
 
-    qRegisterMetaType<MusicLibraryModel *>();
-    qRegisterMetaType<AlbumLibraryModel *>();
-    qRegisterMetaType<ArtistLibraryModel *>();
-    qRegisterMetaType<PlayListLibraryModel *>();
+    qmlRegisterType<MusicModel>("MediaerAPI", 1, 0, "MusicModel");
+    qmlRegisterType<AlbumModel>("MediaerAPI", 1, 0, "AlbumModel");
+    qmlRegisterType<ArtistModel>("MediaerAPI", 1, 0, "ArtistModel");
+    qmlRegisterType<PlaylistModel>("MediaerAPI", 1, 0, "PlaylistModel");
 
     qmlRegisterType<FileManagement>("DataType", 1, 0, "FileMan");
     qmlRegisterType<TypeConversion>("DataType", 1, 0, "TypeConversion");

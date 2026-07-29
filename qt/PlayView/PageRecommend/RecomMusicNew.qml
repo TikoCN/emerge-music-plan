@@ -29,21 +29,14 @@ Item {
         preferredHighlightBegin: 0
         preferredHighlightEnd: 0
 
-        model: MusicLibrary.model()
+        model: MusicModel {
+            type: MusicModel.MostNew
+        }
 
         delegate: CoreMusicLine {
             width: newMusicGrid.width / 3 - 10
             isLittle: true
             onPlayMusic: MediaPlayer.buildPlayingList([model.id])
         }
-    }
-
-    Component.onCompleted: build()
-    function build(){
-        MusicLibrary.model().loadMostNewList()
-    }
-
-    function clear(){
-        MusicLibrary.model().clear()
     }
 }

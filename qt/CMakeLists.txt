@@ -65,15 +65,15 @@ qt_add_qml_module(appmusicPlay
         imageload/ImageProvider.h imageload/ImageProvider.cpp
         datacore/DataManager.h datacore/DataManager.cpp
         datacore/DataActive.h datacore/DataActive.cpp
-        datacore/DataLoader.h datacore/DataLoader.cpp
+        datacore/DataLoader.h
         library/MusicLibrary.h library/MusicLibrary.cpp
         library/ArtistLibrary.h library/ArtistLibrary.cpp
         library/AlbumLibrary.h library/AlbumLibrary.cpp
         library/PlayListLibrary.h library/PlayListLibrary.cpp
-        model/MusicLibraryModel.h model/MusicLibraryModel.cpp
-        model/AlbumLibraryModel.h model/AlbumLibraryModel.cpp
-        model/ArtistLibraryModel.h model/ArtistLibraryModel.cpp
-        model/PlayListLibraryModel.h model/PlayListLibraryModel.cpp
+        model/MusicModel.h model/MusicModel.cpp
+        model/AlbumModel.h model/AlbumModel.cpp
+        model/ArtistModel.h model/ArtistModel.cpp
+        model/PlaylistModel.h model/PlaylistModel.cpp
         basetool/TypeConversion.h basetool/TypeConversion.cpp
         basetool/BaseTool.h basetool/BaseTool.cpp
         basetool/QmlActive.h basetool/QmlActive.cpp
