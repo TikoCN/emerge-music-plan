@@ -52,12 +52,12 @@ void ArtistModel::fetchMore(const QModelIndex &parent) {
     Q_UNUSED(parent);
     QList<int> list;
     switch (type) {
-        case Album:
+        case AlbumModel:
             list = SQLite::getInstance().albumRepository.getByKey(key, m_loader.limit, m_loader.offset);
             break;
-        case Key:
+        case KeyModel:
             break;
-        case Rand:
+        case RandModel:
             list = SQLite::getInstance().albumRepository.getRandList();
             break;
     }
@@ -76,7 +76,9 @@ void ArtistModel::fetchMore(const QModelIndex &parent) {
             newList.append(core);
         }
     }
-
+    if (newList.isEmpty()) {
+        return;
+    }
     const int start = rowCount();
     const int end   = std::max(start, start + static_cast<int>(newList.size()) - 1);
     beginInsertRows(QModelIndex(), start, end);
@@ -93,5 +95,6 @@ bool ArtistModel::canFetchMore(const QModelIndex &parent) const {
 void ArtistModel::clear() {
     beginResetModel();
     m_artistList.clear();
+    m_loader.reset();
     endResetModel();
 }

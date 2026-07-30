@@ -29,13 +29,33 @@ void TaskCenter::startLoadFile() {
 }
 
 void TaskCenter::startBootSequence() {
-    // 第一步：启动无效数据清理
-    SQLite::getInstance().startClearInvalidData();
-}
+    // 启动无效数据清理
+    QList<QPair<int, QString> > musicDataList = SQLite::getInstance().musicRepository.getAllData();
+    // 库中没有数据，直接加载
+    if (musicDataList.isEmpty()) {
+        startLoadFile();
+        return;
+    }
 
-void TaskCenter::onInvalidDataCleared() {
-    // 第二步：无效数据清理完成后，启动音乐加载
-    startLoadFile();
+    m_work = 0;
+    m_allInvalidIds.clear();
+
+    for (int i = 0; i < musicDataList.size(); i += BATCH_SIZE_CHECK) {
+        m_work++;
+        int   end  = qMin(i + BATCH_SIZE_CHECK, musicDataList.size());
+        auto *task = new FileExistCheckTask(musicDataList.mid(i, end - i));
+        connect(task, &FileExistCheckTask::checkFinished, this,
+                [this](const QList<int> &invalidIds) {
+                    m_allInvalidIds.append(invalidIds);
+                    if (--m_work == 0) {
+                        if (SQLite::getInstance().musicRepository.clearInvalidData(m_allInvalidIds)) {
+                            // todo
+                        }
+                        startLoadFile();
+                    }
+                }, Qt::QueuedConnection);
+        m_pool->start(task);
+    }
 }
 
 void TaskCenter::scanSubDirectories(const QStringList &subDirPaths) {
@@ -85,32 +105,14 @@ void TaskCenter::loadMedia() {
     }
 }
 
+// 最后收尾
 void TaskCenter::onParseFinished(QList<MediaData> dataList) {
     m_dataList.append(dataList);
 
     if (--m_work == 0) {
         SQLite::getInstance().insertMediaData(m_dataList);
         clearData();
-        emit DataActive::getInstance().finish();
+        emit reloadData();
         TLog::getInstance().logLoad("加载完成");
-    }
-}
-
-void TaskCenter::checkFileExist(const QList<QPair<int, QString> > &musicDataList) {
-    m_work = 0;
-    m_allInvalidIds.clear();
-
-    for (int i = 0; i < musicDataList.size(); i += BATCH_SIZE_CHECK) {
-        m_work++;
-        int   end  = qMin(i + BATCH_SIZE_CHECK, musicDataList.size());
-        auto *task = new FileExistCheckTask(musicDataList.mid(i, end - i));
-        connect(task, &FileExistCheckTask::checkFinished, this,
-                [this](const QList<int> &invalidIds) {
-                    m_allInvalidIds.append(invalidIds);
-                    if (--m_work == 0) {
-                        emit fileCheckFinished(m_allInvalidIds);
-                    }
-                }, Qt::QueuedConnection);
-        m_pool->start(task);
     }
 }

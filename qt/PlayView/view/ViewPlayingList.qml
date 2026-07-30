@@ -6,7 +6,7 @@ import PlayView
 
 // 正在播放列表
 Drawer {
-    id: playingPlayList
+    id: playingPlaylist
     edge: Qt.RightEdge
     modal: false
 
@@ -17,7 +17,7 @@ Drawer {
     }
 
     TikoTextLine{
-        id: playingPlayListText
+        id: playingPlaylistText
         text: qsTr("正在播放: ") + qsTr("暂无歌曲")
         y: 10
         width: parent.width - 20
@@ -26,7 +26,7 @@ Drawer {
         Connections{
             target: MediaPlayer.player
             function onSourceChanged(){
-                playingPlayListText.text = qsTr("正在播放: ") + MediaPlayer.playingMusicId.toString()
+                playingPlaylistText.text = qsTr("正在播放: ") + MusicLibrary.getData(MediaPlayer.playingMusicId).title
             }
         }
     }
@@ -34,13 +34,17 @@ Drawer {
     ListViewMusic {
         id: musicList
         anchors.bottom: background.bottom
-        anchors.top: playingPlayListText.bottom
+        anchors.top: playingPlaylistText.bottom
         anchors.right: background.right
         anchors.left: background.left
         anchors.margins: TikoSeit.emphasizeMargins
         clip: true
         isLittle: true
         onPlay: (musicId, listId) => {MediaPlayer.playMusicByListId(listId)}
+        model: MusicModel {
+            id: musicModel
+            type: MusicModel.NowQueueModel
+        }
     }
 
     //关联
@@ -48,12 +52,7 @@ Drawer {
         target: MediaPlayer
 
         function onMusicListBuild(){
-            buildMusicLine()
+            musicModel.clear()
         }
-    }
-
-    //建立播放列表
-    function buildMusicLine(){
-        musicList.reset()
     }
 }

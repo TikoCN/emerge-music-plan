@@ -4,7 +4,8 @@
 #include "MusicRepository.h"
 #include "AlbumRepository.h"
 #include "ArtistRepository.h"
-#include "PlayListRepository.h"
+#include "PlaylistRepository.h"
+#include "QueueRepository.h"
 #include "baseclass/MediaData.h"
 
 class SQLite : public QObject {
@@ -13,8 +14,9 @@ class SQLite : public QObject {
 public:
     MusicRepository    musicRepository;
     AlbumRepository    albumRepository;
+    QueueRepository    queueRepository;
     ArtistRepository   artistRepository;
-    PlayListRepository playListRepository;
+    PlaylistRepository playlistRepository;
 
     static SQLite &getInstance() {
         static SQLite instance;
@@ -28,13 +30,12 @@ public:
     bool selectNewMusic(const QFileInfoList &infoList, QFileInfoList *newInfoList);
 
     QList<QString> clearNullMusicItem();
-    QList<QString> clearNullPlayListItem();
+    QList<QString> clearNullPlaylistItem();
 
     void createTableMusic();
-    void createTablePlayinglist();
 
-    void createTablePlayList();
-    void createTablePlayListMusic();
+    void createTablePlaylist();
+    void createTablePlaylistMusic();
 
     void createTableArtist();
     void createTableArtistMusic();
@@ -42,22 +43,15 @@ public:
     void createTableAlbum();
     void createTableAlbumMusic();
 
+    void createTableQueue();
 
-
-    void startClearInvalidData();
-    void onCheckFileFinished(const QList<int> &invalidMusicIds);
-
-    bool insertMediaData(const QList<MediaData> &list);
+    [[nodiscard]] bool insertMediaData(const QList<MediaData> &list) const;
 
 private:
     explicit SQLite();
     ~SQLite() override;
 
     Core core;
-
-signals:
-    void startCheckFileExist(const QList<QPair<int, QString> > &musicDataList);
-    void invalidDataCleared();
 };
 
 #endif // SQLITE_H

@@ -207,7 +207,7 @@ QJsonArray FileManagement::getMusicAllTaglib(int musicId) {
     return array;
 }
 
-void FileManagement::openPlayListDir(int playListId) {
+void FileManagement::openPlaylistDir(int playListId) {
 }
 
 QString FileManagement::getArtistCoverUrl(const QString &name) {

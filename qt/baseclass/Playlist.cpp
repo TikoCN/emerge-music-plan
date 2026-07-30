@@ -2,7 +2,7 @@
 #include <QJsonObject>
 #include "basetool/basetool.h"
 
-PlayList::PlayList()
+Playlist::Playlist()
     : duration(0),
       isDir(false),
       isShow(false),
@@ -12,7 +12,7 @@ PlayList::PlayList()
       sort(0) {
 }
 
-QJsonObject PlayList::getJsonObject() const {
+QJsonObject Playlist::getJsonObject() const {
     QJsonObject json;
     json.insert("name", name);
     json.insert("id", id);

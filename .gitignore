@@ -10,6 +10,4 @@ qt/CMakePresets.json
 /qt/.qoder
 /qt/.qtcreator
 /qt/build-ninja
-/qt/.qtcreator/qtc-cmake-presets-aKfIPymu
-/qt/.qtcreator/qtc-cmake-presets-aKfIPymu/windows-msvc-release/qtc-cmake-qmake-probe
 /.idea

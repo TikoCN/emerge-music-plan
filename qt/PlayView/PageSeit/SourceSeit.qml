@@ -25,21 +25,9 @@ TikoRightVessel {
             id: reloadButton
             anchors.left: selectDirButton.right
             anchors.leftMargin: 10
-            textLine.text: qsTr("加载音乐")
+            textLine.text: qsTr("重载音乐")
             onClicked: {
-                //CoreData.clearData()
-                Setting.loadMusicCores()
-            }
-        }
-
-        TikoButtonDefault{
-            id: deleteOverData
-            anchors.left: reloadButton.right
-            anchors.leftMargin: 10
-            textLine.text: qsTr("清除失效数据")
-            onClicked: {
-                PlayListLibrary.clearNullItem()
-                MusicLibrary.startClearInvalidData()
+                TaskCenter.startBootSequence()
             }
         }
 

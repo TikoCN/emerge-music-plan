@@ -37,6 +37,6 @@ PageBase{
 
     musicList.model: MusicModel {
         id: musicModel
-        type: MusicModel.Album
+        type: MusicModel.AlbumModel
     }
 }

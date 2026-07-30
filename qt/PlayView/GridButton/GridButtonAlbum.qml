@@ -27,7 +27,6 @@ GridView {
         onHeightChanged: setGridHeight(this)
     }
 
-
     function setGridHeight(cell) {
         if (gridItem.cellHeight !== cell.height) {
             gridItem.cellHeight = cell.height

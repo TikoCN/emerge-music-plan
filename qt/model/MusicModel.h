@@ -2,7 +2,6 @@
 #define MUSICMODEL_H
 
 #include <QAbstractListModel>
-#include <qqmlintegration.h>
 
 #include "baseclass/Music.h"
 #include "macro/NotifyProperty.h"
@@ -29,14 +28,14 @@ public:
     };
 
     enum MusicType {
-        Key,
-        Album,
-        Artist,
-        Playlist,
-        MostPlayed,
-        MostNew,
-        Rand,
-        NowQueue
+        KeyModel,
+        AlbumModel,
+        ArtistModel,
+        PlaylistModel,
+        MostPlayedModel,
+        MostNewModel,
+        RandModel,
+        NowQueueModel
     };
 
     Q_ENUM(MusicType)
@@ -50,9 +49,9 @@ public:
 public:
     explicit MusicModel(QObject *parent = nullptr);
 
-    int                    rowCount(const QModelIndex &parent = QModelIndex()) const override;
-    QVariant               data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
-    QHash<int, QByteArray> roleNames() const override;
+    [[nodiscard]] int                    rowCount(const QModelIndex &parent) const override;
+    [[nodiscard]] QVariant               data(const QModelIndex &index, int role) const override;
+    [[nodiscard]] QHash<int, QByteArray> roleNames() const override;
 
     Q_INVOKABLE void clear();
     void             fetchMore(const QModelIndex &parent) override;

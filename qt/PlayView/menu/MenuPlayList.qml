@@ -33,23 +33,15 @@ TikoMenu{
 
         Repeater{
             delegate: addMenu
-            model: ListModel{
-                id: addMenuData
+            model: PlaylistModel {
+                type: PlaylistModel.UserModel
             }
         }
         Component {
             id: addMenu
             TikoMenuItem {
-                text: CoreData.playlist[aim]["name"]
-                enabled: !CoreData.playlist[aim]["isDir"]
-                onTriggered: PlayListLibrary.addMusicToPlayList(playlistMenu.name, CoreData.playlist[aim]["name"])
-            }
-        }
-
-        onOpened: {
-            addMenuData.clear()
-            for(let i=0; i<CoreData.playlist.length; i++){
-                addMenuData.append({aim: i})
+                text: model.name
+                onTriggered: PlaylistLibrary.addMusicToPlaylist(playlistMenu.name, model.name)
             }
         }
     }
@@ -58,7 +50,7 @@ TikoMenu{
         id: inputComponent
         TikoPopupInput {
             orgText: name
-            onAccept: PlayListLibrary.moveMusic(name, newName)
+            onAccept: PlaylistLibrary.moveMusic(name, newName)
         }
     }
 

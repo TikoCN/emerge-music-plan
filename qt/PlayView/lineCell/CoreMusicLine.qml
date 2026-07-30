@@ -157,7 +157,7 @@ Item {
 
     Component {
         id: menuMusicComponent
-        MenuMusicPlayList {
+        MenuMusicPlaylist {
             musicId: model.id
             playlistId: playlistId
         }

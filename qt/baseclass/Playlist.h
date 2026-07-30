@@ -4,9 +4,9 @@
 #include <QObject>
 #include "macro/ConstantProperty.h"
 
-using PlayListPtr = QSharedPointer<class PlayList>;
+using PlaylistPtr = QSharedPointer<class Playlist>;
 
-class PlayList {
+class Playlist {
     Q_GADGET
 
 public:
@@ -20,9 +20,9 @@ public:
     QT_CONSTANT_PROPERTY(int, musicCount, MusicCount) // 音乐条目总数
     QT_CONSTANT_PROPERTY(int, sort, Sort)             // 默认值
 
-    PlayList();
+    Playlist();
     [[nodiscard]] QJsonObject getJsonObject() const;
 };
 
-Q_DECLARE_METATYPE(PlayList)
+Q_DECLARE_METATYPE(Playlist)
 #endif // PLAYLIST_H

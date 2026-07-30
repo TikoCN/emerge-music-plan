@@ -16,16 +16,15 @@ public:
         return instance;
     }
 
-    Q_INVOKABLE void updateName(int artistId, const QString &name);
-    Q_INVOKABLE void updateSort(int artistId, int sort);
+    Q_INVOKABLE static void updateName(int artistId, const QString &name);
+    Q_INVOKABLE static void updateSort(int artistId, int sort);
 
-    Q_INVOKABLE Artist      getData(int id);
-    Q_INVOKABLE QJsonObject getJson(int id);
+    Q_INVOKABLE static Artist getData(int id);
 
-    Q_INVOKABLE QStringList getKeys() const;
+    Q_INVOKABLE static QStringList getKeys();
 
-    Q_INVOKABLE bool moveMusic(const QString &artistName, const QString &artistNameNew) const;
-    Q_INVOKABLE bool addMusicToPlayList(const QString &artistName, const QString &playListName) const;
+    Q_INVOKABLE static bool moveMusic(const QString &artistName, const QString &artistNameNew);
+    Q_INVOKABLE static bool addMusicToPlaylist(const QString &artistName, const QString &playListName);
 
 private:
     explicit ArtistLibrary()  = default;

@@ -117,8 +117,8 @@ void MediaPlayer::buildPlayingList(QList<int> list, const int playMusicInListId)
     emit musicListBuild();
 
     // 同步的数据库
-    SQLite::getInstance().playListRepository.deletePlayingList(0);
-    SQLite::getInstance().playListRepository.appendPlayingMusic(m_musicList, 0);
+    SQLite::getInstance().playlistRepository.deletePlayingList(0);
+    SQLite::getInstance().playlistRepository.appendPlayingMusic(m_musicList, 0);
 }
 
 void MediaPlayer::buildPlayingArtist(const int artistId, const int listId) {
@@ -137,9 +137,9 @@ void MediaPlayer::buildPlayingAlbum(const int albumId, const int listId) {
     TLog::getInstance().logUser(QString("播放专辑音乐%1").arg(albumId));
 }
 
-void MediaPlayer::buildPlayingPlayList(const int playListId, const int listId) {
-    const auto playList  = DataActive::getInstance().getPlayListCore(playListId);
-    const auto musicList = SQLite::getInstance().playListRepository.getMusicAll(playListId, playList->sort);
+void MediaPlayer::buildPlayingPlaylist(const int playListId, const int listId) {
+    const auto playList  = DataActive::getInstance().getPlaylistCore(playListId);
+    const auto musicList = SQLite::getInstance().playlistRepository.getMusicAll(playListId, playList->sort);
     buildPlayingList(musicList, listId);
 
     TLog::getInstance().logUser(QString("播放列表音乐%1").arg(playListId));
@@ -157,9 +157,9 @@ void MediaPlayer::insertPlayingAlbum(const int albumId) {
     insertPlayingList(musicList);
 }
 
-void MediaPlayer::insertPlayingPlayList(const int playListId) {
-    const auto playList  = DataActive::getInstance().getPlayListCore(playListId);
-    const auto musicList = SQLite::getInstance().playListRepository.getMusicAll(playListId, playList->sort);
+void MediaPlayer::insertPlayingPlaylist(const int playListId) {
+    const auto playList  = DataActive::getInstance().getPlaylistCore(playListId);
+    const auto musicList = SQLite::getInstance().playlistRepository.getMusicAll(playListId, playList->sort);
     insertPlayingList(musicList);
 }
 
@@ -175,9 +175,9 @@ void MediaPlayer::appendPlayingAlbum(const int albumId) {
     appendPlayingList(musicList);
 }
 
-void MediaPlayer::appendPlayingPlayList(const int playListId) {
-    const auto playList  = DataActive::getInstance().getPlayListCore(playListId);
-    const auto musicList = SQLite::getInstance().playListRepository.getMusicAll(playListId, playList->sort);
+void MediaPlayer::appendPlayingPlaylist(const int playListId) {
+    const auto playList  = DataActive::getInstance().getPlaylistCore(playListId);
+    const auto musicList = SQLite::getInstance().playlistRepository.getMusicAll(playListId, playList->sort);
     appendPlayingList(musicList);
 }
 
@@ -191,13 +191,13 @@ void MediaPlayer::insertPlayingList(const QList<int> &list) {
     emit musicListBuild();
 
     // 同步数据库
-    SQLite::getInstance().playListRepository.deletePlayingList(m_playingMusicListId);
-    SQLite::getInstance().playListRepository.appendPlayingMusic(rightList, m_playingMusicListId);
+    SQLite::getInstance().playlistRepository.deletePlayingList(m_playingMusicListId);
+    SQLite::getInstance().playlistRepository.appendPlayingMusic(rightList, m_playingMusicListId);
 }
 
 /**
  * @brief 追加歌曲到播放列表，并同步数据库
- * 数据库同步统一在此处处理，保证 appendPlayingArtist/Album/PlayList 行为一致
+ * 数据库同步统一在此处处理，保证 appendPlayingArtist/Album/Playlist 行为一致
  */
 void MediaPlayer::appendPlayingList(const QList<int> &list) {
     const int offset = static_cast<int>(m_musicList.size());
@@ -205,7 +205,7 @@ void MediaPlayer::appendPlayingList(const QList<int> &list) {
     emit musicListBuild();
 
     // 统一在此同步到数据库，各 appendPlaying* 调用方不再单独处理
-    SQLite::getInstance().playListRepository.appendPlayingMusic(list, offset);
+    SQLite::getInstance().playlistRepository.appendPlayingMusic(list, offset);
 }
 
 QList<int> MediaPlayer::getMusicList(const int size, const int start) const {
@@ -216,7 +216,7 @@ QList<int> MediaPlayer::getMusicList(const int size, const int start) const {
  * @brief 从数据库恢复上次播放列表和位置
  */
 void MediaPlayer::initData() {
-    m_musicList = SQLite::getInstance().playListRepository.getPlayingListMusic();
+    m_musicList = SQLite::getInstance().playlistRepository.getPlayingListMusic();
 
     // 仅在列表非空且位置合法时恢复播放
     if (!m_musicList.isEmpty() && m_playingMusicListId >= 0

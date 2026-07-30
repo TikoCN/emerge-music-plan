@@ -7,7 +7,7 @@ import PlayView
 import DataType
 
 Item {
-    id: playerPlayList
+    id: playerPlaylist
     property int sort: -1
     property int duration: -1
     property int musicCount: 0
@@ -95,11 +95,11 @@ Item {
 
                 Component {
                     id: sortMenuComponent
-                    MenuPlayListSort {
-                        playlistId: playerPlayList.playlistId
-                        sort: playerPlayList.sort
+                    MenuPlaylistSort {
+                        playlistId: playerPlaylist.playlistId
+                        sort: playerPlaylist.sort
                         onNewSortChanged: {
-                            playerPlayList.sort = newSort
+                            playerPlaylist.sort = newSort
                             musicListView.reset()
                         }
                     }
@@ -144,9 +144,9 @@ Item {
     ListViewMusic{
         id: musicListView
         anchors.top: showView.bottom
-        anchors.bottom: playerPlayList.bottom
-        anchors.left: playerPlayList.left
-        anchors.right: playerPlayList.right
+        anchors.bottom: playerPlaylist.bottom
+        anchors.left: playerPlaylist.left
+        anchors.right: playerPlaylist.right
         anchors.margins: TikoSeit.emphasizeMargins
     }
 }

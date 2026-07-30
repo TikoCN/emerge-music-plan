@@ -88,9 +88,9 @@ TikoFrameless{
 
         //正在播放列表
         ViewPlayingList {
-            id: playingPlayList
-            width: parent.width * 0.3
-            height: parent.height
+            id: playingPlaylist
+            width: 400
+            height: mainView.height
             y:10
         }
     }
@@ -110,7 +110,7 @@ TikoFrameless{
 
     //清理数据
     function clearData(){
-        playingPlayList.clearData()
+        playingPlaylist.clearData()
         mainView.stackDetail()
     }
 

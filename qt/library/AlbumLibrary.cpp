@@ -14,18 +14,14 @@ Album AlbumLibrary::getData(const int id) {
     return DataActive::getInstance().getAlbumData(id);
 }
 
-QJsonObject AlbumLibrary::getJson(const int id) {
-    return DataActive::getInstance().getAlbumJson(id);
-}
-
-QStringList AlbumLibrary::getKeys() const {
+QStringList AlbumLibrary::getKeys() {
     return SQLite::getInstance().albumRepository.getKeys();
 }
 
-bool AlbumLibrary::moveMusic(const QString &albumName, const QString &albumNameNew) const {
+bool AlbumLibrary::moveMusic(const QString &albumName, const QString &albumNameNew) {
     return SQLite::getInstance().albumRepository.moveMusic(albumName, albumNameNew);
 }
 
-bool AlbumLibrary::addMusicToPlayList(const QString &albumName, const QString &playListName) const {
-    return SQLite::getInstance().albumRepository.addMusicToPlayList(albumName, playListName);
+bool AlbumLibrary::addMusicToPlaylist(const QString &albumName, const QString &playListName) {
+    return SQLite::getInstance().albumRepository.addMusicToPlaylist(albumName, playListName);
 }

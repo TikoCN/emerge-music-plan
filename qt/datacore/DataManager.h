@@ -6,7 +6,6 @@
 #include "baseclass/Playlist.h"
 #include "baseclass/Artist.h"
 #include "baseclass/Album.h"
-#include "sqlite/Sqlite.h"
 #include <QJsonObject>
 
 class DataManager : public QObject {
@@ -22,27 +21,23 @@ public:
 
     DataManager();
 
-    AlbumPtr    getAlbumCore(int id);
-    QJsonObject getAlbumJson(int id);
-    Album       getAlbumData(int id);
+    AlbumPtr getAlbumCore(int id);
+    Album    getAlbumData(int id);
 
-    ArtistPtr   getArtistCore(int id);
-    QJsonObject getArtistJson(int id);
-    Artist      getArtistData(int id);
+    ArtistPtr getArtistCore(int id);
+    Artist    getArtistData(int id);
 
     MusicPtr        getMusicCore(int id);
     QList<MusicPtr> getMusicCoreList(const QList<int> &idList);
-    QJsonObject     getMusicJson(int id);
     Music           getMusicData(int id);
 
-    PlayListPtr getPlayListCore(int id);
-    QJsonObject getPlayListJson(int id);
-    PlayList    getPlayListData(int id);
+    PlaylistPtr getPlaylistCore(int id);
+    Playlist    getPlaylistData(int id);
 
     void releaseAlbum(int id);
     void releaseArtist(int id);
     void releaseMusic(int id);
-    void releasePlayList(int id);
+    void releasePlaylist(int id);
 
 private:
     void deleteOutCache(CORE_TYPE type, int id);
@@ -50,7 +45,7 @@ private:
     QHash<int, AlbumPtr>    m_albumHash;    // 专辑列表
     QHash<int, ArtistPtr>   m_artistHash;   // 歌手列表
     QHash<int, MusicPtr>    m_musicHash;    // 音乐核心列表
-    QHash<int, PlayListPtr> m_playlistHash; // 播放列表
+    QHash<int, PlaylistPtr> m_playlistHash; // 播放列表
     QMutex                  m_albumMutex;
     QMutex                  m_artistMutex;
     QMutex                  m_musicMutex;

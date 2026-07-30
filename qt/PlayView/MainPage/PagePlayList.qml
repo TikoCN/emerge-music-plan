@@ -6,7 +6,7 @@ import Tiko
 import PlayView
 
 PageBase {
-    id: playerPlayList
+    id: playerPlaylist
     property int playlistId: -1
 
     sort: 0
@@ -19,12 +19,12 @@ PageBase {
               playlistId.toString() +
               "&radius=10"
 
-    function setPlayListId(id){
+    function setPlaylistId(id){
         if (playlistId === id)
             return
         playlistId = id
 
-        let playlist = PlayListLibrary.getData(id);
+        let playlist = PlaylistLibrary.getData(id);
         name = playlist.name
         sort = playlist.sort
         duration = playlist.duration
@@ -34,11 +34,11 @@ PageBase {
     }
 
     musicList.onPlay: (musicId, listId) => {
-                          MediaPlayer.buildPlayingPlayList(playlistId, listId)
+                          MediaPlayer.buildPlayingPlaylist(playlistId, listId)
                       }
 
     musicList.model: MusicModel {
         id: musicModel
-        type: MusicModel.Playlist
+        type: MusicModel.PlaylistModel
     }
 }

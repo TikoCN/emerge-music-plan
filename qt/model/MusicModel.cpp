@@ -79,29 +79,29 @@ void MusicModel::fetchMore(const QModelIndex &parent) {
     Q_UNUSED(parent);
     QList<int> list;
     switch (type) {
-        case Album:
+        case AlbumModel:
             list = SQLite::getInstance().albumRepository.getMusic(albumId, m_loader.limit, m_loader.offset, sort);
             break;
-        case Artist:
+        case ArtistModel:
             list = SQLite::getInstance().artistRepository.getMusic(artistId, m_loader.limit, m_loader.offset, sort);
             break;
-        case Playlist:
-            list = SQLite::getInstance().playListRepository.getMusic(playlistId, m_loader.limit, m_loader.offset, sort);
+        case PlaylistModel:
+            list = SQLite::getInstance().playlistRepository.getMusic(playlistId, m_loader.limit, m_loader.offset, sort);
             break;
-        case Rand:
+        case RandModel:
             list = SQLite::getInstance().musicRepository.getRandList(-1);
             break;
-        case Key:
+        case KeyModel:
             list = SQLite::getInstance().musicRepository.getByKey(key, m_loader.limit, m_loader.offset);
             break;
-        case MostPlayed:
+        case MostPlayedModel:
             list = SQLite::getInstance().musicRepository.getMostPlayed();
             break;
-        case MostNew:
+        case MostNewModel:
             list = SQLite::getInstance().musicRepository.getMostNew();
             break;
-        case NowQueue:
-
+        case NowQueueModel:
+            list = SQLite::getInstance().queueRepository.getMusic();
             break;
     }
     m_loader.offset = static_cast<int>(list.size());
@@ -119,8 +119,10 @@ void MusicModel::fetchMore(const QModelIndex &parent) {
         }
     }
 
-
-    const int start = rowCount();
+    if (newList.isEmpty()) {
+        return;
+    }
+    const int start = rowCount(QModelIndex());
     const int end   = std::max(start, start + static_cast<int>(newList.size()) - 1);
     beginInsertRows(QModelIndex(), start, end);
     m_musicList.append(newList);
@@ -132,7 +134,7 @@ bool MusicModel::canFetchMore(const QModelIndex &parent) const {
     return !m_loader.isFinish;
 }
 
-void MusicModel::updateMusicLove(int musicId, bool isLove) {
+void MusicModel::updateMusicLove(const int musicId, const bool isLove) {
     DataActive::getInstance().updateMusicLove(musicId, isLove);
 
     for (int i = 0; i < m_musicList.size(); ++i) {

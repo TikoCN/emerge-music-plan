@@ -26,7 +26,7 @@ public:
 
     [[nodiscard]] bool append(const QList<MediaData> &data) const;
 
-    bool update(const MusicPtr &music) const;
+    [[nodiscard]] bool update(const MusicPtr &music) const;
 
     [[nodiscard]] QList<QPair<int, QString> > getAllData() const;
     [[nodiscard]] bool                        clearInvalidData(const QList<int> &invalidMusicIds) const;

@@ -15,7 +15,7 @@ namespace LiteralConstant {
         inline const QString MUSIC          = QStringLiteral("music");
         inline const QString PLAYLIST       = QStringLiteral("playlist");
         inline const QString PLAYLIST_MUSIC = QStringLiteral("playlist_music");
-        inline const QString PLAYINGLIST    = QStringLiteral("playinglist");
+        inline const QString NOW_QUEUE    = QStringLiteral("now_queue");
     }
 
     namespace Column {
@@ -37,7 +37,7 @@ namespace LiteralConstant {
 
         inline const QString PLAYLIST_NAME = QStringLiteral("playlist_name");
         inline const QString PLAYLIST_ID   = QStringLiteral("playlist_id");
-        inline const QString IS_DIR        = QStringLiteral("is_dir"); // 新增
+        inline const QString IS_DIR        = QStringLiteral("is_dir");
 
         inline const QString POSITION = QStringLiteral("position");
         inline const QString SORT     = QStringLiteral("sort");

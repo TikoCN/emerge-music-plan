@@ -3,17 +3,18 @@
 
 #include "Core.h"
 #include "baseclass/Playlist.h"
+#include "baseclass/MediaData.h"
 
-class PlayListRepository {
+class PlaylistRepository {
 private:
     Core *core;
 
 public:
-    explicit PlayListRepository(Core *core)
+    explicit PlaylistRepository(Core *core)
         : core(core) {
     }
 
-    [[nodiscard]] PlayListPtr get(int id) const;
+    [[nodiscard]] PlaylistPtr get(int id) const;
     [[nodiscard]] QList<int>  getList(int start, int size, bool isDir) const;
     [[nodiscard]] QList<int>  getMusic(int id, int size, int start, int sort) const;
     [[nodiscard]] QList<int>  getMusicAll(int id, int sort) const;
@@ -22,14 +23,15 @@ public:
 
     [[nodiscard]] bool appendDir(const QStringList &urlList) const;
     [[nodiscard]] bool appendUser(const QString &name) const;
+    [[nodiscard]] bool appendMusic(const QList<MediaData> &dataList) const;
     [[nodiscard]] bool appendPlayingMusic(const QList<int> &musicList, int start) const;
 
-    bool update(const PlayListPtr &playList) const;
-    bool updateMusic(const QList<int> &musicIdList, int playlistNewId, int playlistOldId) const;
-    bool updatePlayingMusic(const QList<int> &musicIdList, int start) const;
+    [[nodiscard]] bool update(const PlaylistPtr &playList) const;
+    [[nodiscard]] bool updateMusic(const QList<int> &musicIdList, int playlistNewId, int playlistOldId) const;
+    [[nodiscard]] bool updatePlayingMusic(const QList<int> &musicIdList, int start) const;
 
-    bool moveMusic(const QString &playListName, const QString &playListNameNew) const;
-    bool addMusicToPlayList(const QString &sourcePlayListName, const QString &targetPlayListName) const;
+    [[nodiscard]] bool moveMusic(const QString &playListName, const QString &playListNameNew) const;
+    [[nodiscard]] bool addMusicToPlaylist(const QString &sourcePlaylistName, const QString &targetPlaylistName) const;
 
     [[nodiscard]] bool deletePlayingList(int position) const;
 };

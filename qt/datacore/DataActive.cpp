@@ -92,7 +92,7 @@ QList<int> DataActive::musicListSort(const QList<int> &musicIdList, const SORT_T
 
 void DataActive::clearNullItem() {
     SQLite::getInstance().clearNullMusicItem();
-    SQLite::getInstance().clearNullPlayListItem();
+    SQLite::getInstance().clearNullPlaylistItem();
 }
 
 void DataActive::updateMusicLove(const int musicId, const bool isLove) {
@@ -117,26 +117,26 @@ void DataActive::updateMusicLevel(const int musicId, const bool level) {
     SQLite::getInstance().musicRepository.update(music);
 }
 
-void DataActive::updatePlayListName(const int playListId, const QString &name) {
-    const PlayListPtr playList = getPlayListCore(playListId);
+void DataActive::updatePlaylistName(const int playListId, const QString &name) {
+    const PlaylistPtr playList = getPlaylistCore(playListId);
     if (playList.isNull()) {
         TLog::getInstance().logError("更新列表姓名失败");
         return;
     }
 
     playList->name = name;
-    SQLite::getInstance().playListRepository.update(playList);
+    SQLite::getInstance().playlistRepository.update(playList);
 }
 
-void DataActive::updatePlayListSort(int playListId, int sort) {
-    const PlayListPtr playList = getPlayListCore(playListId);
+void DataActive::updatePlaylistSort(int playListId, int sort) {
+    const PlaylistPtr playList = getPlaylistCore(playListId);
     if (playList.isNull()) {
         TLog::getInstance().logError("更新列表排序失败");
         return;
     }
 
     playList->sort = static_cast<SORT_TYPE>(sort);
-    SQLite::getInstance().playListRepository.update(playList);
+    SQLite::getInstance().playlistRepository.update(playList);
 }
 
 void DataActive::updateArtistName(const int artistId, const QString &name) {

@@ -14,7 +14,7 @@ LibraryPage {
         autoHeightEnable: false
         flow: GridView.LeftToRight
         model: AlbumModel {
-            type: AlbumModel.Key
+            type: AlbumModel.KeyModel
             key: currentKey
         }
     }

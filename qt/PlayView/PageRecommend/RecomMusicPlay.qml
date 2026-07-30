@@ -30,7 +30,7 @@ Item {
         preferredHighlightEnd: 0
 
         model: MusicModel {
-            type: MusicModel.MostPlayed
+            type: MusicModel.MostPlayedModel
         }
 
         delegate: CoreMusicLine {

@@ -21,7 +21,7 @@ public:
     [[nodiscard]] static QList<LrcDataPtr>   getMusicLyricsData(int musicId);
 
     // DIR
-    Q_INVOKABLE static void openPlayListDir(int playListId);
+    Q_INVOKABLE static void openPlaylistDir(int playListId);
 
     [[nodiscard]] static QString getArtistCoverUrl(const QString &name);
     [[nodiscard]] static QString getAlbumCoverUrl(const QString &name);

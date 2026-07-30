@@ -7,8 +7,9 @@
 SQLite::SQLite()
     : musicRepository(&core),
       albumRepository(&core),
+      queueRepository(&core),
       artistRepository(&core),
-      playListRepository(&core) {
+      playlistRepository(&core) {
     core.m_error = nullptr;
 
     try {
@@ -19,12 +20,12 @@ SQLite::SQLite()
             core.throwError("打开数据库文件失败");
         int value = 0;
 
-        const auto enableFK = "PRAGMA foreign_keys = ON;";
-        core.m_r            = sqlite3_exec(core.m_db, enableFK, nullptr, nullptr, nullptr);
+        constexpr auto enableFK = "PRAGMA foreign_keys = ON;";
+        core.m_r                = sqlite3_exec(core.m_db, enableFK, nullptr, nullptr, nullptr);
         if (core.m_r != SQLITE_OK)
             core.throwError("启用外键失败");
 
-        const auto check = "SELECT count(*) FROM sqlite_master WHERE type='table' AND ("
+        constexpr auto check = "SELECT count(*) FROM sqlite_master WHERE type='table' AND ("
                 "name='music' OR "
                 "name='playlist' OR "
                 "name='playinglist' OR "
@@ -46,9 +47,9 @@ SQLite::SQLite()
 
         TLog::getInstance().logError(QString("只存在%1表").arg(value));
         createTableMusic();
-        createTablePlayList();
-        createTablePlayinglist();
-        createTablePlayListMusic();
+        createTablePlaylist();
+        createTableQueue();
+        createTablePlaylistMusic();
         createTableArtist();
         createTableArtistMusic();
         createTableAlbum();
@@ -74,7 +75,7 @@ bool SQLite::selectNewMusic(const QFileInfoList &infoList, QFileInfoList *newInf
     sqlite3_stmt *stmt = nullptr;
     bool          flag = true;
     try {
-        const auto sql = "SELECT 1 FROM music WHERE url = ? LIMIT 1";
+        constexpr auto sql = "SELECT 1 FROM music WHERE url = ? LIMIT 1";
         core.stmtPrepare(&stmt, sql);
         for (const QFileInfo &i: infoList) {
             core.stmtReset(stmt);
@@ -92,14 +93,14 @@ bool SQLite::selectNewMusic(const QFileInfoList &infoList, QFileInfoList *newInf
     return flag;
 }
 
-QList<QString> SQLite::clearNullPlayListItem() {
+QList<QString> SQLite::clearNullPlaylistItem() {
     sqlite3_stmt * stmt = nullptr;
     QList<QString> removeList;
     try {
         QList<QString> urlList;
 
         // 判断删除文件
-        const auto sql = "DELETE FROM playlist WHERE url = ?";
+        constexpr auto sql = "DELETE FROM playlist WHERE url = ?";
         core.stmtPrepare(&stmt, sql);
         while (!urlList.isEmpty()) {
             if (QString url = urlList.takeLast(); !QFile::exists(url)) {
@@ -144,22 +145,22 @@ void SQLite::createTableMusic() {
     core.sqlExecute(sql.toUtf8(), "创建music表失败");
 }
 
-void SQLite::createTablePlayinglist() {
-    // 检测 playinglist
+void SQLite::createTableQueue() {
+    // 检测 NowQueue
     const auto sql = QString("CREATE TABLE IF NOT EXISTS %1("
                          "%2 INTEGER PRIMARY KEY,"
                          "%3 INTEGER NOT NULL,"
                          "FOREIGN KEY (%3) REFERENCES %4(%3) ON DELETE CASCADE"
                          ")")
-                    .arg(LiteralConstant::Table::PLAYINGLIST)
+                    .arg(LiteralConstant::Table::NOW_QUEUE)
                     .arg(LiteralConstant::Column::POSITION)
                     .arg(LiteralConstant::Column::MUSIC_ID)
                     .arg(LiteralConstant::Table::MUSIC);
     // 执行sql
-    core.sqlExecute(sql.toUtf8(), "创建 playinglist 表失败");
+    core.sqlExecute(sql.toUtf8(), "创建 NowQueue 表失败");
 }
 
-void SQLite::createTablePlayList() {
+void SQLite::createTablePlaylist() {
     const auto sql = QString(
                          "CREATE TABLE IF NOT EXISTS %1("
                          "%2 INTEGER PRIMARY KEY,"
@@ -177,7 +178,7 @@ void SQLite::createTablePlayList() {
     core.sqlExecute(sql.toUtf8(), "创建 playlist 表失败");
 }
 
-void SQLite::createTablePlayListMusic() {
+void SQLite::createTablePlaylistMusic() {
     const auto sql = QString(
                          "CREATE TABLE IF NOT EXISTS %1("
                          "%2 INTEGER NOT NULL,"
@@ -228,7 +229,6 @@ void SQLite::createTableArtistMusic() {
 }
 
 void SQLite::createTableAlbum() {
-    // 原 SQL 中 "sort INT NO NULL" 疑似笔误，已按 "NOT NULL" 处理
     const auto sql = QString(
                          "CREATE TABLE IF NOT EXISTS %1("
                          "%2 INTEGER PRIMARY KEY,"
@@ -267,7 +267,7 @@ QList<QString> SQLite::clearNullMusicItem() {
     try {
         const auto urlSql = QString("SELECT %1 FROM %2")
                            .arg(LiteralConstant::Column::URL)
-                           .arg(LiteralConstant::Table::PLAYINGLIST);
+                           .arg(LiteralConstant::Table::NOW_QUEUE);
         QList<QString>         urlList;
         const sqlite3_callback callback = [](void *data, int argc, char **argv, char **azColName) -> int {
             auto *list = static_cast<QList<QString> *>(data);
@@ -294,46 +294,35 @@ QList<QString> SQLite::clearNullMusicItem() {
     return removeList;
 }
 
-
-
-void SQLite::startClearInvalidData() {
-    QList<QPair<int, QString> > musicDataList = musicRepository.getAllData();
-    emit startCheckFileExist(musicDataList);
-}
-
-void SQLite::onCheckFileFinished(const QList<int> &invalidMusicIds) {
-    musicRepository.clearInvalidData(invalidMusicIds);
-    emit invalidDataCleared();
-}
-
-bool SQLite::insertMediaData(const QList<MediaData> &list) {
-    bool result = true;
-    try {
-        // 使用 QSet 提高去重效率
-        QSet<QString>                  artistSet, albumSet, playlistSet;
-        QSet<QPair<QString, QString> > playlistMusicSet;
-        for (const MediaData &data: list) {
-            artistSet.insert(data.artist);
-            albumSet.insert(data.album);
-            playlistSet.insert(data.dir);
-            playlistMusicSet.insert(QPair(data.url, data.dir));
-        }
-
-        if (artistRepository.append(artistSet.values())) {
-        }
-        if (albumRepository.append(albumSet.values())) {
-        }
-        if (musicRepository.append(list)) {
-        }
-        if (artistRepository.appendMusic(list)) {
-        }
-        if (albumRepository.appendMusic(list)) {
-        }
-        if (playListRepository.appendDir(playlistSet.values())) {
-        }
-    } catch (const DataException &e) {
-        TLog::getInstance().logError(e.errorMessage());
-        result = false;
+bool SQLite::insertMediaData(const QList<MediaData> &list) const {
+    // 使用 QSet 提高去重效率
+    QSet<QString> artistSet, albumSet, playlistSet;
+    for (const MediaData &data: list) {
+        artistSet.insert(data.artist);
+        albumSet.insert(data.album);
+        playlistSet.insert(data.dir);
     }
-    return result;
+
+    if (!artistRepository.append(artistSet.values())) {
+        return false;
+    }
+    if (!albumRepository.append(albumSet.values())) {
+        return false;
+    }
+    if (!playlistRepository.appendDir(playlistSet.values())) {
+        return false;
+    }
+    if (!musicRepository.append(list)) {
+        return false;
+    }
+    if (!artistRepository.appendMusic(list)) {
+        return false;
+    }
+    if (!albumRepository.appendMusic(list)) {
+        return false;
+    }
+    if (!playlistRepository.appendMusic(list)) {
+        return false;
+    }
+    return true;
 }

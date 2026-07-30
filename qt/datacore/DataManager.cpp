@@ -28,13 +28,6 @@ AlbumPtr DataManager::getAlbumCore(const int id) {
     return album;
 }
 
-QJsonObject DataManager::getAlbumJson(const int id) {
-    const AlbumPtr album = getAlbumCore(id);
-    QJsonObject    json  = album->getJsonObject();
-
-    return json;
-}
-
 Album DataManager::getAlbumData(const int id) {
     const AlbumPtr album = getAlbumCore(id);
     if (album != nullptr) {
@@ -53,8 +46,8 @@ Music DataManager::getMusicData(const int id) {
     return {};
 }
 
-PlayList DataManager::getPlayListData(const int id) {
-    const PlayListPtr playList = getPlayListCore(id);
+Playlist DataManager::getPlaylistData(const int id) {
+    const PlaylistPtr playList = getPlaylistCore(id);
     if (playList != nullptr) {
         return *playList;
     }
@@ -80,13 +73,6 @@ ArtistPtr DataManager::getArtistCore(const int id) {
     m_artistMutex.unlock();
     deleteOutCache(ARTIST, id);
     return artist;
-}
-
-QJsonObject DataManager::getArtistJson(const int id) {
-    const ArtistPtr artist = getArtistCore(id);
-    QJsonObject     json   = artist->getJsonObject();
-
-    return json;
 }
 
 Artist DataManager::getArtistData(const int id) {
@@ -136,25 +122,14 @@ QList<MusicPtr> DataManager::getMusicCoreList(const QList<int> &idList) {
     return musicList;
 }
 
-QJsonObject DataManager::getMusicJson(const int id) {
-    const MusicPtr music = getMusicCore(id);
-    if (music == nullptr) {
-        TLog::getInstance().logError("获取MusicCore失败");
-        return {};
-    };
-
-    QJsonObject json = music->getJsonObject();
-    return json;
-}
-
-PlayListPtr DataManager::getPlayListCore(const int id) {
+PlaylistPtr DataManager::getPlaylistCore(const int id) {
     m_playlistMutex.lock();
 
-    PlayListPtr playlist = nullptr;
+    PlaylistPtr playlist = nullptr;
     if (m_playlistHash.contains(id)) {
         playlist = m_playlistHash.value(id);
     } else {
-        playlist = SQLite::getInstance().playListRepository.get(id);
+        playlist = SQLite::getInstance().playlistRepository.get(id);
         if (playlist != nullptr) {
             m_playlistHash.insert(id, playlist);
         } else {
@@ -165,12 +140,6 @@ PlayListPtr DataManager::getPlayListCore(const int id) {
     m_playlistMutex.unlock();
     deleteOutCache(PLAYLIST, id);
     return playlist;
-}
-
-QJsonObject DataManager::getPlayListJson(const int id) {
-    const PlayListPtr playlist = getPlayListCore(id);
-    QJsonObject       json     = playlist->getJsonObject();
-    return json;
 }
 
 void DataManager::releaseAlbum(const int id) {
@@ -195,7 +164,7 @@ void DataManager::releaseMusic(const int id) {
     m_musicMutex.unlock();
 }
 
-void DataManager::releasePlayList(const int id) {
+void DataManager::releasePlaylist(const int id) {
     m_playlistMutex.lock();
     TLog::getInstance().logInfo(tr("执行释放") + tr("播放列表ID:%1").arg(id));
     m_playlistHash.remove(id);
@@ -236,7 +205,7 @@ void DataManager::deleteOutCache(CORE_TYPE type, int id) {
                 releaseMusic(toDelete.second);
                 break;
             case PLAYLIST:
-                releasePlayList(toDelete.second);
+                releasePlaylist(toDelete.second);
                 break;
             default:
                 break;

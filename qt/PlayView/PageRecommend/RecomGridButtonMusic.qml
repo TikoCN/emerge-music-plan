@@ -8,7 +8,7 @@ RecomGridButtonBase {
 
     delegateItem: GridButtonMusic {
         model: MusicModel {
-            type: MusicModel.Rand
+            type: MusicModel.RandModel
         }
     }
 }

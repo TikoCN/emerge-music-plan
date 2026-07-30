@@ -18,8 +18,8 @@ public:
     void updateMusicLove(int musicId, bool isLove);
     void updateMusicLevel(int musicId, bool level);
 
-    void updatePlayListName(int playListId, const QString &name);
-    void updatePlayListSort(int playListId, int sort);
+    void updatePlaylistName(int playListId, const QString &name);
+    void updatePlaylistSort(int playListId, int sort);
 
     void updateArtistName(int artistId, const QString &name);
     void updateArtistSort(int artistId, int sort);
@@ -28,12 +28,6 @@ public:
     void updateAlbumSort(int albumId, int sort);
 
     void updateALLNameKey() const;
-
-signals:
-    void buildAlbumPlayer();
-    void buildArtistPlayer();
-    void buildPlayListPlayer();
-    void finish();
 
 private:
     explicit DataActive();

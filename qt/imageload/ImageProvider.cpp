@@ -57,8 +57,8 @@ void ImageResponse::loadMusicCover(const bool isOnline) {
     }
 }
 
-void ImageResponse::loadPlayListCover(const bool isOnline) {
-    const PlayListPtr playlist = DataActive::getInstance().getPlayListCore(m_loadId);
+void ImageResponse::loadPlaylistCover(const bool isOnline) {
+    const PlaylistPtr playlist = DataActive::getInstance().getPlaylistCore(m_loadId);
     if (playlist != nullptr) {
         m_loadMusicId = playlist->firstMusic;
         loadMusicCover(isOnline);
@@ -203,11 +203,11 @@ void ImageResponse::run() {
         case AlbumOnline:
             loadAlbumCover(true);
             break;
-        case PlayListFile:
-            loadPlayListCover(false);
+        case PlaylistFile:
+            loadPlaylistCover(false);
             break;
-        case PlayListOnline:
-            loadPlayListCover(true);
+        case PlaylistOnline:
+            loadPlaylistCover(true);
             break;
         default:
             break;

@@ -22,6 +22,8 @@ qt_standard_project_setup(REQUIRES 6.8)
 
 qt_add_executable(appmusicPlay
     main.cpp
+        sqlite/QueueRepository.cpp
+        sqlite/QueueRepository.h
 )
 
 qt_policy(SET QTP0004 NEW)
@@ -42,7 +44,7 @@ qt_add_qml_module(appmusicPlay
         sqlite/MusicRepository.h sqlite/MusicRepository.cpp
         sqlite/AlbumRepository.h sqlite/AlbumRepository.cpp
         sqlite/ArtistRepository.h sqlite/ArtistRepository.cpp
-        sqlite/PlayListRepository.h sqlite/PlayListRepository.cpp
+        sqlite/PlaylistRepository.h sqlite/PlaylistRepository.cpp
 
         baseclass/DataException.h
         baseclass/Album.h baseclass/Album.cpp
@@ -69,7 +71,7 @@ qt_add_qml_module(appmusicPlay
         library/MusicLibrary.h library/MusicLibrary.cpp
         library/ArtistLibrary.h library/ArtistLibrary.cpp
         library/AlbumLibrary.h library/AlbumLibrary.cpp
-        library/PlayListLibrary.h library/PlayListLibrary.cpp
+        library/PlaylistLibrary.h library/PlaylistLibrary.cpp
         model/MusicModel.h model/MusicModel.cpp
         model/AlbumModel.h model/AlbumModel.cpp
         model/ArtistModel.h model/ArtistModel.cpp

@@ -21,11 +21,12 @@ public:
     };
 
     enum AlbumType {
-        Key,
-        Artist,
-        Rand
+        KeyModel,
+        ArtistModel,
+        RandModel
     };
 
+    Q_ENUM(AlbumType)
     QT_NOTIFY_PROPERTY(AlbumType, type, Type)
     QT_NOTIFY_PROPERTY(QString, key, Key)
     QT_NOTIFY_PROPERTY(int, artistId, ArtistId)

@@ -371,7 +371,7 @@ bool MusicRepository::clearInvalidData(const QList<int> &invalidMusicIds) const 
                                         .arg(LiteralConstant::Column::ALBUM_ID);
         core->sqlExecute(deleteEmptyAlbumSql.toUtf8(), "删除空专辑失败");
 
-        const auto deleteEmptyPlayListSql = QString(
+        const auto deleteEmptyPlaylistSql = QString(
                                                 "DELETE FROM %1 WHERE %2 = 0 AND NOT EXISTS "
                                                 "(SELECT 1 FROM %3 WHERE %4 = %1.%5)")
                                            .arg(LiteralConstant::Table::PLAYLIST)
@@ -379,7 +379,7 @@ bool MusicRepository::clearInvalidData(const QList<int> &invalidMusicIds) const 
                                            .arg(LiteralConstant::Table::PLAYLIST_MUSIC)
                                            .arg(LiteralConstant::Column::PLAYLIST_ID)
                                            .arg(LiteralConstant::Column::PLAYLIST_ID);
-        core->sqlExecute(deleteEmptyPlayListSql.toUtf8(), "删除空播放列表失败");
+        core->sqlExecute(deleteEmptyPlaylistSql.toUtf8(), "删除空播放列表失败");
 
         core->commit();
     } catch (const DataException &e) {

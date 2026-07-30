@@ -15,7 +15,7 @@ LibraryPage {
         autoHeightEnable: false
         flow: GridView.LeftToRight
         model: ArtistModel {
-            type: ArtistModel.Key
+            type: ArtistModel.KeyModel
             key: currentKey
         }
     }

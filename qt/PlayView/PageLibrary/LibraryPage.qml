@@ -64,8 +64,4 @@ Item {
     }
 
     Component.onCompleted: init()
-
-    onCurrentKeyChanged: {
-        loader.item.loadByKey(currentKey)
-    }
 }

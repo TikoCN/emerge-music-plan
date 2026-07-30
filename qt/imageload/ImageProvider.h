@@ -19,8 +19,8 @@ public:
         ArtistOnline,
         AlbumFile,
         AlbumOnline,
-        PlayListFile,
-        PlayListOnline,
+        PlaylistFile,
+        PlaylistOnline,
         Unknown
     };
 
@@ -36,7 +36,7 @@ public:
     bool loadImageFile(const QString &url);
 
     void loadMusicCover(bool isOnline);
-    void loadPlayListCover(bool isOnline);
+    void loadPlaylistCover(bool isOnline);
     void loadArtistCover(bool isOnline);
     void loadAlbumCover(bool isOnline);
 

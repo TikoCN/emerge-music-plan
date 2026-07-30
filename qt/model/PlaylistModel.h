@@ -12,7 +12,7 @@ class PlaylistModel : public QAbstractListModel {
     Q_OBJECT
 
 public:
-    enum PlayListRoles {
+    enum PlaylistRoles {
         IdRole = Qt::UserRole + 1,
         NameRole,
         UrlRole,
@@ -25,9 +25,9 @@ public:
     };
 
     enum PlaylistType {
-        All,
-        User,
-        Dir
+        AllModel,
+        UserModel,
+        DirModel
     };
 
     Q_ENUM(PlaylistType)
@@ -47,7 +47,7 @@ public:
     bool             canFetchMore(const QModelIndex &parent) const override;
 
 private:
-    QList<PlayListPtr> m_playlistList;
+    QList<PlaylistPtr> m_playlistList;
     Loader             m_loader;
 };
 

@@ -7,34 +7,30 @@
 
 class PlaylistModel;
 
-class PlayListLibrary : public QObject {
+class PlaylistLibrary : public QObject {
     Q_OBJECT
 
 public:
-    static PlayListLibrary &getInstance() {
-        static PlayListLibrary instance;
+    static PlaylistLibrary &getInstance() {
+        static PlaylistLibrary instance;
         return instance;
     }
 
-    Q_INVOKABLE void appendUser(const QString &name);
+    Q_INVOKABLE static void appendUser(const QString &name);
 
-    Q_INVOKABLE void updateName(int playListId, const QString &name);
-    Q_INVOKABLE void updateSort(int playListId, int sort);
+    Q_INVOKABLE static void updateName(int playListId, const QString &name);
+    Q_INVOKABLE static void updateSort(int playListId, int sort);
 
-    Q_INVOKABLE PlayList    getData(int id);
-    Q_INVOKABLE QJsonObject getJson(int id);
+    Q_INVOKABLE static Playlist getData(int id);
 
-    Q_INVOKABLE int allowName(const QString &name) const;
+    Q_INVOKABLE static int allowName(const QString &name);
 
-    Q_INVOKABLE bool moveMusic(const QString &playListName, const QString &playListNameNew) const;
-    Q_INVOKABLE bool addMusicToPlayList(const QString &sourcePlayListName, const QString &targetPlayListName) const;
-
-    Q_INVOKABLE void clearNullItem();
-    Q_INVOKABLE void updateALLNameKey() const;
+    Q_INVOKABLE static bool moveMusic(const QString &playListName, const QString &playListNameNew);
+    Q_INVOKABLE static bool addMusicToPlaylist(const QString &sourcePlaylistName, const QString &targetPlaylistName);
 
 private:
-    explicit PlayListLibrary()  = default;
-    ~PlayListLibrary() override = default;
+    explicit PlaylistLibrary()  = default;
+    ~PlaylistLibrary() override = default;
 };
 
 #endif // PLAYLISTLIBRARY_H

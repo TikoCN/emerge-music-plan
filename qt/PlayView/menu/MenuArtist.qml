@@ -47,7 +47,7 @@ TikoMenu {
             id: addMenu
             TikoMenuItem {
                 text: CoreData.playlist[aim]["name"]
-                onTriggered: ArtistLibrary.addMusicToPlayList(artistMenu.name, CoreData.playlist[aim]["name"])
+                onTriggered: ArtistLibrary.addMusicToPlaylist(artistMenu.name, CoreData.playlist[aim]["name"])
                 enabled: !CoreData.playlist[aim]["isDir"]
             }
         }

@@ -640,7 +640,7 @@ bool ArtistRepository::moveMusic(const QString &artistName, const QString &artis
     return result;
 }
 
-bool ArtistRepository::addMusicToPlayList(const QString &artistName, const QString &playListName) const {
+bool ArtistRepository::addMusicToPlaylist(const QString &artistName, const QString &playListName) const {
     bool          result     = true;
     sqlite3_stmt *stmt       = nullptr;
     int           artistId   = -1;
@@ -654,7 +654,7 @@ bool ArtistRepository::addMusicToPlayList(const QString &artistName, const QStri
                                    .arg(LiteralConstant::Table::ARTIST)
                                    .arg(LiteralConstant::Column::ARTIST_NAME);
 
-        const auto getPlayListIdSql = QString("SELECT %1 FROM %2 WHERE %3 = ? LIMIT 1")
+        const auto getPlaylistIdSql = QString("SELECT %1 FROM %2 WHERE %3 = ? LIMIT 1")
                                      .arg(LiteralConstant::Column::PLAYLIST_ID)
                                      .arg(LiteralConstant::Table::PLAYLIST)
                                      .arg(LiteralConstant::Column::PLAYLIST_NAME);
@@ -667,7 +667,7 @@ bool ArtistRepository::addMusicToPlayList(const QString &artistName, const QStri
         Core::stmtFree(stmt);
         stmt = nullptr;
 
-        core->stmtPrepare(&stmt, getPlayListIdSql.toUtf8());
+        core->stmtPrepare(&stmt, getPlaylistIdSql.toUtf8());
         core->stmtBindText(stmt, 1, playListName);
         if (core->stmtStep(stmt)) {
             playListId = sqlite3_column_int(stmt, 0);

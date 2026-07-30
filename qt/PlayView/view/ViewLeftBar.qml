@@ -74,7 +74,7 @@ Item {
             anchors.margins: TikoSeit.emphasizeMargins
 
             TikoButtonDefault{
-                id: addPlayListButton
+                id: addPlaylistButton
                 textLine.text: qsTr("新建列表")
                 icon.source: "qrc:/image/new.png"
                 onLeftClicked: inputName.open()
@@ -91,10 +91,10 @@ Item {
                             return
                         }
 
-                        if (PlayListLibrary.allowName(inputText)) {
-                            PlayListLibrary.appendUser(inputText)
+                        if (PlaylistLibrary.allowName(inputText)) {
+                            PlaylistLibrary.appendUser(inputText)
                             inputName.setNormalText()
-                            updatePlayLists()
+                            playlistModel.clear()
                         }
                         else {
                             CoreData.sendErrorMsg("列表名不可用")
@@ -118,14 +118,17 @@ Item {
                             CoreData.stackPlaylist(model.id)
                             setRectBgParent(norMalButton)
                         }
-                        onRightClicked: openPlayListMenu(model.id, model.isDir, model.name)
+                        onRightClicked: openPlaylistMenu(model.id, model.isDir, model.name)
                         height: 30
                         bgOpacity: 0
                     }
 
                     model: PlaylistModel {
                         id: playlistModel
-                        type: PlaylistModel.All
+                        type: PlaylistModel.AllModel
+                        Component.onCompleted: {
+                            TaskCenter.reloadData.connect(clear)
+                        }
                     }
                 }
         }
@@ -133,13 +136,13 @@ Item {
 
     Component{
         id: editMusicListMenu
-        MenuPlayList {
+        MenuPlaylist {
         }
     }
 
     Rectangle {
         id: moveBgItem
-        parent: addPlayListButton
+        parent: addPlaylistButton
         width: parent.width
         height: parent.height
         color: TikoSeit.theme.colorMaxTop
@@ -151,7 +154,7 @@ Item {
         moveBgItem.parent = parent
     }
 
-    function openPlayListMenu(playlistId, isDir, name){
+    function openPlaylistMenu(playlistId, isDir, name){
         if (editMusicListMenu.status === Component.Ready) {
             var menu = editMusicListMenu.createObject(parent, {
                                                           playlistId: playlistId,

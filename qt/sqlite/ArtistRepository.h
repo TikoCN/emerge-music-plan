@@ -26,12 +26,12 @@ public:
     [[nodiscard]] bool append(const QStringList &artistList) const;
     [[nodiscard]] bool appendMusic(const QList<MediaData> &dataList) const;
 
-    bool update(const ArtistPtr &artist) const;
-    bool updateMusic(const QList<int> &musicIdList, int artistNewId, int artistOldId) const;
-    bool updateNameKey(const QStringList &artistName, const QStringList &artistNameKey) const;
+    [[nodiscard]] bool update(const ArtistPtr &artist) const;
+    [[nodiscard]] bool updateMusic(const QList<int> &musicIdList, int artistNewId, int artistOldId) const;
+    [[nodiscard]] bool updateNameKey(const QStringList &artistName, const QStringList &artistNameKey) const;
 
-    bool moveMusic(const QString &artistName, const QString &artistNameNew) const;
-    bool addMusicToPlayList(const QString &artistName, const QString &playListName) const;
+    [[nodiscard]] bool moveMusic(const QString &artistName, const QString &artistNameNew) const;
+    [[nodiscard]] bool addMusicToPlaylist(const QString &artistName, const QString &playListName) const;
 };
 
 #endif // ARTISTREPOSITORY_H

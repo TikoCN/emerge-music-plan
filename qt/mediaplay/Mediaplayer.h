@@ -46,18 +46,18 @@ public:
     Q_INVOKABLE void buildPlayingList(QList<int> list, int playMusicId = 0);
     Q_INVOKABLE void buildPlayingArtist(int artistId, int listId = 0);
     Q_INVOKABLE void buildPlayingAlbum(int albumId, int listId = 0);
-    Q_INVOKABLE void buildPlayingPlayList(int playListId, int listId = 0);
+    Q_INVOKABLE void buildPlayingPlaylist(int playListId, int listId = 0);
 
     // 播放列表插入歌曲
     void             insertPlayingList(const QList<int> &list);
     Q_INVOKABLE void insertPlayingArtist(int artistId);
     Q_INVOKABLE void insertPlayingAlbum(int albumId);
-    Q_INVOKABLE void insertPlayingPlayList(int playListId);
+    Q_INVOKABLE void insertPlayingPlaylist(int playListId);
 
     void             appendPlayingList(const QList<int> &list);
     Q_INVOKABLE void appendPlayingArtist(int artistId);
     Q_INVOKABLE void appendPlayingAlbum(int albumId);
-    Q_INVOKABLE void appendPlayingPlayList(int playListId);
+    Q_INVOKABLE void appendPlayingPlaylist(int playListId);
 
     [[nodiscard]] int                    playingMusicId() const;
     Q_INVOKABLE [[nodiscard]] QList<int> getMusicList(int size, int start) const;

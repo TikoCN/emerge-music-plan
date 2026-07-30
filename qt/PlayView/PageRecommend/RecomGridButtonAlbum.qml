@@ -8,7 +8,7 @@ RecomGridButtonBase {
 
     delegateItem: GridButtonAlbum {
         model: AlbumModel {
-            type: AlbumModel.Rand
+            type: AlbumModel.RandModel
         }
     }
 }

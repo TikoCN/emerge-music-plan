@@ -15,18 +15,14 @@ Artist ArtistLibrary::getData(const int id) {
     return DataActive::getInstance().getArtistData(id);
 }
 
-QJsonObject ArtistLibrary::getJson(const int id) {
-    return DataActive::getInstance().getArtistJson(id);
-}
-
-QStringList ArtistLibrary::getKeys() const {
+QStringList ArtistLibrary::getKeys() {
     return SQLite::getInstance().artistRepository.getKeys();
 }
 
-bool ArtistLibrary::moveMusic(const QString &artistName, const QString &artistNameNew) const {
+bool ArtistLibrary::moveMusic(const QString &artistName, const QString &artistNameNew) {
     return SQLite::getInstance().artistRepository.moveMusic(artistName, artistNameNew);
 }
 
-bool ArtistLibrary::addMusicToPlayList(const QString &artistName, const QString &playListName) const {
-    return SQLite::getInstance().artistRepository.addMusicToPlayList(artistName, playListName);
+bool ArtistLibrary::addMusicToPlaylist(const QString &artistName, const QString &playListName) {
+    return SQLite::getInstance().artistRepository.addMusicToPlaylist(artistName, playListName);
 }

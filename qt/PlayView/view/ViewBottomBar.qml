@@ -223,10 +223,10 @@ Item {
         //text: qsTr("播放列表")
 
         onClicked: {
-            if (playingPlayList.visible) {
-                playingPlayList.close()
+            if (playingPlaylist.visible) {
+                playingPlaylist.close()
             } else {
-                playingPlayList.open()
+                playingPlaylist.open()
             }
         }
     }
@@ -256,7 +256,7 @@ Item {
 
         function onSourceChanged() {
             if (MediaPlayer.playingMusic !== null) {
-                var Json = MusicLibrary.getJson(MediaPlayer.playingMusicId)
+                var Json = MusicLibrary.getData(MediaPlayer.playingMusicId)
                 artist.text = Json.artist
                 title.text = Json.title
                 cover.source = "image://cover/musicOnLine?id=" +

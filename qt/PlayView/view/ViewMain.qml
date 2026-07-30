@@ -69,7 +69,7 @@ Item {
     property PageRecommend pageRecom: null
     property PageAlbum pageAlbum: null
     property PageArtist pageArtist: null
-    property PagePlayList pagePlaylist: null
+    property PagePlaylist pagePlaylist: null
     property PageMusicPlay pageDetail: null
 
     Component{id: comSeit;  PageSeit {visible: false}}
@@ -77,7 +77,7 @@ Item {
     Component{id: comRecom; PageRecommend {visible: false}}
     Component{id: comAlbum; PageAlbum {visible: false}}
     Component{id: comArtist; PageArtist {visible: false}}
-    Component{id: comPlaylist; PagePlayList {visible: false}}
+    Component{id: comPlaylist; PagePlaylist {visible: false}}
     Component{id: comDetail; PageMusicPlay {visible: false; tspBg: true}}
 
     //底部导航
@@ -118,7 +118,7 @@ Item {
         }
 
         stackMode(0)
-        pagePlaylist.setPlayListId(page)
+        pagePlaylist.setPlaylistId(page)
         if(stackView.currentItem != pagePlaylist){
             stackView.replace(pagePlaylist)
         }

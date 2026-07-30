@@ -22,27 +22,9 @@ GridView {
     cellWidth: width / column
     cellHeight: 100
 
-    model: ArtistLibrary.model()
-
     delegate: ButtonArtist {
         width: realCellWidth
         onHeightChanged: setGridHeight(this)
-    }
-
-    onAtXEndChanged: {
-        if (flow === 1) {
-            if (atXEnd) {
-                ArtistLibrary.loader().loadMore()
-            }
-        }
-    }
-
-    onAtYEndChanged: {
-        if (flow === 0) {
-            if (atYEnd) {
-                ArtistLibrary.loader().loadMore()
-            }
-        }
     }
 
     function setGridHeight(cell) {
@@ -51,15 +33,5 @@ GridView {
             if (autoHeightEnable)
                 gridItem.height = (gridItem.cellHeight + TikoSeit.emphasizeMargins) * Math.max(row, 1)
         }
-    }
-
-    function reset() {
-        ArtistLibrary.loader().reset()
-        resetRequested()
-    }
-
-    function loadByKey(key) {
-        ArtistLibrary.loader().setCurrentKey(key)
-        ArtistLibrary.loader().reset()
     }
 }

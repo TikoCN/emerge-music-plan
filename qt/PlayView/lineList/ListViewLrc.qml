@@ -38,7 +38,7 @@ MouseArea {
             TikoMenuSpeacer {}
             TikoMenuItem {
                 text: qsTr("编辑歌词")
-                onClicked: CoreData.editMusic(playerLrcPlayList, MediaPlayer.playingMusic)
+                onClicked: CoreData.editMusic(playerLrcPlaylist, MediaPlayer.playingMusic)
             }
         }
     }

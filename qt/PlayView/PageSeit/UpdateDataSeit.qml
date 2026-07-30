@@ -13,7 +13,7 @@ TikoRightVessel {
     vessel: ColumnLayout {
         width: bgLoader.width
         property var updateDataMode: [
-            {text:qsTr("更新专辑关键词"), doFunction: PlayListLibrary.updateALLNameKey}
+            {text:qsTr("更新专辑关键词"), doFunction: PlaylistLibrary.updateALLNameKey}
         ]
 
         Repeater {

@@ -8,7 +8,7 @@ RecomGridButtonBase {
 
     delegateItem: GridButtonArtist {
         model: ArtistModel {
-            type: ArtistModel.Rand
+            type: ArtistModel.RandModel
         }
     }
 }

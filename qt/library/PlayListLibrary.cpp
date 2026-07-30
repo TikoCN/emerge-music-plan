@@ -1,45 +1,32 @@
-#include "PlayListLibrary.h"
+#include "PlaylistLibrary.h"
 #include "datacore/DataActive.h"
 #include "sqlite/Sqlite.h"
-#include "model/PlaylistModel.h"
 
-void PlayListLibrary::appendUser(const QString &name) {
-    if (SQLite::getInstance().playListRepository.appendUser(name)) {
+void PlaylistLibrary::appendUser(const QString &name) {
+    if (SQLite::getInstance().playlistRepository.appendUser(name)) {
     }
 }
 
-void PlayListLibrary::updateName(const int playListId, const QString &name) {
-    DataActive::getInstance().updatePlayListName(playListId, name);
+void PlaylistLibrary::updateName(const int playListId, const QString &name) {
+    DataActive::getInstance().updatePlaylistName(playListId, name);
 }
 
-void PlayListLibrary::updateSort(const int playListId, const int sort) {
-    DataActive::getInstance().updatePlayListSort(playListId, sort);
+void PlaylistLibrary::updateSort(const int playListId, const int sort) {
+    DataActive::getInstance().updatePlaylistSort(playListId, sort);
 }
 
-PlayList PlayListLibrary::getData(const int id) {
-    return DataActive::getInstance().getPlayListData(id);
+Playlist PlaylistLibrary::getData(const int id) {
+    return DataActive::getInstance().getPlaylistData(id);
 }
 
-QJsonObject PlayListLibrary::getJson(const int id) {
-    return DataActive::getInstance().getPlayListJson(id);
+int PlaylistLibrary::allowName(const QString &name) {
+    return SQLite::getInstance().playlistRepository.allowName(name);
 }
 
-int PlayListLibrary::allowName(const QString &name) const {
-    return SQLite::getInstance().playListRepository.allowName(name);
+bool PlaylistLibrary::moveMusic(const QString &playListName, const QString &playListNameNew) {
+    return SQLite::getInstance().playlistRepository.moveMusic(playListName, playListNameNew);
 }
 
-bool PlayListLibrary::moveMusic(const QString &playListName, const QString &playListNameNew) const {
-    return SQLite::getInstance().playListRepository.moveMusic(playListName, playListNameNew);
-}
-
-bool PlayListLibrary::addMusicToPlayList(const QString &sourcePlayListName, const QString &targetPlayListName) const {
-    return SQLite::getInstance().playListRepository.addMusicToPlayList(sourcePlayListName, targetPlayListName);
-}
-
-void PlayListLibrary::clearNullItem() {
-    DataActive::getInstance().clearNullItem();
-}
-
-void PlayListLibrary::updateALLNameKey() const {
-    DataActive::getInstance().updateALLNameKey();
+bool PlaylistLibrary::addMusicToPlaylist(const QString &sourcePlaylistName, const QString &targetPlaylistName) {
+    return SQLite::getInstance().playlistRepository.addMusicToPlaylist(sourcePlaylistName, targetPlaylistName);
 }

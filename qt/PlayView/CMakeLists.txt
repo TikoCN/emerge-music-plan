@@ -30,7 +30,7 @@ qt_add_qml_module(PlayViewLib
         MainPage/PageSeit.qml
         MainPage/PageBase.qml
         MainPage/PageLibrary.qml
-        MainPage/PagePlayList.qml
+        MainPage/PagePlaylist.qml
         MainPage/PageArtist.qml
         MainPage/PageAlbum.qml
         MainPage/PageRecommend.qml
@@ -54,11 +54,11 @@ qt_add_qml_module(PlayViewLib
         LineCell/CoreMusicLine.qml
 
         Menu/MenuAlbum.qml
-        Menu/MenuPlayList.qml
+        Menu/MenuPlaylist.qml
         Menu/MenuArtist.qml
         Menu/MenuMusic.qml
-        Menu/MenuPlayListSort.qml
-        Menu/MenuMusicPlayList.qml
+        Menu/MenuPlaylistSort.qml
+        Menu/MenuMusicPlaylist.qml
 
         GeneralControls/WindowMin.qml
         GeneralControls/PlayState.qml

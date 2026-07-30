@@ -18,7 +18,7 @@ QVariant PlaylistModel::data(const QModelIndex &index, int role) const {
     if (!index.isValid() || index.row() >= m_playlistList.size())
         return QVariant();
 
-    const PlayListPtr playlist = m_playlistList[index.row()];
+    const PlaylistPtr playlist = m_playlistList[index.row()];
     switch (role) {
         case IdRole:
             return playlist->getId();
@@ -58,28 +58,27 @@ QHash<int, QByteArray> PlaylistModel::roleNames() const {
 }
 
 QList<int> PlaylistModel::loadAll() {
-    const auto dirs  = SQLite::getInstance().playListRepository.getList(m_loader.offset, m_loader.limit, true);
-    const auto users = SQLite::getInstance().playListRepository.getList(m_loader.offset, m_loader.limit, false);
+    const auto dirs  = SQLite::getInstance().playlistRepository.getList(m_loader.offset, m_loader.limit, true);
+    const auto users = SQLite::getInstance().playlistRepository.getList(m_loader.offset, m_loader.limit, false);
 
     const auto list = dirs + users;
     return list;
 }
 
 QList<int> PlaylistModel::loadUser() {
-    const auto users = SQLite::getInstance().playListRepository.getList(m_loader.offset, m_loader.limit, false);
+    const auto users = SQLite::getInstance().playlistRepository.getList(m_loader.offset, m_loader.limit, false);
     return users;
 }
 
 QList<int> PlaylistModel::loadDir() {
-    const auto dirs = SQLite::getInstance().playListRepository.getList(m_loader.offset, m_loader.limit, true);
+    const auto dirs = SQLite::getInstance().playlistRepository.getList(m_loader.offset, m_loader.limit, true);
     return dirs;
 }
 
 void PlaylistModel::clear() {
-    m_loader.reset();
-
     beginResetModel();
     m_playlistList.clear();
+    m_loader.reset();
     endResetModel();
 }
 
@@ -89,13 +88,13 @@ void PlaylistModel::fetchMore(const QModelIndex &parent) {
     QList<int> list;
 
     switch (type) {
-        case All:
+        case AllModel:
             list = loadAll();
             break;
-        case Dir:
+        case DirModel:
             list = loadDir();
             break;
-        case User:
+        case UserModel:
             list = loadUser();
             break;
     }
@@ -105,14 +104,17 @@ void PlaylistModel::fetchMore(const QModelIndex &parent) {
         m_loader.isFinish = true;
     }
 
-    QList<PlayListPtr> playlistList;
+    QList<PlaylistPtr> playlistList;
     playlistList.reserve(list.size());
 
     for (const auto id: list) {
-        auto playlist = SQLite::getInstance().playListRepository.get(id);
+        auto playlist = SQLite::getInstance().playlistRepository.get(id);
         if (playlist) {
             playlistList.append(playlist);
         }
+    }
+    if (playlistList.isEmpty()) {
+        return;
     }
     const int start = rowCount();
     const int end   = std::max(start, start + static_cast<int>(playlistList.size()) - 1);

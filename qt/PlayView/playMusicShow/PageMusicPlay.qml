@@ -152,7 +152,7 @@ MouseArea {
     }
 
     function loadCurrentMusic() {
-        const core = MusicLibrary.getMusicData(MusicLibrary.playingMusicId)
+        const core = MusicLibrary.getData(MusicLibrary.playingMusicId)
         artist = core.artist
         title = core.title
         icon = "image://cover/musicOnLine?id=" +

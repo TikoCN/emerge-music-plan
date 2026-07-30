@@ -37,18 +37,13 @@ public:
 
     void clearData();
 
-    void startLoadFile();
-    void startBootSequence();
+    void             startLoadFile();
+    Q_INVOKABLE void startBootSequence();
 
     void onScanFinished(QFileInfoList fileInfoList, QStringList subDirPaths);
     void onParseFinished(QList<MediaData> dataList);
-
-public slots:
-    void checkFileExist(const QList<QPair<int, QString> > &musicDataList);
-    void onInvalidDataCleared();
-
 signals:
-    void fileCheckFinished(const QList<int> &invalidMusicIds);
+    void reloadData();
 };
 
 #endif // TASKCENTER_H
