@@ -1,0 +1,53 @@
+{
+  "version": 6,
+  "configurePresets": [
+    {
+      "name": "local-env",
+      "hidden": true,
+      "description": "本机 MSVC 环境 + pkg-config（FFmpeg 走 vcpkg 的 pkgconf）",
+      "cacheVariables": {
+        "CMAKE_CXX_COMPILER": "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/MSVC/14.51.36231/bin/Hostx64/x64/cl.exe",
+        "PKG_CONFIG_EXECUTABLE": "C:/vcpkg/installed/x64-windows/tools/pkgconf/pkgconf.exe"
+      },
+      "environment": {
+        "INCLUDE": "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/MSVC/14.51.36231/include;C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/MSVC/14.51.36231/ATLMFC/include;C:/Program Files/Microsoft Visual Studio/18/Community/VC/Auxiliary/VS/include;C:/Program Files (x86)/Windows Kits/10/include/10.0.26100.0/ucrt;C:/Program Files (x86)/Windows Kits/10/include/10.0.26100.0/um;C:/Program Files (x86)/Windows Kits/10/include/10.0.26100.0/shared;C:/Program Files (x86)/Windows Kits/10/include/10.0.26100.0/winrt;C:/Program Files (x86)/Windows Kits/10/include/10.0.26100.0/cppwinrt;C:/Program Files (x86)/Windows Kits/NETFXSDK/4.8.1/include/um",
+        "LIB": "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/MSVC/14.51.36231/ATLMFC/lib/x64;C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/MSVC/14.51.36231/lib/x64;C:/Program Files (x86)/Windows Kits/NETFXSDK/4.8.1/lib/um/x64;C:/Program Files (x86)/Windows Kits/10/lib/10.0.26100.0/ucrt/x64;C:/Program Files (x86)/Windows Kits/10/lib/10.0.26100.0/um/x64",
+        "PATH": "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/MSVC/14.51.36231/bin/Hostx64/x64;C:/Program Files (x86)/Windows Kits/10/bin/10.0.26100.0/x64;C:/Program Files (x86)/Windows Kits/10/bin/x64;C:/vcpkg/installed/x64-windows/bin;C:/Qt/6.8.3/msvc2022_64/bin;C:/Exlib/ninja-win;C:/Program Files/CMake/bin;$penv{PATH}"
+      }
+    },
+    {
+      "name": "windows-msvc-debug-user",
+      "displayName": "windows-msvc-debug (Local User)",
+      "description": "在项目 debug 预设基础上注入本机 MSVC 环境 + pkg-config debug 路径",
+      "inherits": [
+        "local-env",
+        "windows-msvc-debug"
+      ],
+      "environment": {
+        "PKG_CONFIG_PATH": "C:/vcpkg/installed/x64-windows/debug/lib/pkgconfig;C:/vcpkg/installed/x64-windows/lib/pkgconfig"
+      }
+    },
+    {
+      "name": "windows-msvc-release-user",
+      "displayName": "windows-msvc-release (Local User)",
+      "description": "在项目 release 预设基础上注入本机 MSVC 环境 + pkg-config release 路径",
+      "inherits": [
+        "local-env",
+        "windows-msvc-release"
+      ],
+      "environment": {
+        "PKG_CONFIG_PATH": "C:/vcpkg/installed/x64-windows/lib/pkgconfig"
+      }
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "windows-msvc-debug-user-build",
+      "configurePreset": "windows-msvc-debug-user"
+    },
+    {
+      "name": "windows-msvc-release-user-build",
+      "configurePreset": "windows-msvc-release-user"
+    }
+  ]
+}
