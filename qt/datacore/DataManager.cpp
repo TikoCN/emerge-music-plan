@@ -46,6 +46,10 @@ Music DataManager::getMusicData(const int id) {
     return {};
 }
 
+QString DataManager::getMusicUrl(const int id) const {
+    return SQLite::getInstance().musicRepository.getUrl(id);
+}
+
 Playlist DataManager::getPlaylistData(const int id) {
     const PlaylistPtr playList = getPlaylistCore(id);
     if (playList != nullptr) {
@@ -53,6 +57,14 @@ Playlist DataManager::getPlaylistData(const int id) {
     }
 
     return {};
+}
+
+int DataManager::getArtistFirstMusicId(const int artistId) const {
+    return SQLite::getInstance().artistRepository.getMusicFirst(artistId);
+}
+
+int DataManager::getAlbumFirstMusicId(const int albumId) const {
+    return SQLite::getInstance().albumRepository.getMusicFirst(albumId);
 }
 
 ArtistPtr DataManager::getArtistCore(const int id) {

@@ -5,10 +5,10 @@
 #include <QPainterPath>
 #include <QImageReader>
 #include <utility>
-#include "sqlite/Sqlite.h"
 #include "FFmpeg.h"
 #include "basetool/BaseTool.h"
 #include "datacore/DataActive.h"
+#include "Tlog.h"
 
 namespace {
     // 匿名命名空间，只在当前文件可见
@@ -40,7 +40,7 @@ void ImageResponse::buildRoundImage() {
 
 void ImageResponse::loadMusicCover(const bool isOnline) {
     FFmpeg        ffmpeg;
-    const QString musicUrl = SQLite::getInstance().musicRepository.getUrl(m_loadMusicId);
+    const QString musicUrl = DataActive::getInstance().getMusicUrl(m_loadMusicId);
     QString       errorId  = tr("歌曲ID: ") +
                       QString::number(m_loadMusicId);
     const QString coverUrl = FileManagement::getBaseUrl(musicUrl) + ".jpg";
@@ -85,7 +85,7 @@ void ImageResponse::loadArtistCover(const bool isOnline) {
 
     // 加载”歌手“第一首”歌曲“作为封面
     if (isNoLoad) {
-        m_loadMusicId = SQLite::getInstance().artistRepository.getMusicFirst(m_loadId);
+        m_loadMusicId = DataActive::getInstance().getArtistFirstMusicId(m_loadId);
         loadMusicCover(m_loadMusicId);
     }
 }
@@ -112,7 +112,7 @@ void ImageResponse::loadAlbumCover(const bool isOnline) {
 
     // 加载"专辑"第一首"歌曲"作为封面
     if (isNoLoad) {
-        m_loadMusicId = SQLite::getInstance().albumRepository.getMusicFirst(m_loadId);
+        m_loadMusicId = DataActive::getInstance().getAlbumFirstMusicId(m_loadId);
         loadMusicCover(m_loadMusicId);
     }
 }

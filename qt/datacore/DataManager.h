@@ -30,9 +30,13 @@ public:
     MusicPtr        getMusicCore(int id);
     QList<MusicPtr> getMusicCoreList(const QList<int> &idList);
     Music           getMusicData(int id);
+    QString         getMusicUrl(int id) const;
 
     PlaylistPtr getPlaylistCore(int id);
     Playlist    getPlaylistData(int id);
+
+    int getArtistFirstMusicId(int artistId) const;
+    int getAlbumFirstMusicId(int albumId) const;
 
     void releaseAlbum(int id);
     void releaseArtist(int id);
