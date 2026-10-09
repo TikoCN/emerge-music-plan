@@ -7,12 +7,15 @@ Item {
     property Component delegateItem
     property string currentKey: ""
     property alias loader: loaderItem
+    readonly property bool hasKeys: keyModel.count > 0
+    readonly property bool hasItems: loaderItem.item !== null && loaderItem.item.count > 0
 
     signal initKeyList()
 
     // 跳转按钮列表
     ListView {
         id: keyListView
+        visible: hasKeys
         orientation: ListView.Horizontal
         width: parent.width
         currentIndex: 0
@@ -41,6 +44,7 @@ Item {
 
     Loader {
         id: loaderItem
+        visible: hasKeys && hasItems
         anchors.top: keyListView.bottom
         anchors.topMargin: TikoSeit.emphasizeMargins
         anchors.bottom: parent.bottom
@@ -48,8 +52,17 @@ Item {
         sourceComponent: delegateItem
     }
 
+    Text {
+        anchors.centerIn: parent
+        visible: !hasKeys || !hasItems
+        text: qsTr("暂无数据")
+        color: TikoSeit.theme.colorTextDefault
+        font.pixelSize: 18
+    }
+
     function init() {
         keyModel.clear()
+        currentKey = ""
         initKeyList()
     }
 

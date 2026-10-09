@@ -48,6 +48,13 @@ TikoRightVessel {
                 id: musicSourceModel
             }
 
+            Text {
+                anchors.centerIn: parent
+                visible: musicSourceModel.count === 0
+                text: qsTr("尚未添加资源文件夹")
+                color: TikoSeit.theme.colorTextDefault
+            }
+
             delegate: Item {
                 width: sourceListColumn.width
                 height: 50

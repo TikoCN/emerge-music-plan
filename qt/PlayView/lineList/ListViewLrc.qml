@@ -60,6 +60,14 @@ MouseArea {
         model: ListModel {
             id: lrcDataList
         }
+
+        Text {
+            anchors.centerIn: parent
+            visible: lrcDataList.count === 0
+            text: "Music  Lryic"
+            color: TikoSeit.theme.colorTextDefault
+            font: Setting.lrcFont
+        }
     }
 
 

@@ -4,7 +4,10 @@ import MediaerAPI
 import PlayView
 
 Item {
-    height: childrenRect.height
+    property bool hideWhenEmpty: true
+
+    height: visible ? childrenRect.height : 0
+    visible: !hideWhenEmpty || newMusicGrid.count > 0
 
     TikoTextLine {
         id: newMusicText

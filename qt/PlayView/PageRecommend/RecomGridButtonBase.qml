@@ -8,6 +8,10 @@ Item {
 
     property Component delegateItem
     property string text: ""
+    property bool hideWhenEmpty: true
+
+    height: visible ? gridItem.y + gridItem.height : 0
+    visible: !hideWhenEmpty || (gridItem.item !== null && gridItem.item.count > 0)
 
     TikoTextLine {
         id: gridText

@@ -1,4 +1,5 @@
 import QtQuick
+import QtQuick.Controls
 import Tiko
 
 MouseArea {
@@ -31,6 +32,7 @@ MouseArea {
     property bool isHover: mouseArea.containsMouse
     property bool isPress: mouseArea.containsPress
     property double bgOpacity: 0
+    property string hoverText: ""
 
     Rectangle {
         anchors.fill: parent
@@ -48,5 +50,11 @@ MouseArea {
         else if (isHover) return 0.08
         return 0
         }
+    }
+
+    ToolTip {
+        visible: mouseArea.containsMouse && mouseArea.hoverText.length > 0
+        text: mouseArea.hoverText
+        delay: 500
     }
 }

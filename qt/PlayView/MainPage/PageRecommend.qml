@@ -10,6 +10,12 @@ ScrollView {
     ScrollBar.vertical: TikoBarV {
     }
 
+    property bool hasRecommendations: recomMusic.visible
+                                        || recomAlbum.visible
+                                        || recomMusicNew.visible
+                                        || recomArtist.visible
+                                        || recomMusicPlay.visible
+
     Column {
         id: showColumn
         width: mainPage.width - 80
@@ -47,6 +53,33 @@ ScrollView {
             id: recomMusicPlay
             width: showColumn.width
             height: childrenRect.height
+        }
+    }
+
+    Column {
+        id: emptyState
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.verticalCenter: parent.verticalCenter
+        anchors.verticalCenterOffset: -mainPage.height * 0.1
+        spacing: TikoSeit.emphasizeMargins
+        visible: !mainPage.hasRecommendations
+
+        TikoButtonIcon {
+            anchors.horizontalCenter: parent.horizontalCenter
+            icon.source: "qrc:/image/seit.png"
+            cell: mainPage.width * 0.2
+            imgCell: cell
+            enabled: false
+        }
+
+        Text {
+            width: mainPage.width * 0.35
+            height: mainPage.height * 0.08
+            text: qsTr("请设置数据来源")
+            color: TikoSeit.theme.colorTextDefault
+            font.pixelSize: Math.max(18, mainPage.width * 0.025)
+            horizontalAlignment: Text.AlignHCenter
+            verticalAlignment: Text.AlignVCenter
         }
     }
 }
