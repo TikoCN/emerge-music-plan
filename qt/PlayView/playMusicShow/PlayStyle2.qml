@@ -1,4 +1,4 @@
-﻿import QtQuick
+import QtQuick
 import PlayView
 import Tiko
 import MediaerAPI
@@ -12,7 +12,7 @@ Item{
     signal setDetailType()
     signal setBgType()
 
-    AudioVsualizationCircle {
+    AudioVisualizationCircle {
         id: canvas
         anchors.fill: style
     }

@@ -33,14 +33,14 @@ qt_add_qml_module(TikoLib
         bar/TikoBarV.qml
 
         button/TikoButtonBase.qml
-        button/TikoButtonCombox.qml
+        button/TikoButtonComboBox.qml
         button/TikoButtonSwitch.qml
         button/TikoButtonIcon.qml
         text/TikoTextInput.qml
         text/TikoTextLine.qml
         menu/TikoMenu.qml
         menu/TikoMenuItem.qml
-        menu/TikoMenuSpeacer.qml
+        menu/TikoMenuSpacer.qml
 
         popup/TikoPopup.qml
         popup/TikoPopupInput.qml

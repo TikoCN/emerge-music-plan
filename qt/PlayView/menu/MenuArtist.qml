@@ -31,7 +31,7 @@ TikoMenu {
         onClicked: MediaPlayer.insertPlayingArtist(artistId)
     }
 
-    TikoMenuSpeacer{}
+    TikoMenuSpacer{}
 
     TikoMenu{
         title: qsTr("添加到...")
@@ -66,7 +66,7 @@ TikoMenu {
         onClicked: openInput()
     }
 
-    TikoMenuSpeacer{}
+    TikoMenuSpacer{}
 
     TikoMenuItem {
         text: qsTr("显示作曲家")

@@ -4,7 +4,7 @@
 #include "MusicRepository.h"
 #include "AlbumRepository.h"
 #include "ArtistRepository.h"
-#include "PlaylistRepository.h"
+#include "PlayListRepository.h"
 #include "QueueRepository.h"
 #include "baseclass/MediaData.h"
 

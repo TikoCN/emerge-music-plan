@@ -1,4 +1,4 @@
-﻿import QtQuick
+import QtQuick
 import PlayView
 import Tiko
 import MediaerAPI
@@ -140,7 +140,7 @@ Item{
             }
         }
 
-        AudioVsualizationRect {
+        AudioVisualizationRect {
             id: canvas
             width: artistItem.width
             height: leftShow.height * 0.15

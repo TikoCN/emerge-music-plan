@@ -40,7 +40,7 @@ TikoMenu{
         text: qsTr("添加到正在下一首播放")
         onClicked: MediaPlayer.insertPlayingListByMusicId(musicId)
     }
-    TikoMenuSpeacer{}
+    TikoMenuSpacer{}
 
     TikoMenuItem{
         text: qsTr("打开文件夹")
@@ -64,7 +64,7 @@ TikoMenu{
         }
     }
 
-    TikoMenuSpeacer{}
+    TikoMenuSpacer{}
 
     TikoMenuItem{
         text: qsTr("复制 文件路径")
@@ -81,7 +81,7 @@ TikoMenu{
         }
     }
 
-    TikoMenuSpeacer{}
+    TikoMenuSpacer{}
 
     TikoMenuItem{
         text: qsTr("编辑音乐信息")
@@ -110,7 +110,7 @@ TikoMenu{
             text: qsTr("从 Baidu搜索 下载 封面")
             onTriggered: OnLine.downCoverBaidu(BaseTool.fileManagement.getFileName(fileUrl), fileUrl);
         }
-        TikoMenuSpeacer{}
+        TikoMenuSpacer{}
         TikoMenuItem{
             text: qsTr("从 网络中下载 歌词")
             onTriggered: OnLine.downLrc(BaseTool.fileManagement.getFileName(fileUrl), fileUrl);
@@ -125,7 +125,7 @@ TikoMenu{
         }
     }
 
-    TikoMenuSpeacer{}
+    TikoMenuSpacer{}
 
     TikoMenu{
         title: qsTr("添加到...")

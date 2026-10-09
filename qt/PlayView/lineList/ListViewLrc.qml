@@ -1,4 +1,4 @@
-﻿import QtQuick
+import QtQuick
 import MediaerAPI
 import Tiko
 import PlayView
@@ -35,7 +35,7 @@ MouseArea {
                 text: qsTr("字体减小")
                 onClicked: Setting.lrcFont.pointSize--
             }
-            TikoMenuSpeacer {}
+            TikoMenuSpacer {}
             TikoMenuItem {
                 text: qsTr("编辑歌词")
                 onClicked: CoreData.editMusic(playerLrcPlaylist, MediaPlayer.playingMusic)

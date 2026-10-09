@@ -42,23 +42,23 @@ qt_add_qml_module(PlayViewLib
         PageSeit/SwitchSeit.qml
         PageSeit/ColorSeit.qml
 
-        View/ViewLeftBar.qml
-        View/ViewBottomBar.qml
-        View/ViewMain.qml
-        View/ViewPlayingList.qml
+        view/ViewLeftBar.qml
+        view/ViewBottomBar.qml
+        view/ViewMain.qml
+        view/ViewPlayingList.qml
 
         Background/BackImageMove.qml
         Background/BackImage.qml
         Background/BackWater.qml
 
-        LineCell/CoreMusicLine.qml
+        lineCell/CoreMusicLine.qml
 
-        Menu/MenuAlbum.qml
-        Menu/MenuPlaylist.qml
-        Menu/MenuArtist.qml
-        Menu/MenuMusic.qml
-        Menu/MenuPlaylistSort.qml
-        Menu/MenuMusicPlaylist.qml
+        menu/MenuAlbum.qml
+        menu/MenuPlaylist.qml
+        menu/MenuArtist.qml
+        menu/MenuMusic.qml
+        menu/MenuPlaylistSort.qml
+        menu/MenuMusicPlaylist.qml
 
         GeneralControls/WindowMin.qml
         GeneralControls/PlayState.qml
@@ -85,8 +85,8 @@ qt_add_qml_module(PlayViewLib
         ToolEditMusicPage/EditPageLrc.qml
         ToolEditMusicPage/ToolDeskLrc.qml
 
-        AudioVisualizationRectangle/AudioVsualizationRect.qml
-        AudioVisualizationRectangle/AudioVsualizationCircle.qml
+        AudioVisualizationRectangle/AudioVisualizationRect.qml
+        AudioVisualizationRectangle/AudioVisualizationCircle.qml
 
         PlayMusicShow/PageMusicPlay.qml
         PlayMusicShow/PlayStyle1.qml
@@ -97,8 +97,8 @@ qt_add_qml_module(PlayViewLib
         ButtonCell/ButtonArtist.qml
         ButtonCell/ButtonAlbum.qml
 
-        LineList/ListViewMusic.qml
-        LineList/ListViewLrc.qml
+        lineList/ListViewMusic.qml
+        lineList/ListViewLrc.qml
 
         LineLrc/CoreLrcLine.qml
         LineLrc/LrcLineNormal.qml

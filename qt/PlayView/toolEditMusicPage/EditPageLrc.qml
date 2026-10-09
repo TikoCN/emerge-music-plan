@@ -1,4 +1,4 @@
-﻿import QtQuick
+import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import Tiko
@@ -18,7 +18,7 @@ Item{
         spacing: 6
         width: 150
 
-        TikoButtonCombox{
+        TikoButtonComboBox{
             width: 150
             data: ["0.1", "0.3", "0.5", "1", "2", "3"]
             currentIndex: 3
@@ -29,7 +29,7 @@ Item{
             }
         }
 
-        TikoButtonCombox{
+        TikoButtonComboBox{
             width: 150
             data: [qsTr("逐字模式"), qsTr("逐词模式")]
             helpText: qsTr("工作模式：")

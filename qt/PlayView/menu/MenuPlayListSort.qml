@@ -1,4 +1,4 @@
-﻿import Tiko
+import Tiko
 import MediaerAPI
 import QtQuick
 import DataType
@@ -48,7 +48,7 @@ TikoMenu{
         }
     }
 
-    TikoMenuSpeacer{}
+    TikoMenuSpacer{}
     TikoMenuItem{
         text: qsTr("升序");
         onTriggered: menuPlaylistSort.sortMusic(menuPlaylistSort.type, 0)

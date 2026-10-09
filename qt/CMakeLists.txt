@@ -44,7 +44,7 @@ qt_add_qml_module(appmusicPlay
         sqlite/MusicRepository.h sqlite/MusicRepository.cpp
         sqlite/AlbumRepository.h sqlite/AlbumRepository.cpp
         sqlite/ArtistRepository.h sqlite/ArtistRepository.cpp
-        sqlite/PlaylistRepository.h sqlite/PlaylistRepository.cpp
+        sqlite/PlayListRepository.h sqlite/PlayListRepository.cpp
 
         baseclass/DataException.h
         baseclass/Album.h baseclass/Album.cpp

@@ -32,7 +32,7 @@ TikoMenu {
         onClicked: MediaPlayer.insertPlayingAlbum(albumId)
     }
 
-    TikoMenuSpeacer{}
+    TikoMenuSpacer{}
 
     TikoMenu{
         title: qsTr("添加到...")
@@ -67,7 +67,7 @@ TikoMenu {
         onClicked: openInput()
     }
 
-    TikoMenuSpeacer{}
+    TikoMenuSpacer{}
 
     TikoMenuItem {
         text: qsTr("显示专辑")

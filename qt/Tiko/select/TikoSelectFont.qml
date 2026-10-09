@@ -50,7 +50,7 @@ Rectangle {
             horizontalAlignment: Text.AlignHCenter
         }
 
-        TikoButtonCombox {
+        TikoButtonComboBox {
             data: Qt.fontFamilies()
             width: parent.width * 0.6
             height: lineHeight
