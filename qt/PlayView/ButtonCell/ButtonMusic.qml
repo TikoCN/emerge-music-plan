@@ -14,7 +14,7 @@ ButtonBase {
     loadIcon: "image://cover/musicFile?id=" +
               model.id.toString() +
               "&radius=10"
-    normalIcon: "qrc:/image/music.png"
+    normalIcon: "qrc:/image/music.svg"
 
     onMenu: createMenu(this)
     onPage: playMusic()

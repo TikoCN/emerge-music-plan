@@ -12,7 +12,7 @@ PageBase{
     name: ""
     musicCount: 0
 
-    normalIcon: "qrc:/image/artist.png"
+    normalIcon: "qrc:/image/artist.svg"
     loadIcon: "image://cover/artistFile?id=" +
               artistId.toString() +
               "&radius=10"

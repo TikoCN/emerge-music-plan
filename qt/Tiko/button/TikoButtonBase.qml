@@ -7,7 +7,9 @@ MouseArea {
     hoverEnabled: true
     acceptedButtons: Qt.LeftButton | Qt.RightButton
     onClicked: (mouse)=>{
-                   check = !check
+                   if (mouse.button === Qt.LeftButton && checkable) {
+                       checked = !checked
+                   }
                    anyClicked()
 
                    if (propagateComposedEvents) {
@@ -28,11 +30,13 @@ MouseArea {
     signal leftClicked()
     signal anyClicked()
 
-    property bool check: false
+    property bool checkable: false
+    property bool checked: false
     property bool isHover: mouseArea.containsMouse
     property bool isPress: mouseArea.containsPress
     property double bgOpacity: 0
     property string hoverText: ""
+    property color checkedColor: TikoSeit.theme.colorHighlight
 
     Rectangle {
         anchors.fill: parent

@@ -43,29 +43,49 @@ Item {
             spacing: TikoSeit.normalMargins
 
             Repeater {
+                id: iconRepeater
                 delegate: TikoButtonIcon {
                     height: width * 0.6
                     width: (toolItem.width - TikoSeit.normalMargins) / 2
                     id: iconButton
+                    property int itemIndex: index
+                    checkable: true
+                    checked: CoreData.fixedPageIndex === itemIndex
                     icon.source: modelData.icon
                     icon.width: 32
                     icon.height: icon.width
                     bgOpacity: 0
                     onClicked: {
-                        setRectBgParent(iconButton)
-                        modelData.click()
+                        switch (itemIndex) {
+                        case 0:
+                            CoreData.stackDetail()
+                            break
+                        case 1:
+                            CoreData.stackLibrary()
+                            break
+                        case 2:
+                            CoreData.stackSeit()
+                            break
+                        case 3:
+                            CoreData.stackRcommend()
+                            break
+                        }
                     }
                 }
 
                 model: [
-                    {icon: "qrc:/image/home.png", click: CoreData.stackDetail},
-                    {icon: "qrc:/image/album.png", click: CoreData.stackLibrary},
-                    {icon: "qrc:/image/seit.png", click: CoreData.stackSeit},
-                    {icon: "qrc:/image/seit.png", click: CoreData.stackRcommend}
+                    {icon: "qrc:/image/home.svg"},
+                    {icon: "qrc:/image/album.svg"},
+                    {icon: "qrc:/image/seit.svg"},
+                    {icon: "qrc:/image/recommend.svg"}
                 ]
             }
         }
 
+        Connections {
+            target: CoreData
+            function onFixedPageChanged() { setIconSelection(CoreData.fixedPageIndex) }
+        }
 
         ColumnLayout {
             anchors.top: toolItem.bottom
@@ -76,7 +96,7 @@ Item {
             TikoButtonDefault{
                 id: addPlaylistButton
                 textLine.text: qsTr("新建列表")
-                icon.source: "qrc:/image/new.png"
+                icon.source: "qrc:/image/new.svg"
                 onLeftClicked: inputName.open()
                 height: 30
                 bgOpacity: 0
@@ -152,6 +172,13 @@ Item {
 
     function setRectBgParent(parent) {
         moveBgItem.parent = parent
+    }
+
+    function setIconSelection(index) {
+        var iconButton = iconRepeater.itemAt(index)
+        if (iconButton !== null) {
+            setRectBgParent(iconButton)
+        }
     }
 
     function openPlaylistMenu(playlistId, isDir, name){

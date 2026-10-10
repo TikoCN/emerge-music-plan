@@ -11,6 +11,7 @@ ListView{
     spacing: 15
     clip: true
     reuseItems: true
+    bottomMargin: 120
     ScrollBar.vertical: TikoBarV{}
 
     property bool isLittle: false

@@ -73,22 +73,23 @@ Item {
         anchors.right: nextMusicUp.left
         anchors.rightMargin: TikoSeit.emphasizeMargins
         anchors.verticalCenter: parent.verticalCenter
-        icon.source: "qrc:/image/loop" + MediaPlayer.loopType + ".png"
+        icon.source: "qrc:/image/loop" + MediaPlayer.loopType + ".svg"
         //text: qsTr("设置循环模式")
         onClicked: {
-            var pop = loopSelectCom.createObject()
+            var pop = loopSelectCom.createObject(null)
             pop.open()
         }
 
         Component {
             id: loopSelectCom
-            TikoPopup {
+            TikoFloat {
                 id: loopSelect
-                parent: loopButton
-                y: - height
-                x: (-width + loopButton.width) / 2
+                parent: loopButton.Window.window.contentItem
+                direction: "bottom"
+                x: loopButton.mapToItem(loopButton.Window.window.contentItem, 0, 0).x + (loopButton.width - width) / 2
+                y: loopButton.mapToItem(loopButton.Window.window.contentItem, 0, 0).y - height
                 width: 140
-                height: loopColumnLayout.height + TikoSeit.normalMargins * 2
+                height: loopColumnLayout.height + TikoSeit.normalMargins * 2 + pointerSize
 
                 ColumnLayout {
                     id: loopColumnLayout
@@ -101,15 +102,15 @@ Item {
                             icon.source: modelData.icon
                             onLeftClicked: {
                                 MediaPlayer.loopType = modelData.type
-                                loopSelect.destroy()
+                                loopSelect.close()
                             }
-                            width: parent.width
+                            width: loopSelect.width - TikoSeit.normalMargins * 2
                         }
 
                         model: [
-                            {text: qsTr("顺序播放"), type: 0, icon: "qrc:/image/loop0.png"},
-                            {text: qsTr("随机循环"), type: 1, icon: "qrc:/image/loop1.png"},
-                            {text: qsTr("单曲循环"), type: 2, icon: "qrc:/image/loop2.png"}
+                            {text: qsTr("顺序播放"), type: 0, icon: "qrc:/image/loop0.svg"},
+                            {text: qsTr("随机循环"), type: 1, icon: "qrc:/image/loop1.svg"},
+                            {text: qsTr("单曲循环"), type: 2, icon: "qrc:/image/loop2.svg"}
                         ]
                     }
                 }
@@ -123,7 +124,7 @@ Item {
         anchors.right: playerControl.left
         anchors.rightMargin: TikoSeit.normalMargins
         anchors.verticalCenter: parent.verticalCenter
-        icon.source: "qrc:/image/up.png"
+        icon.source: "qrc:/image/up.svg"
         onClicked: MediaPlayer.playNext(-1)
         //text: qsTr("播放上一首歌曲")
         level: 0
@@ -134,7 +135,7 @@ Item {
         x: parent.width / 2 - width / 2
         anchors.verticalCenter: parent.verticalCenter
         id: playerControl
-        icon.source: MediaPlayer.player.playing ? "qrc:/image/stop.png" : "qrc:/image/play.png"
+        icon.source: MediaPlayer.player.playing ? "qrc:/image/stop.svg" : "qrc:/image/play.svg"
         onClicked: MediaPlayer.player.playing ? MediaPlayer.player.pause() : MediaPlayer.player.play()
         //text: MediaPlayer.player.playing ? qsTr("暂停") : qsTr("播放")
         level: 0
@@ -146,7 +147,7 @@ Item {
         anchors.left: playerControl.right
         anchors.leftMargin: TikoSeit.normalMargins
         anchors.verticalCenter: parent.verticalCenter
-        icon.source: "qrc:/image/down.png"
+        icon.source: "qrc:/image/down.svg"
         onClicked: MediaPlayer.playNext(1)
         //text: qsTr("播放下一首歌曲")
         level: 0
@@ -158,27 +159,40 @@ Item {
         anchors.left: nextMusicDown.right
         anchors.leftMargin: TikoSeit.emphasizeMargins
         anchors.verticalCenter: parent.verticalCenter
-        icon.source: "qrc:/image/value.png"
-        onClicked: volumePopup.open()
+        icon.source: "qrc:/image/value.svg"
+        onClicked: {
+            if (volumePopup === null) {
+                volumePopup = volumePopupCom.createObject(null)
+            }
+            volumePopup.open()
+        }
         level: 0
         //text: qsTr("控制音量")
 
-        TikoPopup {
-            id: volumePopup
-            parent: playVolume
-            y: -parent.height - height
-            x: -width / 2 + parent.width / 2
-            height: 200
-            width: 35
-            padding: 10
+        property TikoFloat volumePopup: null
 
-            contentItem: TikoSliderV {
-                from: 0
-                to: 100
-                value: MediaPlayer.audioOutput.volume * 100
-                onMoved: MediaPlayer.audioOutput.volume = value / 100
-                orientation: Qt.Vertical
-                radius: 6
+        Component {
+            id: volumePopupCom
+
+            TikoFloat {
+                parent: playVolume.Window.window.contentItem
+                direction: "bottom"
+                x: playVolume.mapToItem(playVolume.Window.window.contentItem, 0, 0).x + (playVolume.width - width) / 2
+                y: playVolume.mapToItem(playVolume.Window.window.contentItem, 0, 0).y - height
+                height: 200
+                width: 72
+
+                TikoSliderV {
+                    anchors.fill: parent
+                    anchors.margins: 8
+                    from: 0
+                    to: 100
+                    value: MediaPlayer.audioOutput.volume * 100
+                    onMoved: MediaPlayer.audioOutput.volume = value / 100
+                    orientation: Qt.Vertical
+                    radius: 6
+                    size: 0.3
+                }
             }
         }
     }
@@ -189,8 +203,9 @@ Item {
         anchors.right: playingListTabel.left
         anchors.rightMargin: TikoSeit.emphasizeMargins
         anchors.verticalCenter: parent.verticalCenter
-        icon.source: "qrc:/image/lrc.png"
+        icon.source: "qrc:/image/lrc.svg"
         level: 0
+        checked: deskLrcWindow !== null
         //icon.dynamicState.isHighlight: (deskLrcWindow !== null)
         //text: qsTr("桌面歌词")
         onAnyClicked: {
@@ -218,7 +233,7 @@ Item {
         anchors.right: parent.right
         anchors.rightMargin: TikoSeit.emphasizeMargins
         anchors.verticalCenter: parent.verticalCenter
-        icon.source: "qrc:/image/list.png"
+        icon.source: "qrc:/image/list.svg"
         level: 0
         //text: qsTr("播放列表")
 

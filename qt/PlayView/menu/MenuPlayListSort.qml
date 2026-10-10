@@ -43,7 +43,7 @@ TikoMenu{
         delegate: TikoMenuItem{
             text: typeText
             onTriggered: menuPlaylistSort.sortMusic(typeData, menuPlaylistSort.forword)
-            icon.source: typeData === menuPlaylistSort.type ? "qrc:/image/sort.png" : ""
+            icon.source: typeData === menuPlaylistSort.type ? "qrc:/image/sort.svg" : ""
             property int type: typeData
         }
     }
@@ -52,12 +52,12 @@ TikoMenu{
     TikoMenuItem{
         text: qsTr("升序");
         onTriggered: menuPlaylistSort.sortMusic(menuPlaylistSort.type, 0)
-        icon.source: 0 === menuPlaylistSort.forword ? "qrc:/image/sort.png" : ""
+        icon.source: 0 === menuPlaylistSort.forword ? "qrc:/image/sort.svg" : ""
     }
     TikoMenuItem{
         text: qsTr("降序");
         onTriggered: menuPlaylistSort.sortMusic(menuPlaylistSort.type, 1)
-        icon.source: 1 === menuPlaylistSort.forword ? "qrc:/image/sort.png" : ""
+        icon.source: 1 === menuPlaylistSort.forword ? "qrc:/image/sort.svg" : ""
     }
 
     function sortMusic(key, forword){

@@ -21,6 +21,11 @@ set_source_files_properties(TikoSeit.qml
         QT_QML_SINGLETON_TYPE true
 )
 
+set_source_files_properties(popup/TikoFloatManager.qml
+        PROPERTIES
+        QT_QML_SINGLETON_TYPE true
+)
+
 qt_policy(SET QTP0004 NEW)
 
 # 添加 QML 模块
@@ -44,6 +49,8 @@ qt_add_qml_module(TikoLib
 
         popup/TikoPopup.qml
         popup/TikoPopupInput.qml
+        popup/TikoFloat.qml
+        popup/TikoFloatManager.qml
 
         slider/TikoSliderH.qml
         slider/TikoSliderV.qml

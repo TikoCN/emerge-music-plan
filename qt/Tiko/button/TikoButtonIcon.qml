@@ -31,6 +31,7 @@ TikoButtonBase {
         anchors.centerIn: parent
         width: imgCell
         height: imgCell
+        unifiedColor: iconButton.checked ? iconButton.checkedColor : TikoSeit.theme.colorFgDefault
     }
 
     SequentialAnimation {

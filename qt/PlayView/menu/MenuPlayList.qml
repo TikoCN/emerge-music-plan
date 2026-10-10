@@ -29,7 +29,7 @@ TikoMenu{
 
     TikoMenu{
         title: qsTr("添加到...")
-        icon.source: "qrc:/image/move.png"
+        icon.source: "qrc:/image/move.svg"
 
         Repeater{
             delegate: addMenu

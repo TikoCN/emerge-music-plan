@@ -28,7 +28,7 @@ TikoMenu{
     TikoMenuItem {
         text: qsTr("播放")
         onClicked: MediaPlayer.buildPlayingListByMusicId(musicId)
-        icon.source: "qrc:/image/play.png"
+        icon.source: "qrc:/image/play.svg"
     }
 
     TikoMenuItem {
@@ -48,7 +48,7 @@ TikoMenu{
             const url = BaseTool.fileManagement.getParentDir(fileUrl);
             BaseTool.fileManagement.deskOpenFile(url)
         }
-        icon.source: "qrc:/image/dir.png"
+        icon.source: "qrc:/image/dir.svg"
     }
 
     TikoMenuItem{
@@ -129,7 +129,7 @@ TikoMenu{
 
     TikoMenu{
         title: qsTr("添加到...")
-        icon.source: "qrc:/image/move.png"
+        icon.source: "qrc:/image/move.svg"
 
         Repeater{
             delegate: addMenu

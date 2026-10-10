@@ -35,8 +35,11 @@ TikoRightVessel{
             delegate: TikoButtonSwitch{
                 width: 300
                 textLine.text: modelData.text
-                check: Setting[modelData.prop]
-                onClicked: Setting[modelData.prop] = !Setting[modelData.prop]
+                checkable: true
+                checked: Setting[modelData.prop]
+                onAnyClicked: {
+                    Setting[modelData.prop] = !Setting[modelData.prop]
+                }
             }
         }
     }

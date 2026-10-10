@@ -21,8 +21,8 @@ Item {
 
         Repeater {
             model: [
-                {name:"专辑", icon:"qrc:/image/album.png", click: stackAlbum},
-                {name:"歌手", icon:"qrc:/image/artist.png", click: stackArtist},
+                {name:"专辑", icon:"qrc:/image/album.svg", click: stackAlbum},
+                {name:"歌手", icon:"qrc:/image/artist.svg", click: stackArtist},
                 {name:"音乐", icon:"qrc:/image/cover.png", click: stackMusic}
             ]
 

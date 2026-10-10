@@ -28,7 +28,7 @@ Item {
         anchors.right: parent.right
         anchors.top: parent.top
         anchors.margins: TikoSeit.normalMargins
-        icon.source: "qrc:/image/close.png"
+        icon.source: "qrc:/image/close.svg"
         onClicked: CoreData.windowClose()
         level: 0
         //qsTr("关闭")
@@ -39,7 +39,7 @@ Item {
         anchors.right: closeButton.left
         anchors.top: closeButton.top
         anchors.rightMargin: TikoSeit.normalMargins
-        icon.source: CoreData.windows.visibility === 4 ? "qrc:/image/normal.png" : "qrc:/image/max.png"
+        icon.source: CoreData.windows.visibility === 4 ? "qrc:/image/normal.svg" : "qrc:/image/max.svg"
         //qsTr("最大化")
         onClicked: CoreData.windowShowMax()
         level: 0
@@ -50,7 +50,7 @@ Item {
         anchors.top: closeButton.top
         anchors.right: maxButton.left
         anchors.rightMargin: TikoSeit.normalMargins
-        icon.source: "qrc:/image/min.png"
+        icon.source: "qrc:/image/min.svg"
         onClicked: CoreData.windowShowMin()
         level: 0
         //qsTr("最小化")
@@ -138,6 +138,8 @@ Item {
         if(stackView.currentItem != pageSeit){
             stackView.replace(pageSeit)
         }
+        CoreData.fixedPageIndex = 2
+        CoreData.fixedPageChanged()
     }
 
     function stackArtist(artistId){
@@ -169,6 +171,8 @@ Item {
         if(stackView.currentItem != pageLib){
             stackView.replace(pageLib)
         }
+        CoreData.fixedPageIndex = 1
+        CoreData.fixedPageChanged()
     }
 
     function stackAlbum(albumId){
@@ -200,6 +204,8 @@ Item {
         if(stackView.currentItem != pageRecom){
             stackView.replace(pageRecom)
         }
+        CoreData.fixedPageIndex = 3
+        CoreData.fixedPageChanged()
     }
 
     function stackDetail(){
@@ -216,6 +222,8 @@ Item {
         if(stackView.currentItem != pageDetail){
             stackView.replace(pageDetail)
         }
+        CoreData.fixedPageIndex = 0
+        CoreData.fixedPageChanged()
     }
 
     Component.onCompleted: {
@@ -226,5 +234,7 @@ Item {
         CoreData.stackArtist.connect(stackArtist)
         CoreData.stackPlaylist.connect(stackPlaylist)
         CoreData.stackDetail.connect(stackDetail)
+
+        CoreData.stackRcommend()
     }
 }

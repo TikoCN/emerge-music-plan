@@ -42,7 +42,7 @@ Item {
                 id: cover
                 width: 50
                 height: 50
-                normalUrl: "qrc:/image/music.png"
+                normalUrl: "qrc:/image/music.svg"
                 baseUrl: "image://cover/musicFile?id=" +
                          model.id.toString() +
                          "&radius=10"
@@ -90,7 +90,7 @@ Item {
                             height: parent.height
                             onClicked: MusicLibrary.updateLove(model.id, !model.isLove)
                             icon.source: model.isLove ?
-                                             "qrc:/image/love.png" : "qrc:/image/unlove.png"
+                                             "qrc:/image/love.svg" : "qrc:/image/unlove.svg"
                         }
 
                         Row{
@@ -104,7 +104,7 @@ Item {
                                     height: 50
                                     onClicked: MusicLibrary.updateLevel(model.id, level)
                                     icon.source: model.level >= level ?
-                                                     "qrc:/image/int.png" : "qrc:/image/unInt.png"
+                                                     "qrc:/image/int.svg" : "qrc:/image/unInt.svg"
                                 }
                                 model: ListModel{
                                     ListElement{level: 1}
@@ -119,7 +119,7 @@ Item {
                             width: 30
                             height: parent.height
                             onClicked: createMenu(musicLine)
-                            icon.source: "qrc:/image/more.png"
+                            icon.source: "qrc:/image/more.svg"
                         }
                     }
                 }

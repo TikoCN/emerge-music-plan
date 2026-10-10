@@ -71,7 +71,7 @@ TikoRightVessel {
                     anchors.right: parent.right
                     anchors.rightMargin: TikoSeit.subitemSpace
                     anchors.verticalCenter: parent.verticalCenter
-                    icon.source: "qrc:/image/close.png"
+                    icon.source: "qrc:/image/close.svg"
                     level: 0
                     onClicked: {
                         Setting.removeUrl(url)

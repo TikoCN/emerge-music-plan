@@ -6,6 +6,7 @@ import MediaerAPI
 
 ScrollView {
     id: mainPage
+    contentHeight: Math.max(availableHeight, showColumn.implicitHeight + 120)
     ScrollBar.horizontal.visible: false
     ScrollBar.vertical: TikoBarV {
     }
@@ -66,7 +67,7 @@ ScrollView {
 
         TikoButtonIcon {
             anchors.horizontalCenter: parent.horizontalCenter
-            icon.source: "qrc:/image/seit.png"
+            icon.source: "qrc:/image/recommend.svg"
             cell: mainPage.width * 0.2
             imgCell: cell
             enabled: false

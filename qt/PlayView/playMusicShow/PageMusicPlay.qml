@@ -106,7 +106,7 @@ MouseArea {
             cellHeight: cellWidth
 
             delegate: TikoButtonIcon {
-                icon.source: "qrc:/image/album.png"
+                icon.source: "qrc:/image/album.svg"
                 icon.width: width
                 icon.height: height
                 width: gridView.cellWidth - TikoSeit.emphasizeMargins

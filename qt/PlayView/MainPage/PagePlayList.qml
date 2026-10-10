@@ -14,7 +14,7 @@ PageBase {
     name: ""
     musicCount: 0
 
-    normalIcon: "qrc:/image/list.png"
+    normalIcon: "qrc:/image/list.svg"
     loadIcon: "image://cover/playlistFile?id=" +
               playlistId.toString() +
               "&radius=10"

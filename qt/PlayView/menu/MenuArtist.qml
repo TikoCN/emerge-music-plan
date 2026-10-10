@@ -18,7 +18,7 @@ TikoMenu {
     TikoMenuItem {
         text: qsTr("播放")
         onClicked: MediaPlayer.buildPlayingArtist(artistId)
-        icon.source: "qrc:/image/play.png"
+        icon.source: "qrc:/image/play.svg"
     }
 
     TikoMenuItem {
@@ -35,7 +35,7 @@ TikoMenu {
 
     TikoMenu{
         title: qsTr("添加到...")
-        icon.source: "qrc:/image/move.png"
+        icon.source: "qrc:/image/move.svg"
 
         Repeater{
             delegate: addMenu

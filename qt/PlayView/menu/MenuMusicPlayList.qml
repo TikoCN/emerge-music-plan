@@ -7,7 +7,7 @@ MenuMusic {
 
     TikoMenu{
         title: qsTr("移动到")
-        icon.source: "qrc:/image/move.png"
+        icon.source: "qrc:/image/move.svg"
         enabled: playlistId !== -1
 
         Repeater{

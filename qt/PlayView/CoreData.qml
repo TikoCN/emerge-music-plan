@@ -18,6 +18,8 @@ QtObject {
     signal stackAlbum(int album)
     signal stackArtist(int artist)
     signal stackDetail()
+    signal fixedPageChanged()
+    property int fixedPageIndex: -1
     signal sendMsg(string msg, int type)
     signal clearData()
     signal sendErrorMsg(string msg)

@@ -6,7 +6,7 @@ import PlayView
 TikoButtonIcon {
     id: close
     //text: qsTr("关闭")
-    icon.source: "qrc:/image/close.png"
+    icon.source: "qrc:/image/close.svg"
     onClicked: CoreData.windowClose()
     level: 0
 }

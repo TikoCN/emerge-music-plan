@@ -14,6 +14,7 @@ GridView {
     height: 50
     flow: GridView.TopToBottom
     clip: true
+    bottomMargin: 120
     currentIndex: 0
     reuseItems: true
     highlightRangeMode: ListView.StrictlyEnforceRange

@@ -32,7 +32,7 @@ TikoFrameless {
             anchors.left: tool.left
             textLine.text: qsTr("编辑歌词")
             onLeftClicked: toolEditMusic.stackEditLrcPage()
-            icon.source: "qrc:/image/editLrc.png"
+            icon.source: "qrc:/image/editLrc.svg"
         }
 
         TikoButtonDefault{
@@ -40,12 +40,12 @@ TikoFrameless {
             anchors.leftMargin: 10
             textLine.text: qsTr("编辑音乐")
             onLeftClicked: toolEditMusic.stackEditMusicPage()
-            icon.source: "qrc:/image/editMusic.png"
+            icon.source: "qrc:/image/editMusic.svg"
         }
 
         TikoButtonIcon{
             anchors.right: parent.right
-            icon.source: "qrc:/image/close.png"
+            icon.source: "qrc:/image/close.svg"
             onClicked: toolEditMusic.destroy()
         }
     }

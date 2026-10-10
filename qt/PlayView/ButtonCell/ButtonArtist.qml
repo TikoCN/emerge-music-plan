@@ -9,7 +9,7 @@ ButtonBase {
     name: model.name
     subtitle: BaseTool.typeConversion.timeToString(Number(model.duration))
 
-    normalIcon: "qrc:/image/artist.png"
+    normalIcon: "qrc:/image/artist.svg"
     loadIcon: "image://cover/artistFile?id=" +
               model.id.toString() +
               "&radius=10"

@@ -6,7 +6,7 @@ import PlayView
 TikoButtonIcon {
     id: max
     //text: qsTr("最大化")
-    icon.source: "qrc:/image/max.png"
+    icon.source: "qrc:/image/max.svg"
     onClicked: CoreData.windowShowMax()
     level: 0
 }

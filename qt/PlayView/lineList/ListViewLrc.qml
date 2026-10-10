@@ -26,12 +26,12 @@ MouseArea {
             onClosed: menu.destroy()
 
             TikoMenuItem {
-                icon.source: "qrc:/image/size+.png"
+                icon.source: "qrc:/image/size+.svg"
                 text: qsTr("字体加大")
                 onClicked: Setting.lrcFont.pointSize++
             }
             TikoMenuItem {
-                icon.source: "qrc:/image/size+.png"
+                icon.source: "qrc:/image/size+.svg"
                 text: qsTr("字体减小")
                 onClicked: Setting.lrcFont.pointSize--
             }

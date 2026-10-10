@@ -55,5 +55,11 @@ ScrollView{
             Layout.preferredWidth: seitPage.itemWidth
             titleButton.textLine.width: seitPage.modeTextWidth
         }
+
+        Item {
+            Layout.fillWidth: true
+            Layout.preferredHeight: 120
+        }
     }
+
 }

@@ -11,11 +11,11 @@ TikoButtonBase {
     property int unuseX: box.spacer
     property double fontOpacity: 0.3
 
-    onCheckChanged: {
+    onCheckedChanged: {
         activeTrueAnim.stop()
         activeFalseAnim.stop()
 
-        if (check) {
+        if (checked) {
             activeTrueAnim.start()
         } else {
             activeFalseAnim.start()
@@ -83,7 +83,7 @@ TikoButtonBase {
         anchors.leftMargin: 10
         height: switchButton.height
         width: switchButton.width - box.width - TikoSeit.emphasizeMargins
-        opacity: check ? 1 : fontOpacity
+        opacity: checked ? 1 : fontOpacity
         text: "TikoButtonSwitch"
     }
 }

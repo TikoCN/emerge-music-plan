@@ -32,7 +32,7 @@ Item{
             width: min
             height: min
             baseUrl: style.icon
-            normalUrl: "qrc:/image/music.png"
+            normalUrl: "qrc:/image/music.svg"
             property double min: Math.min(leftShow.height * 0.5, leftShow.width * 0.8)
         }
 
@@ -65,7 +65,7 @@ Item{
             TikoButtonIcon {
                 id: playUp
                 anchors.verticalCenter: parent.verticalCenter
-                icon.source: "qrc:/image/up.png"
+                icon.source: "qrc:/image/up.svg"
                 onClicked: MediaPlayer.playNext(-1)
                 //text: qsTr("播放上一首歌曲")
                 level: 0
@@ -74,7 +74,7 @@ Item{
             TikoButtonIcon {
                 id: playControlButton
                 anchors.verticalCenter: parent.verticalCenter
-                icon.source: MediaPlayer.player.playing ? "qrc:/image/stop.png" : "qrc:/image/play.png"
+                icon.source: MediaPlayer.player.playing ? "qrc:/image/stop.svg" : "qrc:/image/play.svg"
                 onClicked: MediaPlayer.player.playing ? MediaPlayer.player.pause() : MediaPlayer.player.play()
                 //text: MediaPlayer.player.playing ? qsTr("暂停") : qsTr("播放")
                 level: 0
@@ -83,7 +83,7 @@ Item{
             TikoButtonIcon {
                 id: playDown
                 anchors.verticalCenter: parent.verticalCenter
-                icon.source: "qrc:/image/down.png"
+                icon.source: "qrc:/image/down.svg"
                 onClicked: MediaPlayer.playNext(1)
                 //text: qsTr("播放下一首歌曲")
                 level: 0

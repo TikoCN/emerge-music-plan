@@ -69,7 +69,7 @@ Item {
             TikoButtonDefault{
                 Layout.minimumWidth: 70
                 textLine.text: qsTr("歌曲") + musicCount.toString()
-                icon.source: "qrc:/image/music.png"
+                icon.source: "qrc:/image/music.svg"
                 onLeftClicked: {
                     musicListView.reset()
                 }
@@ -79,7 +79,7 @@ Item {
             TikoButtonDefault{
                 Layout.minimumWidth: 70
                 textLine.text: qsTr("喜爱")
-                icon.source: "qrc:/image/love.png"
+                icon.source: "qrc:/image/love.svg"
                 onLeftClicked: {
                     musicListView.onlyLove = !musicListView.onlyLove
                     musicListView.reset()
@@ -91,7 +91,7 @@ Item {
                 Layout.minimumWidth: 70
                 onLeftClicked: sort()
                 textLine.text: qsTr("排序")
-                icon.source: "qrc:/image/sort.png"
+                icon.source: "qrc:/image/sort.svg"
 
                 Component {
                     id: sortMenuComponent

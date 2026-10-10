@@ -9,12 +9,20 @@ TikoButtonBase {
     height: 50
     property TikoImage icon: iconItem
     property TikoTextLine textLine: textLineItem
+    property bool hideEmptyIcon: true
+
+    onHideEmptyIconChanged: updateIconVisibility()
+
+    function updateIconVisibility() {
+        iconItem.visible = !hideEmptyIcon || iconItem.source.toString().length > 0
+    }
 
     TikoImage {
         id: iconItem
         anchors.left: parent.left
         anchors.leftMargin: TikoSeit.subitemSpace
         anchors.verticalCenter: parent.verticalCenter
+        onSourceChanged: normalButton.updateIconVisibility()
     }
 
     TikoTextLine {
