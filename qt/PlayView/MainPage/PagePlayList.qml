@@ -34,11 +34,14 @@ PageBase {
     }
 
     musicList.onPlay: (musicId, listId) => {
-                          MediaPlayer.buildPlayingPlaylist(playlistId, listId)
+                          MediaPlayer.buildPlayingPlaylist(playlistId, listId, sort)
                       }
+
+    musicList.playlistId: playerPlaylist.playlistId
 
     musicList.model: MusicModel {
         id: musicModel
         type: MusicModel.PlaylistModel
+        sort: playerPlaylist.sort
     }
 }

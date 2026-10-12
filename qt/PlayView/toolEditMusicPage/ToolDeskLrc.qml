@@ -30,7 +30,7 @@ Window{
         layer.effect: MultiEffect {
             shadowEnabled: true
             shadowBlur: 0.5
-            shadowColor: TikoSeit.theme.colorBgHint
+            shadowColor: TikoSeit.theme.colorMaxTop
             shadowHorizontalOffset: 0
             shadowVerticalOffset: 0
         }

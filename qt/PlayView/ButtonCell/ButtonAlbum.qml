@@ -14,7 +14,7 @@ ButtonBase {
               model.id.toString() +
               "&radius=10"
     onPage: CoreData.stackAlbum(model.id)
-    onMenu: createMenu(this)
+    onMenu: position => createMenu(this, position)
     onPlay: MediaPlayer.buildPlayingListByMusicList(musicList)
 
     Component {
@@ -26,10 +26,10 @@ ButtonBase {
         }
     }
 
-    function createMenu(parent){
+    function createMenu(parent, position){
         if (menuComponent.status === Component.Ready){
             let menu = menuComponent.createObject(parent)
-            menu.popup()
+            menu.popupAt(parent, position.x, position.y)
         }
         else
             console.log(menuComponent.errorString())

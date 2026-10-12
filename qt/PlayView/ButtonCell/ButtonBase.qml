@@ -7,14 +7,14 @@ import PlayView
 TikoButtonBase {
     id: mouseArea
     onLeftClicked: page()
-    onRightClicked: menu()
+    onRightClicked: position => menu(position)
     implicitHeight: childrenRect.height
     property string name: ""
     property string normalIcon: ""
     property string loadIcon: ""
     property string subtitle: ""
 
-    signal menu() // 菜单
+    signal menu(point position) // 菜单
     signal page() // 跳到页面
     signal play() // 播放
 

@@ -49,7 +49,6 @@ Item {
                     width: (toolItem.width - TikoSeit.normalMargins) / 2
                     id: iconButton
                     property int itemIndex: index
-                    checkable: true
                     checked: CoreData.fixedPageIndex === itemIndex
                     icon.source: modelData.icon
                     icon.width: 32
@@ -97,30 +96,9 @@ Item {
                 id: addPlaylistButton
                 textLine.text: qsTr("新建列表")
                 icon.source: "qrc:/image/new.svg"
-                onLeftClicked: inputName.open()
+                onLeftClicked: openInputWindow()
                 height: 30
                 bgOpacity: 0
-
-                TikoPopupInput {
-                    anchors.centerIn: Overlay.overlay
-                    id: inputName
-                    title: qsTr("新建列表，请输入列表名")
-                    onAccept: {
-                        if (inputText === "") {
-                            CoreData.sendErrorMsg("列表名不能为空")
-                            return
-                        }
-
-                        if (PlaylistLibrary.allowName(inputText)) {
-                            PlaylistLibrary.appendUser(inputText)
-                            inputName.setNormalText()
-                            playlistModel.clear()
-                        }
-                        else {
-                            CoreData.sendErrorMsg("列表名不可用")
-                        }
-                    }
-                }
             }
 
 
@@ -138,7 +116,7 @@ Item {
                             CoreData.stackPlaylist(model.id)
                             setRectBgParent(norMalButton)
                         }
-                        onRightClicked: openPlaylistMenu(model.id, model.isDir, model.name)
+                        onRightClicked: position => openPlaylistMenu(model.id, model.isDir, model.name, norMalButton, position)
                         height: 30
                         bgOpacity: 0
                     }
@@ -157,6 +135,29 @@ Item {
     Component{
         id: editMusicListMenu
         MenuPlaylist {
+        }
+    }
+
+    property var inputWindow: null
+
+    Component {
+        id: inputWindowComponent
+        TikoInputWindow {
+            title: qsTr("新建列表，请输入列表名")
+            onAccept: {
+                if (inputText === "") {
+                    CoreData.sendErrorMsg("列表名不能为空")
+                    return
+                }
+
+                if (PlaylistLibrary.allowName(inputText)) {
+                    PlaylistLibrary.appendUser(inputText)
+                    setNormalText()
+                    playlistModel.clear()
+                } else {
+                    CoreData.sendErrorMsg("列表名不可用")
+                }
+            }
         }
     }
 
@@ -181,14 +182,27 @@ Item {
         }
     }
 
-    function openPlaylistMenu(playlistId, isDir, name){
+    function openInputWindow() {
+        if (inputWindow === null) {
+            const ownerWindow = root.Window.window
+            inputWindow = inputWindowComponent.createObject(null, {
+                x: ownerWindow.x + (ownerWindow.width - 600) / 2,
+                y: ownerWindow.y + (ownerWindow.height - 400) / 2
+            })
+        }
+        if (inputWindow !== null) {
+            inputWindow.open()
+        }
+    }
+
+    function openPlaylistMenu(playlistId, isDir, name, item, position){
         if (editMusicListMenu.status === Component.Ready) {
             var menu = editMusicListMenu.createObject(parent, {
                                                           playlistId: playlistId,
                                                           isDir:isDir,
                                                           name:name
                                                       })
-            menu.popup()
+            menu.popupAt(item, position.x, position.y)
         }
         else {
             console.log(editMusicListMenu.errorString())

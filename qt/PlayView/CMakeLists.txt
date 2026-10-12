@@ -22,6 +22,8 @@ qt_add_qml_module(PlayViewLib
         VERSION 1.0
         QML_FILES
         Main.qml
+        ResourcePreview.qml
+        ResourceDownloadFailed.qml
         CoreData.qml
         AutoCoverImage.qml
         LoadBase.qml

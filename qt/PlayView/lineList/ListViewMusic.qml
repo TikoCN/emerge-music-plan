@@ -16,14 +16,21 @@ ListView{
 
     property bool isLittle: false
     property bool onlyLove: false
+    property int playlistId: -1
 
     signal play(int musicId, int listId)
     signal createMenu()
+
+    function reset() {
+        if (model !== null && typeof model.clear === "function")
+            model.clear()
+    }
 
     delegate: CoreMusicLine{
         width: musicListView.width
         listId: index
         isLittle: musicListView.isLittle
+        playlistId: musicListView.playlistId
         visible: !onlyLove || model.isLove
         onPlayMusic: (musicId, listId) => {musicListView.play(musicId, listId)}
     }

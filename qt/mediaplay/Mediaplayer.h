@@ -44,17 +44,32 @@ public:
 
     //播放音乐
     Q_INVOKABLE void buildPlayingList(QList<int> list, int playMusicId = 0);
+    /**
+     * @brief 从指定歌曲建立播放队列
+     * @param musicId 歌曲 ID
+     */
+    Q_INVOKABLE void buildPlayingListByMusicId(int musicId);
     Q_INVOKABLE void buildPlayingArtist(int artistId, int listId = 0);
     Q_INVOKABLE void buildPlayingAlbum(int albumId, int listId = 0);
-    Q_INVOKABLE void buildPlayingPlaylist(int playListId, int listId = 0);
+    Q_INVOKABLE void buildPlayingPlaylist(int playListId, int listId = 0, int sort = -1);
 
     // 播放列表插入歌曲
     void             insertPlayingList(const QList<int> &list);
+    /**
+     * @brief 将指定歌曲插入到下一首
+     * @param musicId 歌曲 ID
+     */
+    Q_INVOKABLE void insertPlayingListByMusicId(int musicId);
     Q_INVOKABLE void insertPlayingArtist(int artistId);
     Q_INVOKABLE void insertPlayingAlbum(int albumId);
     Q_INVOKABLE void insertPlayingPlaylist(int playListId);
 
     void             appendPlayingList(const QList<int> &list);
+    /**
+     * @brief 将指定歌曲追加到播放队列
+     * @param musicId 歌曲 ID
+     */
+    Q_INVOKABLE void appendPlayingListByMusicId(int musicId);
     Q_INVOKABLE void appendPlayingArtist(int artistId);
     Q_INVOKABLE void appendPlayingAlbum(int albumId);
     Q_INVOKABLE void appendPlayingPlaylist(int playListId);

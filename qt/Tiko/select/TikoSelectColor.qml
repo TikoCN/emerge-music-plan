@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import QtQuick.Window
 import Tiko
 
 TikoButtonDefault {
@@ -13,7 +14,7 @@ TikoButtonDefault {
 
     onAnyClicked: {
         if (colorSelectCom.status === Component.Ready) {
-            var popup = colorSelectCom.createObject(tikoColorSelcet)
+            var popup = colorSelectCom.createObject(null)
             popup.open()
         }
     }
@@ -27,13 +28,19 @@ TikoButtonDefault {
     Component {
         id: colorSelectCom
 
-        TikoPopup{
+        TikoPopup {
+            transientParent: tikoColorSelcet.Window.window
             width: 300 + TikoSeit.emphasizeMargins * 2
             radius: 10
-            height: showItem.height + 20
-            y: tikoColorSelcet.height
-            x: (tikoColorSelcet.width - width) / 2
-            onHide: destroy()
+            direction: "top"
+            height: showItem.height + 20 + pointerSize
+            anchorItem: tikoColorSelcet
+            anchorX: (tikoColorSelcet.width - width) / 2
+            anchorY: tikoColorSelcet.height
+            onVisibleChanged: {
+                if (!visible)
+                    destroy()
+            }
 
             Item{
                 id: showItem

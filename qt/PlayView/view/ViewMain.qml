@@ -23,6 +23,19 @@ Item {
         z: -1
     }
 
+    MouseArea {
+        anchors.left: parent.left
+        anchors.right: minButton.left
+        anchors.top: parent.top
+        height: closeButton.y + closeButton.height
+        acceptedButtons: Qt.LeftButton
+        onPressed: {
+            const ownerWindow = mainView.Window.window
+            if (ownerWindow !== null)
+                ownerWindow.startSystemMove()
+        }
+    }
+
     TikoButtonIcon {
         id: closeButton
         anchors.right: parent.right
@@ -122,6 +135,8 @@ Item {
         if(stackView.currentItem != pagePlaylist){
             stackView.replace(pagePlaylist)
         }
+        CoreData.fixedPageIndex = -1
+        CoreData.fixedPageChanged()
     }
 
     //切换到设置
@@ -156,6 +171,8 @@ Item {
         if(stackView.currentItem != pageArtist){
             stackView.replace(pageArtist)
         }
+        CoreData.fixedPageIndex = -1
+        CoreData.fixedPageChanged()
     }
 
     function stackLibrary(){
@@ -189,6 +206,8 @@ Item {
         if(stackView.currentItem != pageAlbum){
             stackView.replace(pageAlbum)
         }
+        CoreData.fixedPageIndex = -1
+        CoreData.fixedPageChanged()
     }
 
     function stackRcommend(){

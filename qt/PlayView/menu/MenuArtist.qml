@@ -1,4 +1,5 @@
 import QtQuick
+import QtQuick.Window
 import Tiko
 import DataType
 import MediaerAPI
@@ -75,16 +76,29 @@ TikoMenu {
 
     Component {
         id: inputComponent
-        TikoPopupInput {
+        TikoInputWindow {
             orgText: name
-            onAccept: ArtistLibrary.moveMusic(name, newName)
+            onAccept: ArtistLibrary.moveMusic(name, inputText)
+            onClosing: {
+                const currentInput = inputPopup
+                inputPopup = null
+                Qt.callLater(function() {
+                    currentInput.destroy()
+                    artistMenu.destroy()
+                })
+            }
         }
     }
 
     function openInput(){
         if (inputComponent.status === Component.Ready) {
-            inputPopup = inputComponent.createObject(artistMenu.parent)
-            inputPopup.open()
+            const ownerWindow = artistMenu.parent.Window.window
+            inputPopup = inputComponent.createObject(null, {
+                x: ownerWindow.x + (ownerWindow.width - 600) / 2,
+                y: ownerWindow.y + (ownerWindow.height - 400) / 2
+            })
+            if (inputPopup !== null)
+                inputPopup.open()
         }
     }
 }

@@ -1,4 +1,5 @@
 #include "Mediaplayer.h"
+#include <algorithm>
 #include <QRandomGenerator>
 #include <QTimer>
 #include <utility>
@@ -114,11 +115,17 @@ void MediaPlayer::setLoopType(const int newLoopType) {
 void MediaPlayer::buildPlayingList(QList<int> list, const int playMusicInListId) {
     m_musicList = std::move(list);
     playMusicByListId(playMusicInListId);
-    emit musicListBuild();
 
     // 同步的数据库
     SQLite::getInstance().playlistRepository.deletePlayingList(0);
     SQLite::getInstance().playlistRepository.appendPlayingMusic(m_musicList, 0);
+    emit musicListBuild();
+}
+
+void MediaPlayer::buildPlayingListByMusicId(const int musicId) {
+    if (DataActive::getInstance().getMusicCore(musicId) == nullptr)
+        return;
+    buildPlayingList({musicId}, 0);
 }
 
 void MediaPlayer::buildPlayingArtist(const int artistId, const int listId) {
@@ -137,9 +144,10 @@ void MediaPlayer::buildPlayingAlbum(const int albumId, const int listId) {
     TLog::getInstance().logUser(QString("播放专辑音乐%1").arg(albumId));
 }
 
-void MediaPlayer::buildPlayingPlaylist(const int playListId, const int listId) {
+void MediaPlayer::buildPlayingPlaylist(const int playListId, const int listId, const int sort) {
     const auto playList  = DataActive::getInstance().getPlaylistCore(playListId);
-    const auto musicList = SQLite::getInstance().playlistRepository.getMusicAll(playListId, playList->sort);
+    const int playlistSort = sort < 0 ? playList->sort : sort;
+    const auto musicList = SQLite::getInstance().playlistRepository.getMusicAll(playListId, playlistSort);
     buildPlayingList(musicList, listId);
 
     TLog::getInstance().logUser(QString("播放列表音乐%1").arg(playListId));
@@ -182,17 +190,20 @@ void MediaPlayer::appendPlayingPlaylist(const int playListId) {
 }
 
 void MediaPlayer::insertPlayingList(const QList<int> &list) {
-    const QList<int> leftList  = m_musicList.sliced(0, m_playingMusicListId);
-    const QList<int> rightList = std::move(list) + m_musicList.sliced(m_playingMusicListId);
-
-    m_musicList.clear();
-    m_musicList.append(leftList);
-    m_musicList.append(rightList);
-    emit musicListBuild();
+    // 下一首位于当前播放位置之后；尚未开始播放时插入到队列开头。
+    const int insertIndex = std::clamp(m_playingMusicListId + 1, 0, static_cast<int>(m_musicList.size()));
+    m_musicList = m_musicList.sliced(0, insertIndex) + list + m_musicList.sliced(insertIndex);
 
     // 同步数据库
-    SQLite::getInstance().playlistRepository.deletePlayingList(m_playingMusicListId);
-    SQLite::getInstance().playlistRepository.appendPlayingMusic(rightList, m_playingMusicListId);
+    SQLite::getInstance().playlistRepository.deletePlayingList(insertIndex);
+    SQLite::getInstance().playlistRepository.appendPlayingMusic(m_musicList.sliced(insertIndex), insertIndex);
+    emit musicListBuild();
+}
+
+void MediaPlayer::insertPlayingListByMusicId(const int musicId) {
+    if (DataActive::getInstance().getMusicCore(musicId) == nullptr)
+        return;
+    insertPlayingList({musicId});
 }
 
 /**
@@ -202,10 +213,16 @@ void MediaPlayer::insertPlayingList(const QList<int> &list) {
 void MediaPlayer::appendPlayingList(const QList<int> &list) {
     const int offset = static_cast<int>(m_musicList.size());
     m_musicList.append(list);
-    emit musicListBuild();
 
     // 统一在此同步到数据库，各 appendPlaying* 调用方不再单独处理
     SQLite::getInstance().playlistRepository.appendPlayingMusic(list, offset);
+    emit musicListBuild();
+}
+
+void MediaPlayer::appendPlayingListByMusicId(const int musicId) {
+    if (DataActive::getInstance().getMusicCore(musicId) == nullptr)
+        return;
+    appendPlayingList({musicId});
 }
 
 QList<int> MediaPlayer::getMusicList(const int size, const int start) const {

@@ -17,9 +17,8 @@ Loader {
     property var endList: lrc.endList
     property var textList: lrc.textList
     property var helpTextList: lrc.helpTextList
-    property lrcData lrc
+    property lrcData lrc: MediaPlayer.getLrcData(lrcId)
 
-    onLrcIdChanged: lrc = MediaPlayer.getLrcData(lrcId)
     sourceComponent:  textList.length === 0 ? drawLoadLineCom : drawLrcLineCom
 
     Component {

@@ -82,14 +82,19 @@ Item {
 
         Component {
             id: loopSelectCom
-            TikoFloat {
+            TikoPopup {
                 id: loopSelect
-                parent: loopButton.Window.window.contentItem
+                transientParent: loopButton.Window.window
                 direction: "bottom"
-                x: loopButton.mapToItem(loopButton.Window.window.contentItem, 0, 0).x + (loopButton.width - width) / 2
-                y: loopButton.mapToItem(loopButton.Window.window.contentItem, 0, 0).y - height
+                anchorItem: loopButton
+                anchorX: (loopButton.width - width) / 2
+                anchorOffsetY: -height
                 width: 140
-                height: loopColumnLayout.height + TikoSeit.normalMargins * 2 + pointerSize
+                height: loopColumnLayout.height + TikoSeit.normalMargins * 2 + radius * 2 + pointerSize
+                onVisibleChanged: {
+                    if (!visible)
+                        destroy()
+                }
 
                 ColumnLayout {
                     id: loopColumnLayout
@@ -169,18 +174,25 @@ Item {
         level: 0
         //text: qsTr("控制音量")
 
-        property TikoFloat volumePopup: null
+        property TikoPopup volumePopup: null
 
         Component {
             id: volumePopupCom
 
-            TikoFloat {
-                parent: playVolume.Window.window.contentItem
+            TikoPopup {
+                transientParent: playVolume.Window.window
                 direction: "bottom"
-                x: playVolume.mapToItem(playVolume.Window.window.contentItem, 0, 0).x + (playVolume.width - width) / 2
-                y: playVolume.mapToItem(playVolume.Window.window.contentItem, 0, 0).y - height
+                anchorItem: playVolume
+                anchorX: (playVolume.width - width) / 2
+                anchorOffsetY: -height
                 height: 200
                 width: 72
+                onVisibleChanged: {
+                    if (!visible) {
+                        playVolume.volumePopup = null
+                        destroy()
+                    }
+                }
 
                 TikoSliderV {
                     anchors.fill: parent

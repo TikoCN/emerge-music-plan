@@ -1,11 +1,18 @@
 import QtQuick
 import QtQuick.Controls.Basic
+import QtQuick.Window
 import Tiko
 import QtQuick.Effects
 
 Menu {
     implicitWidth: 300
     font: TikoSeit.theme.fontDefault
+
+    function popupAt(item, x, y) {
+        const popupParent = item.Window.window.contentItem
+        const pos = item.mapToItem(popupParent, x, y)
+        popup(popupParent, pos)
+    }
 
     //背景
     background: Rectangle{

@@ -1,69 +1,125 @@
 import QtQuick
+import QtQuick.Window
+import QtQuick.Effects
 
 Window {
     id: win
 
-    property int acttion: 0
     property bool sizeChange: false
 
     color: Qt.rgba(0,0,0,0)
     flags: Qt.Window | Qt.FramelessWindowHint // 尝试隐藏边框和标题栏
 
-    MouseArea {
-        id: dropSize
-
-        function resizeWindow(mouseX, mouseY) {
-            const marginSpace = 10;
-
-            const marginRight = width - mouseX;
-            const marginBottom = height - mouseY;
-            win.acttion = 0;
-            if (marginRight < marginSpace) {//右
-                win.acttion |= Qt.RightEdge;
-            }
-            if (marginBottom < marginSpace) {//下
-                win.acttion |= Qt.BottomEdge;
-            }
-            if (mouseX < marginSpace) {//左
-                win.acttion |= Qt.LeftEdge;
-            }
-            if (mouseY < marginSpace) {//上
-                win.acttion |= Qt.TopEdge;
-            }
-        }
-        function setCursorShape() {
-            if (win.acttion === Qt.LeftEdge || win.acttion === Qt.RightEdge) {
-                return Qt.SizeHorCursor;
-            } else if (win.acttion === Qt.TopEdge || win.acttion === Qt.BottomEdge) {
-                return Qt.SizeVerCursor;
-            } else if (win.acttion === (Qt.LeftEdge | Qt.TopEdge) || win.acttion === (Qt.RightEdge | Qt.BottomEdge)) {
-                return Qt.SizeFDiagCursor;
-            } else if (win.acttion === (Qt.RightEdge | Qt.TopEdge) || win.acttion === (Qt.LeftEdge | Qt.BottomEdge)) {
-                return Qt.SizeBDiagCursor;
-            } else {
-                return Qt.ArrowCursor;
-            }
-        }
-
+    Rectangle {
+        id: windowSurface
+        z: -2
         anchors.fill: parent
-        cursorShape: dropSize.setCursorShape()
-        hoverEnabled: true
+        anchors.margins: win.visibility === Window.Maximized ? 0 : 10
+        color: TikoSeit.theme.colorBgView
+        radius: win.visibility === Window.Maximized ? 0 : 10
+        layer.enabled: win.visibility !== Window.Maximized
+        layer.effect: MultiEffect {
+            shadowEnabled: true
+            shadowBlur: 0.5
+            shadowColor: TikoSeit.theme.colorMaxTop
+            shadowHorizontalOffset: 0
+            shadowVerticalOffset: 0
+        }
+    }
 
-        onPositionChanged: {
-            resizeWindow(mouseX, mouseY);
-        }
+    MouseArea {
+        z: -1
+        width: parent.width - 32
+        height: 8
+        anchors.top: parent.top
+        anchors.horizontalCenter: parent.horizontalCenter
+        cursorShape: Qt.SizeVerCursor
         onPressed: {
-            resizeWindow(mouseX, mouseY);
-            if (win.acttion !== 0) {
-                win.startSystemResize(win.acttion);
-                win.sizeChange = true;
-            } else {
-                win.startSystemMove();
-            }
+            win.startSystemResize(Qt.TopEdge)
+            win.sizeChange = true
         }
-        onReleased: {
-            win.acttion = 0;
-            win.sizeChange = false;
+        onReleased: win.sizeChange = false
+    }
+
+    MouseArea {
+        z: -1
+        width: parent.width - 32
+        height: 8
+        anchors.bottom: parent.bottom
+        anchors.horizontalCenter: parent.horizontalCenter
+        cursorShape: Qt.SizeVerCursor
+        onPressed: {
+            win.startSystemResize(Qt.BottomEdge)
+            win.sizeChange = true
         }
+        onReleased: win.sizeChange = false
+    }
+
+    MouseArea {
+        z: -1
+        width: 8
+        height: parent.height - 32
+        anchors.left: parent.left
+        anchors.verticalCenter: parent.verticalCenter
+        cursorShape: Qt.SizeHorCursor
+        onPressed: {
+            win.startSystemResize(Qt.LeftEdge)
+            win.sizeChange = true
+        }
+        onReleased: win.sizeChange = false
+    }
+
+    MouseArea {
+        z: -1
+        width: 8
+        height: parent.height - 32
+        anchors.right: parent.right
+        anchors.verticalCenter: parent.verticalCenter
+        cursorShape: Qt.SizeHorCursor
+        onPressed: {
+            win.startSystemResize(Qt.RightEdge)
+            win.sizeChange = true
+        }
+        onReleased: win.sizeChange = false
+    }
+
+    MouseArea {
+        z: -1
+        width: 16
+        height: 16
+        anchors.top: parent.top
+        anchors.left: parent.left
+        cursorShape: Qt.SizeFDiagCursor
+        onPressed: win.startSystemResize(Qt.TopEdge | Qt.LeftEdge)
+    }
+
+    MouseArea {
+        z: -1
+        width: 16
+        height: 16
+        anchors.top: parent.top
+        anchors.right: parent.right
+        cursorShape: Qt.SizeBDiagCursor
+        onPressed: win.startSystemResize(Qt.TopEdge | Qt.RightEdge)
+    }
+
+    MouseArea {
+        z: -1
+        width: 16
+        height: 16
+        anchors.bottom: parent.bottom
+        anchors.left: parent.left
+        cursorShape: Qt.SizeBDiagCursor
+        onPressed: win.startSystemResize(Qt.BottomEdge | Qt.LeftEdge)
+    }
+
+    MouseArea {
+        z: -1
+        width: 16
+        height: 16
+        anchors.bottom: parent.bottom
+        anchors.right: parent.right
+        cursorShape: Qt.SizeFDiagCursor
+        onPressed: win.startSystemResize(Qt.BottomEdge | Qt.RightEdge)
     }
 }

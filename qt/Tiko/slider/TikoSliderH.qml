@@ -15,7 +15,7 @@ Slider {
     property color bgColor: TikoSeit.theme.colorBgDefault
     property color handleColor: TikoSeit.theme.colorHighlight
     property double size: 0.2
-    property double maxZoomIn: 1.3
+    property double maxZoomIn: 0.8
 
     //滑行航道
     background: Item{
@@ -53,7 +53,7 @@ Slider {
         x: hSlider.visualPosition * hSlider.width - width / 2
         anchors.verticalCenter: hSlider.verticalCenter
 
-        property double zoomIn: 0
+        property double zoomIn: 0.45
         property double handleCell: hSlider.height * handleRect.zoomIn
     }
 

@@ -30,3 +30,15 @@ bool PlaylistLibrary::moveMusic(const QString &playListName, const QString &play
 bool PlaylistLibrary::addMusicToPlaylist(const QString &sourcePlaylistName, const QString &targetPlaylistName) {
     return SQLite::getInstance().playlistRepository.addMusicToPlaylist(sourcePlaylistName, targetPlaylistName);
 }
+
+bool PlaylistLibrary::addSingleMusicToPlaylist(const int musicId, const int playlistId) {
+    return SQLite::getInstance().playlistRepository.addMusicToPlaylist(musicId, playlistId);
+}
+
+bool PlaylistLibrary::removeMusicFromPlaylist(const int musicId, const int playlistId) {
+    return SQLite::getInstance().playlistRepository.removeMusicFromPlaylist(musicId, playlistId);
+}
+
+bool PlaylistLibrary::moveMusicToPlaylist(const int musicId, const int sourcePlaylistId, const int targetPlaylistId) {
+    return SQLite::getInstance().playlistRepository.moveMusicToPlaylist(musicId, sourcePlaylistId, targetPlaylistId);
+}

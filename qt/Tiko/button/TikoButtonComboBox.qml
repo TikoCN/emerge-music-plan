@@ -1,4 +1,5 @@
 import QtQuick
+import QtQuick.Window
 import Tiko
 
 TikoButtonDefault {
@@ -17,12 +18,15 @@ TikoButtonDefault {
     // 下拉弹出框
     TikoPopup {
         id: tikoPopup
+        transientParent: tikoComboxButton.Window.window
         width: tikoComboxButton.width
         height: Math.min(200, listModel.count * 40)  // 动态高度
         radius: 10
-        padding: 0
-        clip: true
-        y: tikoComboxButton.height
+        pointerSize: 0
+        contentMargin: -10
+        contentClip: true
+        anchorItem: tikoComboxButton
+        anchorY: tikoComboxButton.height
 
         // 选项列表
         ListView {

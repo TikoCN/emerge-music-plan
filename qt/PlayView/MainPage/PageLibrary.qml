@@ -29,11 +29,14 @@ Item {
             delegate: TikoButtonDefault {
                 icon.source: modelData.icon
                 textLine.text: modelData.name
+                checked: toolRow.selectText === modelData.name
+                icon.unifiedColor: checked ? checkedColor : TikoSeit.theme.colorFgDefault
+                textLine.color: checked ? checkedColor : TikoSeit.theme.colorFgDefault
                 onClicked: {
-                    if (toolRow.selectText === textLine.text) return
+                    if (toolRow.selectText === modelData.name) return
 
                     modelData.click()
-                    toolRow.selectText = textLine.text
+                    toolRow.selectText = modelData.name
                 }
             }
         }

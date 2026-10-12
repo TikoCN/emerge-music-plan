@@ -1,4 +1,5 @@
 import QtQuick
+import QtQuick.Window
 import Tiko
 import PlayView
 import DataType
@@ -7,7 +8,6 @@ import MediaerAPI
 TikoMenu{
     id: playlistMenu
     onClosed: {
-        destroy()
         if (inputPopup === null)
             destroy()
     }
@@ -19,7 +19,7 @@ TikoMenu{
     TikoMenuItem{
         text: qsTr("打开本地文件夹")
         enabled: isDir
-        onClicked: BaseTool.fileManagement.deskOpenFile(playlist.url)
+        onClicked: BaseTool.fileManagement.openPlaylistDir(playlistMenu.playlistId)
     }
 
     TikoMenuItem{
@@ -48,16 +48,29 @@ TikoMenu{
 
     Component {
         id: inputComponent
-        TikoPopupInput {
+        TikoInputWindow {
             orgText: name
-            onAccept: PlaylistLibrary.moveMusic(name, newName)
+            onAccept: PlaylistLibrary.moveMusic(name, inputText)
+            onClosing: {
+                const currentInput = inputPopup
+                inputPopup = null
+                Qt.callLater(function() {
+                    currentInput.destroy()
+                    playlistMenu.destroy()
+                })
+            }
         }
     }
 
     function openInput(){
         if (inputComponent.status === Component.Ready) {
-            inputPopup = inputComponent.createObject(playlistMenu.parent)
-            inputPopup.open()
+            const ownerWindow = playlistMenu.parent.Window.window
+            inputPopup = inputComponent.createObject(null, {
+                x: ownerWindow.x + (ownerWindow.width - 600) / 2,
+                y: ownerWindow.y + (ownerWindow.height - 400) / 2
+            })
+            if (inputPopup !== null)
+                inputPopup.open()
         }
     }
 }

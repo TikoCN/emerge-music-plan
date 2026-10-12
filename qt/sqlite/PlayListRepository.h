@@ -32,6 +32,28 @@ public:
 
     [[nodiscard]] bool moveMusic(const QString &playListName, const QString &playListNameNew) const;
     [[nodiscard]] bool addMusicToPlaylist(const QString &sourcePlaylistName, const QString &targetPlaylistName) const;
+    /**
+     * @brief 将单首歌曲添加到用户播放列表
+     * @param musicId 歌曲 ID
+     * @param playlistId 播放列表 ID
+     * @return 操作是否成功
+     */
+    [[nodiscard]] bool addMusicToPlaylist(int musicId, int playlistId) const;
+    /**
+     * @brief 从播放列表移除单首歌曲
+     * @param musicId 歌曲 ID
+     * @param playlistId 播放列表 ID
+     * @return 操作是否成功
+     */
+    [[nodiscard]] bool removeMusicFromPlaylist(int musicId, int playlistId) const;
+    /**
+     * @brief 将单首歌曲移动到另一播放列表
+     * @param musicId 歌曲 ID
+     * @param sourcePlaylistId 原列表 ID
+     * @param targetPlaylistId 目标列表 ID
+     * @return 操作是否成功
+     */
+    [[nodiscard]] bool moveMusicToPlaylist(int musicId, int sourcePlaylistId, int targetPlaylistId) const;
 
     [[nodiscard]] bool deletePlayingList(int position) const;
 };

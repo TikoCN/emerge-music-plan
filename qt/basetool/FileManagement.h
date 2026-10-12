@@ -32,6 +32,12 @@ public:
     Q_INVOKABLE [[nodiscard]] static bool writeFileText(const QString &url, const QString &data);
 
     //打开文件
+    /**
+     * @brief 判断本地文件或目录是否存在
+     * @param url 本地路径
+     * @return 存在时返回 true
+     */
+    Q_INVOKABLE [[nodiscard]] static bool pathExists(const QString &url);
     Q_INVOKABLE static void deskOpenFile(QString url, bool local = false);
     // 重命名文件
     [[nodiscard]] static bool renameFile(const QString &oldUrl, const QString &newUrl);

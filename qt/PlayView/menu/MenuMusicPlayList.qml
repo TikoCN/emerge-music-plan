@@ -1,37 +1,40 @@
-﻿import QtQuick
+import QtQuick
+import MediaerAPI
 import Tiko
 import PlayView
 
 MenuMusic {
+    id: menuMusicPlaylist
     property int playlistId: -1
 
-    TikoMenu{
+    TikoMenu {
         title: qsTr("移动到")
         icon.source: "qrc:/image/move.svg"
-        enabled: playlistId !== -1
+        enabled: menuMusicPlaylist.playlistId !== -1
 
-        Repeater{
-            delegate: moveMenu
-            model: ListModel{
-                id: moveMenuData
+        Repeater {
+            delegate: TikoMenuItem {
+                text: model.name
+                enabled: !model.isDir && model.id !== menuMusicPlaylist.playlistId
+                onTriggered: {
+                    if (PlaylistLibrary.moveMusicToPlaylist(menuMusicPlaylist.musicId,
+                                                            menuMusicPlaylist.playlistId, model.id))
+                        menuMusicPlaylist.playlistChanged()
+                }
             }
-        }
-        Component {
-            id: moveMenu
-            TikoMenuItem {
-                text: CoreData.playlist[aim]["name"]
-            }
-        }
-
-        onOpened: {
-            moveMenuData.clear()
-            for(let i=0; i<CoreData.playlist.length; i++){
-                moveMenuData.append({aim: i})
+            model: PlaylistModel {
+                type: PlaylistModel.UserModel
             }
         }
     }
 
     TikoMenuItem {
         text: qsTr("从播放列表中移除")
+        enabled: menuMusicPlaylist.playlistId !== -1
+        onTriggered: {
+            if (PlaylistLibrary.removeMusicFromPlaylist(menuMusicPlaylist.musicId,
+                                                        menuMusicPlaylist.playlistId))
+                menuMusicPlaylist.playlistChanged()
+        }
     }
 }

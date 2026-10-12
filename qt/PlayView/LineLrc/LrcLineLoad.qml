@@ -6,7 +6,7 @@ import Tiko
 
 Canvas {
     id: drawLoadLine
-    height: 0
+    height: isDraw ? lrcFont.pixelSize + 30 : 0
 
     property color playingColor: TikoSeit.theme.colorFgDefault
     property color normalColor: TikoSeit.theme.colorFgHint
@@ -17,6 +17,13 @@ Canvas {
     property bool isDraw: false
     property double r: lrcFont.pixelSize / 2
     property font lrcFont: Setting.lrcFont
+
+    onLrcIdChanged: syncPlayingState()
+    ListView.onReused: syncPlayingState()
+    ListView.onPooled: {
+        isDraw = false
+        requestPaint()
+    }
 
     onPaint: {
         const ctx = drawLoadLine.getContext("2d");
@@ -74,39 +81,22 @@ Canvas {
         }
     }
 
-    // 展示动画
-    NumberAnimation on height {
-        id: showAnimation
-        from: 0
-        to: lrcFont.pixelSize + 30
-        duration: 300
-        easing.type: Easing.InQuint
-    }
-
-    // 关闭动画
-    NumberAnimation on height {
-        id: closeAnimation
-        from: lrcFont.pixelSize + 30
-        to: 0
-        duration: 300
-        easing.type: Easing.InQuint
-    }
-
     Connections{
         target: MediaPlayer
 
         function onPlayingLrcIdChanged(playingLrcId){
-            if(isDraw != (playingLrcId === lrcId)) {
-                isDraw = (playingLrcId === lrcId)
-
-                if (isDraw) {
-                    showAnimation.start()
-                }
-                else {
-                    closeAnimation.start()
-                }
-            }
+            syncPlayingState()
         }
+    }
+
+    function syncPlayingState() {
+        const shouldDraw = MediaPlayer.playingLrcId === lrcId
+        if (isDraw === shouldDraw) {
+            return
+        }
+
+        isDraw = shouldDraw
+        requestPaint()
     }
 
     //关联

@@ -19,6 +19,7 @@ TikoFrameless{
     title: qsTr("尘星音乐")
     property int showType: 0
     property bool isMaxSize: visibility === 4
+    property var resourcePreviewWindow: null
 
     Component.onDestruction:{
         //写入配置
@@ -39,15 +40,6 @@ TikoFrameless{
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.margins: space
-
-        layer.enabled: true
-        layer.effect: MultiEffect {
-            shadowEnabled: true
-            shadowBlur: 0.5
-            shadowColor: TikoSeit.theme.colorMaxTop
-            shadowHorizontalOffset: 0
-            shadowVerticalOffset: 0
-        }
 
         property int space: isMaxSize ? 0 : 10
 
@@ -130,5 +122,73 @@ TikoFrameless{
             }
         })
         CoreData.windowClose.connect(close)
+    }
+
+    Connections {
+        target: OnLine
+        function onResourcePreviewReady(oldResourceUrl, newResourceData, filePath, isImage) {
+            window.openResourcePreview({
+                oldResourceUrl: oldResourceUrl,
+                newResourceData: newResourceData,
+                filePath: filePath,
+                isImage: isImage
+            })
+        }
+
+        function onResourceDownloadFailed(message) {
+            window.showDownloadFailure(message)
+        }
+    }
+
+    function openResourcePreview(properties) {
+        if (resourcePreviewWindow !== null) {
+            resourcePreviewWindow.destroy()
+            resourcePreviewWindow = null
+        }
+
+        const component = Qt.createComponent("qrc:/qt/qml/PlayView/ResourcePreview.qml")
+        if (component.status === Component.Ready) {
+            createResourcePreviewWindow(component, properties)
+        } else if (component.status === Component.Loading) {
+            component.statusChanged.connect(function() {
+                if (component.status === Component.Ready) {
+                    window.createResourcePreviewWindow(component, properties)
+                }
+            })
+        }
+    }
+
+    function createResourcePreviewWindow(component, properties) {
+        const previewProperties = Object.assign({}, properties, {
+            x: window.x + (window.width - 900) / 2,
+            y: window.y + (window.height - 600) / 2
+        })
+        const previewWindow = component.createObject(null, previewProperties)
+        if (previewWindow === null) {
+            return
+        }
+
+        resourcePreviewWindow = previewWindow
+        previewWindow.dismissed.connect(function() {
+            if (window.resourcePreviewWindow === previewWindow) {
+                window.resourcePreviewWindow = null
+            }
+        })
+        previewWindow.show()
+    }
+
+    function showDownloadFailure(message) {
+        const component = Qt.createComponent("qrc:/qt/qml/PlayView/ResourceDownloadFailed.qml")
+        if (component.status === Component.Ready) {
+            const failureWindow = component.createObject(null, {
+                message: message,
+                transientParent: window,
+                x: window.x + (window.width - 420) / 2,
+                y: window.y + (window.height - 220) / 2
+            })
+            if (failureWindow !== null) {
+                failureWindow.show()
+            }
+        }
     }
 }

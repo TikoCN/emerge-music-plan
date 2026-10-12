@@ -16,9 +16,10 @@ TikoMenu{
     property string artist: ""
     property string album: ""
     property string fileUrl: ""
+    signal playlistChanged()
 
     Component.onCompleted: {
-        let music = MusicLibrary.getMusicData(musicId)
+        let music = MusicLibrary.getData(musicId)
         musicTitle = music.title
         artist = music.artist
         album = music.album
@@ -27,23 +28,24 @@ TikoMenu{
 
     TikoMenuItem {
         text: qsTr("播放")
-        onClicked: MediaPlayer.buildPlayingListByMusicId(musicId)
+        onTriggered: MediaPlayer.buildPlayingListByMusicId(musicId)
         icon.source: "qrc:/image/play.svg"
     }
 
     TikoMenuItem {
         text: qsTr("添加到播放队列")
-        onClicked: MediaPlayer.appendPlayingListByMusicId(musicId)
+        onTriggered: MediaPlayer.appendPlayingListByMusicId(musicId)
     }
 
     TikoMenuItem {
         text: qsTr("添加到正在下一首播放")
-        onClicked: MediaPlayer.insertPlayingListByMusicId(musicId)
+        onTriggered: MediaPlayer.insertPlayingListByMusicId(musicId)
     }
     TikoMenuSpacer{}
 
     TikoMenuItem{
         text: qsTr("打开文件夹")
+        enabled: BaseTool.fileManagement.pathExists(BaseTool.fileManagement.getParentDir(fileUrl))
         onTriggered: {
             const url = BaseTool.fileManagement.getParentDir(fileUrl);
             BaseTool.fileManagement.deskOpenFile(url)
@@ -53,11 +55,13 @@ TikoMenu{
 
     TikoMenuItem{
         text: qsTr("打开歌词")
+        enabled: BaseTool.fileManagement.pathExists(BaseTool.fileManagement.getMusicLrcUrl(musicId))
         onTriggered: BaseTool.fileManagement.deskOpenFile(BaseTool.fileManagement.getMusicLrcUrl(musicId))
     }
 
     TikoMenuItem{
         text: qsTr("打开封面")
+        enabled: BaseTool.fileManagement.pathExists(BaseTool.fileManagement.getBaseUrl(fileUrl) + ".jpg")
         onTriggered: {
             const url = BaseTool.fileManagement.getBaseUrl(fileUrl) + ".jpg";
             BaseTool.fileManagement.deskOpenFile(url)
@@ -92,36 +96,36 @@ TikoMenu{
         title: qsTr("从网络中下载")
         TikoMenuItem{
             text: qsTr("从 网络中下载 封面")
-            onTriggered: OnLine.downMusicCover(BaseTool.fileManagement.getFileName(fileUrl), fileUrl);
+            onTriggered: DataActive.downMusicCover(musicId);
         }
         TikoMenuItem{
             text: qsTr("从 QQ音乐 下载 封面")
-            onTriggered: OnLine.downMusicCoverQQMusic(BaseTool.fileManagement.getFileName(fileUrl), fileUrl);
+            onTriggered: DataActive.downMusicCoverQQMusic(musicId);
         }
         TikoMenuItem{
             text: qsTr("从 网易云 下载 封面")
-            onTriggered: OnLine.downMusicCoverNetEase(BaseTool.fileManagement.getFileName(fileUrl), fileUrl);
+            onTriggered: DataActive.downMusicCoverNetEase(musicId);
         }
         TikoMenuItem{
             text: qsTr("从 Bing搜索 下载 封面")
-            onTriggered: OnLine.downMusicCoverBing(BaseTool.fileManagement.getFileName(fileUrl), fileUrl);
+            onTriggered: DataActive.downCoverBing(musicId);
         }
         TikoMenuItem{
             text: qsTr("从 Baidu搜索 下载 封面")
-            onTriggered: OnLine.downCoverBaidu(BaseTool.fileManagement.getFileName(fileUrl), fileUrl);
+            onTriggered: DataActive.downCoverBaidu(musicId);
         }
         TikoMenuSpacer{}
         TikoMenuItem{
             text: qsTr("从 网络中下载 歌词")
-            onTriggered: OnLine.downLrc(BaseTool.fileManagement.getFileName(fileUrl), fileUrl);
+            onTriggered: DataActive.downLrc(musicId);
         }
         TikoMenuItem{
             text: qsTr("从 QQ音乐 下载 歌词")
-            onTriggered: OnLine.downLrcFromQQMusic(BaseTool.fileManagement.getFileName(fileUrl), fileUrl);
+            onTriggered: DataActive.downLrcFromQQMusic(musicId);
         }
         TikoMenuItem{
             text: qsTr("从 网易云 下载 歌词")
-            onTriggered: OnLine.downLrcFromNetEase(BaseTool.fileManagement.getFileName(fileUrl), fileUrl);
+            onTriggered: DataActive.downLrcFromNetEase(musicId);
         }
     }
 
@@ -132,23 +136,16 @@ TikoMenu{
         icon.source: "qrc:/image/move.svg"
 
         Repeater{
-            delegate: addMenu
-            model: ListModel{
-                id: addMenuData
+            delegate: TikoMenuItem {
+                text: model.name
+                enabled: !model.isDir
+                onTriggered: {
+                    if (PlaylistLibrary.addSingleMusicToPlaylist(menuMusic.musicId, model.id))
+                        menuMusic.playlistChanged()
+                }
             }
-        }
-        Component {
-            id: addMenu
-            TikoMenuItem {
-                text: CoreData.playlist[aim]["name"]
-                enabled: !CoreData.playlist[aim]["isDir"]
-            }
-        }
-
-        onOpened: {
-            addMenuData.clear()
-            for(let i=0; i<CoreData.playlist.length; i++){
-                addMenuData.append({aim: i})
+            model: PlaylistModel {
+                type: PlaylistModel.UserModel
             }
         }
     }

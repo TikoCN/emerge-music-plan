@@ -13,9 +13,9 @@ TikoFrameless {
 
     Rectangle{
         anchors.fill: parent
+        anchors.margins: 10
         color: TikoSeit.theme.colorBgDefault
-        topLeftRadius: 10
-        topRightRadius: 10
+        radius: 10
         z: -1
     }
 

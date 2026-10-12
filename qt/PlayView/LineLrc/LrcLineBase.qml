@@ -6,7 +6,7 @@ import MediaerAPI
 
 Item {
     id: lrcLine
-    implicitHeight: 100
+    implicitHeight: aloneLine ? maxFontMetrics.boundingRect.height + TikoSeit.emphasizeMargins * 2 : contentHeight
     implicitWidth: 100
 
     property font lrcFont: Qt.font({family: "Microsoft YaHei", pointSize: 12})
@@ -23,16 +23,55 @@ Item {
     property bool isEffect: false
     property bool aloneLine: false
     property bool initPos: false
+    property bool hasPainted: false
+    property real contentHeight: maxFontMetrics.boundingRect.height + TikoSeit.emphasizeMargins * 2
 
     property color playingColor: Qt.rgba(1, 1, 1, 1)
     property color normalColor: Qt.rgba(0.9, 0.9, 0.9, 1)
     property Canvas lrcCanvas: drawLrc
 
-    onWidthChanged: {initPos = false; drawLrc.requestPaint()}
-    onLrcIdChanged: {initPos = false; drawLrc.requestPaint()}
+    onWidthChanged: {
+        initPos = false
+        hasPainted = false
+        updateHeight()
+        drawLrc.requestPaint()
+    }
+    onLrcIdChanged: {
+        initPos = false
+        hasPainted = false
+        updateHeight()
+        drawLrc.requestPaint()
+    }
+    onTextListChanged: {
+        initPos = false
+        hasPainted = false
+        updateHeight()
+        drawLrc.requestPaint()
+    }
+    onHelpTextListChanged: {
+        initPos = false
+        hasPainted = false
+        updateHeight()
+        drawLrc.requestPaint()
+    }
     onLrcFontChanged: {
         fontcss = fontToCssString(lrcFont)
         initPos = false
+        hasPainted = false
+        updateHeight()
+        drawLrc.requestPaint()
+    }
+
+    ListView.onReused: {
+        initPos = false
+        hasPainted = false
+        updateHeight()
+        drawLrc.requestPaint()
+    }
+
+    Component.onCompleted: {
+        fontcss = fontToCssString(lrcFont)
+        updateHeight()
         drawLrc.requestPaint()
     }
 
@@ -44,6 +83,10 @@ Item {
         onPaint: {
             if (initPos === false)
                 updateHeight()
+
+            if (initPos === false || width <= 0 || height <= 0) {
+                return
+            }
 
             const ctx = getContext("2d")
             // 清除画布
@@ -100,17 +143,20 @@ Item {
                     ctx.fillText(text[i], wordListX[wordId], wordListY[wordId] - overF * 3)
                 }
             }
+
+            hasPainted = true
         }
     }
 
     MultiEffect {
-        id: effct
-        autoPaddingEnabled: true
+        id: lyricEffect
+        visible: hasPainted
+        autoPaddingEnabled: false
         source: drawLrc
         anchors.fill: drawLrc
-        blurEnabled: !(isPlay || mouseAreaItem.containsMouse)
+        blurEnabled: true
         blurMax: 30
-        blur: 0.5
+        blur: isPlay || mouseAreaItem.containsMouse ? 0 : 0.5
     }
 
     TextMetrics{
@@ -134,13 +180,18 @@ Item {
     }
 
     function updateHeight(){
+        if (width <= 0 || textList === undefined || helpTextList === undefined
+            || maxFontMetrics.boundingRect.height <= 0) {
+            return
+        }
+
         const maxH = maxFontMetrics.boundingRect.height
         const lrc = lrcLine.textList
 
         let i = 0
         let space = TikoSeit.emphasizeMargins
         let startX = space
-        let startY = aloneLine ? height / 2:  maxH + space
+        let startY = aloneLine ? height / 2 + maxFontMetrics.boundingRect.height / 2 : maxH + space
         let line = 1
         let wordWidth = 0
         let wordId = 0
@@ -182,7 +233,7 @@ Item {
             lrcLine.width = startX + space
         }
         else {
-            lrcLine.height = startY + space
+            contentHeight = startY + space
         }
 
         initPos = true
@@ -191,8 +242,8 @@ Item {
     function fontToCssString(font) {
         var style = font.bold ? "bold " : "";
         style += font.italic ? "italic " : "";
-        // 根据需要添加其他修饰
-        var size = font.pointSize + "pt";  // 或转换成 px
+        var pixelSize = font.pixelSize > 0 ? font.pixelSize : font.pointSize * 96 / 72;
+        var size = pixelSize + "px";
         var family = "'" + font.family + "'";
         return style + size + " " + family;
     }

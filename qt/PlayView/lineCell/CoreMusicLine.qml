@@ -12,6 +12,7 @@ Item {
     clip: true
 
     property int listId: 0
+    property int playlistId: -1
     property bool isLittle: false
     signal playMusic(int musicId, int listId)
 
@@ -26,7 +27,7 @@ Item {
                            playMusic(model.id, listId)
                            break
                            case Qt.RightButton:
-                           createMenu(musicLine)
+                           createMenu(musicLine, mouse.x, mouse.y)
                            break
                        }
                    }
@@ -118,7 +119,7 @@ Item {
                         TikoButtonIcon{
                             width: 30
                             height: parent.height
-                            onClicked: createMenu(musicLine)
+                            onClicked: mouse => createMenu(musicLine, mouse.x, mouse.y)
                             icon.source: "qrc:/image/more.svg"
                         }
                     }
@@ -163,10 +164,15 @@ Item {
         }
     }
 
-    function createMenu(parent){
+    function createMenu(parent, x, y){
         if (menuMusicComponent.status === Component.Ready){
             let menu = menuMusicComponent.createObject(parent)
-            menu.popup()
+            menu.playlistChanged.connect(function() {
+                const ownerList = musicLine.ListView.view
+                if (ownerList !== null && typeof ownerList.reset === "function")
+                    ownerList.reset()
+            })
+            menu.popupAt(parent, x, y)
         }
         else
             console.log(menuComponent.errorString())

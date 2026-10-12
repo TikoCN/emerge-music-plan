@@ -3,6 +3,7 @@
 #include "datacore/Dataactive.h"
 #include <QDir>
 #include <QDesktopServices>
+#include <QFileInfo>
 #include "baseclass/DataException.h"
 #include <QJsonObject>
 
@@ -272,13 +273,25 @@ bool FileManagement::writeFileText(const QString &url, const QString &data) {
     return true;
 }
 
+bool FileManagement::pathExists(const QString &url) {
+    return !url.isEmpty() && QFileInfo::exists(url);
+}
+
 void FileManagement::deskOpenFile(QString url, const bool local) {
-    //检验本地文件
-    if (!url.contains("file:///") && local) {
-        url = "file:///" + url;
+    const QUrl parsedUrl(url);
+    const QUrl targetUrl = parsedUrl.isLocalFile()
+                           ? parsedUrl
+                           : (local || QFileInfo(url).isAbsolute() || parsedUrl.scheme().isEmpty()
+                              ? QUrl::fromLocalFile(url)
+                              : parsedUrl);
+
+    if (targetUrl.isLocalFile() && !pathExists(targetUrl.toLocalFile())) {
+        TLog::getInstance().logError(tr("文件不存在：") + targetUrl.toLocalFile());
+        return;
     }
 
-    QDesktopServices::openUrl(QUrl(url));
+    if (!QDesktopServices::openUrl(targetUrl))
+        TLog::getInstance().logError(tr("打开失败：") + targetUrl.toString());
 }
 
 bool FileManagement::renameFile(const QString &oldUrl, const QString &newUrl) {

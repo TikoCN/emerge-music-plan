@@ -50,6 +50,7 @@ int main(int argc, char *argv[]) {
     qmlRegisterSingletonInstance<TaskCenter>("MediaerAPI", 1, 0, "TaskCenter", center);
     qmlRegisterSingletonInstance<MediaPlayer>("MediaerAPI", 1, 0, "MediaPlayer", mediaPlayer);
     qmlRegisterSingletonInstance<OnLine>("MediaerAPI", 1, 0, "OnLine", onLine);
+    qmlRegisterSingletonInstance<DataActive>("MediaerAPI", 1, 0, "DataActive", dataActive);
     qmlRegisterSingletonInstance<ImageControl>("MediaerAPI", 1, 0, "ImageControl", imgCtr);
     MusicLibrary *   musicLibrary    = &MusicLibrary::getInstance();
     ArtistLibrary *  artistLibrary   = &ArtistLibrary::getInstance();
@@ -76,7 +77,11 @@ int main(int argc, char *argv[]) {
         Setting::setParameter(LiteralConstant::VOLUME, volume);
     });
 
-    QObject::connect(onLine, &OnLine::lrcDowned, mediaPlayer, &MediaPlayer::loadLrcList);
+    QObject::connect(onLine, &OnLine::lrcDowned, mediaPlayer, [mediaPlayer](const int musicId) {
+        if (mediaPlayer->playingMusicId() == musicId) {
+            mediaPlayer->loadLrcList(musicId);
+        }
+    });
 
     // 启动同步序列：先清理无效数据，再加载音乐
     center->startBootSequence();

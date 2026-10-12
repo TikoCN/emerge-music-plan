@@ -1,8 +1,22 @@
 #include "DataActive.h"
+#include "OnLine.h"
+#include "basetool/FileManagement.h"
 #include "sqlite/Sqlite.h"
 #include <QDir>
 #include <algorithm>
 #include "namekey.h"
+
+namespace {
+
+QString getMusicSearchKey(const MusicPtr &music) {
+    return music->artist.isEmpty() ? music->title : music->title + " " + music->artist;
+}
+
+QString getMusicCoverPath(const MusicPtr &music) {
+    return FileManagement::getBaseUrl(music->url) + ".jpg";
+}
+
+}
 
 QList<int> DataActive::musicListSort(const QList<int> &musicIdList, const SORT_TYPE sort) {
     QList<MusicPtr> musicList = getMusicCoreList(musicIdList);
@@ -115,6 +129,102 @@ void DataActive::updateMusicLevel(const int musicId, const bool level) {
 
     music->level = level;
     SQLite::getInstance().musicRepository.update(music);
+}
+
+void DataActive::downMusicCover(const int musicId) {
+    const MusicPtr pMusic = getMusicCore(musicId);
+    if (pMusic.isNull()) {
+        return;
+    }
+    OnLine::downMusicCover(getMusicSearchKey(pMusic), getMusicCoverPath(pMusic));
+}
+
+void DataActive::downMusicCoverQQMusic(const int musicId) {
+    const MusicPtr pMusic = getMusicCore(musicId);
+    if (pMusic.isNull()) {
+        return;
+    }
+    OnLine::downMusicCoverQQMusic(getMusicSearchKey(pMusic), getMusicCoverPath(pMusic));
+}
+
+void DataActive::downMusicCoverNetEase(const int musicId) {
+    const MusicPtr pMusic = getMusicCore(musicId);
+    if (pMusic.isNull()) {
+        return;
+    }
+    OnLine::downMusicCoverNetEase(getMusicSearchKey(pMusic), getMusicCoverPath(pMusic));
+}
+
+void DataActive::downCoverBing(const int musicId) {
+    const MusicPtr pMusic = getMusicCore(musicId);
+    if (pMusic.isNull()) {
+        return;
+    }
+    OnLine::downCoverBing(getMusicSearchKey(pMusic), getMusicCoverPath(pMusic));
+}
+
+void DataActive::downCoverBaidu(const int musicId) {
+    const MusicPtr pMusic = getMusicCore(musicId);
+    if (pMusic.isNull()) {
+        return;
+    }
+    OnLine::downCoverBaidu(getMusicSearchKey(pMusic), getMusicCoverPath(pMusic));
+}
+
+void DataActive::downArtistCover(const int artistId) {
+    const ArtistPtr pArtist = getArtistCore(artistId);
+    if (pArtist.isNull()) {
+        return;
+    }
+    OnLine::downArtistCover(pArtist->name, FileManagement::getArtistCoverUrl(pArtist->name));
+}
+
+void DataActive::downAlbumCover(const int albumId) {
+    const AlbumPtr pAlbum = getAlbumCore(albumId);
+    if (pAlbum.isNull()) {
+        return;
+    }
+    OnLine::downAlbumCover(pAlbum->name, FileManagement::getAlbumCoverUrl(pAlbum->name));
+}
+
+void DataActive::downLrc(const int musicId) {
+    const MusicPtr pMusic = getMusicCore(musicId);
+    if (pMusic.isNull()) {
+        return;
+    }
+    OnLine::getInstance().downLrc(getMusicSearchKey(pMusic), FileManagement::getMusicLrcUrl(musicId), musicId);
+}
+
+void DataActive::downLrcFromQQMusic(const int musicId) {
+    const MusicPtr pMusic = getMusicCore(musicId);
+    if (pMusic.isNull()) {
+        return;
+    }
+    OnLine::getInstance().downLrcFromQQMusic(getMusicSearchKey(pMusic), FileManagement::getMusicLrcUrl(musicId), musicId);
+}
+
+void DataActive::downLrcFromNetEase(const int musicId) {
+    const MusicPtr pMusic = getMusicCore(musicId);
+    if (pMusic.isNull()) {
+        return;
+    }
+    OnLine::getInstance().downLrcFromNetEase(getMusicSearchKey(pMusic), FileManagement::getMusicLrcUrl(musicId), musicId);
+}
+
+void DataActive::downMediaFromNetEase(const int musicId) {
+    const MusicPtr pMusic = getMusicCore(musicId);
+    if (pMusic.isNull()) {
+        return;
+    }
+    OnLine::downMediaFromNetEase(getMusicSearchKey(pMusic), pMusic->url);
+}
+
+void DataActive::downMediaFromQQMusic(const int musicId) {
+    const MusicPtr pMusic = getMusicCore(musicId);
+    if (pMusic.isNull()) {
+        return;
+    }
+    OnLine::downMediaFromQQMusic(getMusicSearchKey(pMusic), pMusic->url);
 }
 
 void DataActive::updatePlaylistName(const int playListId, const QString &name) {

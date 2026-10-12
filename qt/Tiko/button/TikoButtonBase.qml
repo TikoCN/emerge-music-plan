@@ -18,16 +18,16 @@ MouseArea {
 
                    switch(mouse.button){
                        case Qt.LeftButton:
-                       leftClicked()
+                       leftClicked(Qt.point(mouse.x, mouse.y))
                        break
                        case Qt.RightButton:
-                       rightClicked()
+                       rightClicked(Qt.point(mouse.x, mouse.y))
                        break
                    }
                }
 
-    signal rightClicked()
-    signal leftClicked()
+    signal rightClicked(point position)
+    signal leftClicked(point position)
     signal anyClicked()
 
     property bool checkable: false

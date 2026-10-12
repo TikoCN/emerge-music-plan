@@ -89,7 +89,7 @@ Item {
             //排序
             TikoButtonDefault{
                 Layout.minimumWidth: 70
-                onLeftClicked: sort()
+                onLeftClicked: position => sort(position)
                 textLine.text: qsTr("排序")
                 icon.source: "qrc:/image/sort.svg"
 
@@ -105,10 +105,10 @@ Item {
                     }
                 }
 
-                function sort(){
+                function sort(position){
                     if (sortMenuComponent.status === Component.Ready){
                         const menu = sortMenuComponent.createObject(this);
-                        menu.popup()
+                        menu.popupAt(this, position.x, position.y)
                     }
                 }
             }

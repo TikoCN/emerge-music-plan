@@ -13,7 +13,7 @@ MouseArea {
     onClicked: mouse => {
                    if (mouse.button === Qt.RightButton) {
                        const menu = comMenu.createObject(mouseHover);
-                       menu.popup();
+                       menu.popupAt(mouseHover, mouse.x, mouse.y);
                    }
                }
 
@@ -46,7 +46,8 @@ MouseArea {
     ListView {
         id: lrcList
         anchors.fill: parent
-        highlightRangeMode: ListView.StrictlyEnforceRange
+        property bool pointerHovered: false
+        highlightRangeMode: ListView.NoHighlightRange
         preferredHighlightBegin: width / 2
         preferredHighlightEnd: width / 2
         reuseItems: true
@@ -79,9 +80,17 @@ MouseArea {
             buildLrcList();
         }
         function onPlayingLrcIdChanged(playingLrcId) {
-            lrcList.currentIndex = playingLrcId;
+            if (!lrcList.pointerHovered) {
+                lrcList.currentIndex = playingLrcId;
+            }
         }
     }
+
+    onPositionChanged: mouse => {
+        lrcList.pointerHovered = true;
+    }
+
+    onExited: lrcList.pointerHovered = false
 
     //插入歌词
     function buildLrcList() {
