@@ -2,34 +2,46 @@
 #include <QJsonObject>
 #include <QTimer>
 
-/*
- * 加载歌词
+/**
+ * @brief 更新与播放器同步的歌词播放位置。
+ * @param newPlayingPosition 播放位置，单位为毫秒。
  */
-void LrcDataControl::setPlayingPosition(long newPlayingPosition) {
+void LrcDataControl::setPlayingPosition(const qint64 newPlayingPosition) {
     if (m_playingPosition == newPlayingPosition)
         return;
     m_playingPosition = newPlayingPosition;
     emit playingPositionChanged();
 }
 
+/**
+ * @brief 初始化歌词状态，并按播放器的真实播放位置刷新歌词。
+ */
 LrcDataControl::LrcDataControl()
-    : m_playingLrcId(-1) {
+    : m_lrcModel(new LrcModel(this)),
+      m_playingLrcId(-1),
+      m_updateLrcTimer(new QTimer(this)),
+      m_playingPosition(0) {
     connect(m_player, &QMediaPlayer::playingChanged, this, [this](const bool isPlaying) {
         if (isPlaying) {
-            m_updateLrcTimer->start(20);
+            m_updateLrcTimer->start(16);
         } else {
             m_updateLrcTimer->stop();
         }
     });
 
     connect(m_player, &QMediaPlayer::positionChanged, this, [this](const qint64 time) {
-        m_startTime = 0;
+        setPlayingPosition(time);
+        selectPlayLrc(time);
+        emit lrcUpdate();
     });
 
-    m_updateLrcTimer = new QTimer(this);
+    connect(m_player, &QMediaPlayer::sourceChanged, this, [this](const QUrl &) {
+        setPlayingPosition(0);
+    });
+
     connect(m_updateLrcTimer, &QTimer::timeout, this, [this]() {
-        m_startTime       += m_updateLrcTimer->interval();
-        m_playingPosition = m_startTime + m_player->position();
+        // 歌词跟随实际音频位置，避免加载或播放停滞时继续自行推进。
+        setPlayingPosition(m_player->position());
         selectPlayLrc(m_playingPosition);
         emit lrcUpdate();
     });
@@ -42,6 +54,7 @@ LrcDataControl::~LrcDataControl() {
 void LrcDataControl::loadLrcList(const int musicId) {
     m_lrcList      = FileManagement::getMusicLyricsData(musicId);
     m_playingLrcId = -1;
+    m_lrcModel->setLyrics(m_lrcList);
     emit lrcLoaded();
 }
 
@@ -75,7 +88,7 @@ void LrcDataControl::selectPlayLrc(const qint64 time) {
     }
 }
 
-long long LrcDataControl::getPlayingPosition() const {
+qint64 LrcDataControl::getPlayingPosition() const {
     return m_playingPosition;
 }
 
@@ -108,4 +121,16 @@ LrcData LrcDataControl::getLrcData(const int id) {
 
 int LrcDataControl::getLrcListLength() const {
     return static_cast<int>(m_lrcList.size());
+}
+
+LrcModel *LrcDataControl::getLrcModel() const {
+    return m_lrcModel;
+}
+
+void LrcDataControl::refreshLrcModel() {
+    m_lrcModel->setLyrics(m_lrcList);
+}
+
+void LrcDataControl::clearLrcModel() {
+    m_lrcModel->clear();
 }

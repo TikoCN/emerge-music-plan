@@ -24,6 +24,13 @@ private:
     int        m_playingMusicListId;    //正在播放歌曲的列表id（修正命名大写错误）
     int        m_playingMusicId;        // 正在播放音乐id
     MusicPtr   m_playingMusic;
+    quint64    m_playbackRevision = 0;  // 播放请求版本，用于取消过期的自动切歌和启动操作。
+    bool       m_startPending = false;  // 当前切歌请求是否仍在等待音源加载完成后启动。
+
+    /**
+     * @brief 检查 MP3 启动后的真实进度，仅对仍停在零位置的播放请求尝试一次恢复。
+     */
+    void schedulePlaybackStartCheck();
 
     Q_PROPERTY(int playingMusicId READ playingMusicId CONSTANT)
     Q_PROPERTY(int loopType READ getLoopType WRITE setLoopType NOTIFY loopTypeChanged FINAL)

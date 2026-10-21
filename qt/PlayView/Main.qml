@@ -17,11 +17,16 @@ TikoFrameless{
     height:Setting.windowRect.height
     visible: true
     title: qsTr("尘星音乐")
+    onClosing: function(close) {
+        close.accepted = false
+        TaskbarManager.hideMainWindow()
+    }
     property int showType: 0
     property bool isMaxSize: visibility === 4
     property var resourcePreviewWindow: null
 
     Component.onDestruction:{
+        TaskbarManager.setMainWindow(null)
         //写入配置
         var mousePos = editPage.mapToGlobal(0, 0)
         Setting.windowRect.width = window.width
@@ -121,7 +126,8 @@ TikoFrameless{
                 window.showMaximized()
             }
         })
-        CoreData.windowClose.connect(close)
+        CoreData.windowClose.connect(TaskbarManager.hideMainWindow)
+        TaskbarManager.setMainWindow(window)
     }
 
     Connections {

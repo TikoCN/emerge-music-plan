@@ -39,7 +39,7 @@ Item {
         delegate: CoreMusicLine {
             width: playMoreMusicGrid.width / 3 - 10
             isLittle: true
-            onPlayMusic: MediaPlayer.buildPlayingListByMusicId(model.id)
+            onPlayMusic: (musicId, listId) => MediaPlayer.buildPlayingListByMusicId(musicId)
         }
     }
 }

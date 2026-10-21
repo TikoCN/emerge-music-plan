@@ -16,8 +16,13 @@ MediaPlayData::MediaPlayData() {
             &FrequencySpectrum::runSpectrum);
     connect(m_frequencySpectrum, &FrequencySpectrum::dataFinished, this, [this](const QVector<double> &data) {
         m_allSamples = data;
-        emit bufferSampleChanged();
+        // 合并音频缓冲区的更新，限制界面频谱刷新频率并始终绘制最新数据。
+        if (!m_visualizationTimer.isActive()) {
+            m_visualizationTimer.start(33);
+        }
     });
+    m_visualizationTimer.setSingleShot(true);
+    connect(&m_visualizationTimer, &QTimer::timeout, this, &MediaPlayData::bufferSampleChanged);
 
     connect(m_player, &QMediaPlayer::positionChanged, this, &MediaPlayData::updateAudioOutPut);
 }
@@ -40,9 +45,11 @@ MediaPlayData::~MediaPlayData() {
 
 void MediaPlayData::clearData() {
     m_allSamples.clear();
+    m_visualizationTimer.stop();
 
     //发送信号，表示完成
     emit finishClearData();
+    emit bufferSampleChanged();
 }
 
 void MediaPlayData::updateAudioOutPut() {

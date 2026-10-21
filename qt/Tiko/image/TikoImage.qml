@@ -16,7 +16,7 @@ Image {
     property bool enableUnifiedColor: true
     property color unifiedColor: TikoSeit.theme.colorFgDefault
 
-    layer.enabled: true
+    layer.enabled: enableUnifiedColor
     layer.effect: MultiEffect {
         colorization: enableUnifiedColor ? 1 : 0
         colorizationColor: unifiedColor

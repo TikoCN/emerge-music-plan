@@ -4,6 +4,8 @@
 
 #include "FrequencySpectrum.h"
 
+#include <algorithm>
+#include <cmath>
 #include <qmath.h>
 #include <QVector>
 #include "fftw3.h"
@@ -12,6 +14,13 @@
 
 FrequencySpectrum::FrequencySpectrum()
     : fftwSize(2048) {
+    // 固定 FFT 长度并复用工作区和计划，避免每个音频块重复创建 FFTW 资源。
+    m_fftInput = static_cast<fftw_complex *>(fftw_malloc(sizeof(fftw_complex) * fftwSize));
+    m_fftOutput = static_cast<fftw_complex *>(fftw_malloc(sizeof(fftw_complex) * fftwSize));
+    if (m_fftInput != nullptr && m_fftOutput != nullptr) {
+        m_fftPlan = fftw_plan_dft_1d(fftwSize, m_fftInput, m_fftOutput, FFTW_FORWARD, FFTW_ESTIMATE);
+    }
+
     m_thread = new QThread;
     m_thread->start();
     moveToThread(m_thread);
@@ -21,6 +30,11 @@ FrequencySpectrum::~FrequencySpectrum() {
     m_thread->quit();
     m_thread->wait();
     delete m_thread;
+    if (m_fftPlan != nullptr) {
+        fftw_destroy_plan(m_fftPlan);
+    }
+    fftw_free(m_fftInput);
+    fftw_free(m_fftOutput);
 }
 
 inline void FrequencySpectrum::mixChannels(const int frameCount, const int channelCount, QVector<double> &data) {
@@ -38,54 +52,55 @@ inline void FrequencySpectrum::mixChannels(const int frameCount, const int chann
 }
 
 inline void FrequencySpectrum::applyHannWindow() {
-    // 加窗
-    const int N = static_cast<int>(data.size());
-    for (int i = 0; i < N; ++i) {
-        const double window = 0.5 * (1 - std::cos(2 * M_PI * i / (N - 1)));
-        data[i]             *= window; // 将原始数据乘以窗系数
+    const int windowSize = data.size();
+    if (windowSize != m_windowSize) {
+        m_hannWindow.resize(windowSize);
+        windowSum = 0.0;
+        for (int i = 0; i < windowSize; ++i) {
+            const double window = 0.5 * (1 - std::cos(2 * M_PI * i / (windowSize - 1)));
+            m_hannWindow[i] = window;
+            windowSum += window;
+        }
+        m_windowSize = windowSize;
+    }
+
+    for (int i = 0; i < windowSize; ++i) {
+        data[i] *= m_hannWindow[i];
     }
 }
 
 inline void FrequencySpectrum::performFFT() {
-    //计算傅里叶变换
-    auto *in_ptr  = static_cast<fftw_complex *>(fftw_malloc(sizeof(fftw_complex) * fftwSize));
-    auto *out_ptr = static_cast<fftw_complex *>(fftw_malloc(sizeof(fftw_complex) * fftwSize));
-
-    // 将vector数据复制到fftw_complex数组中
-    for (int i = 0; i < fftwSize; ++i) {
-        in_ptr[i][0] = data[i];
-        in_ptr[i][1] = 0.0;
+    if (m_fftPlan == nullptr) {
+        data.clear();
+        return;
     }
 
-    // 创建计划并计算DFT
-    // ReSharper disable once CppLocalVariableMayBeConst
-    fftw_plan plan = fftw_plan_dft_1d(fftwSize, in_ptr, out_ptr, FFTW_FORWARD, FFTW_ESTIMATE);
-    fftw_execute(plan);
+    for (int i = 0; i < fftwSize; ++i) {
+        m_fftInput[i][0] = data[i];
+        m_fftInput[i][1] = 0.0;
+    }
+
+    fftw_execute(m_fftPlan);
 
     // 计算幅度谱
     const int useLength = fftwSize / 2;
     for (int i = 0; i < useLength; ++i) {
         data[i] = std::sqrt(
-            out_ptr[i][0] * out_ptr[i][0] +
-            out_ptr[i][1] * out_ptr[i][1]
+            m_fftOutput[i][0] * m_fftOutput[i][0] +
+            m_fftOutput[i][1] * m_fftOutput[i][1]
         );
     }
     data.resize(useLength);
-
-    // 清理
-    fftw_destroy_plan(plan);
-    fftw_free(in_ptr);
-    fftw_free(out_ptr);
 }
 
 inline void FrequencySpectrum::normalizeData() {
-    //归一化
+    // 按 Hann 窗的增益还原单边幅度谱，并将 dBFS 映射到显示范围。
+    constexpr double floorDb = -72.0;
+    const double scale = windowSum > 0.0 ? 2.0 / windowSum : 0.0;
     for (double &val: data) {
-        val /= fftwSize * 0.09;
-        if (val > 0.3) {
-            val = val * 0.5 + 0.1;
-        }
-        val = std::max(val, 0.0);
+        const double amplitude = val * scale;
+        const double db = amplitude > 0.0 ? 20.0 * std::log10(amplitude) : floorDb;
+        val = std::clamp((db - floorDb) / -floorDb, 0.0, 1.0);
     }
 }
 
@@ -110,37 +125,50 @@ inline void FrequencySpectrum::smoothData() {
         }
     }
 
-    // 当前平滑
-    QVector<double> smooth(data.size());
-    smooth[0] = data[0];
-    for (int i = 1; i < data.size(); ++i) {
-        smooth[i] = smooth[i - 1] + (data[i] - smooth[i - 1]) * 0.8;
-        data[i]   = smooth[i];
-    }
     lastData = data;
 }
 
 inline void FrequencySpectrum::downsampleData() {
-    // 降采样
-    unsigned int lastId    = 0;
-    double       lastValue = 0.0;
-    double       hz        = 0;
-    const double max       = static_cast<double>(sampleRate) / fftwSize;
-    const double aim       = std::min(60, static_cast<int>(data.length()));
-    const double cell      = max / aim;
-
-    for (int i = 0; i < aim; ++i) {
-        const double aimN = i * cell;
-        hz                = std::exp(aimN);
-        const auto n      = static_cast<unsigned int>(hz * static_cast<double>(fftwSize) / static_cast<double>(sampleRate));
-        if (lastId != n && n < static_cast<unsigned int>(data.size())) {
-            lastValue = data[n];
-            lastId    = n;
-        }
-        // 无论索引是否重复，都写入有效值，避免旧数据残留
-        data[i] = lastValue;
+    // 用对数频率分箱覆盖可听频段，避免线性抽样丢失低频细节。
+    constexpr int displayBins = 60;
+    const int spectrumSize = data.size();
+    if (spectrumSize == 0 || sampleRate <= 0 || fftwSize <= 0) {
+        data.clear();
+        return;
     }
-    data.resize(static_cast<int>(aim));
+
+    const int binCount = displayBins;
+    const double maxFrequency = static_cast<double>(sampleRate) / 2.0;
+    const double minFrequency = std::min(20.0, maxFrequency);
+    const double ratio = maxFrequency / minFrequency;
+    const double binWidth = static_cast<double>(sampleRate) / fftwSize;
+    QVector<double> result(binCount);
+
+    for (int i = 0; i < binCount; ++i) {
+        const double lowFrequency = minFrequency * std::pow(ratio, static_cast<double>(i) / binCount);
+        const double highFrequency = minFrequency * std::pow(ratio, static_cast<double>(i + 1) / binCount);
+        const int firstBin = std::clamp(static_cast<int>(std::ceil(lowFrequency / binWidth)), 0, spectrumSize);
+        const int lastBin = std::clamp(static_cast<int>(std::ceil(highFrequency / binWidth)), 0, spectrumSize);
+
+        double peak = 0.0;
+        if (firstBin == lastBin) {
+            // 音频块较短时，一个 FFT 频点可能覆盖多个显示频段，按中心频率选最近频点。
+            const double centerFrequency = std::sqrt(lowFrequency * highFrequency);
+            const int minBin = spectrumSize > 1 ? 1 : 0;
+            const int nearestBin = std::clamp(
+                static_cast<int>(std::round(centerFrequency / binWidth)),
+                minBin,
+                spectrumSize - 1);
+            peak = data[nearestBin];
+        } else {
+            // 有多个 FFT 频点时取峰值，避免窄带音调被区间平均压低。
+            for (int bin = firstBin; bin < lastBin; ++bin) {
+                peak = std::max(peak, data[bin]);
+            }
+        }
+        result[i] = peak;
+    }
+    data = std::move(result);
 }
 
 void FrequencySpectrum::runSpectrum(const QAudioBuffer &buffer) {
@@ -148,20 +176,23 @@ void FrequencySpectrum::runSpectrum(const QAudioBuffer &buffer) {
     const int channelCount = buffer.format().channelCount();
     sampleRate             = buffer.format().sampleRate();
 
-    originalData = getOriginalData(buffer);
-    mixChannels(frameCount, channelCount, originalData);
-
-    const int len = static_cast<int>(originalData.length());
-
-    fftwSize = 1;
-    while (fftwSize < len) {
-        fftwSize <<= 1;;
+    if (frameCount <= 1 || channelCount <= 0 || sampleRate <= 0) {
+        return;
     }
 
-    originalData.resize(fftwSize);
+    originalData = getOriginalData(buffer);
+    if (originalData.size() != frameCount * channelCount) {
+        return;
+    }
+    mixChannels(frameCount, channelCount, originalData);
+
     data = originalData;
+    if (data.size() > fftwSize) {
+        data.resize(fftwSize);
+    }
 
     applyHannWindow();
+    data.resize(fftwSize);
 
     // 计算fft 得到幅度
     performFFT();

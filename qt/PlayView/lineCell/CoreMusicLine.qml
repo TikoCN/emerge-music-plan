@@ -11,7 +11,10 @@ Item {
     implicitWidth: 100
     clip: true
 
-    property int listId: 0
+    required property var model
+    required property int index
+
+    property int listId: index
     property int playlistId: -1
     property bool isLittle: false
     signal playMusic(int musicId, int listId)
@@ -24,7 +27,7 @@ Item {
         onClicked: (mouse) => {
                        switch(mouse.button){
                            case Qt.LeftButton:
-                           playMusic(model.id, listId)
+                           musicLine.playMusic(musicLine.model.id, musicLine.listId)
                            break
                            case Qt.RightButton:
                            createMenu(musicLine, mouse.x, mouse.y)
@@ -45,7 +48,7 @@ Item {
                 height: 50
                 normalUrl: "qrc:/image/music.svg"
                 baseUrl: "image://cover/musicFile?id=" +
-                         model.id.toString() +
+                         musicLine.model.id.toString() +
                          "&radius=10"
             }
 
@@ -55,13 +58,13 @@ Item {
                                   (parent.width - toolItem.width - cover.width - durationTextView.width - 30) / 2
 
                 TikoTextLine{
-                    text: model.title
+                    text: musicLine.model.title
                     height: 30
                     width: parent.width
                     level: 2
                 }
                 TikoTextLine{
-                    text: model.artist
+                    text: musicLine.model.artist
                     height: 20
                     width: parent.width
                     level: 0
@@ -69,7 +72,7 @@ Item {
             }
 
             TikoTextLine{
-                text: model.album
+                text: musicLine.model.album
                 width: coreName.width
                 height: 50
             }
@@ -89,8 +92,8 @@ Item {
                         TikoButtonIcon{
                             width: 30
                             height: parent.height
-                            onClicked: MusicLibrary.updateLove(model.id, !model.isLove)
-                            icon.source: model.isLove ?
+                            onClicked: MusicLibrary.updateLove(musicLine.model.id, !musicLine.model.isLove)
+                            icon.source: musicLine.model.isLove ?
                                              "qrc:/image/love.svg" : "qrc:/image/unlove.svg"
                         }
 
@@ -101,19 +104,14 @@ Item {
 
                             Repeater{
                                 delegate: TikoButtonIcon{
+                                    required property int index
                                     width: 20
                                     height: 50
-                                    onClicked: MusicLibrary.updateLevel(model.id, level)
-                                    icon.source: model.level >= level ?
+                                    onClicked: MusicLibrary.updateLevel(musicLine.model.id, index + 1)
+                                    icon.source: musicLine.model.level >= index + 1 ?
                                                      "qrc:/image/int.svg" : "qrc:/image/unInt.svg"
                                 }
-                                model: ListModel{
-                                    ListElement{level: 1}
-                                    ListElement{level: 2}
-                                    ListElement{level: 3}
-                                    ListElement{level: 4}
-                                    ListElement{level: 5}
-                                }
+                                model: 5
                             }
                         }
                         TikoButtonIcon{
@@ -128,7 +126,7 @@ Item {
 
             TikoTextLine{
                 id: durationTextView
-                text: BaseTool.typeConversion.timeToString(model.duration)
+                text: BaseTool.typeConversion.timeToString(musicLine.model.duration)
                 width: CoreData.fontW * 3
                 height: 50
             }
@@ -159,8 +157,8 @@ Item {
     Component {
         id: menuMusicComponent
         MenuMusicPlaylist {
-            musicId: model.id
-            playlistId: playlistId
+            musicId: musicLine.model.id
+            playlistId: musicLine.playlistId
         }
     }
 

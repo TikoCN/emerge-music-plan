@@ -10,6 +10,10 @@ find_package(Qt6 REQUIRED COMPONENTS Quick)
 qt_standard_project_setup(REQUIRES 6.5)
 
 add_library(PlayViewLib STATIC)
+target_include_directories(PlayViewLib PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/AudioVisualizationRectangle
+        ${CMAKE_CURRENT_SOURCE_DIR}/LineLrc
+)
 
 set_source_files_properties(CoreData.qml
         PROPERTIES
@@ -20,6 +24,11 @@ qt_policy(SET QTP0004 NEW)
 qt_add_qml_module(PlayViewLib
         URI PlayView
         VERSION 1.0
+        SOURCES
+        AudioVisualizationRectangle/SpectrumItem.h
+        AudioVisualizationRectangle/SpectrumItem.cpp
+        LineLrc/LrcSceneGraphItem.h
+        LineLrc/LrcSceneGraphItem.cpp
         QML_FILES
         Main.qml
         ResourcePreview.qml

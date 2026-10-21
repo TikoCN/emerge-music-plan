@@ -31,7 +31,7 @@ ListView{
         listId: index
         isLittle: musicListView.isLittle
         playlistId: musicListView.playlistId
-        visible: !onlyLove || model.isLove
+        visible: !musicListView.onlyLove || model.isLove
         onPlayMusic: (musicId, listId) => {musicListView.play(musicId, listId)}
     }
 }

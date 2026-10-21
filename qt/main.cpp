@@ -1,5 +1,5 @@
 #include <QAudioOutput>
-#include <QGuiApplication>
+#include <QApplication>
 #include <QQmlApplicationEngine>
 #include <QObject>
 #include <QProcess>
@@ -22,9 +22,11 @@
 #include "model/ArtistModel.h"
 #include "model/PlaylistModel.h"
 #include "model/MusicModel.h"
+#include "TaskbarManager.h"
 
 int main(int argc, char *argv[]) {
-    QGuiApplication app(argc, argv);
+    QApplication app(argc, argv);
+    app.setQuitOnLastWindowClosed(false);
 
     FileManagement::makeAllDir();
 
@@ -38,6 +40,7 @@ int main(int argc, char *argv[]) {
     OnLine *       onLine      = &OnLine::getInstance();
     ImageControl * imgCtr      = &ImageControl::getInstance();
     ImageProvider *imgPrd      = new ImageProvider();
+    TaskbarManager *taskbar    = new TaskbarManager(&app);
 
     qmlRegisterUncreatableType<Album>("MediaerAPI", 1, 0, "albumData", "无法直接创建Album实例");
     qmlRegisterUncreatableType<Music>("MediaerAPI", 1, 0, "musicData", "无法直接创建Music实例");
@@ -52,6 +55,7 @@ int main(int argc, char *argv[]) {
     qmlRegisterSingletonInstance<OnLine>("MediaerAPI", 1, 0, "OnLine", onLine);
     qmlRegisterSingletonInstance<DataActive>("MediaerAPI", 1, 0, "DataActive", dataActive);
     qmlRegisterSingletonInstance<ImageControl>("MediaerAPI", 1, 0, "ImageControl", imgCtr);
+    qmlRegisterSingletonInstance<TaskbarManager>("MediaerAPI", 1, 0, "TaskbarManager", taskbar);
     MusicLibrary *   musicLibrary    = &MusicLibrary::getInstance();
     ArtistLibrary *  artistLibrary   = &ArtistLibrary::getInstance();
     AlbumLibrary *   albumLibrary    = &AlbumLibrary::getInstance();

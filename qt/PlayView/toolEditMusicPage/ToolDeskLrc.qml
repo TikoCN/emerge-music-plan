@@ -15,7 +15,9 @@ Window{
     width: (Setting.deskLrcFont.pixelSize * 20 > 600 ? Setting.deskLrcFont.pixelSize * 20: 600) + 40
     height: deskLrcToolArea.height + TikoSeit.emphasizeMargins * 2
 
+    Component.onCompleted: TaskbarManager.setLyricsWindow(deskLrcTool)
     Component.onDestruction: {
+        TaskbarManager.setLyricsWindow(null)
         var mousePos = deskLrcToolArea.mapToGlobal(0, 0)
         Setting.lrcTopPoint.x = mousePos.x
         Setting.lrcTopPoint.y = mousePos.y
@@ -159,7 +161,7 @@ Window{
                 TikoButtonIcon{
                     id: lrcBtn
                     icon.source: "qrc:/image/close.svg"
-                    onClicked: deskLrcTool.destroy()
+                    onClicked: TaskbarManager.hideLyricsWindow()
                     anchors.left: fontAscBtn.right
                     anchors.top: parent.top
                     anchors.margins: TikoSeit.emphasizeMargins

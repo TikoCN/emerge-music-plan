@@ -5,7 +5,9 @@
 #ifndef MUSICPLAY_FREQUENCYSPECTRUM_H
 #define MUSICPLAY_FREQUENCYSPECTRUM_H
 #include <QAudioBuffer>
+#include <QVector>
 #include <qcontainerfwd.h>
+#include <fftw3.h>
 
 
 class FrequencySpectrum : public QObject {
@@ -44,6 +46,12 @@ private:
     int             sampleCount{};
     int             sampleRate{};
     int             fftwSize;
+    int             m_windowSize = 0;
+    double          windowSum{};
+    QVector<double> m_hannWindow;
+    fftw_complex *  m_fftInput = nullptr;
+    fftw_complex *  m_fftOutput = nullptr;
+    fftw_plan       m_fftPlan = nullptr;
 };
 
 

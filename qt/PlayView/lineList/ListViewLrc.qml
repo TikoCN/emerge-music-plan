@@ -47,24 +47,28 @@ MouseArea {
         id: lrcList
         anchors.fill: parent
         property bool pointerHovered: false
-        highlightRangeMode: ListView.NoHighlightRange
-        preferredHighlightBegin: width / 2
-        preferredHighlightEnd: width / 2
+        highlightRangeMode: ListView.StrictlyEnforceRange
+        preferredHighlightBegin: height / 2
+        preferredHighlightEnd: height / 2
         reuseItems: true
         highlightMoveVelocity: -1
         highlightMoveDuration: 500
 
         delegate: CoreLrcLine {
-            lrcId: model.lrc
+            lrcId: model.lrcId
+            startTime: model.startTime
+            duration: model.endTime
+            startList: model.startList
+            endList: model.endList
+            textList: model.textList
+            helpTextList: model.helpTextList
             width: lrcList.width
         }
-        model: ListModel {
-            id: lrcDataList
-        }
+        model: MediaPlayer.lrcModel
 
         Text {
             anchors.centerIn: parent
-            visible: lrcDataList.count === 0
+            visible: lrcList.count === 0
             text: "Music  Lryic"
             color: TikoSeit.theme.colorTextDefault
             font: Setting.lrcFont
@@ -76,9 +80,6 @@ MouseArea {
     Connections {
         target: MediaPlayer
 
-        function onLrcLoaded() {
-            buildLrcList();
-        }
         function onPlayingLrcIdChanged(playingLrcId) {
             if (!lrcList.pointerHovered) {
                 lrcList.currentIndex = playingLrcId;
@@ -92,18 +93,15 @@ MouseArea {
 
     onExited: lrcList.pointerHovered = false
 
-    //插入歌词
+    // 显示页面时用歌词列表模型恢复角色数据。
     function buildLrcList() {
-        lrcDataList.clear()
-        const length = MediaPlayer.getLrcListLength();
-        for (let i = 0; i < length; i++) {
-            lrcDataList.append({
-                                   lrc: i
-                               });
+        MediaPlayer.refreshLrcModel()
+        if (MediaPlayer.playingLrcId >= 0 && MediaPlayer.playingLrcId < lrcList.count) {
+            lrcList.currentIndex = MediaPlayer.playingLrcId
         }
     }
 
     function clearData() {
-        lrcDataList.clear()
+        MediaPlayer.clearLrcModel()
     }
 }

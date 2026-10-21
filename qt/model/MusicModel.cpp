@@ -76,8 +76,12 @@ void MusicModel::clear() {
 }
 
 void MusicModel::fetchMore(const QModelIndex &parent) {
-    Q_UNUSED(parent);
+    if (parent.isValid() || m_loader.isFinish) {
+        return;
+    }
+
     QList<int> list;
+    bool paginated = true;
     switch (type) {
         case AlbumModel:
             list = SQLite::getInstance().albumRepository.getMusic(albumId, m_loader.limit, m_loader.offset, sort);
@@ -90,24 +94,29 @@ void MusicModel::fetchMore(const QModelIndex &parent) {
             break;
         case RandModel:
             list = SQLite::getInstance().musicRepository.getRandList(-1);
+            paginated = false;
             break;
         case KeyModel:
             list = SQLite::getInstance().musicRepository.getByKey(key, m_loader.limit, m_loader.offset);
             break;
         case MostPlayedModel:
             list = SQLite::getInstance().musicRepository.getMostPlayed();
+            paginated = false;
             break;
         case MostNewModel:
             list = SQLite::getInstance().musicRepository.getMostNew();
+            paginated = false;
             break;
         case NowQueueModel:
             list = SQLite::getInstance().queueRepository.getMusic();
+            paginated = false;
             break;
     }
-    m_loader.offset = static_cast<int>(list.size());
-    if (m_loader.offset < 20) {
-        m_loader.isFinish = true;
-    }
+    // 偏移量累计数据库返回的行数，避免后续页重复加载并使播放行号与显示内容错位。
+    const int fetchedCount = static_cast<int>(list.size());
+    m_loader.offset += fetchedCount;
+    // 一次性查询已返回完整列表，不应再按分页方式重复追加。
+    m_loader.isFinish = !paginated || fetchedCount < m_loader.limit;
 
     QList<MusicPtr> newList;
     newList.reserve(list.size());
@@ -130,8 +139,7 @@ void MusicModel::fetchMore(const QModelIndex &parent) {
 }
 
 bool MusicModel::canFetchMore(const QModelIndex &parent) const {
-    Q_UNUSED(parent);
-    return !m_loader.isFinish;
+    return !parent.isValid() && !m_loader.isFinish;
 }
 
 void MusicModel::updateMusicLove(const int musicId, const bool isLove) {

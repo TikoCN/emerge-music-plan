@@ -7,7 +7,12 @@ TikoSliderH {
     height: 10
     from: 0
     to: MediaPlayer.player.duration
-    value: MediaPlayer.player.position
+    Binding {
+        target: playControl
+        property: "value"
+        value: MediaPlayer.player.position
+        when: !playControl.pressed
+    }
     size: 1
     onMoved: {MediaPlayer.player.setPosition(value)}
 }

@@ -9,6 +9,36 @@ import PlayView
 import QtQuick.Effects
 
 Item {
+    id: root
+
+    property ToolDeskLrc deskLrcWindow: null
+
+    Component {
+        id: deskLrcCom
+        ToolDeskLrc {
+        }
+    }
+
+    function showDeskLyrics() {
+        if (deskLrcWindow === null) {
+            deskLrcWindow = deskLrcCom.createObject()
+            if (deskLrcWindow === null) {
+                return
+            }
+            TaskbarManager.setLyricsWindow(deskLrcWindow)
+        }
+
+        TaskbarManager.showLyricsWindow()
+    }
+
+    Connections {
+        target: TaskbarManager
+
+        function onLyricsWindowRequested() {
+            root.showDeskLyrics()
+        }
+    }
+
     //背景
     Rectangle {
         anchors.fill: parent
@@ -222,21 +252,14 @@ Item {
         //text: qsTr("桌面歌词")
         onAnyClicked: {
             if (deskLrcWindow === null) {
-                deskLrcWindow = deskLrcCom.createObject()
-                deskLrcWindow.show()
+                root.showDeskLyrics()
+            } else if (deskLrcWindow.visible) {
+                TaskbarManager.hideLyricsWindow()
             } else {
-                deskLrcWindow.close()
-                deskLrcWindow.destroy()
-                deskLrcWindow = null
+                TaskbarManager.showLyricsWindow()
             }
         }
 
-        property ToolDeskLrc deskLrcWindow: null
-        Component {
-            id: deskLrcCom
-            ToolDeskLrc {
-            }
-        }
     }
 
     //播放列表
@@ -264,7 +287,12 @@ Item {
         width: parent.width * 0.4
         from: 0
         to: MediaPlayer.player.duration
-        value: MediaPlayer.player.position
+        Binding {
+            target: playPos
+            property: "value"
+            value: MediaPlayer.player.position
+            when: !playPos.pressed
+        }
         anchors.top: parent.top
         anchors.topMargin: TikoSeit.emphasizeMargins
         x: parent.width / 2 - width / 2

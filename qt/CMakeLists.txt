@@ -22,6 +22,7 @@ qt_standard_project_setup(REQUIRES 6.8)
 
 qt_add_executable(appmusicPlay
     main.cpp
+        TaskbarManager.cpp TaskbarManager.h
         sqlite/QueueRepository.cpp
         sqlite/QueueRepository.h
 )
@@ -73,6 +74,7 @@ qt_add_qml_module(appmusicPlay
         library/AlbumLibrary.h library/AlbumLibrary.cpp
         library/PlaylistLibrary.h library/PlaylistLibrary.cpp
         model/MusicModel.h model/MusicModel.cpp
+        model/LrcModel.h model/LrcModel.cpp
         model/AlbumModel.h model/AlbumModel.cpp
         model/ArtistModel.h model/ArtistModel.cpp
         model/PlaylistModel.h model/PlaylistModel.cpp
@@ -128,6 +130,7 @@ set_target_properties(appmusicPlay PROPERTIES
     OUTPUT_NAME "music"
 )
 
+target_link_libraries(appmusicPlay PRIVATE Qt6::Widgets)
 target_link_libraries(appmusicPlay PRIVATE Qt6::Multimedia)
 target_link_libraries(appmusicPlay PRIVATE Qt6::Quick)
 target_link_libraries(appmusicPlay PRIVATE Qt6::Network)

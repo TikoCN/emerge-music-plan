@@ -10,14 +10,13 @@ Loader {
     property color playingColor: TikoSeit.theme.colorFgDefault
     property color normalColor: TikoSeit.theme.colorFgHint
     property int lrcId: -1
-    property var wordList: []
-    property int startTime: lrc.startTime
-    property int duration: lrc.endTime
-    property var startList: lrc.startList
-    property var endList: lrc.endList
-    property var textList: lrc.textList
-    property var helpTextList: lrc.helpTextList
-    property lrcData lrc: MediaPlayer.getLrcData(lrcId)
+    property int startTime: 0
+    property int duration: 0
+    property bool hovered: mouseAreaItem.containsMouse
+    property var startList: []
+    property var endList: []
+    property var textList: []
+    property var helpTextList: []
 
     sourceComponent:  textList.length === 0 ? drawLoadLineCom : drawLrcLineCom
 
@@ -31,6 +30,7 @@ Loader {
             endList: coreLrcLine.endList
             textList: coreLrcLine.textList
             helpTextList: coreLrcLine.helpTextList
+            hovered: coreLrcLine.hovered
 
             playingColor: coreLrcLine.playingColor
             normalColor: coreLrcLine.normalColor

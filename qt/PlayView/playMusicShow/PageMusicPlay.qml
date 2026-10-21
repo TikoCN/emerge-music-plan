@@ -74,8 +74,8 @@ MouseArea {
 
 
     Connections{
-        target: MediaPlayer.player
-        function onSourceChanged(){
+        target: MediaPlayer
+        function onPlayingMusicIdChanged(){
             loadCurrentMusic()
         }
     }
@@ -152,10 +152,18 @@ MouseArea {
     }
 
     function loadCurrentMusic() {
-        const core = MusicLibrary.getData(MusicLibrary.playingMusicId)
+        const musicId = MediaPlayer.playingMusicId
+        if (musicId < 0) {
+            artist = ""
+            title = ""
+            icon = ""
+            return
+        }
+
+        const core = MusicLibrary.getData(musicId)
         artist = core.artist
         title = core.title
         icon = "image://cover/musicOnLine?id=" +
-                MediaPlayer.playingMusicId.toString() + "&radius=10"
+                musicId.toString() + "&radius=10"
     }
 }
