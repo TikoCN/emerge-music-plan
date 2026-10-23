@@ -13,7 +13,7 @@ LibraryPage {
 
     delegateItem: GridButtonArtist{
         autoHeightEnable: false
-        flow: GridView.LeftToRight
+        flow: GridView.FlowLeftToRight
         model: ArtistModel {
             type: ArtistModel.KeyModel
             key: currentKey

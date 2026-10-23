@@ -1,5 +1,6 @@
 pragma Singleton
 import QtQuick
+import QtQuick.Window
 import PlayView
 import MediaerAPI
 import Tiko
@@ -30,17 +31,46 @@ QtObject {
 
     signal autoUpdateUI()
 
-    function editMusic(parent, musicId){
-        var component = Qt.createComponent("toolEditMusicPage/ToolEditMusic.qml")
+    function editMusic(parent, musicId) {
+        const component = Qt.createComponent("qrc:/qt/qml/PlayView/ToolEditMusicPage/ToolEditMusic.qml")
+        const ownerWindow = windows
+        if (ownerWindow === null) {
+            console.log("无法确定编辑窗口的所属主窗口")
+            return
+        }
 
-        if (component.status === Component.Ready) {
-            var item = component.createObject(parent)
-            item.build(musicId)
-            item.show()
+        if (component.status === Component.Loading) {
+            component.statusChanged.connect(function() {
+                if (component.status === Component.Ready)
+                    createMusicEditWindow(component, ownerWindow, musicId)
+                else if (component.status === Component.Error)
+                    console.log(component.errorString())
+            })
+            return
         }
-        else {
+
+        if (component.status !== Component.Ready) {
             console.log(component.errorString())
+            return
         }
+
+        createMusicEditWindow(component, ownerWindow, musicId)
+    }
+
+    function createMusicEditWindow(component, ownerWindow, musicId) {
+        const item = component.createObject(null, {
+            transientParent: ownerWindow,
+            x: ownerWindow.x + (ownerWindow.width - 800) / 2,
+            y: ownerWindow.y + (ownerWindow.height - 600) / 2
+        })
+        if (item === null) {
+            console.log(component.errorString())
+            return
+        }
+
+        item.show()
+        item.requestActivate()
+        item.build(musicId)
     }
 
     property Timer internalTimer: Timer {

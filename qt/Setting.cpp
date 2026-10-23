@@ -7,9 +7,49 @@
 #include <QSettings>
 #include <QDir>
 #include <QScreen>
+#include <QQmlApplicationEngine>
+#include <QCoreApplication>
 
 void Setting::loadMusicCores() {
     emit loadMusics();
+}
+
+QString Setting::language() const {
+    return m_language;
+}
+
+void Setting::setLanguage(const QString &language) {
+    const QString normalizedLanguage = language == "en" ? "en" : "zh_CN";
+    if (m_language == normalizedLanguage) {
+        return;
+    }
+
+    if (normalizedLanguage == "en" && !m_translator.load(":/i18n/music_en.qm")) {
+        return;
+    }
+
+    QCoreApplication::removeTranslator(&m_translator);
+    m_language = normalizedLanguage;
+    if (m_language == "en") {
+        QCoreApplication::installTranslator(&m_translator);
+    }
+
+    QSettings settings(m_iniUrl, QSettings::IniFormat);
+    settings.beginGroup(QStringLiteral("seit"));
+    settings.setValue(QStringLiteral("Language"), m_language);
+    settings.endGroup();
+    settings.sync();
+    if (m_qmlEngine != nullptr) {
+        m_qmlEngine->retranslate();
+    }
+    emit languageChanged();
+}
+
+void Setting::initializeLanguage(QQmlApplicationEngine *engine) {
+    m_qmlEngine = engine;
+    const QString savedLanguage = m_language;
+    m_language = "zh_CN";
+    setLanguage(savedLanguage);
 }
 
 /*
@@ -51,6 +91,7 @@ bool Setting::getParameterList() {
 
     m_lrcTopPoint = ini->value(m_lrcTopPointKey).toPoint();
     m_windowRect  = ini->value(m_windowRectKey).toRectF();
+    m_language = ini->value(QStringLiteral("Language"), QStringLiteral("zh_CN")).toString();
 
     MediaPlayer *player = &MediaPlayer::getInstance();
     player->getAudioOutput()->setVolume(ini->value(LiteralConstant::VOLUME).toFloat());
@@ -112,7 +153,9 @@ void Setting::writeData() const {
 }
 
 Setting::Setting()
-    : m_iniUrl(QDir::currentPath() + "/data/setting.ini") {
+    : m_iniUrl(QDir::currentPath() + "/data/setting.ini"),
+      m_language("zh_CN"),
+      m_qmlEngine(nullptr) {
     m_isLightTheme          = true;
     m_isOnLine              = true;
     m_isGetCoverFromNetEase = true;

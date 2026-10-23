@@ -47,6 +47,7 @@ qt_add_qml_module(PlayViewLib
         MainPage/PageRecommend.qml
 
         PageSeit/FontSeit.qml
+        PageSeit/GeneralSeit.qml
         PageSeit/SourceSeit.qml
         PageSeit/ParameterSeit.qml
         PageSeit/UpdateDataSeit.qml

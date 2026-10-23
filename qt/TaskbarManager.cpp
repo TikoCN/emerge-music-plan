@@ -24,13 +24,13 @@ namespace {
  * @param resource 图标资源路径
  * @return 使用系统前景色着色的图标
  */
-QIcon createMenuIcon(const QString &resource) {
+QIcon createMenuIcon(const QString &resource,
+                     const QColor &iconColor = QApplication::palette().color(QPalette::WindowText)) {
     QPixmap pixmap = QIcon(resource).pixmap(QSize(32, 32));
     if (pixmap.isNull()) {
         return QIcon(resource);
     }
 
-    const QColor iconColor = QApplication::palette().color(QPalette::WindowText);
     QImage image = pixmap.toImage().convertToFormat(QImage::Format_ARGB32_Premultiplied);
     QPainter painter(&image);
     painter.setCompositionMode(QPainter::CompositionMode_SourceIn);
@@ -64,8 +64,10 @@ TaskbarManager::TaskbarManager(QObject *parent)
     m_playPauseAction = m_trayMenu->addAction(QString());
     m_nextAction = m_trayMenu->addAction(createMenuIcon(QStringLiteral(":/image/down.svg")), tr("下一首"));
     m_trayMenu->addSeparator();
-    m_mainAction = m_trayMenu->addAction(createMenuIcon(QStringLiteral(":/image/music.svg")), tr("主界面"));
-    m_lyricsAction = m_trayMenu->addAction(createMenuIcon(QStringLiteral(":/image/lrc.svg")), tr("歌词"));
+    m_mainAction = m_trayMenu->addAction(QIcon(), tr("主界面"));
+    m_mainAction->setCheckable(true);
+    m_lyricsAction = m_trayMenu->addAction(QIcon(), tr("歌词"));
+    m_lyricsAction->setCheckable(true);
     m_trayMenu->addSeparator();
     m_quitAction = m_trayMenu->addAction(createMenuIcon(QStringLiteral(":/image/close.svg")), tr("退出程序"));
 
@@ -88,8 +90,7 @@ TaskbarManager::TaskbarManager(QObject *parent)
     connect(m_trayMenu, &QMenu::aboutToShow, this, [this]() {
         m_previousAction->setIcon(createMenuIcon(QStringLiteral(":/image/up.svg")));
         m_nextAction->setIcon(createMenuIcon(QStringLiteral(":/image/down.svg")));
-        m_mainAction->setIcon(createMenuIcon(QStringLiteral(":/image/music.svg")));
-        m_lyricsAction->setIcon(createMenuIcon(QStringLiteral(":/image/lrc.svg")));
+        updateWindowActions();
         m_quitAction->setIcon(createMenuIcon(QStringLiteral(":/image/close.svg")));
         updatePlaybackActions();
     });
@@ -117,12 +118,27 @@ TaskbarManager::~TaskbarManager() {
     delete m_trayMenu;
 }
 
+void TaskbarManager::retranslateUi() {
+    m_previousAction->setText(tr("上一首"));
+    m_nextAction->setText(tr("下一首"));
+    m_mainAction->setText(tr("主界面"));
+    m_lyricsAction->setText(tr("歌词"));
+    m_quitAction->setText(tr("退出程序"));
+    updatePlaybackActions();
+}
+
 /**
  * @brief 注册主界面窗口。
  * @param window QML 主界面对象
  */
 void TaskbarManager::setMainWindow(QObject *window) {
     m_mainWindow = qobject_cast<QWindow *>(window);
+    if (m_mainWindow != nullptr) {
+        connect(m_mainWindow, &QWindow::visibleChanged, this, [this]() {
+            updateWindowActions();
+        });
+    }
+    updateWindowActions();
 }
 
 /**
@@ -131,6 +147,12 @@ void TaskbarManager::setMainWindow(QObject *window) {
  */
 void TaskbarManager::setLyricsWindow(QObject *window) {
     m_lyricsWindow = qobject_cast<QWindow *>(window);
+    if (m_lyricsWindow != nullptr) {
+        connect(m_lyricsWindow, &QWindow::visibleChanged, this, [this]() {
+            updateWindowActions();
+        });
+    }
+    updateWindowActions();
 }
 
 /**
@@ -200,6 +222,22 @@ void TaskbarManager::toggleLyricsWindow() {
     }
 
     showLyricsWindow();
+}
+
+/**
+ * @brief 按窗口显示状态更新托盘菜单项及图标颜色。
+ */
+void TaskbarManager::updateWindowActions() {
+    const QColor regularColor = QApplication::palette().color(QPalette::WindowText);
+    const QColor themeColor = QApplication::palette().color(QPalette::Highlight);
+    const bool mainVisible = m_mainWindow != nullptr && m_mainWindow->isVisible();
+    const bool lyricsVisible = m_lyricsWindow != nullptr && m_lyricsWindow->isVisible();
+    m_mainAction->setChecked(mainVisible);
+    m_lyricsAction->setChecked(lyricsVisible);
+    m_mainAction->setIcon(createMenuIcon(QStringLiteral(":/image/music.svg"),
+                                         mainVisible ? themeColor : regularColor));
+    m_lyricsAction->setIcon(createMenuIcon(QStringLiteral(":/image/lrc.svg"),
+                                           lyricsVisible ? themeColor : regularColor));
 }
 
 /**

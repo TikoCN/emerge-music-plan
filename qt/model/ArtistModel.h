@@ -42,6 +42,11 @@ public:
     Q_INVOKABLE void clear();
 
 private:
+    /**
+     * @brief 清除旧分类并加载新关键词对应的首批歌手。
+     */
+    void reloadKey();
+
     QList<ArtistPtr> m_artistList;
     Loader           m_loader;
 };

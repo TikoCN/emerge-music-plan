@@ -30,7 +30,7 @@ PageBase {
         duration = playlist.duration
         musicCount = playlist.musicCount
         musicModel.playlistId = playlistId
-        musicModel.clear()
+        musicList.reset()
     }
 
     musicList.onPlay: (musicId, listId) => {

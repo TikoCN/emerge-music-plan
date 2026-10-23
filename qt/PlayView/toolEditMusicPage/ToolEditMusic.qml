@@ -1,92 +1,131 @@
-﻿import QtQuick
-import QtQuick.Layouts
-import QtQuick.Controls
+import QtQuick
+import QtQuick.Window
+import QtQuick.Controls.Basic
 import MediaerAPI
 import Tiko
 import PlayView
 
 TikoFrameless {
     id: toolEditMusic
-    title: qsTr("编辑歌词")
+    title: qsTr("编辑音乐信息")
     width: 800
     height: 600
+    minimumWidth: 640
+    minimumHeight: 420
+    visible: false
+    flags: Qt.Window | Qt.FramelessWindowHint
 
-    Rectangle{
+    property int musicId: -1
+
+    Item {
         anchors.fill: parent
         anchors.margins: 10
-        color: TikoSeit.theme.colorBgDefault
-        radius: 10
-        z: -1
-    }
 
-    Item{
-        id: tool
-        width: toolEditMusic.width - 20
-        height: 50
-        anchors.margins: 10
-        anchors.top: parent.top
-        anchors.left: parent.left
-
-        TikoButtonDefault{
-            id: editLrcButton
-            anchors.left: tool.left
-            textLine.text: qsTr("编辑歌词")
-            onLeftClicked: toolEditMusic.stackEditLrcPage()
-            icon.source: "qrc:/image/editLrc.svg"
+        Rectangle {
+            anchors.fill: parent
+            color: TikoSeit.theme.colorBgView
+            radius: 10
         }
 
-        TikoButtonDefault{
-            anchors.left: editLrcButton.right
-            anchors.leftMargin: 10
-            textLine.text: qsTr("编辑音乐")
-            onLeftClicked: toolEditMusic.stackEditMusicPage()
-            icon.source: "qrc:/image/editMusic.svg"
-        }
-
-        TikoButtonIcon{
+        TikoWindow {
+            id: titleBar
+            anchors.top: parent.top
+            anchors.left: parent.left
             anchors.right: parent.right
-            icon.source: "qrc:/image/close.svg"
-            onClicked: toolEditMusic.destroy()
+            title: toolEditMusic.title
+            windowTarget: toolEditMusic
+            onCloseRequested: toolEditMusic.close()
+        }
+
+        Column {
+            anchors.top: titleBar.bottom
+            anchors.left: parent.left
+            anchors.right: parent.right
+            anchors.bottom: parent.bottom
+            anchors.margins: TikoSeit.emphasizeMargins
+            spacing: 12
+
+            Row {
+                width: parent.width
+                spacing: 8
+
+                TikoButtonDefault {
+                    textLine.text: qsTr("编辑音乐")
+                    icon.source: "qrc:/image/editMusic.svg"
+                    checkable: true
+                    checked: stackView.currentItem !== null
+                             && stackView.currentItem.objectName === "musicEditorPage"
+                    onLeftClicked: toolEditMusic.stackEditMusicPage()
+                }
+
+                TikoButtonDefault {
+                    textLine.text: qsTr("编辑歌词")
+                    icon.source: "qrc:/image/editLrc.svg"
+                    checkable: true
+                    checked: stackView.currentItem !== null
+                             && stackView.currentItem.objectName === "lyricEditorPage"
+                    onLeftClicked: toolEditMusic.stackEditLrcPage()
+                }
+            }
+
+            StackView {
+                id: stackView
+                width: parent.width
+                height: parent.height - 60
+                clip: true
+
+                initialItem: EditPageMusic {
+                    objectName: "musicEditorPage"
+                }
+            }
         }
     }
 
-    StackView{
-        id: stackView
-        anchors.top: tool.bottom
-        anchors.left: parent.left
-        anchors.margins: 20
-        width: parent.width - 40
-        height: parent.height - tool.height - 40
-    }
+    Component {
+        id: lrcEditPageComponent
 
-    EditPageMusic {
-        id: musicEditPage
-        visible: false
-    }
-
-    EditPageLrc {
-        id: lrcEditPage
-        visible: false
-    }
-
-
-    // 切换到编辑音乐页
-    function stackEditMusicPage(){
-        if(stackView.currentItem != musicEditPage){
-            stackView.replace(musicEditPage)
+        EditPageLrc {
+            objectName: "lyricEditorPage"
         }
     }
 
-    // 切换到编辑歌词页
-    function stackEditLrcPage(){
-        if(stackView.currentItem != lrcEditPage){
-            stackView.replace(lrcEditPage)
+    Component {
+        id: musicEditPageComponent
+
+        EditPageMusic {
+            objectName: "musicEditorPage"
         }
     }
 
-    function build(musicId){
-        musicEditPage.init(musicId)
-        lrcEditPage.init(musicId)
+    /**
+     * @brief 切换到音乐信息编辑页。
+     */
+    function stackEditMusicPage() {
+        if (stackView.currentItem === null || stackView.currentItem.objectName !== "musicEditorPage") {
+            const page = stackView.replace(musicEditPageComponent)
+            if (page !== null)
+                page.init(toolEditMusic.musicId)
+        }
+    }
+
+    /**
+     * @brief 切换到歌词编辑页。
+     */
+    function stackEditLrcPage() {
+        if (stackView.currentItem === null || stackView.currentItem.objectName !== "lyricEditorPage") {
+            const page = stackView.replace(lrcEditPageComponent)
+            if (page !== null)
+                page.init(toolEditMusic.musicId)
+        }
+    }
+
+    /**
+     * @brief 初始化指定歌曲的音乐信息和歌词编辑页面。
+     * @param musicId 歌曲 ID。
+     */
+    function build(musicId) {
+        toolEditMusic.musicId = musicId
+        stackView.currentItem.init(musicId)
         stackEditMusicPage()
     }
 }

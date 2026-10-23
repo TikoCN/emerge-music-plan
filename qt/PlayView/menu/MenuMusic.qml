@@ -61,11 +61,12 @@ TikoMenu{
 
     TikoMenuItem{
         text: qsTr("打开封面")
-        enabled: BaseTool.fileManagement.pathExists(BaseTool.fileManagement.getBaseUrl(fileUrl) + ".jpg")
+        enabled: BaseTool.fileManagement.pathExists(coverUrl)
         onTriggered: {
-            const url = BaseTool.fileManagement.getBaseUrl(fileUrl) + ".jpg";
-            BaseTool.fileManagement.deskOpenFile(url)
+            BaseTool.fileManagement.deskOpenFile(coverUrl)
         }
+
+        readonly property string coverUrl: BaseTool.fileManagement.getBaseUrl(fileUrl) + ".jpg"
     }
 
     TikoMenuSpacer{}

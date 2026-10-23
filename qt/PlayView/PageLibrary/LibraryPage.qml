@@ -17,15 +17,16 @@ Item {
         id: keyListView
         visible: hasKeys
         orientation: ListView.Horizontal
-        width: parent.width
-        currentIndex: 0
+        currentIndex: -1
         height: 40
         anchors.left: parent.left
-        anchors.margins: 30
+        anchors.right: parent.right
+        anchors.leftMargin: 30
+        anchors.rightMargin: 30
         highlightRangeMode: ListView.ApplyRange
         preferredHighlightBegin: width / 4
         preferredHighlightEnd: width / 4
-        snapMode: ListView.SnapToItem
+        snapMode: ListView.NoSnap
 
         model: ListModel {
             id: keyModel
@@ -34,7 +35,9 @@ Item {
         delegate: TikoButtonDefault {
             textLine.text: model.key
             height: 40
-            opacity: ListView.isCurrentItem ? 1 : 0.3
+            checked: ListView.isCurrentItem
+            textLine.color: checked ? checkedColor : TikoSeit.theme.colorFgDefault
+            opacity: checked ? 1 : 0.6
             onClicked: {
                 keyListView.currentIndex = model.id
                 currentKey = model.key
@@ -60,12 +63,20 @@ Item {
         font.pixelSize: 18
     }
 
+    /**
+     * @brief 重新加载分类并清除原有选中状态。
+     */
     function init() {
         keyModel.clear()
+        keyListView.currentIndex = -1
         currentKey = ""
         initKeyList()
     }
 
+    /**
+     * @brief 填充分类列表，并选中首项以加载对应内容。
+     * @param list 分类关键词列表。
+     */
     function listToKeyModel(list){
         if (list.length <= 0) return
 
@@ -73,6 +84,7 @@ Item {
             keyModel.append({key: list[i], id:i})
         }
 
+        keyListView.currentIndex = 0
         currentKey = list[0]
     }
 

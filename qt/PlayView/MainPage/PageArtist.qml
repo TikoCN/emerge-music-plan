@@ -28,7 +28,7 @@ PageBase{
         duration = artist.duration
         musicCount = artist.musicCount
         musicModel.artistId = artistPlayer.artistId
-        musicModel.clear()
+        musicList.reset()
     }
 
     musicList.onPlay: (musicId, listId) => {
@@ -38,5 +38,6 @@ PageBase{
     musicList.model: MusicModel {
         id: musicModel
         type: MusicModel.ArtistModel
+        sort: artistPlayer.sort
     }
 }

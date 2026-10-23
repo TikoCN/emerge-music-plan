@@ -6,7 +6,6 @@ import MediaerAPI
 
 Item{
     id: editLrcPage
-    visible: false
     property real lineStart: 0
     property real wordStart: 0
     property string lrcUrl: ""

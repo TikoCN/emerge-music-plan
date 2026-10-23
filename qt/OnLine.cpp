@@ -1,6 +1,7 @@
 #include "OnLine.h"
 
 #include "Setting.h"
+#include <QCoreApplication>
 #include <QEventLoop>
 #include <QFile>
 #include <QJsonDocument>
@@ -260,7 +261,8 @@ QByteArray downloadNetEaseLyrics(const QString &key) {
 void showResourcePreview(OnLine *pOnLine, const QString &filePath, const QByteArray &data, const bool isImage) {
     if (data.isEmpty()) {
         QMetaObject::invokeMethod(pOnLine, [pOnLine]() {
-            emit pOnLine->resourceDownloadFailed("未能获取网络资源，请检查网络连接或搜索条件。");
+            emit pOnLine->resourceDownloadFailed(
+                QCoreApplication::translate("OnLine", "未能获取网络资源，请检查网络连接或搜索条件。"));
         }, Qt::QueuedConnection);
         return;
     }

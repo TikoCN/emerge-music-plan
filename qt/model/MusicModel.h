@@ -2,8 +2,10 @@
 #define MUSICMODEL_H
 
 #include <QAbstractListModel>
+#include <QSet>
 
 #include "baseclass/Music.h"
+#include "baseclass/SortType.h"
 #include "macro/NotifyProperty.h"
 #include "datacore/DataLoader.h"
 
@@ -55,7 +57,12 @@ public:
 
     Q_INVOKABLE void clear();
     /**
-     * @brief 追加下一批歌曲，完整列表查询只加载一次。
+     * @brief 加载指定列表位置所在的数据页。
+     * @param position 列表中的目标位置。
+     */
+    Q_INVOKABLE void loadRange(int position);
+    /**
+     * @brief 保留 Qt 列表模型的增量加载接口。
      * @param parent 父索引，仅支持无效索引对应的根列表。
      * @override
      */
@@ -63,7 +70,7 @@ public:
     /**
      * @brief 判断根列表是否还有待加载的数据。
      * @param parent 父索引。
-     * @return 根列表尚未加载完毕时返回 true。
+     * @return 始终返回 false，数据页由列表滚动位置主动加载。
      * @override
      */
     bool             canFetchMore(const QModelIndex &parent) const override;
@@ -72,8 +79,14 @@ public:
     Q_INVOKABLE void updateMusicLevel(int musicId, int level);
 
 private:
+    /**
+     * @brief 清除当前分类并加载新关键词对应的首批歌曲。
+     */
+    void reloadKey();
+
     QList<MusicPtr> m_musicList;
     Loader          m_loader;
+    QSet<int>       m_loadedPages;
 };
 
 #endif // MUSICMODEL_H

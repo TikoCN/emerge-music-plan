@@ -4,6 +4,7 @@
 
 ArtistModel::ArtistModel(QObject *parent)
     : QAbstractListModel(parent) {
+    connect(this, &ArtistModel::keyChanged, this, &ArtistModel::reloadKey);
 }
 
 int ArtistModel::rowCount(const QModelIndex &parent) const {
@@ -49,23 +50,25 @@ QHash<int, QByteArray> ArtistModel::roleNames() const {
 }
 
 void ArtistModel::fetchMore(const QModelIndex &parent) {
-    Q_UNUSED(parent);
+    if (parent.isValid() || m_loader.isFinish) {
+        return;
+    }
+
     QList<int> list;
     switch (type) {
         case AlbumModel:
             list = SQLite::getInstance().albumRepository.getByKey(key, m_loader.limit, m_loader.offset);
             break;
         case KeyModel:
+            list = SQLite::getInstance().artistRepository.getByKey(key, m_loader.limit, m_loader.offset);
             break;
         case RandModel:
-            list = SQLite::getInstance().albumRepository.getRandList();
+            list = SQLite::getInstance().artistRepository.getRandList();
             break;
     }
 
-    m_loader.offset = static_cast<int>(list.size());
-    if (m_loader.offset < 20) {
-        m_loader.isFinish = true;
-    }
+    m_loader.offset += static_cast<int>(list.size());
+    m_loader.isFinish = list.size() < m_loader.limit;
 
     QList<ArtistPtr> newList;
     newList.reserve(list.size());
@@ -87,10 +90,17 @@ void ArtistModel::fetchMore(const QModelIndex &parent) {
 }
 
 bool ArtistModel::canFetchMore(const QModelIndex &parent) const {
-    Q_UNUSED(parent);
-    return !m_loader.isFinish;
+    return !parent.isValid() && !m_loader.isFinish;
 }
 
+void ArtistModel::reloadKey() {
+    if (type != KeyModel) {
+        return;
+    }
+
+    clear();
+    fetchMore(QModelIndex());
+}
 
 void ArtistModel::clear() {
     beginResetModel();

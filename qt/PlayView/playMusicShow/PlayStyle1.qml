@@ -34,6 +34,14 @@ Item{
             baseUrl: style.icon
             normalUrl: "qrc:/image/music.svg"
             property double min: Math.min(leftShow.height * 0.5, leftShow.width * 0.8)
+
+            MouseArea {
+                anchors.fill: parent
+                onClicked: {
+                    if (MediaPlayer.playingMusic !== null)
+                        CoreData.windows.stackMusicPaly()
+                }
+            }
         }
 
         TikoTextLine {
@@ -57,8 +65,7 @@ Item{
         }
 
         Row {
-            anchors.top: titleItem.top
-            anchors.bottom: artistItem.bottom
+            anchors.verticalCenter: artistItem.verticalCenter
             anchors.right: cover.right
             spacing: TikoSeit.emphasizeMargins
 

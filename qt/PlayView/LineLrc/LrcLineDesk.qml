@@ -1,19 +1,29 @@
-﻿import QtQuick
+import QtQuick
 import MediaerAPI
 import Tiko
 import PlayView
 
-LrcLineBase {
+Item {
     id: deskLine
-    playingColor: Setting.lrcPlayingColor
-    normalColor: Setting.lrcNormalColor
-    lrcFont: Setting.deskLrcFont
-    isPlay: true
-    aloneLine: true
-    lrcId: MediaPlayer.playingLrcId
+
+    property var startList: []
+    property var endList: []
+    property var textList: []
     property bool hasLyrics: textList.length > 0 && textList.join("") !== ""
 
-    onLrcIdChanged: load()
+    implicitHeight: lyricLine.implicitHeight
+
+    LrcLineNormal {
+        id: lyricLine
+        width: deskLine.width
+        lrcId: MediaPlayer.playingLrcId
+        startList: deskLine.startList
+        endList: deskLine.endList
+        textList: deskLine.textList
+        lrcFont: Setting.deskLrcFont
+        playingColor: Setting.lrcPlayingColor
+        normalColor: Setting.lrcNormalColor
+    }
 
     Text {
         anchors.centerIn: parent
@@ -23,8 +33,14 @@ LrcLineBase {
         font: Setting.deskLrcFont
     }
 
-    function load () {
-        var json = MediaPlayer.getLrcJsonObject(lrcId)
+    onLrcIdChanged: load()
+
+    property int lrcId: MediaPlayer.playingLrcId
+
+    Component.onCompleted: load()
+
+    function load() {
+        const json = MediaPlayer.getLrcJsonObject(lrcId)
         startList = BaseTool.typeConversion.stringToLongList(json.startList)
         endList = BaseTool.typeConversion.stringToLongList(json.endList)
         textList = BaseTool.typeConversion.stringToStringList(json.textList)
@@ -36,7 +52,7 @@ LrcLineBase {
     Connections {
         target: MediaPlayer
         function onPlayingLrcIdChanged(playingLrcId) {
-            lrcId = playingLrcId
+            deskLine.lrcId = playingLrcId
         }
     }
 }

@@ -1,5 +1,6 @@
 import QtQuick.Controls.Basic
 import QtQuick
+import QtQuick.Window
 import QtQuick.Effects
 import MediaerAPI
 import Tiko
@@ -13,12 +14,118 @@ MouseArea {
     property string icon: ""
     property string artist: ""
     property string title: ""
+    property bool toolBarVisible: false
     hoverEnabled: true
     acceptedButtons: Qt.NoButton
 
     onTypeChanged: updateShowModel()
     onActiveChanged: updateShowModel()
     onTspBgChanged: setBgStyle()
+
+    Timer {
+        id: toolBarTimer
+        interval: 3000
+        onTriggered: pageMain.toolBarVisible = false
+    }
+
+    HoverHandler {
+        onPointChanged: {
+            if (CoreData.windows !== null && CoreData.windows.active) {
+                pageMain.toolBarVisible = true
+                toolBarTimer.restart()
+            }
+        }
+    }
+
+    Connections {
+        target: CoreData.windows
+
+        function onActiveChanged() {
+            if (!CoreData.windows.active) {
+                toolBarTimer.stop()
+                pageMain.toolBarVisible = false
+            }
+        }
+    }
+
+    Rectangle {
+        id: toolBar
+        anchors.top: parent.top
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.topMargin: TikoSeit.normalMargins
+        anchors.leftMargin: TikoSeit.normalMargins
+        anchors.rightMargin: TikoSeit.normalMargins
+        height: 48
+        color: "transparent"
+        opacity: pageMain.toolBarVisible ? 1 : 0
+        enabled: pageMain.toolBarVisible && CoreData.windows !== null && CoreData.windows.active
+        z: 10
+
+        Behavior on opacity {
+            NumberAnimation {
+                duration: 180
+            }
+        }
+
+        MouseArea {
+            anchors.fill: parent
+            acceptedButtons: Qt.LeftButton
+            onPressed: {
+                const ownerWindow = pageMain.Window.window
+                if (ownerWindow !== null)
+                    ownerWindow.startSystemMove()
+            }
+        }
+
+        Row {
+            anchors.left: parent.left
+            anchors.leftMargin: TikoSeit.normalMargins
+            anchors.verticalCenter: parent.verticalCenter
+            spacing: TikoSeit.normalMargins
+
+            TikoButtonIcon {
+                icon.source: "qrc:/image/back.svg"
+                level: 0
+                onClicked: {
+                    pageMain.setActive(false)
+                    CoreData.windows.showType = 0
+                }
+            }
+
+            TikoButtonIcon {
+                icon.source: "qrc:/image/style.svg"
+                level: 0
+                onClicked: typeSelect.open()
+            }
+        }
+
+        Row {
+            anchors.right: parent.right
+            anchors.rightMargin: TikoSeit.normalMargins
+            anchors.verticalCenter: parent.verticalCenter
+            spacing: TikoSeit.normalMargins
+
+            TikoButtonIcon {
+                icon.source: "qrc:/image/min.svg"
+                level: 0
+                onClicked: CoreData.windowShowMin()
+            }
+
+            TikoButtonIcon {
+                icon.source: CoreData.windows.visibility === 4 ?
+                                 "qrc:/image/normal.svg" : "qrc:/image/max.svg"
+                level: 0
+                onClicked: CoreData.windowShowMax()
+            }
+
+            TikoButtonIcon {
+                icon.source: "qrc:/image/close.svg"
+                level: 0
+                onClicked: CoreData.windowClose()
+            }
+        }
+    }
 
     //背景
     Loader{

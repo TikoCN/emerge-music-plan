@@ -94,6 +94,7 @@ Item {
 
             TikoButtonDefault{
                 id: addPlaylistButton
+                Layout.fillWidth: true
                 textLine.text: qsTr("新建列表")
                 icon.source: "qrc:/image/new.svg"
                 onLeftClicked: openInputWindow()
@@ -104,7 +105,7 @@ Item {
 
             Repeater {
                     delegate: TikoButtonDefault {
-                        width: scrollview.width
+                        Layout.fillWidth: true
                         id: norMalButton
                         icon.anchors.leftMargin: TikoSeit.emphasizeMargins
                         icon.enableUnifiedColor: false
@@ -146,7 +147,7 @@ Item {
             title: qsTr("新建列表，请输入列表名")
             onAccept: {
                 if (inputText === "") {
-                    CoreData.sendErrorMsg("列表名不能为空")
+                    CoreData.sendErrorMsg(qsTr("列表名不能为空"))
                     return
                 }
 
@@ -155,7 +156,7 @@ Item {
                     setNormalText()
                     playlistModel.clear()
                 } else {
-                    CoreData.sendErrorMsg("列表名不可用")
+                    CoreData.sendErrorMsg(qsTr("列表名不可用"))
                 }
             }
         }

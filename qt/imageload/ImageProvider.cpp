@@ -131,16 +131,26 @@ ImageResponse::ImageType ImageResponse::typeFromStringToEnum(const QString &type
     return static_cast<ImageType>(typeList.indexOf(type));
 }
 
+/**
+ * @brief 按目标比例读取封面文件，仅在需要时缩小解码尺寸。
+ * @param url 封面文件路径。
+ * @return 图片成功解码时返回 true。
+ */
 bool ImageResponse::loadImageFile(const QString &url) {
     //加载封面文件
     if (QFile::exists(url)) {
         QImageReader reader;
         reader.setFileName(url);
-        QSize aim = reader.size();
-        aim.scale(m_requestedSize, Qt::KeepAspectRatioByExpanding);
-        reader.setScaledSize(aim);
+        const QSize originalSize = reader.size();
+        // 只在解码阶段缩小图片，避免低分辨率原图先放大后再次采样。
+        if (originalSize.isValid() && m_requestedSize.isValid() && !m_requestedSize.isEmpty()) {
+            const QSize aim = originalSize.scaled(m_requestedSize, Qt::KeepAspectRatio);
+            if (aim.width() < originalSize.width() || aim.height() < originalSize.height()) {
+                reader.setScaledSize(aim);
+            }
+        }
         m_img = reader.read();
-        return true;
+        return !m_img.isNull();
     }
 
     return false;
@@ -162,9 +172,17 @@ QQuickTextureFactory *ImageResponse::textureFactory() const {
     return QQuickTextureFactory::textureFactoryForImage(m_img);
 }
 
+/**
+ * @brief 按实际请求尺寸读取缓存或生成保留比例的封面图片。
+ * @override
+ */
 void ImageResponse::run() {
-    m_img = ImageControl::getInstance().getImgCache(m_url);
+    // URL 中的尺寸参数可能滞后，缓存必须按 Qt 实际传入的请求尺寸区分。
+    const QString cacheUrl = m_url + "#requestedSize=" + QString::number(m_requestedSize.width())
+                             + "x" + QString::number(m_requestedSize.height());
+    m_img = ImageControl::getInstance().getImgCache(cacheUrl);
     if (!m_img.isNull()) {
+        ImageControl::getInstance().writeUrlNullFlag(m_url, false);
         emit finished();
         return;
     }
@@ -218,9 +236,11 @@ void ImageResponse::run() {
     if (m_img.isNull()) {
         TLog::getInstance().logIgnore("封面加载失败，加载链接为" + m_url);
     } else {
-        m_img = m_img.scaled(m_requestedSize, Qt::IgnoreAspectRatio);
+        if (m_requestedSize.isValid() && !m_requestedSize.isEmpty()) {
+            m_img = m_img.scaled(m_requestedSize, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+        }
         buildRoundImage();
-        ImageControl::getInstance().writeImgCache(std::move(m_url), m_img);
+        ImageControl::getInstance().writeImgCache(cacheUrl, m_img);
     }
 
     emit finished();

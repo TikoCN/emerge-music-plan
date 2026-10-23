@@ -304,13 +304,13 @@ bool FileManagement::renameFile(const QString &oldUrl, const QString &newUrl) {
         }
 
         if (!oldFile.setPermissions(QFile::WriteOther)) {
-            throw DataException(oldUrl + "获取权限失败," + oldFile.errorString());
+            throw DataException(oldUrl + tr("获取权限失败,") + oldFile.errorString());
         }
 
         // 移除以及存在文件
         if (newFile.exists()) {
             if (!newFile.setPermissions(QFile::WriteOther)) {
-                throw DataException(newUrl + "获取权限失败," + newFile.errorString());
+                throw DataException(newUrl + tr("获取权限失败,") + newFile.errorString());
             }
 
             if (!newFile.remove()) {
@@ -329,7 +329,12 @@ bool FileManagement::renameFile(const QString &oldUrl, const QString &newUrl) {
 }
 
 QString FileManagement::getBaseUrl(const QString &url) {
-    return url.split("." + url.split(".").last()).first();
+    const QFileInfo fileInfo(url);
+    const QString suffix = fileInfo.suffix();
+    if (suffix.isEmpty())
+        return url;
+
+    return url.left(url.size() - suffix.size() - 1);
 }
 
 QString FileManagement::getFileName(const QString &url) {
@@ -351,8 +356,5 @@ void FileManagement::makeAllDir() {
     dir.cd("data");
     if (!dir.mkpath("log")) {
         qDebug() << "創建log文件夹失敗";
-    }
-    if (!dir.mkpath("namekey")) {
-        qDebug() << "創建namekey文件夹失敗";
     }
 }

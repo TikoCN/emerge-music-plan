@@ -18,6 +18,9 @@ Item {
     property bool isPlay: MediaPlayer.playingLrcId === lrcId
     property bool hovered: false
     property bool aloneLine: false
+    property real blurAmount: lyricLine.isPlay || lyricLine.hovered
+                              ? 0
+                              : Math.min(0.75, Math.abs(lyricLine.lrcId - MediaPlayer.playingLrcId) * 0.2)
 
     implicitHeight: lyricSceneGraph.implicitHeight + TikoSeit.emphasizeMargins * 2
     height: implicitHeight
@@ -42,17 +45,18 @@ Item {
         words: Array.from(lyricLine.textList)
         wordStarts: Array.from(lyricLine.startList)
         wordEnds: Array.from(lyricLine.endList)
-        position: MediaPlayer.playingPosition
+        position: lyricLine.isPlay ? MediaPlayer.playingPosition : 0
         playing: lyricLine.isPlay
     }
 
     MultiEffect {
         anchors.fill: lyricSceneGraph
         source: lyricSceneGraph
-        visible: !lyricLine.isPlay && !lyricLine.hovered
-        autoPaddingEnabled: false
+        visible: lyricLine.blurAmount > 0
+        // 为模糊扩散预留透明边距，避免在歌词行边界形成矩形截断。
+        autoPaddingEnabled: true
         blurEnabled: true
         blurMax: 30
-        blur: 0.5
+        blur: lyricLine.blurAmount
     }
 }

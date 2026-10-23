@@ -70,6 +70,12 @@ public:
      */
     Q_INVOKABLE void toggleLyricsWindow();
 
+public slots:
+    /**
+     * @brief 根据当前语言刷新系统托盘菜单文字。
+     */
+    void retranslateUi();
+
 signals:
     /**
      * @brief 请求 QML 首次创建桌面歌词窗口。
@@ -81,6 +87,11 @@ private:
      * @brief 刷新托盘中的歌曲信息和播放控制文字。
      */
     void updatePlaybackActions();
+
+    /**
+     * @brief 按窗口显示状态更新托盘菜单项及图标颜色。
+     */
+    void updateWindowActions();
 
     QSystemTrayIcon *m_trayIcon;
     QMenu *m_trayMenu;

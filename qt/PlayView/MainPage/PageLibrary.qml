@@ -21,9 +21,9 @@ Item {
 
         Repeater {
             model: [
-                {name:"专辑", icon:"qrc:/image/album.svg", click: stackAlbum},
-                {name:"歌手", icon:"qrc:/image/artist.svg", click: stackArtist},
-                {name:"音乐", icon:"qrc:/image/cover.png", click: stackMusic}
+                {name: qsTr("专辑"), icon:"qrc:/image/album.svg", click: stackAlbum},
+                {name: qsTr("歌手"), icon:"qrc:/image/artist.svg", click: stackArtist},
+                {name: qsTr("音乐"), icon:"qrc:/image/cover.png", click: stackMusic}
             ]
 
             delegate: TikoButtonDefault {

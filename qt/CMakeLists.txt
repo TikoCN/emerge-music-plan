@@ -5,7 +5,7 @@ if(MSVC)
     add_compile_options(/MP)
 endif()
 
-find_package(Qt6 REQUIRED COMPONENTS Widgets)
+find_package(Qt6 REQUIRED COMPONENTS Widgets LinguistTools)
 # windeployqt.exe
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_AUTORCC ON)
@@ -94,6 +94,13 @@ qt_add_qml_module(appmusicPlay
         SOURCES macro/SettingAttribute.h  # 资源文件（图片/字体等）
 )
 
+set_property(SOURCE i18n/music_en.ts PROPERTY QT_I18N_TRANSLATED_LANGUAGES en)
+
+qt_add_translations(appmusicPlay
+        TS_FILES i18n/music_en.ts
+        RESOURCE_PREFIX /i18n
+)
+
 target_link_libraries(appmusicPlay PRIVATE TikoLib)
 target_link_libraries(appmusicPlay PRIVATE PlayViewLib)
 
@@ -103,6 +110,9 @@ target_link_libraries(appmusicPlay PRIVATE FFTW3::fftw3)
 
 find_package(unofficial-sqlite3 CONFIG REQUIRED)
 target_link_libraries(appmusicPlay PRIVATE unofficial::sqlite3::sqlite3)
+
+find_package(cpp-pinyin CONFIG REQUIRED)
+target_link_libraries(appmusicPlay PRIVATE cpp-pinyin::cpp-pinyin)
 
 #link FFmpeg
 find_package(PkgConfig REQUIRED)
@@ -160,3 +170,10 @@ if(WINDEPLOYQT_EXECUTABLE)
             WORKING_DIRECTORY "$<TARGET_FILE_DIR:appmusicPlay>"
     )
 endif()
+
+add_custom_command(TARGET appmusicPlay POST_BUILD
+        COMMAND "${CMAKE_COMMAND}" -E copy_directory
+        "${cpp-pinyin_DIR}/dict"
+        "$<TARGET_FILE_DIR:appmusicPlay>/dict"
+        COMMENT "Copying cpp-pinyin dictionaries..."
+)

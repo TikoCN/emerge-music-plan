@@ -100,8 +100,6 @@ protected:
 private:
     /** @brief 使用与绘制一致的排版规则更新隐式高度。 */
     void updateImplicitHeight();
-    /** @brief 根据当前播放状态和时间更新高亮字词边界。 */
-    void updateHighlightedWord();
 
     QString m_text;
     QFont m_font;
@@ -112,8 +110,6 @@ private:
     QVariantList m_wordEnds;
     qint64 m_position = 0;
     bool m_playing = false;
-    int m_highlightedWord = -1;
-    qreal m_wordProgress = 0.0;
 };
 
 #endif

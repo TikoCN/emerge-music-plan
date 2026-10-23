@@ -8,15 +8,23 @@ Text {
     verticalAlignment: Text.AlignVCenter
     clip: true
     height: textLine.font.pixelSize * 1.5
-    width: text.length * textLine.font.pixelSize + outWidth
+    // 独立测量完整文字，避免省略显示和父项宽度约束影响自然宽度。
+    width: naturalWidth
     text: "TikoTextLine"
     property int outWidth: 0
+    readonly property real naturalWidth: Math.ceil(Math.max(textMetrics.advanceWidth, textMetrics.boundingRect.width)) + outWidth
     property int level: 1
     property int addFontSize: 0
 
     color: TikoSeit.theme.colorTextDefault
     font.family: TikoSeit.theme.fontDefault.family
     font.pointSize: TikoSeit.theme.fontDefault.pointSize + addFontSize
+
+    TextMetrics {
+        id: textMetrics
+        font: textLine.font
+        text: textLine.text
+    }
 
     onLevelChanged: {
         switch (level) {

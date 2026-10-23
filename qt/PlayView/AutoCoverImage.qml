@@ -4,8 +4,8 @@ import MediaerAPI
 
 TikoImageAuto {
     property string baseUrl: ""
-    // 附加大小区分，只用作区分请求链，不用于实际大小
-    property string sizeUrl: "&width="+width+"&height="+height
+    // 请求链与实际采样尺寸同步，避免两个定时器分别更新造成尺寸错位。
+    property string sizeUrl: "&width=" + sourceSize.width + "&height=" + sourceSize.height
     loadUrl: baseUrl + sizeUrl
 
     onStatusChanged: {

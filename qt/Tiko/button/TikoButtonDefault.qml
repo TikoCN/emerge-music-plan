@@ -5,31 +5,31 @@ import Tiko
 
 TikoButtonBase {
     id: normalButton
-    width: iconItem.width + textLineItem.width + TikoSeit.subitemSpace * 3
     height: 50
+    width: implicitWidth
+    implicitWidth: textLineItem.naturalWidth + textLineItem.anchors.leftMargin + TikoSeit.subitemSpace
+                   + (hasVisibleIcon ? iconItem.anchors.leftMargin + iconItem.width : 0)
     property TikoImage icon: iconItem
     property TikoTextLine textLine: textLineItem
     property bool hideEmptyIcon: true
-
-    onHideEmptyIconChanged: updateIconVisibility()
-
-    function updateIconVisibility() {
-        iconItem.visible = !hideEmptyIcon || iconItem.source.toString().length > 0
-    }
+    readonly property bool hasVisibleIcon: !hideEmptyIcon || iconItem.source.toString().length > 0
 
     TikoImage {
         id: iconItem
         anchors.left: parent.left
         anchors.leftMargin: TikoSeit.subitemSpace
         anchors.verticalCenter: parent.verticalCenter
-        onSourceChanged: normalButton.updateIconVisibility()
+        visible: normalButton.hasVisibleIcon
     }
 
     TikoTextLine {
         id: textLineItem
         text: "TikoButtonDefault"
-        anchors.left: iconItem.right
+        anchors.left: normalButton.hasVisibleIcon ? iconItem.right : normalButton.left
         anchors.leftMargin: TikoSeit.subitemSpace
         anchors.verticalCenter: parent.verticalCenter
+        width: normalButton.width > 0
+               ? Math.max(0, normalButton.width - x - TikoSeit.subitemSpace)
+               : naturalWidth
     }
 }

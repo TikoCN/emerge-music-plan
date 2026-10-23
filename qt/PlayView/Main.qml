@@ -45,13 +45,24 @@ TikoFrameless{
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.margins: space
+        clip: true
 
         property int space: isMaxSize ? 0 : 10
 
         PageMusicPlay {
             id: musicPlayPage
-            anchors.fill: parent
-            opacity: 0
+            x: 0
+            y: showType === 1 ? 0 : -height
+            width: parent.width
+            height: parent.height
+            z: 1
+
+            Behavior on y {
+                NumberAnimation {
+                    duration: editPage.duration
+                    easing.type: Easing.InOutQuad
+                }
+            }
         }
 
         //最底层圆角背景
@@ -63,12 +74,27 @@ TikoFrameless{
             color: TikoSeit.theme.colorMaxBottom
             y: showType === 0 ? 0 : -height
             z: -1
+
+            Behavior on y {
+                NumberAnimation {
+                    duration: editPage.duration
+                    easing.type: Easing.InOutQuad
+                }
+            }
         }
 
         ViewLeftBar{
             id: barView
             height: parent.height
             width: 250
+            x: showType === 0 ? 0 : -width
+
+            Behavior on x {
+                NumberAnimation {
+                    duration: editPage.duration
+                    easing.type: Easing.InOutQuad
+                }
+            }
         }
 
         //中间内容导航
@@ -76,7 +102,14 @@ TikoFrameless{
             id: mainView
             height: parent.height
             width: parent.width - barView.width - 10
-            x: barView.width + 10
+            x: showType === 0 ? barView.width + 10 : parent.width
+
+            Behavior on x {
+                NumberAnimation {
+                    duration: editPage.duration
+                    easing.type: Easing.InOutQuad
+                }
+            }
         }
 
         property int duration: 500
@@ -99,6 +132,9 @@ TikoFrameless{
             TikoSeit.sendMessage(this, qsTr("请先播放音乐"), 1)
             return
         }
+
+        musicPlayPage.setActive(true)
+        showType = 1
     }
 
     //切换到编辑页

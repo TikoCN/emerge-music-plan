@@ -21,6 +21,11 @@ ScrollView{
         anchors.margins: TikoSeit.normalMargins
         spacing: TikoSeit.normalMargins
 
+        GeneralSeit {
+            Layout.preferredWidth: seitPage.itemWidth
+            titleButton.textLine.width: seitPage.modeTextWidth
+        }
+
         //资源文件管理
         SourceSeit {
             Layout.preferredWidth: seitPage.itemWidth

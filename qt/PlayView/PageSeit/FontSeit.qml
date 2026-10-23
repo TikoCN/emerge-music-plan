@@ -24,9 +24,9 @@ TikoRightVessel{
                 selectedFont: Setting[modelData.prop]
                 width: parent.width
 
-                fontSizeItem.text: "字体大小"
-                fontShowItem.text: "字体预览"
-                fontFaimleyItem.text: "字体家族"
+                fontSizeItem.text: qsTr("字体大小")
+                fontShowItem.text: qsTr("字体预览")
+                fontFaimleyItem.text: qsTr("字体家族")
                 fontPreviewItem.text: modelData.text
 
                 onSelectedFontChanged:{

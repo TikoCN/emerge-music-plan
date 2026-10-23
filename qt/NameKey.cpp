@@ -1,54 +1,41 @@
 #include "NameKey.h"
-#include <QDir>
-#include <QJsonObject>
-#include <QJsonDocument>
 
-NameKey::NameKey() {
-    const QDir dir(QDir::currentPath() + "/data/namekey");
-    m_fileInfoList = dir.entryInfoList(QDir::Files | QDir::NoDotAndDotDot);
-} ;
+#include <QCoreApplication>
+#include <cpp-pinyin/G2pglobal.h>
 
-QString NameKey::find(const QString &name) {
-    m_findName = name.at(0);
+#include <filesystem>
+#include <memory>
+#include <string>
 
-    if (m_NameKeyHash.contains(m_findName)) {
-        m_resultKey = m_NameKeyHash.value(m_findName);
-    } else if (!readFileNameKey()) {
-        m_resultKey = "未知";
-    }
-
-    return m_resultKey;
+static const Pinyin::Pinyin &pinyinEngine() {
+    static const std::unique_ptr<Pinyin::Pinyin> engine = [] {
+        const QString dictionaryPath = QCoreApplication::applicationDirPath() + "/dict";
+        Pinyin::setDictionaryPath(std::filesystem::path(dictionaryPath.toStdWString()));
+        return std::make_unique<Pinyin::Pinyin>();
+    }();
+    return *engine;
 }
 
-bool NameKey::readFileNameKey() {
-    while (!m_fileInfoList.isEmpty()) {
-        const auto fileUrl = m_fileInfoList.takeFirst().absoluteFilePath();
-        TLog::getInstance().logInfo(QObject::tr("开始在 %1 选找 NameKey").arg(fileUrl));
-        QFile file(fileUrl);
+NameKey::NameKey()
+= default;
 
-        if (!file.open(QIODevice::ReadOnly))
-            continue;
-
-        const QJsonDocument doc  = QJsonDocument::fromJson(file.readAll());
-        const QJsonObject   json = doc.object();
-
-        const QStringList keys = json.keys();
-        for (const QString &key: keys) {
-            if (key.contains(m_findName)) {
-                m_NameKeyHash.insert(m_findName, key);
-                m_resultKey = key;
-
-                file.close();
-                return true;
-            }
-
-            const QStringList name = json.value(key).toString().split(",");
-            for (const QString &j: name) {
-                m_NameKeyHash.insert(j, key);
-            }
-        }
-
-        file.close();
+QString NameKey::find(const QString &name) {
+    if (name.isEmpty()) {
+        return QStringLiteral("未知");
     }
-    return false;
+
+    const std::string utf8Name = name.toUtf8().toStdString();
+    const Pinyin::PinyinResVector pinyinList = pinyinEngine().hanziToPinyin(utf8Name);
+    if (pinyinList.empty()) {
+        return QStringLiteral("未知");
+    }
+
+    const std::string &firstPinyin = pinyinList.front().pinyin;
+    for (const char character: firstPinyin) {
+        if ((character >= 'A' && character <= 'Z') || (character >= 'a' && character <= 'z')) {
+            return QString(QChar(character).toUpper());
+        }
+    }
+
+    return QStringLiteral("未知");
 }

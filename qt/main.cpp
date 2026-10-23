@@ -75,6 +75,7 @@ int main(int argc, char *argv[]) {
     qmlRegisterType<QmlActive>("DataType", 1, 0, "QmlActive");
 
     QObject::connect(seit, &Setting::loadMusics, center, &TaskCenter::startLoadFile);
+    QObject::connect(seit, &Setting::languageChanged, taskbar, &TaskbarManager::retranslateUi);
 
     QObject::connect(mediaPlayer, &MediaPlayer::downLrc, onLine, &OnLine::downLrc);
     QObject::connect(mediaPlayer->getAudioOutput(), &QAudioOutput::volumeChanged, seit, [](const float volume) {
@@ -91,6 +92,7 @@ int main(int argc, char *argv[]) {
     center->startBootSequence();
 
     QQmlApplicationEngine engine;
+    seit->initializeLanguage(&engine);
     QObject::connect(
         &engine,
         &QQmlApplicationEngine::objectCreationFailed,

@@ -190,7 +190,7 @@ AVPacket *FFmpeg::getAVPacket() {
     AVPacket *pkt = nullptr;
     pkt           = av_packet_alloc();
     if (pkt == nullptr) {
-        throw DataException("分配AVPacket数据包失败");
+        throw DataException(tr("分配 AVPacket 数据包失败"));
     }
     return pkt;
 }
@@ -206,7 +206,7 @@ SwrContext *FFmpeg::getSwrContext(const AVCodecContext *out, const AVCodecContex
                         in->sample_rate,
                         0, nullptr);
     if (swr == nullptr) {
-        throw DataException("分配SwrContext重采样失败");
+        throw DataException(tr("分配 SwrContext 重采样失败"));
     }
     return swr;
 }
@@ -215,7 +215,7 @@ AVFrame *FFmpeg::getAVFrame() {
     AVFrame *frm = nullptr;
     frm          = av_frame_alloc();
     if (frm == nullptr) {
-        throw DataException("分配AVFrame数据帧失败");
+        throw DataException(tr("分配 AVFrame 数据帧失败"));
     }
     return frm;
 }
@@ -770,7 +770,7 @@ bool FFmpeg::writeDict(QStringList key, QStringList value, const QString &inUrl,
     bool             work   = true;
     try {
         if (key.size() != value.size()) {
-            throw DataException("写入标签数据长度错误");
+            throw DataException(tr("写入标签数据长度错误"));
         }
 
         inFmt  = getInputFormatContext(inUrl);
@@ -779,7 +779,7 @@ bool FFmpeg::writeDict(QStringList key, QStringList value, const QString &inUrl,
         for (int i = 0; i < inFmt->nb_streams; i++) {
             AVStream *stream = avformat_new_stream(outFmt, nullptr);
             if (!stream) {
-                throw DataException("无法创建输出流");
+                throw DataException(tr("无法创建输出流"));
             }
             avcodec_parameters_copy(stream->codecpar, inFmt->streams[i]->codecpar);
             stream->time_base = inFmt->streams[i]->time_base;
@@ -789,7 +789,7 @@ bool FFmpeg::writeDict(QStringList key, QStringList value, const QString &inUrl,
         if (!(outFmt->oformat->flags & AVFMT_NOFILE)) {
             m_r = avio_open(&outFmt->pb, outUrl.toUtf8(), AVIO_FLAG_WRITE);
             if (m_r < 0) {
-                throw DataException(outUrl + "输出文件打开失败");
+                throw DataException(outUrl + tr("输出文件打开失败"));
             }
         }
 
@@ -803,7 +803,7 @@ bool FFmpeg::writeDict(QStringList key, QStringList value, const QString &inUrl,
 
         m_r = avformat_write_header(outFmt, nullptr);
         if (m_r < 0) {
-            throw DataException(outUrl + "写入文件头失败");
+            throw DataException(outUrl + tr("写入文件头失败"));
         }
 
         pkt = getAVPacket();
@@ -815,7 +815,7 @@ bool FFmpeg::writeDict(QStringList key, QStringList value, const QString &inUrl,
 
         m_r = av_write_trailer(outFmt);
         if (m_r < 0) {
-            throw DataException(outUrl + "写入文件尾失败");
+            throw DataException(outUrl + tr("写入文件尾失败"));
         }
     } catch (const DataException &e) {
         logError(e.errorMessage());

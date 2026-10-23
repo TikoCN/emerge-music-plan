@@ -183,7 +183,8 @@ Window{
 
         LrcLineDesk {
             id: playingLine
-            height: lrcFont.pixelSize * 1.5 + TikoSeit.emphasizeMargins * 2
+            width: parent.width - TikoSeit.emphasizeMargins * 2
+            height: implicitHeight
             anchors.top: tool.bottom
             anchors.margins: TikoSeit.emphasizeMargins
             anchors.horizontalCenter: parent.horizontalCenter

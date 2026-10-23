@@ -28,7 +28,7 @@ SQLite::SQLite()
         constexpr auto check = "SELECT count(*) FROM sqlite_master WHERE type='table' AND ("
                 "name='music' OR "
                 "name='playlist' OR "
-                "name='playinglist' OR "
+                "name='now_queue' OR "
                 "name='playlist_music' OR "
                 "name='artist' OR "
                 "name='artist_music' OR "
